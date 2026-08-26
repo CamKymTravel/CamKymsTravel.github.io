@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Travel Command Centre metallic compass">
+  <defs>
+    <radialGradient id="dial" cx="42%" cy="34%" r="68%"><stop offset="0" stop-color="#1a2b39"/><stop offset=".52" stop-color="#0a121a"/><stop offset="1" stop-color="#020507"/></radialGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".16" stop-color="#7d8790"/><stop offset=".34" stop-color="#e7edf1"/><stop offset=".56" stop-color="#454f58"/><stop offset=".77" stop-color="#c5cdd3"/><stop offset="1" stop-color="#5a646e"/></linearGradient>
+    <linearGradient id="steelDark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8d98a2"/><stop offset=".35" stop-color="#29333c"/><stop offset=".66" stop-color="#bcc5cb"/><stop offset="1" stop-color="#202932"/></linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dff9ff"/><stop offset=".18" stop-color="#69ddff"/><stop offset=".48" stop-color="#0da6ef"/><stop offset=".78" stop-color="#0561ad"/><stop offset="1" stop-color="#021d4b"/></linearGradient>
+    <radialGradient id="jewel" cx="35%" cy="28%" r="70%"><stop offset="0" stop-color="#fff"/><stop offset=".18" stop-color="#9cecff"/><stop offset=".5" stop-color="#139ee4"/><stop offset="1" stop-color="#03255c"/></radialGradient>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000" flood-opacity=".72"/></filter>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.0" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <circle cx="128" cy="128" r="114" fill="url(#dial)" stroke="url(#steelDark)" stroke-width="7" filter="url(#shadow)"/>
+  <circle cx="128" cy="128" r="104" fill="none" stroke="#101820" stroke-width="3"/>
+  <circle cx="128" cy="128" r="94" fill="none" stroke="#4c5965" stroke-width="1.5"/>
+  <circle cx="128" cy="128" r="88" fill="none" stroke="#39c8ff" stroke-width="2.25" opacity=".68" filter="url(#glow)"/>
+  <circle cx="128" cy="128" r="80" fill="none" stroke="#bfc9d1" stroke-width="1.25" stroke-dasharray="1.5 5" opacity=".78"/>
+  <g fill="#56d6ff" filter="url(#glow)"><path d="M128 7l8 18-8 9-8-9z"/><path d="M249 128l-18 8-9-8 9-8z"/><path d="M128 249l-8-18 8-9 8 9z"/><path d="M7 128l18-8 9 8-9 8z"/></g>
+  <g fill="#cfd6dc" opacity=".85"><circle cx="68" cy="68" r="3"/><circle cx="188" cy="68" r="3"/><circle cx="188" cy="188" r="3"/><circle cx="68" cy="188" r="3"/></g>
+  <g>
+    <path d="M128 25 148 109 128 128 108 109Z" fill="url(#blue)" stroke="#e4f9ff" stroke-width="1.8"/>
+    <path d="M128 231 108 147 128 128 148 147Z" fill="url(#steelDark)" stroke="#c2cbd2" stroke-width="1.6"/>
+    <path d="M25 128 109 108 128 128 109 148Z" fill="url(#steel)" stroke="#e0e6ea" stroke-width="1.6"/>
+    <path d="M231 128 147 148 128 128 147 108Z" fill="url(#steelDark)" stroke="#c0c9cf" stroke-width="1.6"/>
+    <path d="M58 58 116 111 128 128 111 116Z" fill="#7a858f" stroke="#d0d7dc" stroke-width="1"/>
+    <path d="M198 58 140 111 128 128 145 116Z" fill="#e8edf0" stroke="#8b969f" stroke-width="1"/>
+    <path d="M198 198 145 140 128 128 140 145Z" fill="#68737d" stroke="#ccd4da" stroke-width="1"/>
+    <path d="M58 198 111 140 128 128 116 145Z" fill="#e8edf0" stroke="#88939c" stroke-width="1"/>
+  </g>
+  <circle cx="128" cy="128" r="33" fill="#0a1016" stroke="url(#steel)" stroke-width="6" filter="url(#shadow)"/>
+  <circle cx="128" cy="128" r="22" fill="url(#jewel)" stroke="#c8f5ff" stroke-width="2.2" filter="url(#glow)"/>
+  <circle cx="121" cy="120" r="6" fill="#fff" opacity=".74"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="800" fill="#e4ebf0" text-anchor="middle"><text x="128" y="58">N</text><text x="198" y="132">E</text><text x="128" y="203">S</text><text x="58" y="132">W</text></g>
+</svg>

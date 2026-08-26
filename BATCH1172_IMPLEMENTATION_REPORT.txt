@@ -1,0 +1,24 @@
+TRAVEL COMMAND CENTRE — BATCH 1172 AUDIT REPORT
+Date: 25/08/2026
+Formal version: 4.5.677
+
+DEFECTS FOUND AND FIXED
+- Annual Budget roll-up incorrectly excluded transactions allocated to Destination/Trip Budgets. Destination/Trip Budget is now treated as a sub-budget/attribution: every expense and confirmed reservation in the calendar budget period counts once toward the Annual Budget, while allocated items also appear in their relevant destination/trip subset without double-counting.
+- Legacy Flight reservations without an explicit Domestic/International scope could be reclassified from an obsolete Annual/Destination allocation flag. Known route endpoints still recover Domestic/International automatically; unresolved legacy flights now preserve the compatibility default of Domestic until reviewed/edited.
+- Annual future commitments and semantic integrity checks were aligned with the corrected whole-trip annual roll-up.
+
+ROUTING RULES PRESERVED
+- International Flight → Annual Budget.
+- Domestic Flight → relevant Destination/Trip Budget.
+- Train → relevant Destination/Trip Budget.
+- Cruise fare → Cruise Trip Budget.
+- RV/Motorhome hire → RV Trip Budget.
+- Local taxis/scooters/local car hire/buses remain ordinary Transport expenses.
+- Reservation travel-cost history remains separate and visible by travel type regardless of budget attribution.
+
+VALIDATION
+- JavaScript syntax: passed.
+- Semantic integrity: 0 issues.
+- Screen render integrity: 0 issues.
+- Full workflow: 207/207 passed.
+- Service-worker/package asset references: complete.

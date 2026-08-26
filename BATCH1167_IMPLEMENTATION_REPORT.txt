@@ -1,0 +1,20 @@
+BATCH 1167 IMPLEMENTATION REPORT — 25/08/2026
+
+Confirmed physical-iPad fixes:
+1. Vault → TV & STREAMING hidden email manager now uses the full Streaming header as its concealed three-tap target rather than only the heading text.
+2. Physical iPad taps are counted on pointer-up with synthetic-click de-duplication, while keyboard access and the deliberate three-tap rule are preserved.
+3. The normal Streaming password grid/editor remains separate and available; the hidden email manager is still omitted while a Streaming app editor/detail is open.
+4. The compact Itinerary Forward Planning Map no longer creates a 535%-sized Safari paint layer for tight route auto-fit. It keeps a viewport-sized world layer and applies the zoom as a transform instead.
+5. Compact-map pins/labels are inverse-scaled so the high regional zoom does not enlarge controls, and an inline vector world-map fallback is present behind the detailed offline vector asset.
+6. Cache/shell revision was advanced so iPad Safari cannot keep the affected Batch 1166 runtime files.
+
+Validation:
+- JavaScript syntax: passed
+- hidden Streaming three-pointer-tap probe: passed; email manager opened on tap 3
+- hidden Streaming target placement probe: passed; header target present only on main Streaming grid
+- Itinerary high-zoom viewport probe: passed at 5.35x with inverse pin scaling and inline vector fallback
+- core: 0 issues
+- semantic: 0 issues
+- render: 0 issues
+- package: 0 issues
+- workflow: 196/196 passed

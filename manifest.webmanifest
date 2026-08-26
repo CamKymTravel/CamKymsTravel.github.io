@@ -1,0 +1,37 @@
+{
+  "name": "Travel Command Centre",
+  "short_name": "Travel Command",
+  "start_url": "./index.html?v=4.5.677-turkey-simulation-batch1171-20260825",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "description": "Travel Command Centre — offline iPad travel planning, budgeting, reservations, calendar, journey history, checklist and secure local Vault.",
+  "scope": "./",
+  "id": "./",
+  "display_override": [
+    "standalone",
+    "fullscreen"
+  ],
+  "categories": [
+    "travel",
+    "finance",
+    "productivity"
+  ],
+  "lang": "en-AU",
+  "dir": "ltr"
+}

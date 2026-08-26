@@ -1,0 +1,787 @@
+CURRENT CHECKPOINT — BATCH 1168 — 25/08/2026
+Formal version: 4.5.677
+Working shell: 4.5.677-turkey-simulation-batch1169-20260825
+Validation: 196/196 workflow; core/semantic/render/package all zero.
+See BATCH1168_IMPLEMENTATION_REPORT.txt for current changes.
+
+TRAVEL COMMAND CENTRE — CONTINUITY WORKING CHECKPOINT
+
+Date: 25/08/2026
+Working checkpoint: Batch 1168
+Last formally sealed/promoted master: 4.5.677 / Batch 713
+Current cumulative audit range: Batch 714 through Batch 1168 (not yet formally promoted/sealed as a new master)
+
+IMPORTANT CONTINUATION INSTRUCTION
+Resume from this exact packaged working checkpoint. Do not restart from Batch 713, Batch 737, Batch 919, or the originally uploaded Batch 927 package. The app.js, sw.js, manifest, audit harness and integrity manifests in this checkpoint contain the cumulative in-progress fixes through Batch 1157.
+
+CONTINUITY RECOVERY NOTE
+The source ZIP supplied on 24/08/2026 was physically Batch 927 even though chat continuity had subsequently discussed Batches 928–941. The gap/resume integrity work was therefore re-audited against the actual packaged code and applied directly here before advancing the executable checkpoint to Batch 947.
+
+Latest cumulative audit areas retained in this checkpoint include:
+- Batch 1168: applied the complete 25/08 screenshot correction set in one pass. Reservations category tiles/expanded panels now say Booked Reservations without clipping, the advanced filter panel is rebuilt for stable iPad alignment, the right rail shows the next five bookings, and reservation expanded colours inherit the latest eight-card palette. Itinerary expanded summary panels now carry their source-widget colour through header/body/rows/footer, and Destination Checklist expanded view now matches the blue source card instead of the legacy amber theme. Batch 1167 Vault Streaming email triple-tap and Itinerary map-render repairs are preserved. Shell/cache revision advanced to Batch 1168; full workflow remains 196/196 with zero core/semantic/render/package failures. No backup-schema or formal APP_VERSION change.
+- Batch 1167: fixed two user-confirmed physical-iPad defects from 25/08 testing. The concealed Vault TV & STREAMING email manager now has the full Streaming header as its deliberate three-tap target and counts physical iPad taps on pointer-up with synthetic-click de-duplication, while the normal password grid/editor remains separate. The compact Itinerary Forward Planning Map no longer creates a 535%-sized Safari layout/paint surface at tight regional auto-fit; it keeps a viewport-sized layer, applies regional zoom by transform, inverse-scales pins/labels, removes costly parent-layer effects, and carries an inline vector basemap fallback. Shell/cache revision advanced to Batch 1167. Targeted triple-tap/high-zoom probes passed; full workflow remains 196/196 with zero core/semantic/render/package failures. No backup-schema or formal APP_VERSION change.
+- Batch 1157: corrected two physical-iPad visual/runtime defects from Cameron’s 25/08 screenshots. Calendar month entries no longer render category icons, giving the time and title the full event-pill width while Agenda and Day View keep their larger icons. Forward Planning Map auto-fit now zooms in appropriately for tight in-country routes, and legacy blank map coordinates hydrated as 0,0 are rejected through the shared stored-point validator so stops fall back to their real offline locality instead of stacking at the map edge and collapsing route legs/distances. Dedicated Turkey-route probe passes with 4 mapped stops / 3 legs and legacy 0,0 fallback; full continuity workflow remains 195/195 with zero core/semantic/render/package failures. No backup-schema or formal APP_VERSION change.
+- Batch 1155: fixed startup initialization ordering for the shared offline atlas tables. A saved Destination Checklist marker could be canonicalized during loadState() before OFFLINE_GEO / OFFLINE_GEO_PRIMARY_COUNTRIES / OFFLINE_GEO_ALIASES were initialized, which could abort relaunch for populated saved data. The atlas tables now initialize before local state hydration. First-launch/relaunch Turkey simulation validation passes with its destination checklist marker intact; full workflow remains 194/194 and all launch/offline gates pass. No backup-schema or formal APP_VERSION change.
+- Batch 1154: fixed Turkey offline-locality coverage and restored production/test shell-revision parity. Ankara, İzmir/Izmir, Antalya, Fethiye and Cappadocia/Göreme now resolve to Turkey across Journey routes, Reservations and the shared offline map atlas; all eight accented/unaccented probe labels map automatically. test.html now carries the same Batch 1154 shell revision as production index/manifest/cache assets, preventing audit-shell drift. Focused Turkey locality/shell probe passed; full workflow passed 194/194; 9/9 iPad launch and offline asset gates passed. No backup-schema or formal APP_VERSION change.
+- Batch 1152: expanded shared offline country/coordinate coverage for common cruise departure localities that were still falling through route inference. Piraeus / Piraeus Cruise Terminal now resolve to Greece; Rotterdam Cruise Terminal to Netherlands; Port Everglades and Fort Lauderdale Cruise Terminal to United States; and Boston Cruise Terminal / Port of Boston to United States. Journey History/routes, Reservations, Home toilet-language selection and automatic map placement now agree on all seven labels. Focused cruise-locality probe passed 7/7; wider route fuzz passed 31/31; full workflow passed 194/194; 9/9 iPad launch and offline asset gates passed. No backup-schema or formal APP_VERSION change.
+- Batch 1151: fixed shared route-country parsing for common cruise labels written as “Port of …” and closed missing Papeete locality coverage. The parser now derives the underlying locality for Port of Southampton, Venice, Dover, Civitavecchia, Nassau, San Juan, Willemstad, Oranjestad and equivalent recognised ports, so Journey History/maps, Reservations and the Home toilet-language shortcut retain the same country identity. Papeete / Port of Papeete now resolve offline to French Polynesia and map automatically. Port of Spain and Port of Spain Cruise Terminal now resolve explicitly to Trinidad & Tobago, so the safety rule prevents sovereign-Spain misclassification without leaving the real Caribbean city unresolved. Focused port-country probe passed 16/16; prior Batch 1150 route/Streaming probe passed 12/12; full workflow passed 194/194; 9/9 iPad launch and offline asset gates passed. No backup-schema or formal APP_VERSION change.
+- Batch 1150: fixed two cross-screen/private-interaction defects. Journey History/map country inference now resolves the proven GA/SA abbreviation conflicts consistently with Reservations and the toilet-language shortcut (Tbilisi, GA → Georgia; Cape Town, SA → South Africa) while preserving the deliberate WA/NT namesake-safety rule outside the dedicated departure-language shortcut. The hidden Streaming email triple-tap is now available only on the main TV & STREAMING app grid, so opening the concealed email store cannot redraw and discard an unsaved Netflix/etc. password editor draft. Full workflow remained 194/194 with zero core/semantic/render failures. No backup-schema or formal APP_VERSION change.
+- Batch 1149: fixed transport-context country inference across Cruise/Motorhome departure language and Reservations. Airport, cruise-terminal, station and depot suffixes now resolve through the offline atlas before fallback, so labels such as Frankfurt Airport and Hamburg Cruise Terminal retain Germany. Ambiguous transport labels such as Cape Town Cruise Terminal, SA; Tbilisi Airport, GA; Perth Airport, WA; and Seattle Cruise Terminal, WA now use the actual departure locality for the toilet-language rule. Reservations no longer misclassify Tbilisi, GA as United States or Cape Town, SA as Australia, while ordinary Atlanta, GA and Adelaide, SA remain regional and WA/NT namesake-safety remains intact. Focused departure probe passed 28/28; full workflow passed 194/194; 9/9 iPad launch profiles and offline assets passed. No formal APP_VERSION or backup-schema change.
+- Batch 1148: hardened the Home toilet-language shortcut and modal exclusivity. Cruise/Motorhome departure-language resolution now handles ambiguous short region suffixes safely for known localities (including Seattle/Perth WA, Cape Town/Adelaide SA and Tbilisi/Atlanta GA) without weakening the app-wide namesake protections used by Journey/Reservation identity. Opening the compass phrase closes/suppresses any Home readability dialog so only one modal is active. The Vault now applies the same one-dialog rule between category readability panels and TV & Streaming. Dedicated toilet/modal probe 8/8; prior Vault/compass 9/9 and Batch 1146 edge 10/10 regressions clean; full workflow 194/194 with zero core/semantic/render failures; launch/cache and offline asset gates clean. No backup-schema or formal APP_VERSION change.
+- Batch 1147: integrated Vault Streaming credential readiness into centralized App Health and corrected the Home compass accessibility boundary. Retained legacy blank Streaming credentials now make The Vault NEEDS ATTENTION with a direct save-or-delete instruction, while unused Streaming apps remain optional and valid saved credentials remain clean. The Travel Command Centre compass is now exposed as a keyboard/VoiceOver button only on Home, where the toilet-language shortcut works; on all other screens it is a noninteractive logo instead of a dead button. Dedicated Vault/compass probe 9/9; App Health revision probe 6/6; timezone 8/8 and Vault activity 5/5 regressions clean; full workflow 194/194 with zero core/semantic/render failures; 9/9 native iPad launch compatibility and offline asset gates clean. No backup-schema or formal APP_VERSION change.
+- Batch 1146: hardened hidden Vault/Streaming unlock input, regional route-country inference, and Streaming password control-character validation. Hardware-key auto-repeat can no longer count toward either concealed triple-press unlock, so holding Enter/Space cannot expose the hidden Vault or Streaming email surfaces. Region matching now normalizes punctuation and diacritics before lookup, so full labels such as Provence-Alpes-Côte d’Azur resolve to France for unfamiliar Motorhome/Cruise departure towns instead of becoming a fake country. Streaming password validation now rejects Unicode line/paragraph separators (U+2028/U+2029) as line-break characters in both editor and restore boundaries. Focused edge probe 10/10; prior Streaming/route/privacy 59-check suite, timezone 8/8 and Vault activity 5/5 regressions clean; full workflow 194/194 with zero core/semantic/render failures; 9/9 native iPad launch compatibility and offline asset gates clean. No backup-schema or formal APP_VERSION change.
+- Batch 1145: fixed App Health working-shell freshness integrity and corrected the primary audit harness Service Worker identity. App Health now stores a runtime-only shell revision marker in local state, so any working continuity shell update invalidates an older green verification even when the formal APP_VERSION intentionally remains unchanged. Canonical backups deliberately omit App Health freshness/results and the runtime shell marker, preventing a restore from inheriting stale verification while preserving the existing backup schema. The primary harness now simulates the active Service Worker with APP_SHELL_REVISION rather than APP_VERSION. Dedicated App Health revision probe 6/6; prior Vault activity 5/5 and timezone 8/8 probes clean; full workflow 194/194 with zero core/semantic/render failures; 9/9 native iPad launch compatibility and offline asset gates clean. No backup-schema or formal APP_VERSION change.
+- Batch 1144: fixed Vault activity ordering and hidden Streaming email paste integrity. Vault Recent Activity and the main Vault record list now preserve the true just-saved order when the iPad clock moves backwards across time zones or when multiple Vault records are changed within the same minute; new/edited Vault activity anchors to the latest saved Vault activity without advancing beyond the device-clock model, and edited records retain a persisted activity-order tie-break. Removed HTML maxlength truncation from the hidden Cameron/Kym Streaming email fields so an oversized pasted address reaches the existing custom validator intact and is rejected rather than silently altered. Full workflow 194/194; dedicated Vault activity probe clean; iPad launch/offline/hash gates clean. No backup-schema or formal APP_VERSION change.
+- Batch 1143: hardened timezone-order integrity for repeated edits while travelling. Vault Recent Activity now compares a new edit against the record’s latest Updated time rather than only its original Added time; Destination Budget configuration timestamps cannot move backwards after a westward timezone shift; and both Itinerary and Journey History recovery ledgers preserve monotonic saved timestamps while still following the iPad/device clock. Dedicated timezone probe 8/8; full workflow 194/194; iPad launch 9/9; offline asset gate clean. No backup-schema or formal APP_VERSION change.
+- Batch 1142: hardened Vault Streaming credential edge behaviour. Legacy blank credentials that remain restore-compatible can now be deleted directly without first inventing a password; the password editor enforces the same 512-character browser-side limit as Save/restore validation; and edits use monotonic activity timestamps so a westward timezone change cannot make an existing credential appear to have been updated earlier than its prior saved update. Corrected the checkpoint header that had remained at Batch 1140 despite the physical Batch 1141 source. No backup-schema or formal APP_VERSION change.
+- Batch 1141: hardened private Streaming credential storage and map-gesture refresh integrity. Streaming passwords reject blank new saves, values over 512 characters, line-break/control-character values; legacy blank placeholders remain restore-compatible and reopen in edit mode. Automatic redraw is deferred through active Journey/Itinerary map drag, pan and pinch gestures and catches up after gestures end. No backup-schema or formal APP_VERSION change.
+- Batch 1140: hardened automatic/background redraw draft preservation across Home Schengen, Budget annual/destination setup, Settings Journey Start/travellers/PIN and Vault Streaming. Device-clock minute refresh and non-restore data/offline refresh now defer while those unsaved drafts are active. Save/integrity/storage failure paths no longer repaint over the failed draft; Backup and App Health status redraws also defer rather than discard unsaved Settings entries. Home toilet-phrase keyboard focus is contained and returns to the compass on close; TV & Streaming tap/backdrop close now returns focus to its launcher. No backup-schema or formal APP_VERSION change.
+- Batch 1114: completed country-level offline map coverage for every dedicated country header and every country already supported by shared World-header flag/currency metadata; standalone country aliases now resolve through canonical country identity without weakening explicit-place namesake protection.
+- Batch 1113: the 27-country photographic header expansion is now integrated with the offline route atlas; all header cities resolve on Journey/Itinerary maps with country-safe identity.
+- Reservation exclusive-end-date/completion/occupancy and legacy duplicate integrity.
+- Canonical destination/country alias identity across Reservations, Journey History and Checklist.
+- Central Settings App Health coverage across expanded panels, maps, editors, PIN/search branches and state-safe restoration.
+- Account bank-logo identity, delete-confirmation integrity and Vault attachment deletion confirmation.
+- Offline PWA cache isolation, navigation/runtime refresh behavior and Safari Service Worker cache bypass.
+- Vault screenshot capacity validation and Motorhome/Cruise route-stop capacity validation with no silent truncation.
+- Itinerary ownership integrity: same-start destinations and zero-owned destinations hidden by Intentional Gaps are rejected while valid same-day handovers remain allowed.
+- Intentional Gap authority across Calendar, Journey History, financial ownership, Forward Coverage and planning-map routing.
+- Mid-stay Intentional Gap resume integrity across Next Destination, Checklist, Budget setup, Home Trip Timeline, planning map and forward-day counts.
+- Forward planning-map resume integrity: internal-gap resumes suppress stale completed anchors/routes and use true contiguous resume dates in map summary, pins and selected-stop details.
+- Forward accommodation integrity: readiness, App Health, coverage-track status and Calendar use only the remaining owned segment after an internal Intentional Gap, without stale pre-gap booking/reminder state.
+- Reservation occupied-date boundary integrity: multi-day bookings cannot bridge an Intentional Gap into/out of a destination merely because their saved start date has no destination owner; gap-only transition bookings and single-day transport remain valid.
+- Shared reservation-boundary restore integrity: backup validation now uses the same occupied-date validator and diagnostic precedence as runtime Save/Health/semantic checks, evaluated against the backup’s own Journey Start rather than live app state.
+- Resumed-current planning-map integrity: CURRENT summary, pin and selected-stop ranges use the contiguous owned segment that contains today instead of leaking completed pre-gap dates.
+- Journey Start re-base integrity: Settings blocks a date change that would turn an otherwise valid pre-journey multi-day booking into an invalid itinerary-boundary bridge and silently unlink it.
+- Resumed-current shared-context integrity: Budget, Reservations, Itinerary and Calendar CURRENT STAY headers use the contiguous owned segment containing today, with segment-scoped progress/remaining days, while full Destination Budget history remains whole-stay.
+- Zero-night destination accommodation integrity: same-day Standard destinations and scoped departure-boundary dates no longer manufacture a phantom accommodation night; Forward Coverage, Itinerary status, Calendar status, alerts and App Health all treat those dates as complete without requiring a hotel/Airbnb booking.
+- Home resumed-current detail integrity: expanded Daily Budget and Destination Budget CURRENT STAY detail uses the active contiguous owned segment for dates, elapsed/remaining days and segment end, while whole-destination budget pace/accounting remains unchanged.
+
+- Itinerary expanded planning-summary ownership integrity: Countries Planned uses authoritative owned days with Intentional Gaps removed; Missing Accommodation shows only forward uncovered night segments and never bridges completed/gap dates.
+- Itinerary multi-country route-summary integrity: Countries Planned derives real country identities from Motorhome/Cruise route points, excludes umbrella labels such as Cruise/Caribbean, avoids inventing per-country days where route stops are undated, and uses country flags rather than travel-mode icons.
+- Accommodation overnight-coverage integrity: Hotel/Airbnb records with a missing checkout date or same-day check-in/check-out no longer satisfy an overnight requirement; Forward Coverage, Calendar and App Health stay missing until real overnight dates exist, while simple To Book reminders remain visible as planning actions.
+- Route-context destination/country integrity: trailing Caribbean/Europe/European/Cruise/Motorhome labels are treated as route context rather than countries; deterministic port/city country identity wins consistently across Journey History and Reservations.
+- Offline route-map qualification integrity: supported atlas places and cruise-port aliases retain exact offline coordinates when saved as Place, Country, while contradictory namesake countries remain rejected.
+- Same-name country/city Reservation identity integrity: Monaco, Luxembourg, San Marino and Vatican City no longer split between bare and repeated country forms.
+
+Latest completed audit batches:
+- Batch 1137: continued the hidden Vault Streaming email audit. Fixed overlength email entry silently truncating to a different address; overlength values are now rejected consistently by UI and restore validation. Tightened the hidden TV & STREAMING unlock so it requires three consecutive heading taps and any unrelated pointer/keyboard interaction cancels a partial sequence. Removed accidental Batch 891 regression-fixture transient-state noise and renamed the current feature/privacy probe. Final gates: workflow 194/194, dedicated feature/privacy/coverage 32/32, with zero core/semantic/render/package issues.
+- Batch 1136: continued directly from the physical Batch 1120 checkpoint. Added the Home compass toilet-language shortcut with Cruise/Motorhome departure-country language locking; added the hidden Vault Streaming email store behind a triple-tap of TV & STREAMING; made hidden emails canonical-backup compatible, restore-validated, excluded from Global Search, and closed on Vault privacy boundaries; completed explicit phrase coverage for every recognised offline country; added Mongolia and French Polynesia country/currency/map metadata for free-text routed departures; and resynchronised the live/test PWA shell revision. Final gates: workflow 194/194, dedicated feature/privacy/coverage 24/24, iPad launch 9/9, with zero core/semantic/render/package issues.
+- Batch 1084: fixed asynchronous Backup snapshot isolation. Backup captures a revision of the successfully persisted app state before Vault screenshot decode validation begins; if any edit, restore or reset commits while that asynchronous validation is still running, the stale backup is aborted before download and the newer state is not stamped with a misleading lastBackup date. A direct race probe confirms stale backup download count remains zero and lastBackup remains unchanged, while an unchanged backup still downloads and advances its marker normally. Recent targeted regressions through Batch 1083 pass and the full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1083: clean promotion-level audit pass across deferred/transient action isolation after data replacement. Confirmed successful restore/reset clears pending Reservation search timing, edit/search contexts, Vault unlock/reveal state, map edit modes and all active map gestures; failed replacement does not run the replacement-reset path. No deferred timer was found that can persist app data after replacement. The recent regression chain through Batch 1082 passes, full workflow remains 194/194, and no new executable defect was confirmed; runtime code is unchanged.
+- Batch 1082: fixed data-replacement gesture isolation. A Journey History or Itinerary map drag/pan that was still active when a restore/reset replaced app data could survive the replacement; a later stale pointer completion could then write old map coordinates into a newly restored record when the same identifier existed. Restore/reset now cancels all in-flight expanded-map touch/pointer gestures and Journey/Itinerary marker drags before the replacement UI can resume. Targeted stale-pointer mutation coverage passes, the recent regression chain through Batch 1081 passes, and full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1081: clean promotion-level audit pass across canonical local-storage namespace ownership, valid-JSON startup integrity quarantine, exact preservation of quarantined stored bytes, blocked edits while recovery is required, explicit reset/restore recovery, data-replacement transient UI/security-state reset, complete offline Service Worker shell asset resolution/version alignment, and the recent regression chain through Batch 1080. No new executable defect was confirmed; runtime code is unchanged. This is the sixth consecutive clean late-stage audit batch. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1080: clean late-stage promotion-risk audit pass across persistence failure rollback, exact prior-byte preservation, post-write verification mismatch recovery, integrity-rejected edits, failed restore commits, startup recovery restore, post-restore rollback baselines, and the recent regression chain through Batch 1079. No new executable defect was confirmed; runtime code is unchanged. This is the fifth consecutive clean late-stage audit batch. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1079: clean late-stage audit pass across exhaustive calendar-day Travel Year mapping for multiple Journey Starts through the full 30-year horizon, monthly Annual Budget target reconciliation for full and partial first calendar years, Journey Start/calendar-year reservation budget routing, eight-cycle mixed-boundary backup/restore canonicalization, and the recent linked-state regression chain through Batch 1078. No new executable defect was confirmed; runtime code is unchanged. This is the fourth consecutive clean late-stage audit batch. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1078: clean late-stage audit pass across 30-year Travel Year range continuity (including leap-day and year-end Journey Starts), calendar-year Annual Budget period selection before/after Journey Start, active annual-budget mirror synchronization, five-cycle boundary backup/restore canonicalization, and the recent linked-state regression chain through Batch 1077. No new executable defect was confirmed; runtime code is unchanged. This is the third consecutive clean late-stage audit batch. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1077: clean late-stage audit pass across calendar-year rollover, device-clock forward/backward transitions, annual-budget year switching, current/next-destination recalculation, Destination Checklist snapshot restoration across date transitions, cross-year backup restore canonicalization/idempotence, and the recent linked-state regression chain. No new executable defect was confirmed; runtime code is unchanged. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1076: clean late-stage audit pass across route alias/explicit-country identity canonicalization, route-key idempotence, six consecutive full demo backup/restore canonical round-trips, and the recent linked-state regression chain. No new executable defect was confirmed; runtime code is unchanged. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1075: fixed legacy routed Journey restore validation so unlinked Motorhome/Cruise Journey rows are compared by ordered canonical route stops and manual map coordinates without requiring internal route-point IDs to match the itinerary. Older rows with independent or missing point IDs now restore and canonicalize cleanly; genuine route/map-position mismatches remain rejected, while linked/current Journey mirrors keep strict validation. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1074: fixed two routed identity/canonicalization defects. U.S. Virgin Islands root territory aliases now share one Reservation and Motorhome/Cruise route identity, preserving checklist/recovery state and manual route-point placement across punctuation/name variants while migrating prior synthetic keys. Typed country-as-place route tokens (including Singapore, Bonaire, Curaçao, Jamaica and Bermuda) are now canonicalization-idempotent, so app-generated routed checklist backups validate correctly; malformed Batch 1073 keys migrate without losing completion, due dates or notes. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1073: fixed routed-trip identity for Washington, D.C. punctuation variants. “Washington, D.C.” and “Washington, DC” now preserve the same Motorhome/Cruise checklist identity, recovery identity and manual route-point position without collapsing to unqualified Washington. Restore validation also accepts the immediately prior strong routed recovery signatures so Batch 1070–1072 backups migrate canonically. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1072: fixed two routed-trip restore/recovery integrity edges. Older unlinked Motorhome/Cruise Journey rows now compare route stops using the same canonical country-aware identity as live routing, so harmless aliases such as London, UK versus London, United Kingdom restore cleanly while overseas namesakes remain rejected. Delete/re-add recovery for routes that revisit the same canonical stop now consumes saved stop matches in sequence, preserving each repeated visit's own manual map coordinates instead of reusing the first visit's position. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1071: fixed Motorhome/Cruise route-stop edit merging so manual map coordinates and point IDs are preserved only for the same country-aware canonical place. Editing a route from a cross-country namesake such as Paris, France to Paris, TX no longer carries the old hand-positioned map point into the new destination; harmless aliases such as London, United Kingdom to London, UK still retain the saved point. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1070: fixed cross-country namesake collisions in Motorhome/Cruise route identity. Routed checklist keys, itinerary recovery, Journey History recovery, route-point map recovery and Journey/Itinerary route mirrors now retain authoritative country context, so routes such as Paris, France → London, United Kingdom cannot collide with Paris, TX → London, ON. Harmless state/province formatting and route-context aliases remain recovery-equivalent. Older country-weak route keys and recovery signatures migrate losslessly under the unchanged formal 4.5.677 build identity. Full workflow remains 194/194 with zero core, semantic, render or package issues.
+- Batch 1069: fixed routed Destination Checklist recovery so Motorhome/Cruise task completion, due dates and notes use the full ordered route rather than only first/last endpoints. Different routes with identical endpoints/date no longer inherit checklist state; same-route delete/re-add remains lossless, and endpoint-only legacy checklist keys migrate canonically on restore.
+- Batch 1068: fixed routed Journey History recovery identity for Motorhome/Cruise trips. Recovery metadata now retains route points and matches by route identity, preventing kilometres, notes and map position from leaking into a different route with the same dates. Legacy route-less recovery rows are replaced when an authoritative routed Journey is available. Same-route date corrections still recover metadata, canonical backup/restore remains clean, and workflow remains 194/194.
+- Batch 1067: fixed Destination Checklist continuity for a deleted/re-added next destination whose dates are corrected slightly. The existing itinerary recovery ledger already identifies a unique strongly-overlapping replacement and restores its fixed rate/budget; checklist recovery now seeds the corrected destination key from that same exact recovery match, preserving completion, due dates and notes. Far-future revisits and ambiguous same-place recovery candidates do not inherit old checklist state. Canonical backup/restore remains clean and workflow remains 194/194.
+- Batch 1066: fixed Destination Checklist state loss when the same next-destination itinerary record is date/place-corrected. Same-record identity changes now migrate completion, due dates and notes to the corrected checklist key while retaining reversible history; a genuinely different next itinerary record still transitions normally. Canonical restore/semantic integrity remains clean and workflow remains 194/194.
+- Batch 1065: clean terminal-gap continuation audit; Home/Budget/Calendar gap authority, Journey History completion, true next-destination resume date, Budget eligibility, financial-mutation guard and canonical restore integrity all remain consistent; no runtime code change required.
+- Batch 920: reject same-start destination ownership conflicts while preserving legal departure=arrival handovers.
+- Batch 921: reject a one-day Destination fully hidden by a one-day Intentional Gap.
+- Batch 922: Calendar shows the Intentional Gap rather than destination-transition styling on that authoritative date.
+- Batch 923: Journey History excludes Intentional Gap dates from destination travel-day totals and averages.
+- Batch 924: reject a one-day Destination on the final day of a multi-day Intentional Gap when it has zero owned days.
+- Batch 925: planning map retains the departing destination on a one-day Intentional Gap handover.
+- Batch 926: departing planning-map pin is labelled Handover origin rather than Future.
+- Batch 927: an explicit Intentional Gap suppresses the inferred Flight connection between adjacent destinations.
+- Batch 942: Destination + Intentional Gap intersections are treated as legal ownership overlays rather than illegal itinerary collisions.
+- Batch 943: itinerary Save/restore/semantic integrity accept legal gap overlays while still rejecting real Destination↔Destination and Gap↔Gap interior overlaps.
+- Batch 944: Forward Coverage segments use authoritative day ownership, eliminating false overlap flags and double-counted gap widths.
+- Batch 945: mid-stay gaps resolve the surrounding destination as the next owned destination after the gap.
+- Batch 946: Next Destination cards, Checklist and planning map use the true resume date and remaining owned-day duration.
+- Batch 947: Budget Destination setup and Home Trip Timeline retain the resuming stay, ordered after the active gap with no past-arrival leakage.
+- Batch 948: multiple Intentional Gaps inside one Destination are resolved as separate contiguous owned segments.
+- Batch 949: Next Destination stops at the next authoritative gap instead of spanning across it.
+- Batch 950: shared Next Destination date ranges use the current contiguous owned segment when a later gap interrupts the same stay.
+- Batch 951: Checklist and Budget next-destination dates/duration no longer include days beyond a later Intentional Gap.
+- Batch 952: Home Trip Timeline splits an interrupted destination into distinct owned segments rather than drawing one row across a later gap.
+- Batch 953: multi-gap regression coverage locks segment order and keeps Home/Checklist/Budget/shared context consistent with Forward Coverage.
+- Batch 954: internal mid-stay gaps no longer pull an older completed destination into the Forward Planning Map.
+- Batch 955: removing that stale anchor also removes the obsolete historical route leg from the forward route.
+- Batch 956: Forward Planning Map route-distance/mode totals no longer include that stale historical leg.
+- Batch 957: the map NEXT summary uses the resumed stay’s true owned resume date rather than its original arrival.
+- Batch 958: the NEXT map pin uses the same true resume date.
+- Batch 959: selected NEXT itinerary-map details use the contiguous resumed segment date range rather than the original full stay range.
+- Batch 960: Forward Coverage accommodation completeness ignores already-finished pre-gap nights of an interrupted stay.
+- Batch 961: historical pre-gap accommodation reminders marked To Book no longer keep forward readiness in To Book state.
+- Batch 962: Forward Coverage segment styling evaluates the contiguous owned segment, so a booked resumed segment is not coloured missing.
+- Batch 963: Settings App Health uses the same forward-scoped accommodation state and no longer reports stale historical accommodation actions.
+- Batch 964: Calendar marks the first owned day when a destination resumes after an Intentional Gap and uses that day/segment’s accommodation status.
+- Batch 965: multi-day reservation boundary validation checks actual occupied dates, catching bookings that start inside an Intentional Gap and continue into the resumed destination.
+- Batch 966: Reservation Save now blocks that gap-to-destination bridge even when the booking start date itself has no destination owner.
+- Batch 967: Reservation Health and semantic integrity report the same occupied-date Intentional Gap boundary violation.
+- Batch 968: backup restore validation rejects the same invalid bridge instead of accepting an unlinked booking that crosses into a destination.
+- Batch 969: regression coverage preserves legitimate bookings wholly inside an Intentional Gap and single-day transport on gap dates while keeping cross-boundary multi-day bookings blocked.
+- Batch 970: multi-day reservation boundary validation now catches bookings that start in an ordinary uncovered itinerary interval and continue into a destination.
+- Batch 971: Reservation Save blocks that unplanned-gap-to-destination bridge instead of storing an unlinked booking that later conflicts with accommodation readiness.
+- Batch 972: Reservation Health and semantic integrity report the same unplanned-gap bridge consistently.
+- Batch 973: itinerary mutation financial-conflict checks prevent itinerary edits/additions from turning a previously gap-only multi-day booking into an invalid destination bridge.
+- Batch 974: backup restore validation rejects the same bridge while preserving gap-only bookings whose exclusive checkout/return boundary is exactly the destination arrival date.
+- Batch 975: reservation boundary validation accepts an explicit Journey Start context so foreign backup data is not evaluated against the live app boundary.
+- Batch 976: backup restore now calls the shared reservation boundary validator instead of maintaining a separate occupied-date implementation.
+- Batch 977: restore diagnostic precedence matches Save/Health/semantic checks, so one booking that crosses an Intentional Gap and also overruns its stay produces one canonical gap-crossing error rather than competing duplicate errors.
+- Batch 978: backup reservation boundary validation remains stable when the live app Journey Start differs from the Journey Start stored inside the backup.
+- Batch 979: regression coverage locks shared boundary precedence, explicit Journey Start isolation and existing exclusive-end-date behavior across runtime and restore.
+- Batch 980: resumed CURRENT planning-map summary uses the true post-gap segment start instead of the itinerary record’s original arrival.
+- Batch 981: resumed CURRENT planning-map pin uses that same contiguous owned-segment start date.
+- Batch 982: selected CURRENT planning-map details use the resumed segment range rather than the completed pre-gap/full-stay range.
+- Batch 983: Journey Start changes are blocked when the new boundary would create an invalid confirmed multi-day reservation ownership bridge.
+- Batch 984: regression coverage preserves legal pre-journey bookings that check out exactly on the first destination boundary while locking the new Journey Start gate.
+- Batch 985: resumed shared CURRENT STAY date ranges start at the true post-gap owned date rather than the destination record’s original arrival.
+- Batch 986: shared current-stay progress is calculated from the active contiguous owned segment instead of completed pre-gap days.
+- Batch 987: shared remaining-day counts stop at the next Intentional Gap instead of running through a later resumed segment.
+- Batch 988: Budget, Reservations, Itinerary and Calendar use the same resumed CURRENT STAY range through their shared context header.
+- Batch 989: regression coverage locks resumed shared-context dates/progress while preserving the full destination budget period and whole-stay financial history.
+- Batch 990: same-day Standard destinations now calculate zero required accommodation nights instead of one phantom night.
+- Batch 991: a scoped destination departure-boundary date is treated as zero-night accommodation time.
+- Batch 992: Forward Coverage and Itinerary status no longer mark legitimate zero-night destinations as missing accommodation.
+- Batch 993: Calendar accommodation status reports that no overnight accommodation is needed on zero-night/departure-only destination dates.
+- Batch 994: Home/Itinerary alerts and central App Health no longer raise false missing-accommodation warnings for zero-night destinations; regression coverage locks the rule.
+- Batch 995: Home expanded Daily Budget CURRENT STAY range uses the resumed contiguous segment rather than the destination record’s original full-stay dates.
+- Batch 996: Home expanded Daily Budget remaining-day count stops at the next Intentional Gap and labels the active segment end rather than the later whole-stay departure.
+- Batch 997: Home expanded Destination Budget CURRENT STAY range uses the same resumed contiguous segment.
+- Batch 998: Home expanded Destination Budget elapsed/remaining helper uses active-segment days instead of carrying days across a later Intentional Gap.
+- Batch 999: budget-not-set Home detail uses active-segment elapsed metrics while regression coverage confirms whole-destination financial pace remains unchanged.
+- Batch 1000: separate Intentional Gap records may no longer share the same inclusive boundary date.
+- Batch 1001: Itinerary Save now treats a same-day Gap↔Gap boundary as a real overlap while preserving legal Destination↔Destination handovers.
+- Batch 1002: semantic integrity and central App Health report the duplicate gap planning day instead of silently accepting it.
+- Batch 1003: backup restore rejects the same duplicate-gap boundary shape using the shared overlap rule.
+- Batch 1004: regression coverage locks the rule and prevents Home timeline gap-duration double-counting / ambiguous Forward Coverage ownership from returning.
+
+- Batch 1005: Itinerary Countries Planned expanded view counts authoritative destination-owned days instead of recomputing from a destination-only subset that drops Intentional Gaps.
+- Batch 1006: country planned-day totals no longer restore side-trip/gap dates to the surrounding destination.
+- Batch 1007: Missing Accommodation expanded view scopes uncovered nights to the forward coverage window instead of showing already-completed dates.
+- Batch 1008: interrupted stays render separate uncovered accommodation night segments rather than one range that crosses an Intentional Gap.
+- Batch 1009: regression coverage locks owned country totals and exact uncovered-night segment/count display while preserving the full-stay itinerary record and financial history.
+- Batch 1010: Countries Planned KPI counts real countries present in Motorhome/Cruise route points instead of only the itinerary record’s umbrella/base country.
+- Batch 1011: route umbrella labels such as Cruise, Caribbean, Europe and Motorhome are excluded from country totals when they are not actual countries.
+- Batch 1012: expanded Planned Countries includes every deterministically resolved route country, matching Journey History route-country identity.
+- Batch 1013: multi-country route trips no longer assign their entire undated trip duration to the starting/base country; they are reported as route visits/stops until dated per-country allocation exists.
+- Batch 1014: Planned Countries uses actual country flags (not RV/cruise mode icons), Planned Stops inherits the corrected country count, and regression coverage locks the cross-screen route-country rule.
+- Batch 1015: same-day Hotel/Airbnb day-use bookings no longer count as one confirmed overnight night.
+- Batch 1016: confirmed Hotel/Airbnb records with no checkout/end date no longer provide phantom one-night accommodation coverage.
+- Batch 1017: Forward Coverage keeps the destination in Missing Accommodation until a real overnight date span is linked.
+- Batch 1018: Calendar travel-band accommodation status follows the same overnight-only rule instead of showing false linked/green status.
+- Batch 1019: central Itinerary/App Health and regression coverage lock the overnight-only rule while preserving simple To Book accommodation reminders as amber planning actions.
+
+- Batch 1020: route-context suffixes no longer override deterministic place countries in Journey History or Reservations.
+- Batch 1021: Reservation grouping and duplicate identity unify route-context aliases with canonical Place, Country forms.
+- Batch 1022: the authoritative offline country index covers supported route/cruise-port atlas entries so Place, Country retains exact offline placement without weakening namesake safety.
+- Batch 1023: Monaco/Luxembourg/San Marino/Vatican City bare and repeated country/city labels share one Reservation destination identity.
+- Batch 1024: Journey History excludes route umbrella country labels, retains real route countries, and regression coverage locks whole-atlas/alias consistency.
+- Batch 1025: clean audit pass across date-derived financial ownership, same-day handovers, Intentional Gap ownership, stale reservation relinking after itinerary edits, partial first-year/calendar-year budget boundaries, and annual/monthly forecast calculations; no new executable defect found and no runtime code change required.
+- Batch 1026: clean audit pass across deletion recalculation, itinerary-delete financial-conflict gates, current-format restore orphan-link rejection, Destination Checklist orphan-history rejection, and transactional local-storage rollback; no new executable defect found and no runtime code change required.
+- Batch 1027: Journey History now follows authoritative Itinerary day ownership immediately on same-day handovers, so a completed departing stay cannot temporarily steal the arriving stay’s boundary day or inflate Days Travelled / per-stay duration before the arriving journey is completed.
+- Batch 1028: Calendar Agenda/day-view no-time transition ordering now places checkout / RV return / disembarkation before the next check-in / pickup / embarkation instead of falling back to misleading alphabetical arrival-first order.
+- Batch 1029: Home Global Search now has a reachable, privacy-safe Vault search path: while Vault is locked it does not expose protected record names, but offers a secure Vault hand-off that carries the query into an expanded Vault records list and reveals matching records only after the normal Vault unlock.
+- Batch 1030: successful backup restore/reset now invalidates the prior session PIN-unlock marker, preventing a restored PIN-enabled backup from inheriting `tccUnlocked=yes` across a Safari/PWA reload; Reset All Data also clears that stale session security marker.
+- Batch 1031: exported JSON backups now invalidate stored App Health time/results when advancing `lastBackup`, so a restored backup cannot display a stale VERIFIED/NEEDS ATTENTION snapshot that was never run against the exact exported state.
+- Batch 1032: clean audit pass across numeric-entry/currency integrity and Reservation completion/sorting boundaries, including fixed destination rates, foreign-currency conversion, zero-cost bookings, account negative balances, partial first-year calendar budgeting, active multi-day reservations, exact checkout/return times, upcoming-only filtering and newest-first completed history; no new executable defect found and no runtime code change required.
+- Batch 1033: clean cross-screen state audit across Calendar, Checklist and Vault. Confirmed Destination Checklist state goes dormant when there is no next destination, disappears from Calendar while dormant, and restores completion/due-date/notes exactly when that destination returns; Vault type hydration strips inactive Passport/Visa/Insurance fields instead of leaking stale hidden data. Current-format canonical restore also rejects equivalent destination-history aliases that would change data. No new executable defect found and no runtime code change required.
+- Batch 1034: fixed stale data-dependent filter display/state integrity. Reservations Destination, Country and Currency filters, The Vault Country filter, and Itinerary Travel Year filter now preserve a selected zero-result value after the last matching record is edited/deleted, preventing Safari from visually falling back to All while the old filter remains active. Regression coverage locks all five controls.
+- Batch 1035: Journey History completed-table sorting now stays newest-first when multiple completed stays share the same departure date; tied completion dates use the later arrival/start date first instead of leaking the chronological map-source order into the visible history table. Regression coverage locks the tie-break while map/route calculations remain chronological.
+- Batch 1036: Calendar Type filter now preserves an active zero-result type after the last matching reservation/event is edited or deleted, preventing Safari from visually falling back to All while the stale type filter remains active in memory. Regression coverage locks the Calendar control alongside the other data-dependent filters.
+
+- Batch 1037: completed Reservation history tied end dates now use later start date first, preserving newest-first order instead of alphabetical fallback.
+- Batch 1038: Reservation CSV no longer exposes the hidden internal storage date used for undated To Book reminders; the exported Start Date stays blank.
+- Batch 1039: Reservation CSV dates now follow the approved Australian DD/MM/YYYY display format.
+- Batch 1040: Budget CSV dates now follow the approved Australian DD/MM/YYYY display format.
+- Batch 1041: Reservation and Budget CSV monetary values are normalized to stable two-decimal currency output instead of leaking binary floating-point artifacts.
+- Batch 1042: Checklist due dates now appear consistently in Calendar month/agenda/day views and can be filtered by Checklist source/type; completed/pending checklist status is preserved.
+- Batch 1043: Reservations side summary now counts only confirmed records as Total bookings; simple To Book reminders remain planning items instead of inflating the booked-reservation count.
+- Batch 1044: Reservations side-summary To Book count now stays aligned with the separate yellow Future Bookings / To Book panel even when confirmed-booking filters such as Currency are active.
+- Batch 1045: Reservation CSV formula neutralization now detects spreadsheet formula prefixes hidden behind leading whitespace/control characters instead of protecting only byte-zero =/+/-/@ values.
+- Batch 1046: Budget CSV receives the same leading-whitespace/control-character formula protection, preventing exported category/notes text from bypassing spreadsheet neutralization.
+- Batch 1047: Budget read-only reservation type summaries no longer let a To Book reminder relabel confirmed Paid booking money as To Book; the status pill now describes the confirmed money it sits beside.
+- Batch 1048: Reservation Destination filter options now come from confirmed bookings only; a To Book planning reminder can no longer create a destination choice that produces an impossible empty confirmed-booking result.
+- Batch 1049: Reservation Country filter options now come from confirmed bookings only, keeping the advanced Country control aligned with the real reservation list rather than reminder-only metadata.
+- Batch 1050: Reservation Currency filter options now come from confirmed bookings only, preventing reminder-only currencies from appearing as selectable confirmed-booking filters.
+- Batch 1051: Journey History records-card kilometre footer now reconciles to the active Journey filters instead of showing lifetime kilometres beneath a filtered table; fallback approximate distance is calculated in chronological route order while the visible history remains newest-first.
+- Batch 1052: dormant Destination checklist tasks are excluded from Calendar month/agenda/day data whenever there is no next destination, while Permanent checklist due dates remain visible; this restores the Calendar dormancy guarantee recorded in Batch 1033.
+- Batch 1053: Home Global Search now routes To Book planning reminders to the dedicated Booking Reminder editor instead of the full Reservation editor, preventing a search-open/save path from silently converting a reminder into a confirmed booking lifecycle.
+- Batch 1054: Home Global Search result subtitles now show concise human-readable record summaries instead of exposing the internal normalized search-index string with duplicated dates, money values, references and token noise. Search matching/ranking still uses the full hidden index.
+- Batch 1055: copied Reservation summaries no longer append a misleading “To Book: 0” line when Copy Summary is intentionally scoped to confirmed/actionable Reservation rows and To Book reminders remain in their separate yellow planning panel.
+- Batch 1056: dormant Destination checklist tasks are now excluded from Home Global Search whenever there is no next destination, matching Checklist/Calendar/App Health dormancy while Permanent tasks remain searchable.
+- Batch 1057: completed Itinerary history now stays newest-first when two legal stays share a departure date; the later arrival/start wins the tie without changing chronological route/map ordering.
+- Batch 1058: Budget’s read-only Reservation detail no longer inherits the Reservations screen’s temporary Sort By / direction state; it preserves its own chronological current-stay/current-date ordering.
+- Batch 1059: same-day expense history now puts the most recently saved entry first, so the visible newest row matches the record removed by Undo Last Entry; date ordering remains newest-first across Budget periods.
+- Batch 1060: Budget read-only Reservation chronology now uses the effective budget date plus the reservation’s operational start time for same-day ties, so an earlier flight/check-in/entry/pickup appears before a later same-day booking while untimed items remain last; regression coverage locks both row ordering and the rendered Budget Reservation detail. Adjacent ordering/action paths across Reservations, Calendar, Checklist, Journey History and Vault were re-audited with no additional confirmed executable defect in this pass.
+- Batch 1061: clean audit pass across exact clock-boundary classification, Reservations Completed/Upcoming mutual-exclusion state, Calendar same-day operational action ordering, and filtered Copy Summary / Export Results scope. Existing regression coverage and direct probes remained internally consistent; no new executable defect was confirmed and runtime code was unchanged.
+- Batch 1062: clean audit pass across canonical backup round-trip/idempotence, restore replacement security and transient-filter reset coverage, annual-budget derived-total reconciliation, and current-destination derived-total reconciliation. Additional direct probes remained internally consistent; no new executable defect was confirmed and runtime code was unchanged.
+- Batch 1063: fixed Journey History departure-day completion when an Intentional Gap already owns that date but began earlier. The departing stay now completes on its departure day under the authoritative itinerary owner rule, and backup restore validation mirrors the same gap-priority completion logic. Legal destination handovers, gap-on-handover, internal-gap resume behaviour and canonical backup validation were re-probed; workflow remains 194/194 with zero integrity issues.
+- Batch 1064: fixed early Journey History completion for a terminal Intentional Gap that consumes every remaining owned day before a destination’s nominal departure. The stay now completes as soon as the gap becomes authoritative when no future owned day remains; internal gaps that later resume the same stay remain Overlap. Backup restore completion validation mirrors the same future-owned-day rule. Workflow remains 194/194 with zero integrity issues.
+
+- Batch 1065: clean audit pass across terminal-gap effects on Home/current-destination state, Calendar ownership, Budget routing and next-destination resume logic. The existing itinerary Save guard was confirmed to prevent financial context reassignment across newly introduced gaps; no new executable defect was confirmed and runtime code was unchanged.
+- Batch 1066: fixed Destination Checklist state loss when the same next-destination itinerary record is edited so its arrival/place key changes. Completion, due dates and notes now migrate with the same record while genuinely different next destinations remain isolated.
+- Batch 1067: fixed Destination Checklist state loss across a delete/re-add date correction that is already recognized as the same logical itinerary trip by the bounded itinerary recovery ledger. Later or ambiguous revisits do not inherit the old checklist.
+- Batch 1068: fixed routed Journey History metadata recovery so Motorhome/Cruise kilometres, notes and map position are keyed by the full ordered route. A different route with the same dates no longer inherits metadata, while a genuine same-route date correction still recovers it; canonical backup integrity remains clean.
+- Batch 1069: fixed routed Destination Checklist recovery so Motorhome/Cruise task completion, due dates and notes use the full ordered route rather than only first/last endpoints. Different routes with identical endpoints/date no longer inherit checklist state; same-route delete/re-add remains lossless, and endpoint-only legacy checklist keys migrate canonically on restore.
+
+Current audit status at checkpoint time:
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Package integrity checks: 0 issues
+
+The APP_VERSION and README_CURRENT_MASTER intentionally still identify the last formally promoted master (4.5.677 / Batch 713). This continuity checkpoint is a working audit build, not a formal promotion.
+
+- Batch 1070: fixed routed-trip identity for cross-country namesakes by making checklist/recovery/Journey route identity country-aware; legacy weaker route signatures remain migratable.
+- Batch 1071: fixed route-stop edit merging so cross-country namesake replacements no longer inherit stale manual map coordinates; legitimate same-place aliases retain saved route points.
+- Batch 1072: fixed legacy unlinked routed Journey restore for equivalent country aliases and fixed repeated-stop route recovery so each repeated visit retains its own map coordinates in sequence.
+- Batch 1073: fixed Washington, D.C. / Washington, DC route alias normalization so harmless punctuation edits preserve checklist/recovery identity and manual route positioning while legacy signatures remain compatible.
+- Batch 1074: fixed U.S. Virgin Islands alias identity across Reservations and routed trips, and fixed nested country-token checklist canonicalization for Singapore/Bonaire/Curaçao/Jamaica/Bermuda routes; malformed legacy keys migrate safely.
+- Batch 1075: fixed older unlinked Motorhome/Cruise Journey restore so internal route-point IDs do not falsely make a valid legacy route fail restore; route order/place identity/map coordinates remain strict.
+- Batch 1076: clean audit pass across restore canonicalization, hidden recovery ledgers and six repeated full backup/restore cycles; no runtime code change required.
+- Batch 1077: clean audit pass across 31 Dec/1 Jan rollover, annual budget switching, current/next destination switching and checklist snapshot restoration; no runtime code change required.
+- Batch 1078: clean audit pass across 30-year Travel Year continuity, leap-year boundaries, calendar-year annual budgets and repeated restore idempotence; no runtime code change required.
+- Batch 1079: clean audit pass across exhaustive multi-year date mapping, monthly/annual budget reconciliation and year-boundary reservation routing; no runtime code change required.
+- Batch 1080: clean promotion-level fault-injection pass across local-storage write failures, verification corruption and restore rollback; prior persisted bytes/state are preserved exactly on failure.
+- Batch 1081: clean promotion-level pass across startup corruption quarantine, reset/restore transient-state cleanup, storage namespace ownership and offline shell completeness; no runtime code change required.
+- Batch 1082: fixed stale map gestures surviving restore/reset so delayed pointer completion can no longer write old coordinates into newly restored Itinerary or Journey History data.
+- Batch 1083: clean promotion-level pass across deferred timers/actions, Vault/security/edit/search transient-state isolation, restore/reset replacement boundaries and offline shell consistency; no runtime code change required.
+- Batch 1084: fixed asynchronous Backup race integrity. If local data changes while Vault screenshot validation is in progress, the stale export is blocked and lastBackup is not advanced; unchanged backups still export normally.
+- Batch 1085: fixed continuity-package metadata drift. The working ZIP contained current runtime/evidence through Batch 1084 but its continuity narrative ended at Batch 1069. Continuity metadata is now brought forward through Batch 1085; runtime code is unchanged. Promotion-level backup/restore overlap and delayed-callback audit remained clean.
+
+Batch 1085 audit status:
+- Runtime code change: none
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Package/runtime integrity: clean after continuity metadata repair
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+- Batch 1086: fixed stale cross-state toast leakage on successful restore/reset. Data-dependent toast messages created by the replaced dataset are now dismissed at the same hard replacement boundary that clears security, filters, edit/search state and active map gestures, before the new restore/reset result toast is shown. Direct replacement-boundary coverage confirms prior toasts are removed while all existing transient resets remain intact. Recent 1074–1085 probes and the full 194/194 workflow suite remain clean.
+
+Batch 1086 audit status:
+- Runtime code change: stale toast cleanup on successful data replacement only
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Recent regression probes: 1074–1085 plus Batch 1086 direct probe passed
+- Offline referenced-asset/cache audit: clean
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+- Batch 1087: fixed stale edit-form continuation across successful restore/reset. A restore can complete after asynchronous backup-file/Vault media validation while an older edit dialog is still open; that form could previously resume (especially after Vault screenshot decoding) and write or report against the newly replaced dataset. Successful data replacement now advances a data-generation boundary, closes the old shared edit dialog without running its draft rollback, and both general/booking-reminder async save continuations verify that they still belong to the current data generation before resuming. Direct generation/modal coverage, recent 1074–1086 probes and the full 194/194 workflow suite remain clean.
+
+Batch 1087 audit status:
+- Runtime code change: stale async edit-form invalidation/closure on successful data replacement
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Recent regression probes: 1074–1086 plus Batch 1087 direct probe passed
+- Offline shell completeness: clean
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+- Batch 1088: fixed protected Vault screenshot viewer lifecycle. Script-created screenshot viewer tabs/windows are now tracked and closed whenever The Vault locks by leaving the Vault screen and whenever successful Restore/Reset replaces the dataset. Closed viewer references are pruned before opening another viewer. This prevents passport/visa/insurance/accommodation/emergency screenshots from remaining readable outside the app after the protected state or underlying dataset has changed. Direct multi-viewer/lock/replacement coverage, recent 1074–1087 probes and the full 194/194 workflow suite remain clean.
+
+Batch 1088 audit status:
+- Runtime code change: protected Vault screenshot viewer lifecycle cleanup
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Recent regression probes: 1074–1087 plus Batch 1088 direct probe passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+- Batch 1089: fixed two superseded asynchronous replacement-boundary races. First, Restore file reading/Vault screenshot validation now carries both a restore-request token and the current data-replacement generation, so an older Restore that is superseded by a newer Restore selection or by successful Reset/Restore cannot later wake up, prompt, save, or show stale failure feedback against the newer dataset. Second, Backup now carries the data-replacement generation as well as its persisted-state revision; a Backup superseded specifically by successful Restore/Reset stops silently after asynchronous Vault validation instead of leaking an obsolete “Backup failed” toast back over the replacement dataset. Ordinary saved-data changes during Backup still produce the existing retry warning. Direct race probes, recent 1074–1088 regressions, the full 194/194 workflow harness, and offline shell completeness all remain clean.
+
+Batch 1089 audit status:
+- Runtime code change: stale asynchronous Restore invalidation + replacement-stale Backup feedback suppression
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Recent regression probes: 1074–1088 plus Batch 1089 Restore/Backup race probes passed
+- Offline shell completeness: 105/105 unique files present
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+- Batch 1090: fixed Restore supersession at the earliest file-selection boundary. Previously, a newer oversized backup (>25 MB) was rejected before incrementing the Restore request generation, so an older Restore already reading/decoding could remain current and later prompt/replace data despite the user having selected a different file. Every newly selected Restore file now supersedes older asynchronous Restore work immediately, even if the new file is rejected before FileReader starts. Direct oversized-supersession coverage confirms the old Restore cannot confirm/save after the newer selection. Recent 1074–1089 regressions and the full 194/194 workflow suite remain clean.
+
+Batch 1090 audit status:
+- Runtime code change: immediate Restore-request invalidation before file-size rejection
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Recent regression probes: 1074–1089 plus Batch 1090 direct probe passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1091: fixed PIN security on successful Restore. A PIN-enabled replacement backup now re-locks the app immediately after the old session unlock marker is cleared, rather than leaving restored protected data readable until the next Safari/PWA reload. PIN-disabled restores remain normally accessible. Direct enabled/disabled Restore simulations, recent 1074–1090 regressions and the full 194/194 workflow suite remain clean.
+
+Batch 1091 audit status:
+- Runtime code change: immediate restored-PIN lock enforcement after successful Restore
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Recent regression probes: 1074–1090 plus Batch 1091 PIN Restore probes passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1092: fixed protected render leakage during PIN-enabled Restore. saveState('restore') dispatches a queued screen refresh before the replacement boundary clears the prior session unlock marker; that queued refresh could previously render the newly restored protected dataset before the restored PIN dialog opened, and later queued refreshes could repaint protected data behind the lock. The app now maintains an explicit in-memory PIN lock gate. Successful replacement asserts that gate synchronously when the replacement dataset has a PIN, before queued render microtasks can paint; render() refuses to paint while the gate is active; and the gate clears only after successful PIN entry (or when no PIN lock is required). Saving a new PIN in Settings keeps the approved existing behaviour—protection starts on next launch/reload unless Lock App Now is used. Direct race coverage confirms the queued restore refresh is blocked before paint, the PIN dialog opens, and no protected replacement content renders before unlock. Recent 1074–1091 regressions and the full 194/194 workflow suite remain clean.
+
+Batch 1092 audit status:
+- Runtime code change: active PIN render gate across startup/restored-PIN lock boundary
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Recent regression probes: 1074–1091 plus Batch 1092 direct PIN render-race probe passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1093: fixed two late-stage security/continuity defects. First, a PIN-enabled Restore already blocked the replacement dataset from rendering, but the previously painted pre-restore app screen could remain faintly readable through the translucent unlock-dialog backdrop. The PIN boundary now hides the entire #app surface synchronously at the successful replacement/startup lock boundary and restores it only after valid PIN entry; PIN-disabled replacement remains visible normally. Second, the continuity checkpoint header had drifted back to Batch 1084 even though later audit evidence through Batch 1092 was present. The header/range/continuation instruction are now current through Batch 1093 and a package guard verifies those handoff markers before packaging. Direct PIN surface lock/unlock coverage, recent 1074–1092 regressions and the full 194/194 workflow suite remain clean.
+
+Batch 1093 audit status:
+- Runtime code change: full app-surface hiding while active startup/restored-PIN lock is enforced
+- Continuity package change: checkpoint header/range/instruction corrected through Batch 1093 with package guard
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Recent regression probes: 1074–1092 plus Batch 1093 direct PIN surface probe passed
+- Offline shell completeness: 105/105 unique physical files present
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+
+- Batch 1094: fixed Vault page-lifecycle privacy across Safari reload/navigation and back-forward cache restoration. Protected screenshot viewer tabs/windows were already closed when leaving The Vault and on Restore/Reset, but a main-app pagehide could occur without those boundaries, allowing a detached screenshot viewer to outlive the app page; Safari BFCache could also preserve the in-memory Vault unlock/reveal state when the page was later restored. The pagehide boundary now closes all tracked screenshot viewers and clears Vault unlock, streaming reveal/edit state, focus and expanded-record state before the page can be cached or destroyed. Direct pagehide coverage confirms the viewer closes and every protected in-memory Vault state is locked/cleared. Recent 1074–1093 regressions and the full 194/194 workflow suite remain clean.
+
+Batch 1094 audit status:
+- Runtime code change: Vault pagehide/BFCache privacy teardown
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Recent regression probes: 1074–1093 plus Batch 1094 direct pagehide privacy probe passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1095: fixed Safari BFCache Vault DOM/privacy isolation. Batch 1094 correctly cleared in-memory Vault unlock/reveal state on pagehide, but Safari can restore the exact previously painted DOM from the back-forward cache; returning within the same device-clock minute could therefore show the old unlocked Vault screen even though vaultUnlocked was already false, and an open protected Vault form/confirmation could survive in the cached DOM. The pagehide boundary now marks a protected Vault resume as pending, hides the full app surface before Safari can cache it, closes protected shared/confirmation dialogs, and the pageshow boundary forces a locked Vault repaint before revealing the app again instead of relying on the minute-based clock refresh. Fault injection also confirms the boundary fails closed: if the locked repaint throws, the stale snapshot remains hidden and the relock remains pending. Direct BFCache/privacy coverage, recent regressions and the full 194/194 workflow suite remain clean.
+
+Batch 1095 audit status:
+- Runtime code change: Safari BFCache Vault DOM/modal privacy relock + fail-closed resume repaint
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Recent regression probes: 1074–1094 plus Batch 1095 direct BFCache/fault-injection probe passed
+- Offline shell completeness: 105/105 unique physical files present
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1096: fixed iPad/Safari visibility-only background privacy for The Vault. Safari or an installed PWA can move to the background with `visibilitychange` without emitting `pagehide`; the Batch 1095 BFCache lock therefore did not run on that lifecycle, so an unlocked Vault could remain painted in the suspended/app-switcher snapshot and return still unlocked. The visibility lifecycle now uses the same protected Vault boundary: hidden state immediately closes protected viewers/dialogs, clears Vault unlock/streaming/reveal/focus state and hides the app surface; visible state forces the locked Vault repaint before the surface is revealed. The handler is idempotent when Safari emits both visibility and pagehide/pageshow events. Direct visibility-only and duplicate-lifecycle probes, recent promotion regressions and the full 194/194 workflow suite remain clean.
+
+Batch 1096 audit status:
+- Runtime code change: Vault visibilitychange background relock + locked repaint before foreground reveal
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Recent regression probes: 1074–1096 direct promotion probes passed
+- Offline shell: 115/115 declared entries present; dynamic banner 56/56, bank 6/6, streaming 4/4
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+- Batch 1097: fixed protected Vault screenshot viewer self-closure during Safari tab handoff. Opening a screenshot can synchronously hide the main Safari tab; the visibility privacy boundary was therefore immediately closing the viewer it had just created. A short, explicit viewer-handoff boundary now lets the main app relock/hide while preserving only the intentionally opened viewer until the user returns, at which point the viewer is closed before the locked Vault is repainted/revealed.
+
+Batch 1097 audit status:
+- Runtime code change: protected screenshot viewer handoff without weakening main-app relock/hide
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1098: fixed fail-secure closure of protected Vault screenshot viewers. Safari can refuse scripted window.close(); viewers are now redacted to a non-sensitive Vault Locked surface before close is attempted, so a refused close cannot leave passport/visa/insurance/accommodation/emergency screenshot data readable.
+
+Batch 1098 audit status:
+- Runtime code change: redact protected viewer DOM before scripted close
+- Direct viewer lifecycle/redaction probe passed
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1099: fixed reload/navigation during screenshot viewer launch grace. pagehide is now always a hard privacy boundary and never honors the temporary visibility-only viewer handoff, preventing a protected screenshot tab from surviving after the main app page is destroyed.
+
+Batch 1099 audit status:
+- Runtime code change: pagehide always clears viewer handoff and closes/redacts protected viewers
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1100: fixed asynchronous Vault screenshot-save continuation across background/pagehide relock. A Vault form could be closed and relocked while screenshot compression was still awaiting; the old async continuation could then resume and commit after the privacy boundary. Vault privacy boundaries now advance a dedicated generation captured by Vault forms, and post-decode save continuation is abandoned if that generation changed.
+
+Batch 1100 audit status:
+- Runtime code change: Vault privacy-generation invalidation for async protected form continuation
+- Direct lifecycle generation coverage passed
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1101: fixed plain-text display of the startup/restore four-digit PIN. The unlock field now uses a password input while retaining the four-digit numeric constraint, so entered PIN digits are masked instead of visibly painted in the unlock dialog/app-switcher surface.
+
+Batch 1101 audit status:
+- Runtime code change: masked startup/restore PIN entry
+- Direct pagehide/privacy-generation/PIN probe passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1102: fixed device-clock refresh after blocking dialogs. Forms and confirmation dialogs intentionally defer clock-driven rendering while open, but closing them could leave the underlying Home/Budget/Calendar/status view on the previous minute or date until the next 60-second timer/focus event. Shared-modal close now queues an immediate device-clock reconciliation, and confirmation close resolves the caller first before queuing the refresh so accepted reset/delete flows complete before repaint.
+
+Batch 1102 audit status:
+- Runtime code change: immediate device-clock reconciliation after shared/confirmation dialogs close
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1103: fixed generic edit-form cancellation restoring a stale whole-app snapshot. Generic forms never mutate canonical state before Save, but Cancel previously assigned a full state clone captured when the form opened. If asynchronous Backup validation completed and persisted newer Settings/App Health metadata while the form remained open, cancelling could resurrect the old metadata in memory and a later save could overwrite the newer persisted state. Cancel now discards only unsaved form values/handlers and leaves canonical app state untouched.
+
+Batch 1103 audit status:
+- Runtime code change: remove whole-app draft rollback from generic form cancellation
+- Direct cancellation/clock-close probe passed
+- Prior Vault lifecycle/privacy probe passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Offline shell completeness: 115/115 declared entries present
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+
+- Batch 1104: fixed optional-PIN lifecycle dependence on unguarded Safari sessionStorage. iPad Safari/PWA privacy or storage restrictions can throw on sessionStorage get/set/remove; startup PIN evaluation, correct-PIN unlock, Save PIN or Lock Now could therefore abort instead of maintaining the security boundary. PIN session access now uses guarded helpers with an in-memory current-runtime fallback: a correct PIN can unlock the current page even when storage is denied, but reload still fails closed because an unwritable session marker is never trusted across runtime restart. Restore/reset and PIN changes clear both marker forms.
+
+Batch 1104 audit status:
+- Runtime code change: guarded PIN session lifecycle with runtime-only fallback and reload fail-closed behavior
+- Direct sessionStorage-denial fault-injection probe passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1105: fixed synchronous Safari FileReader failure handling in Settings Restore. FileReader construction or readAsText can fail synchronously under file/storage/browser errors; Restore previously let that exception escape the handler, could leave the picker value uncleared and provided no controlled failure path. Restore now contains both synchronous failure points, reports the read/open failure, clears the picker, and preserves the current dataset.
+
+Batch 1105 audit status:
+- Runtime code change: contained FileReader construction/read failures with picker cleanup
+- Direct constructor/read fault-injection probe passed
+- Prior Batch 1102–1103 regression probe passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Offline shell completeness: 115/115 declared entries present
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+
+- Batch 1106: fixed protected Vault screenshot privacy after the viewer itself becomes the active Safari tab. The main app is already hidden during intentional screenshot viewing, so a later app-switch/background event may not generate another lifecycle event on the opener. The screenshot viewer now owns a fail-closed visibility/pagehide lifecycle: once visible, hiding or navigating the viewer immediately removes the protected DOM, replaces its location with about:blank where permitted and requests close. The opener handoff exemption is also one-shot and successful Restore/Reset clears any unused handoff token.
+
+Batch 1106 audit status:
+- Runtime code change: protected screenshot viewer self-relock/redaction on its own visibility/pagehide boundary + one-shot opener handoff
+- Direct viewer lifecycle/handoff probe passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1107: fixed stale Reservations clipboard feedback after a successful Restore/Reset. Safari clipboard writes are asynchronous; a copy operation started against the old dataset could resolve or reject after the replacement boundary and recreate an old success/error toast that Reset/Restore had already cleared. Clipboard completion is now generation-scoped and silently abandons feedback when the underlying dataset has been replaced.
+
+Batch 1107 audit status:
+- Runtime code change: Reservations clipboard promise scoped to its originating data generation
+- Direct stale-callback probe passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1108: fixed false-success and synchronous-failure handling in the Reservations clipboard fallback. When the Clipboard API is unavailable or throws synchronously, legacy Safari copy now checks the boolean result of execCommand, contains exceptions, and reports success only when the copy command actually succeeded. An asynchronous Clipboard API rejection falls back only while the same dataset remains current.
+
+Batch 1108 audit status:
+- Runtime code change: accurate fail-safe Reservations clipboard fallback and synchronous clipboard exception containment
+- Direct fallback-result/exception probe passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Offline shell completeness: 115/115 declared entries present; dynamic banner 56/56, bank 6/6, streaming 16/16
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1109: merged the completed launch-screen improvements and expanded country-header library onto the later Batch 1108 integrity branch so no subsequent Vault/Reservations fixes are lost. Added 27 dedicated text-free 2000x650 offline country picture headers (Malaysia, Cambodia, Laos, Philippines, South Korea, Taiwan, China, Sri Lanka, India, Albania, Estonia, Latvia, Lithuania, Oman, Qatar, Tunisia, Bahamas, Jamaica, Dominican Republic, Panama, Costa Rica, Colombia, South Africa, Brazil, Argentina, Chile and Peru). Dedicated Caribbean country art takes precedence when installed while the shared Caribbean/World fallbacks remain. Retained the black-first modern iPad launch assets and two-stage icon -> flag/country/city launch sequence.
+
+Batch 1109 audit status:
+- 27/27 new photographic headers present at 2000x650 and unique
+- Dedicated country header count: 78 (51 existing + 27 added)
+- Total header artwork files: 83 including World/Caribbean and mode-specific artwork
+- New dedicated Caribbean precedence: passed
+- Batch 1106 launch sequence regression: passed
+- Batch 1106 Vault privacy regression: passed
+- Batch 1107 Reservations stale-clipboard regression: passed
+- Batch 1108 clipboard fallback regression: passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Offline shell completeness: 145/145 declared entries present
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+
+- Batch 1110: completed follow-on integration for the expanded country-header library and launch location identity. Motorhome/Cruise launch screens now show the active destination's national flag during the flag/country/city launch phase instead of replacing it with a travel-mode icon; travel-mode icons remain available inside the app where appropriate. Added offline country-outline geometry for all 27 Batch 1109 additions so their Home country banners receive the same silhouette treatment as the original country set. Corrected the continuity checkpoint's stale Batch 1108 top-level resume metadata so the executable package now identifies Batch 1110 consistently.
+
+Batch 1110 audit status:
+- Launch national-flag identity for Motorhome/Cruise: passed
+- 27/27 Batch 1109 countries have Home country-outline geometry: passed
+- Continuity resume metadata corrected through Batch 1110
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Offline shell completeness: all declared physical assets present
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1111: hardened the new launch sequence and Safari cache revisioning. When the optional startup PIN is enabled, the itinerary-derived flag/country/city phase is no longer populated or shown before a successful unlock; the neutral app-icon phase remains until the PIN gate is cleared, then the location phase continues before the app reveal. Also replaced stale Batch 713/1106 query revisions on the launch images, runtime shell, manifest, icon and stylesheet references with one Batch 1111 working-shell revision, and advanced the Service Worker cache identity to match. This prevents Safari from legitimately reusing an older startup image/runtime URL after the launch assets have changed, which could otherwise preserve the old white-flash path.
+
+Batch 1111 audit status:
+- PIN-protected launch location privacy/defer probe: passed
+- Launch/runtime/manifest revision identity: passed
+- All five iPad launch-image outer corners verified black
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Offline shell: 146 declared entries / 134 unique physical assets; no missing or undeclared banner assets
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1112: fixed continuity-shell version integrity. Production index/manifest/Service Worker assets use a working-shell revision that intentionally advances beyond the formally promoted APP_VERSION, but App Health previously compared those shell URLs against APP_VERSION and could falsely report that app files were on different versions. Service Worker readiness likewise used the formal build query, so it could not distinguish an older continuity controller from the current working shell. Added a separate APP_SHELL_REVISION used by runtime-asset checks and Service Worker registration/controller validation while leaving APP_VERSION/backup compatibility untouched. Rebuilt test.html directly from the production index shell so the harness now exercises the same cache-busting URLs and launch DOM instead of the old Batch 713 shell, preventing this mismatch from being hidden by the test environment.
+
+Batch 1112 audit status:
+- Working shell revision and formal APP_VERSION separated intentionally
+- Production/test shell revision parity restored
+- Service Worker controller freshness now continuity-revision aware
+
+- Batch 1113: completed end-to-end offline-map integration for the 27-country photographic header expansion. Added 26 missing flagship-city atlas coordinates (Nassau was already present), country authority for those cities, and 24 missing country-centre fallbacks. New destinations such as Kuala Lumpur, Seoul, Taipei, Cape Town and Lima now resolve automatically on Journey/Itinerary maps; an unlisted locality can still fall back to its country centre. Explicit-country namesake protection remains intact for ambiguous labels such as Kingston, Santiago and Panama City.
+
+Batch 1113 audit status:
+- 27/27 expanded-header flagship cities resolve offline: passed
+- 27/27 expanded-header countries have map fallback coverage: passed
+- Explicit-country namesake safety: passed
+- Production/test shell revision parity: passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+- Batch 1114: completed the remaining country-level offline-map integration. Added country-centre fallbacks for 26 older dedicated-header countries and 43 additional countries already recognised by the shared World-header metadata. Standalone recognised aliases such as U.S.A., U.K., UAE, Czechia, Türkiye, Republic of Ireland, Éire and Bosnia and Herzegovina now resolve through canonical country identity, while explicit mismatched place/country labels remain rejected rather than jumping to an overseas namesake.
+
+Batch 1114 audit status:
+- All dedicated country headers have country-level offline map fallback coverage
+- All shared World-header metadata countries have country-level offline map fallback coverage
+- Standalone country alias resolution: passed
+- Explicit-place namesake safety: passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+- Batch 1115: clean calculation and replacement-state audit plus offline-audit tooling correction. Travel Year boundaries remain contiguous across leap-day, month-end and year-end Journey Starts through the full 30-year horizon; partial first-calendar-year Annual Budget monthly targets reconcile exactly to the configured annual budget; restore/reset transient-state coverage remains complete. The packaged legacy offline checker was also corrected because it still hard-coded the pre-header-expansion 56-banner count and therefore falsely failed against the current 83-banner library. The replacement checker validates the actual declared/referenced asset set dynamically. No executable app defect was confirmed; runtime code is unchanged.
+
+Batch 1115 audit status:
+- Travel Year leap/month/year boundary invariants: passed
+- Partial first-year Annual Budget month-target reconciliation: passed
+- Restore/reset transient-state reset coverage: passed
+- Offline asset checker updated for expanded header library: passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1116: completed native iPad launch-image compatibility coverage for the remaining supported landscape size classes. Added black first-frame launch assets for classic/older 2048x1536 iPads, 10.2-inch 2160x1620 iPads, 10.5-inch/Air 3 2224x1668 iPads, and iPad mini 6 2266x1488, while retaining the five existing Air/Pro/M4 sizes. Wired matching CSS device dimensions into both production and test launch markup, added the new assets to the offline shell, and advanced the working shell/cache revision so Safari cannot legitimately reuse the prior startup shell. No app-data or backup-schema change.
+
+Batch 1116 audit status:
+- 9/9 landscape iPad native launch assets present at exact dimensions: passed
+- 9/9 launch assets have black outer first-frame corners: passed
+- Production/test launch markup and working shell revision parity: passed
+- Service Worker/manifest launch revision coverage: passed
+- Offline shell declared-asset audit: passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1117: fixed active-reservation visibility and Home operational-event continuity. The default Reservations main list now treats the existing Active / Upcoming category consistently: in-progress Hotel/Airbnb/Cruise/RV bookings remain visible alongside future starts while Completed stays in its archive unless explicitly shown, and Copy Summary / Export Results match the visible set. Home Upcoming Events now carries the next operational end action for an already-started multi-day booking (checkout, RV return or cruise disembarkation), including a no-time boundary-day action, instead of dropping the reservation entirely once its start date has passed. Future-start reservation ordering remains unchanged and Completed history remains newest-first. No backup-schema change.
+
+Batch 1117 audit status:
+- Reservations Active / Upcoming main-list visibility: passed
+- Copy/export visible-row parity with active + upcoming bookings: passed
+- Home active Hotel/RV/Cruise end-action continuity: passed
+- Same-day no-time checkout boundary visibility: passed
+- Restore/reset replacement-state probe: passed
+- Canonical backup/restore round-trip idempotence: passed
+- 9/9 native iPad launch compatibility: passed
+- Offline shell declared-asset audit: passed (154 declarations / 138 unique physical assets / 83 banners / 9 launch assets)
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1118: fixed Permanent checklist lifecycle integrity. Permanent tasks are reusable move templates (the UI says “Repeats for every move”), so completion and due-date state now belongs to the applicable next-destination move rather than leaking permanently into every later move. When the next destination changes, repeatable Permanent tasks reset to incomplete with a blank due date while retaining their reusable notes; per-destination checklist history now snapshots both Permanent and Destination tasks so a device-clock correction or itinerary rewind restores the exact prior move state instead of losing it. First-run/legacy visible checklist state is still adopted when no checklist history exists, preserving backup compatibility. No backup-schema change.
+
+Batch 1118 audit status:
+- Permanent checklist repeat-per-move reset: passed
+- Permanent reusable-note retention: passed
+- Per-destination Permanent/Destination rewind and forward restoration: passed
+- Ready-to-Move required-state recalculation after move transition: passed
+- Canonical backup validation with expanded checklist history: passed
+- 9/9 native iPad launch compatibility: passed
+- Offline shell declared-asset audit: passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+- Batch 1119: fixed arrival-day Destination Checklist handover integrity. Arrival & Settle In tasks now remain attached to the destination that owns the arrival date through that calendar day, instead of jumping at midnight to the following destination. General Home/shared-header Next Destination logic remains independently future-facing, so those screens continue to advance to the following stop while Checklist retains the arriving destination for arrival-day tasks. Added narrow restore compatibility for Batch 1118 backups created on an arrival day with the old already-advanced checklist marker: migration is allowed only when the arriving destination's recoverable checklist snapshot exists in destinationChecklistHistory; the equivalent stale marker without that recovery snapshot remains rejected. No backup-schema or formal APP_VERSION change.
+
+Batch 1119 audit status:
+- Arrival-day Checklist ownership and Arrival & Settle In visibility: passed
+- Home/shared-header true future Next Destination independence: passed
+- Batch 1118 arrival-day backup migration with preserved snapshot: passed
+- Malformed stale arrival-day marker without recovery snapshot: rejected
+- Canonical post-migration backup integrity: passed
+- 9/9 native iPad launch compatibility: passed
+- Offline shell declared-asset audit: passed
+- Core regression issues: 0
+- Semantic integrity issues: 0
+- Render integrity issues: 0
+- Workflow: 194/194 passed
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1120: fixed historical itinerary-edit checklist-history integrity. Editing a stay after moving on now migrates that stay's saved Permanent/Destination checklist snapshot from the old destination identity to the corrected city/date/route identity while preserving the old recovery key. If the currently targeted next stay is edited so it falls behind another destination, the app now transitions to the true newly-nearest target without leaking checklist completion state, while preserving the edited stay's corrected history for later device-clock rewind. The same migration covers routed Motorhome/Cruise identity changes. No backup-schema or formal APP_VERSION change.
+
+Batch 1120 audit status:
+- Historical destination rename rewind probe passed.
+- Active next-destination demotion/reordering probe passed.
+- Historical Motorhome/Cruise route-identity edit probe passed.
+- Canonical backup validation passed.
+- Full workflow harness: 194/194 passed; zero core/semantic/render/package issues.
+- Offline shell, 9-size iPad launch, ZIP and runtime-hash integrity gates passed.
+
+
+- Batch 1139: hardened the hidden Vault Streaming email/keyboard workflow. Hidden email validation now rejects browser-invalid local-part punctuation while preserving normal valid characters such as plus signs and apostrophes, so malformed backup data cannot bypass Safari's normal email-entry rules. The custom TV & Streaming modal now contains Tab/Shift+Tab focus, closes cleanly with Escape, and restores focus to the Streaming launcher; the nested hidden-email dialog remains the active focus boundary and Escape closes only that nested dialog first. Device-clock minute refresh is deferred while TV & Streaming is open so unsaved password/email text cannot be erased by an automatic redraw. Added permanent regression fixtures for these boundaries. No backup-schema or formal APP_VERSION change.
+
+Batch 1139 audit status:
+- Hidden email local-part validation / restore parity: passed
+- Streaming Escape close + focus restoration: passed
+- Streaming and nested-email Tab/Shift+Tab focus containment: passed
+- Device-clock minute rollover draft preservation: passed
+- Focused Streaming/email regression probe: 18/18 passed
+- Prior Streaming/route regression probe: 59/59 passed
+- Full workflow harness: 194/194 passed; zero core/semantic/render/package issues
+- 9/9 native iPad launch compatibility: passed
+- Offline shell declared-asset audit: passed (154 declarations / 138 unique physical assets / 83 banners / 16 streaming assets / 9 launch assets)
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+
+- Batch 1140: fixed automatic/background redraw draft-loss and custom-overlay focus integrity. Home Schengen, Budget annual/destination setup, Settings Journey Start/travellers/PIN and Vault Streaming drafts are protected from minute-clock and non-restore background refresh. Save failures preserve the failed draft instead of rerendering it away; Backup/App Health no longer repaint over unsaved Settings edits. Home toilet-phrase focus is trapped/returned to the compass, and Streaming tap/backdrop close restores launcher focus. No backup-schema or formal APP_VERSION change.
+
+Batch 1140 audit status:
+- Automatic device-clock draft preservation: passed
+- Background/offline/data-change draft preservation: passed
+- Save-failure draft preservation: passed
+- Backup/App Health draft preservation: passed
+- Home toilet-phrase focus containment/restoration: passed
+- Streaming close focus restoration: passed
+- Focused inline/phrase regression probe: 16/16 passed
+- Failure/background-action behavioral probe: 4/4 passed
+- Streaming/email regression probe: 18/18 passed
+- Full workflow harness: 194/194 passed; zero core/semantic/render issues
+- 9/9 native iPad launch compatibility: passed
+- Offline shell declared-asset audit: passed (154 declarations / 138 unique physical assets / 83 banners)
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1141: hardened private Streaming credential storage and map-gesture refresh integrity. Streaming password saves now reject blank, oversized (>512 characters), line-break and control-character values instead of creating contradictory or storage-heavy credential records. Legacy blank Streaming placeholders remain restore-compatible but are no longer shown as a saved password and reopen directly in the password editor. Backup validation rejects oversized/control-character Streaming passwords while preserving the legacy blank compatibility path. Device-clock/background redraws are now deferred during active Journey-map and Itinerary-map touch gestures, pointer pans and marker drags; pan/pinch completion immediately retries the device-clock refresh so the visible date/time state catches up without replacing an in-flight map DOM. No backup-schema or formal APP_VERSION change.
+
+Batch 1141 audit status:
+- Streaming password size/control-character boundary: passed
+- Blank Streaming saved-state contradiction: fixed; legacy blank compatibility preserved
+- Focused Streaming password/restore probe: 8/8 passed
+- Active map gesture refresh deferral: passed
+- Map pan/pinch post-gesture clock catch-up: passed
+- Focused map refresh behavioural probe: 7/7 passed
+- Prior Streaming/email regression probe: 18/18 passed
+- Prior inline draft/phrase regression probe: 16/16 passed
+- Prior failure/background-action regression probe: 4/4 passed
+- Full workflow harness: 194/194 passed; zero core/semantic/render issues
+- 9/9 native iPad launch compatibility: passed
+- Offline shell declared-asset audit: passed (154 declarations / 138 unique physical assets / 83 banners / 16 streaming assets / 9 launch assets)
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1142: fixed three Vault Streaming edge defects and continuity metadata drift. A restore-compatible blank legacy Streaming row now exposes DELETE directly in its editor; the Streaming password input carries maxlength=512 so iPad/Safari prevents oversized entry at the control boundary as well as Save/restore; and editing an existing credential uses monotonic local activity time so travelling west cannot move its saved update time backwards. The checkpoint header/range were corrected from stale Batch 1140 metadata to the physical Batch 1142 working state. No backup-schema or formal APP_VERSION change.
+
+Batch 1142 audit status:
+- Legacy blank Streaming row direct-delete path: passed
+- Streaming password iPad input length boundary: passed
+- Westward-timezone Streaming timestamp monotonicity: passed
+- Focused Streaming edge probe: 3/3 passed
+- Full workflow harness: 194/194 passed; zero core/semantic/render issues
+- 9/9 native iPad launch compatibility: passed
+- Offline shell declared-asset audit: passed (154 declarations / 138 unique physical assets / 83 banners / 16 streaming assets / 9 launch assets)
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+- Batch 1145: sealed App Health shell-revision freshness and audit-harness identity integrity.
+
+Batch 1145 audit status:
+- App Health shell-update/backup revision probe: 6/6 passed
+- Prior Vault activity ordering regression probe: 5/5 passed
+- Prior timezone integrity regression probe: 8/8 passed
+- Full workflow harness: 194/194 passed; zero core/semantic/render issues
+- 9/9 native iPad launch compatibility: passed
+- Offline shell declared-asset audit: passed (154 declarations / 138 unique physical assets / 83 banners)
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1146: sealed hidden-unlock repeat protection, punctuation/diacritic region inference, and Unicode Streaming password line-separator validation.
+
+Batch 1146 audit status:
+- Hidden Vault/Streaming hardware-key auto-repeat protection: passed
+- Full accented/hyphenated regional route-country inference: passed
+- Streaming U+2028/U+2029 line-separator rejection: passed
+- Focused Batch 1146 edge probe: 10/10 passed
+- Prior Streaming/route/privacy regression probe: 59/59 passed
+- Prior timezone integrity regression probe: 8/8 passed
+- Prior Vault activity ordering regression probe: 5/5 passed
+- App Health shell-revision regression probe: 6/6 passed
+- Full workflow harness: 194/194 passed; zero core/semantic/render issues
+- 9/9 native iPad launch compatibility: passed
+- Offline shell declared-asset audit: passed (154 declarations / 138 unique physical assets / 83 banners / 16 streaming assets / 9 launch assets)
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+- Batch 1153: fixed Vault screenshot startup hydration ordering. CRC/image validation support now initializes before loadState(), so saved Vault screenshots survive app relaunch instead of being silently discarded. Turkey full-simulation startup probe exposed and verified the fix. Formal APP_VERSION unchanged.
+
+
+- Batch 1154: sealed Turkey locality/routing coverage and production/test shell parity.
+
+Batch 1154 audit status:
+- Turkey locality/country routing: passed for Ankara, Izmir/İzmir, Antalya, Fethiye, Cappadocia and Goreme/Göreme
+- Offline automatic map coordinates for those Turkey localities: passed
+- Production/test Batch 1154 shell revision parity: passed
+- Full workflow harness: 194/194 passed; zero core/semantic/render issues
+- 9/9 native iPad launch compatibility: passed
+- Offline shell declared-asset audit: passed (154 declarations / 138 unique physical assets / 83 banners / 16 streaming assets / 9 launch assets)
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.
+
+
+- Batch 1155: sealed saved-state startup initialization ordering for offline atlas/checklist identity.
+
+Batch 1155 audit status:
+- Saved Destination Checklist marker startup/relaunch path: passed
+- Offline atlas tables initialized before loadState(): passed
+- Turkey full-simulation first launch and second launch: passed with no startup quarantine
+- Turkey locality/country routing retained: passed
+- Full workflow harness: 194/194 passed; zero core/semantic/render issues
+- 9/9 native iPad launch compatibility: passed
+- Offline shell declared-asset audit: passed (154 declarations / 138 unique physical assets / 83 banners / 16 streaming assets / 9 launch assets)
+- Formal master identity intentionally remains 4.5.677 / Batch 713 until explicit promotion.

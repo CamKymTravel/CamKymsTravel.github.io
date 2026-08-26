@@ -1,0 +1,22 @@
+BATCH 1168 IMPLEMENTATION REPORT — 25/08/2026
+
+User-confirmed screenshot fixes applied together:
+1. Reservations category tiles now say BOOKED RESERVATIONS instead of ACTIVE / UPCOMING, with a two-line-safe iPad layout so the label cannot clip.
+2. Reservation expanded readability views use BOOKED RESERVATIONS wording while retaining active/upcoming detail in the supporting summary.
+3. Reservation expanded colours now inherit the current eight-card palette exactly: Flights blue, Trains green, Cruises cyan, RV orange, Hotels gold, Airbnb pink, Tickets & Attractions purple, Completed slate.
+4. Advanced Reservations filters were rebuilt as a stable three-column iPad grid (two columns on compact landscape) with fixed control rows, aligned checkbox tiles and non-overlapping action buttons.
+5. The right-side Reservations rail now shows NEXT 5 UPCOMING and renders up to five future bookings.
+6. Itinerary expanded summary panels now carry their source-widget colour through the header, body, rows, footer and action accents rather than falling back to the generic blue readability theme.
+7. Destination Checklist expanded view now inherits the blue Destination Checklist card identity instead of the legacy amber theme.
+8. Batch 1167 physical-iPad repairs are preserved: Vault TV & STREAMING hidden email triple-tap and Itinerary Forward Planning Map rendering.
+9. Shell/cache revision advanced to Batch 1168 so Safari reloads the corrected runtime and CSS.
+
+Validation:
+- JavaScript syntax: passed
+- core: 0 issues
+- semantic: 0 issues
+- render: 0 issues
+- package: 0 issues
+- workflow: 196/196 passed
+- Reservations wording/Next-5/static colour inheritance probes: passed
+- Compact Turkey simulation remains below the 100-file upload limit.

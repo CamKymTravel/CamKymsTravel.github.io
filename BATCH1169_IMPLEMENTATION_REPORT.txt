@@ -1,0 +1,30 @@
+TRAVEL COMMAND CENTRE — BATCH 1169 IMPLEMENTATION REPORT
+Date: 25/08/2026
+Formal version: 4.5.677
+
+IMPLEMENTED
+- Expense → Transport remains local/destination living transport: taxis, scooter hire, local car hire, buses and similar day-to-day movement.
+- Flight reservations retain Domestic / International classification.
+- Train reservations now also support Domestic / International classification.
+- Reservations adds a Travel Between Destinations (AUD) history breakdown:
+  International Flights, Domestic Flights, International Trains, Domestic Trains, Cruises, RV / Motorhome.
+- Tapping a Reservations breakdown line opens the full matching confirmed history in the main list.
+- Budget adds the same breakdown for the active calendar budget year.
+- Journey History separates Local Transport from Travel Between Destinations in lifetime spend.
+- Journey History Travel Statistics shows travel-between-destination total and the six component categories.
+- Journey History destination totals, destination spend and average/day exclude Flight, Train, Cruise and RV reservation fares so destination cost reflects living/staying there rather than getting there.
+- Existing accommodation and Tickets & Attractions remain stay/destination costs according to their saved allocation rules.
+
+DATA / COMPATIBILITY
+- Added trainScope to reservation backup/storage shape.
+- Existing flights without an explicit historical scope continue to read as Domestic, matching the prior Flight default.
+- Existing trains without an explicit scope read as Domestic until edited; no existing reservation is deleted or re-priced.
+- Formal backup version remains 4.5.677.
+
+VALIDATION
+- JavaScript syntax: passed.
+- Core regression: 0 issues.
+- Semantic integrity: 0 issues.
+- Screen render integrity: 0 issues.
+- Package integrity: 0 issues.
+- Full workflow: 196/196 passed.
