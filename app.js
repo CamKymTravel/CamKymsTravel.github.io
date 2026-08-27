@@ -1,12 +1,9 @@
 'use strict';
 
-const STORAGE_KEY = 'travelCommandCentre.simulation.turkey2029.batch1166';
+const STORAGE_KEY = 'travelCommandCentre.v1.turkeySimulationBatch1193';
 const LEGACY_STORAGE_KEYS = [];
-const APP_VERSION = '4.5.677-annual-rollup-routing-integrity-batch1172-20260825';
-const APP_SHELL_REVISION = '4.5.677-turkey-simulation-batch1171-20260825';
-const TCC_SIMULATION_BUILD = true;
-const TCC_SIMULATION_NOW = '2029-07-24T12:00';
-const TCC_SIMULATION_RUNTIME = TCC_SIMULATION_BUILD&&!String(globalThis.location?.href||'').includes('audit.local');
+const APP_VERSION = '4.5.677-simulation-batch1193-20260827';
+const APP_SHELL_REVISION = '4.5.677-shell-simulation-batch1193-20260827';
 const TCC_BACKUP_FORMAT = 'travel-command-centre-v1-canonical';
 const TCC_BACKUP_SCHEMA = 4;
 const MAX_JOURNEY_YEARS = 30;
@@ -191,8 +188,8 @@ function reservationHasPaymentDetails(record={}){return RESERVATION_PAYMENT_DETA
 const isoLocal = (date=new Date()) => `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 const isoToday = () => isoLocal(new Date());
 const validLocalDateTime = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value) && validISODate(value.slice(0,10)) && Number(value.slice(11,13))<24 && Number(value.slice(14,16))<60;
-let internalTestClockEnabled=TCC_SIMULATION_RUNTIME;
-let testDeviceDateTimeOverride=TCC_SIMULATION_RUNTIME?TCC_SIMULATION_NOW:'';
+let internalTestClockEnabled=true;
+let testDeviceDateTimeOverride='2029-07-10T12:00';
 const deviceLocalDateTime = (date=new Date()) => `${isoLocal(date)}T${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
 const itineraryReferenceDateTime = () => internalTestClockEnabled&&validLocalDateTime(testDeviceDateTimeOverride)?testDeviceDateTimeOverride:deviceLocalDateTime();
 const itineraryReferenceDate = () => itineraryReferenceDateTime().slice(0,10);
@@ -273,6 +270,84 @@ const TOILET_PHRASE_BY_COUNTRY={
   'hong-kong':{language:'Cantonese',lang:'yue',text:'廁所喺邊度啊？'},'myanmar':{language:'Burmese',lang:'my',text:'အိမ်သာ ဘယ်မှာလဲ။'},'nepal':{language:'Nepali',lang:'ne',text:'शौचालय कहाँ छ?'},'bangladesh':{language:'Bengali',lang:'bn',text:'শৌচাগার কোথায়?'},'pakistan':{language:'Urdu',lang:'ur',dir:'rtl',text:'بیت الخلا کہاں ہے؟'},'kazakhstan':{language:'Kazakh',lang:'kk',text:'Дәретхана қай жерде?'},'uzbekistan':{language:'Uzbek',lang:'uz',text:'Hojathona qay yerda?'},'georgia':{language:'Georgian',lang:'ka',text:'ტუალეტი სად არის?'},'armenia':{language:'Armenian',lang:'hy',text:'Որտե՞ղ է զուգարանը:'},'azerbaijan':{language:'Azerbaijani',lang:'az',text:'Tualet haradadır?'},
   'israel':{language:'Hebrew',lang:'he',dir:'rtl',text:'איפה השרותים?'},'saudi-arabia':{language:'Arabic',lang:'ar',dir:'rtl',text:'أين الحمام؟'},'kuwait':{language:'Arabic',lang:'ar',dir:'rtl',text:'أين الحمام؟'},'bahrain':{language:'Arabic',lang:'ar',dir:'rtl',text:'أين الحمام؟'},'lebanon':{language:'Arabic',lang:'ar',dir:'rtl',text:'أين الحمام؟'}
 };
+const TOILET_PRONUNCIATION_BY_TEXT={
+  'Where’s the toilet?':{say:'wherez thuh TOY-let?',slow:'wherez · thuh · TOY · let'},
+  'Di mana toiletnya?':{say:'dee MAH-nah toy-LET-nyah?',slow:'dee · MAH · nah | toy · LET · nyah'},
+  'ห้องน้ำอยู่ที่ไหนคะ':{say:'hong NAM yoo tee NAI ka',slow:'hong · NAM | yoo · tee · NAI · ka'},
+  'Nhà vệ sinh ở đâu?':{say:'nyah vay SIN uh dow?',slow:'nyah · vay · SIN | uh · DOW'},
+  'トイレはどこですか？':{say:'TOY-reh wah DOH-koh dess kah?',slow:'TOY · reh | wah | DOH · koh | dess · kah'},
+  '洗手间在哪里？':{say:'shee-show-JYEN dzeye NAH-lee?',slow:'shee · show · JYEN | dzeye | NAH · lee'},
+  '洗手間在哪裡？':{say:'shee-show-JYEN dzeye NAH-lee?',slow:'shee · show · JYEN | dzeye | NAH · lee'},
+  '廁所喺邊度啊？':{say:'chee-SAW hai BEEN-doh ah?',slow:'chee · SAW | hai | BEEN · doh · ah'},
+  '화장실이 어디예요?':{say:'hwah-jahng-SHEEL-ee uh-DEE-yeh-yo?',slow:'hwah · jahng · SHEEL · ee | uh · DEE · yeh · yo'},
+  'Di mana tandas?':{say:'dee MAH-nah TAHN-dahs?',slow:'dee · MAH · nah | TAHN · dahs'},
+  'Nasaan ang banyo?':{say:'nah-SAH-ahn ang BAHN-yo?',slow:'nah · SAH · ahn | ang | BAHN · yo'},
+  'បង្គន់នៅឯណា?':{say:'bong-KOAN nov ai NAH?',slow:'bong · KOAN | nov | ai · NAH'},
+  'ຫ້ອງນ້ຳຢູ່ໃສ?':{say:'hong NAM yoo SAI?',slow:'hong · NAM | yoo · SAI'},
+  'शौचालय कहाँ है?':{say:'show-chah-LAY kah-HAAN hai?',slow:'show · chah · LAY | kah · HAAN | hai'},
+  'වැසිකිළිය කොහෙද?':{say:'vessie-KI-lee-yah ko-HEH-dah?',slow:'vessie · KI · lee · yah | ko · HEH · dah'},
+  'Ариун цэврийн өрөө хаана вэ?':{say:'ah-ree-OON tsev-REEN uh-ROH hah-NAH veh?',slow:'ah · ree · OON | tsev · REEN | uh · ROH | hah · NAH · veh'},
+  'Où sont les toilettes ?':{say:'oo son lay twah-LET?',slow:'oo | son | lay | twah · LET'},
+  'Waar is het toilet?':{say:'vahr iss hut twah-LET?',slow:'vahr | iss | hut | twah · LET'},
+  'Wo ist die Toilette?':{say:'voh ist dee toy-LET-uh?',slow:'voh | ist | dee | toy · LET · uh'},
+  '¿Dónde está el baño?':{say:'DON-deh es-TAH el BAHN-yo?',slow:'DON · deh | es · TAH | el | BAHN · yo'},
+  'Onde fica a casa de banho?':{say:'ON-duh FEE-kah ah KAH-zah duh BAHN-yoo?',slow:'ON · duh | FEE · kah | ah | KAH · zah | duh | BAHN · yoo'},
+  'Onde fica o banheiro?':{say:'ON-jee FEE-kah oo bahn-YEHR-oo?',slow:'ON · jee | FEE · kah | oo | bahn · YEHR · oo'},
+  'Dov’è il bagno?':{say:'doh-VEH eel BAHN-yo?',slow:'doh · VEH | eel | BAHN · yo'},
+  'Πού είναι η τουαλέτα;':{say:'POO EE-neh ee too-ah-LEH-tah?',slow:'POO | EE · neh | ee | too · ah · LEH · tah'},
+  'أين الحمام؟':{say:'AYN al-ham-MAAM?',slow:'AYN | al · ham · MAAM'},
+  'Tuvalet nerede?':{say:'too-vah-LET neh-reh-DEH?',slow:'too · vah · LET | neh · reh · DEH'},
+  'Где туалет?':{say:'gdyeh too-ah-LYET?',slow:'gdyeh | too · ah · LYET'},
+  'Де туалет?':{say:'deh too-ah-LET?',slow:'deh | too · ah · LET'},
+  'Дзе туалет?':{say:'dzyeh too-ah-LYET?',slow:'dzyeh | too · ah · LYET'},
+  'Gdje je WC?':{say:'gdyeh yeh veh-TSEH?',slow:'gdyeh | yeh | veh · TSEH'},
+  'Gdje je toalet?':{say:'gdyeh yeh toh-ah-LET?',slow:'gdyeh | yeh | toh · ah · LET'},
+  'Gde je toalet?':{say:'gdeh yeh toh-ah-LET?',slow:'gdeh | yeh | toh · ah · LET'},
+  'Kje je stranišče?':{say:'kyeh yeh strah-NEESH-cheh?',slow:'kyeh | yeh | strah · NEESH · cheh'},
+  'Каде е тоалетот?':{say:'KAH-deh eh toh-ah-LEH-tot?',slow:'KAH · deh | eh | toh · ah · LEH · tot'},
+  'Ku është tualeti?':{say:'koo USH-tuh too-ah-LEH-tee?',slow:'koo | USH · tuh | too · ah · LEH · tee'},
+  'Kde je toaleta?':{say:'gdeh yeh toh-ah-LEH-tah?',slow:'gdeh | yeh | toh · ah · LEH · tah'},
+  'Hol van a mosdó?':{say:'hol von ah MOSH-doh?',slow:'hol | von | ah | MOSH · doh'},
+  'Unde este toaleta?':{say:'OON-deh YES-teh toh-ah-LEH-tah?',slow:'OON · deh | YES · teh | toh · ah · LEH · tah'},
+  'Къде е тоалетната?':{say:'kuh-DEH eh toh-ah-LET-nah-tah?',slow:'kuh · DEH | eh | toh · ah · LET · nah · tah'},
+  'Gdzie jest toaleta?':{say:'gdjeh yest toh-ah-LEH-tah?',slow:'gdjeh | yest | toh · ah · LEH · tah'},
+  'Hvor er toilettet?':{say:'vor air toy-LET-et?',slow:'vor | air | toy · LET · et'},
+  'Hvor er toalettet?':{say:'vor air too-ah-LET-et?',slow:'vor | air | too · ah · LET · et'},
+  'Var är toaletten?':{say:'vahr air too-ah-LET-en?',slow:'vahr | air | too · ah · LET · en'},
+  'Missä on wc?':{say:'MEES-sah on veh-SEH?',slow:'MEES · sah | on | veh · SEH'},
+  'Hvar er klósettið?':{say:'kvar er KLOH-seth-ith?',slow:'kvar | er | KLOH · seth · ith'},
+  'Kus on tualett?':{say:'koos on too-ah-LET?',slow:'koos | on | too · ah · LET'},
+  'Kur ir tualete?':{say:'koor eer too-ah-LEH-teh?',slow:'koor | eer | too · ah · LEH · teh'},
+  'Kur yra tualetas?':{say:'koor EE-rah too-ah-LEH-tahs?',slow:'koor | EE · rah | too · ah · LEH · tahs'},
+  'Fejn hu t-tojlit?':{say:'fayn hoo toh-YLIT?',slow:'fayn | hoo | toh · YLIT'},
+  'Wou ass d’Toilette?':{say:'voh ass duh twah-LET?',slow:'voh | ass | duh | twah · LET'},
+  'On és el lavabo?':{say:'on ess el lah-VAH-boh?',slow:'on | ess | el | lah · VAH · boh'},
+  'Ntlwana ya boitiketso e kae?':{say:'nt-LWAH-nah yah boy-tee-KET-soh eh kai?',slow:'nt · LWAH · nah | yah | boy · tee · KET · soh | eh | kai'},
+  'Choo kiko wapi?':{say:'choh KEE-koh WAH-pee?',slow:'choh | KEE · koh | WAH · pee'},
+  'Aho kwituma ni he?':{say:'AH-ho kwee-TOO-mah nee heh?',slow:'AH · ho | kwee · TOO · mah | nee | heh'},
+  'ሽንት ቤት የት ነው?':{say:'shint bayt yet new?',slow:'shint | bayt | yet | new'},
+  'Kot bann twalet ete?':{say:'kot ban twa-LET ay-TAY?',slow:'kot | ban | twa · LET | ay · TAY'},
+  'Oli twalet?':{say:'oh-LEE twa-LET?',slow:'oh · LEE | twa · LET'},
+  'Aiza ny toilety?':{say:'EYE-zah nee twah-LEH-tee?',slow:'EYE · zah | nee | twah · LEH · tee'},
+  'Որտե՞ղ է զուգարանը:':{say:'vor-TEGH eh zoo-gah-RAH-nuh?',slow:'vor · TEGH | eh | zoo · gah · RAH · nuh'},
+  'Tualet haradadır?':{say:'too-ah-LET hah-rah-dah-DUR?',slow:'too · ah · LET | hah · rah · dah · DUR'},
+  'শৌচাগার কোথায়?':{say:'show-chah-GAAR koh-THAI?',slow:'show · chah · GAAR | koh · THAI'},
+  'အိမ်သာ ဘယ်မှာလဲ။':{say:'EIN-thah beh-MAH-leh?',slow:'EIN · thah | beh · MAH · leh'},
+  'ტუალეტი სად არის?':{say:'too-ah-LEH-tee sahd AH-rees?',slow:'too · ah · LEH · tee | sahd | AH · rees'},
+  'איפה השרותים?':{say:'AY-foh hah-sheh-roo-TEEM?',slow:'AY · foh | hah · sheh · roo · TEEM'},
+  'Дәретхана қай жерде?':{say:'dah-ret-hah-NAH kai zher-DEH?',slow:'dah · ret · hah · NAH | kai | zher · DEH'},
+  'शौचालय कहाँ छ?':{say:'show-chah-LAY kah-HAAN chah?',slow:'show · chah · LAY | kah · HAAN | chah'},
+  'بیت الخلا کہاں ہے؟':{say:'bait-ul-khah-LAH kah-HAAN hai?',slow:'bait · ul · khah · LAH | kah · HAAN | hai'},
+  'Hojathona qay yerda?':{say:'ho-jat-HOH-nah kai YAIR-dah?',slow:'ho · jat · HOH · nah | kai | YAIR · dah'}
+};
+function toiletPronunciationForPhrase(phrase={}){
+  return TOILET_PRONUNCIATION_BY_TEXT[String(phrase.text||'')]||TOILET_PRONUNCIATION_BY_TEXT["Where’s the toilet?"];
+}
+function toiletSlowPronunciationMarkup(value=''){
+  const safe=esc(String(value||''));
+  return safe.replace(/(^|[^A-Za-zÀ-ÖØ-öø-ÿ])([A-Z]{2,})(?=$|[^A-Za-zÀ-ÖØ-öø-ÿ])/g,'$1<b>$2</b>');
+}
+
 const TOILET_DEPARTURE_AMBIGUOUS_REGION_COUNTRIES={
   'WA':new Set(['australia','united-states']),
   'NT':new Set(['australia','canada']),
@@ -322,8 +397,8 @@ function currentToiletPhrase(){
   return {...phrase,country:country||'Current destination',dir:phrase.dir||'auto'};
 }
 function toiletPhraseOverlay(){
-  const phrase=currentToiletPhrase();
-  return `<div class="toilet-phrase-backdrop" data-toilet-phrase-backdrop><section class="toilet-phrase-panel" role="dialog" aria-modal="true" aria-label="Where is the toilet travel phrase"><button class="toilet-phrase-close" type="button" data-toilet-phrase-close aria-label="Close travel phrase">×</button><small>where’s the toilet</small><strong lang="${esc(phrase.lang)}" dir="${esc(phrase.dir)}">${esc(phrase.text)}</strong><span>${esc(phrase.country)} · ${esc(phrase.language)}</span></section></div>`;
+  const phrase=currentToiletPhrase(),pronunciation=toiletPronunciationForPhrase(phrase);
+  return `<div class="toilet-phrase-backdrop" data-toilet-phrase-backdrop><section class="toilet-phrase-panel" role="dialog" aria-modal="true" aria-label="Where is the toilet travel phrase"><button class="toilet-phrase-close" type="button" data-toilet-phrase-close aria-label="Close travel phrase">×</button><small>where’s the toilet</small><strong lang="${esc(phrase.lang)}" dir="${esc(phrase.dir)}">${esc(phrase.text)}</strong><div class="toilet-pronunciation" dir="ltr"><div><b>Say it</b><span>${esc(pronunciation.say)}</span></div><div class="toilet-pronunciation-slow"><b>Slow</b><span>${toiletSlowPronunciationMarkup(pronunciation.slow)}</span></div></div><span class="toilet-phrase-meta">${esc(phrase.country)} · ${esc(phrase.language)}</span><em>Meaning: Where is the toilet?</em></section></div>`;
 }
 const COUNTRY_ALIASES={
   'us':'united-states','u.s':'united-states','u.s.':'united-states','usa':'united-states','u.s.a':'united-states','u.s.a.':'united-states','united states of america':'united-states','america':'united-states',
@@ -341,6 +416,7 @@ const COUNTRY_FLAGS={
 };
 const COUNTRY_CANONICAL_NAMES={
   'united-states':'United States','united-kingdom':'United Kingdom','united-arab-emirates':'United Arab Emirates','czech-republic':'Czech Republic','bosnia-and-herzegovina':'Bosnia & Herzegovina','north-macedonia':'North Macedonia','netherlands':'Netherlands','ireland':'Ireland','turkey':'Turkey','indonesia':'Indonesia','russia':'Russia',
+  'andorra':'Andorra','belarus':'Belarus','kosovo':'Kosovo','moldova':'Moldova','san-marino':'San Marino','ukraine':'Ukraine','vatican-city':'Vatican City',
   'antigua-and-barbuda':'Antigua & Barbuda','bahamas':'Bahamas','aruba':'Aruba','bonaire':'Bonaire','curacao':'Curaçao','guadeloupe':'Guadeloupe','martinique':'Martinique','sint-maarten':'Sint Maarten','barbados':'Barbados','bermuda':'Bermuda','british-virgin-islands':'British Virgin Islands','cayman-islands':'Cayman Islands','cuba':'Cuba','dominica':'Dominica','dominican-republic':'Dominican Republic','grenada':'Grenada','haiti':'Haiti','jamaica':'Jamaica','puerto-rico':'Puerto Rico','saint-kitts-and-nevis':'Saint Kitts & Nevis','saint-lucia':'Saint Lucia','saint-vincent-and-the-grenadines':'Saint Vincent & the Grenadines','trinidad-and-tobago':'Trinidad & Tobago','turks-and-caicos-islands':'Turks & Caicos Islands','us-virgin-islands':'U.S. Virgin Islands'
 };
 const CARIBBEAN_COUNTRY_SLUGS=new Set(['antigua-and-barbuda','aruba','bahamas','bonaire','curacao','guadeloupe','martinique','sint-maarten','barbados','bermuda','british-virgin-islands','cayman-islands','cuba','dominica','dominican-republic','grenada','haiti','jamaica','puerto-rico','saint-kitts-and-nevis','saint-lucia','saint-vincent-and-the-grenadines','trinidad-and-tobago','turks-and-caicos-islands','us-virgin-islands']);
@@ -616,7 +692,7 @@ function locationPlaceIdentityKey(value=''){
 const COUNTRY_ACCENTS={
   'italy':'#e6b85c','france':'#62a5ff','united-kingdom':'#63a7d9','egypt':'#d5a24c','greece':'#51bce8','germany':'#e7ba57','spain':'#e98646','netherlands':'#f29a42','thailand':'#d8b54b','portugal':'#e6a55e','croatia':'#55aee8','switzerland':'#e76c68','jordan':'#d49a62','indonesia':'#61c57b','australia':'#58b7e8','hungary':'#74c79e','austria':'#d16c70','japan':'#d96878','turkey':'#d06865','united-states':'#659fe8','singapore':'#da6d72','united-arab-emirates':'#d5a95f','vietnam':'#df9c4e','morocco':'#d98955','belgium':'#e1b153','canada':'#7ac29d','cyprus':'#d7a766','czech-republic':'#a886d9','denmark':'#d76b75','finland':'#71aee6','liechtenstein':'#6faee0','mexico':'#d1a14c','norway':'#63c4b6','sweden':'#71a9e8','default':'#51c7ff'
 };
-const BANNER_SLUGS=new Set(['albania','algeria','argentina','australia','austria','bahamas','belgium','bosnia-and-herzegovina','brazil','bulgaria','cambodia','canada','caribbean','chile','china','colombia','costa-rica','croatia','cruise','cyprus','czech-republic','denmark','dominican-republic','egypt','estonia','finland','france','germany','greece','hungary','iceland','india','indonesia','ireland','italy','jamaica','japan','jordan','laos','latvia','liechtenstein','lithuania','luxembourg','malaysia','malta','mexico','monaco','montenegro','morocco','motorhome','netherlands','new-zealand','north-macedonia','norway','oman','panama','peru','philippines','poland','portugal','qatar','romania','russia','serbia','singapore','slovakia','slovenia','south-africa','south-korea','spain','sri-lanka','sweden','switzerland','taiwan','thailand','tunisia','turkey','united-arab-emirates','united-kingdom','united-states','vietnam','world']);
+const BANNER_SLUGS=new Set(['algeria','caribbean','croatia','cruise','cyprus','czech-republic','egypt','france','germany','greece','hungary','indonesia','ireland','italy','japan','jordan','morocco','motorhome','netherlands','portugal','russia','spain','thailand','turkey','united-kingdom','united-states','vietnam','world']);
 const slugifyCountry = value => {
   const source=canonicalIdentityKey(value),articleless=source.replace(/^the\s+/,'');
   const direct=ownMapValue(COUNTRY_ALIASES,source,'')||ownMapValue(COUNTRY_ALIASES,articleless,'');
@@ -780,6 +856,173 @@ const GLOBAL_TRAVEL_COUNTRY_METADATA={
   'costa-rica':{currency:'CRC',flag:'🇨🇷',name:'Costa Rica'},'guatemala':{currency:'GTQ',flag:'🇬🇹',name:'Guatemala'},'belize':{currency:'BZD',flag:'🇧🇿',name:'Belize'},'panama':{currency:'PAB',flag:'🇵🇦',name:'Panama'},'nicaragua':{currency:'NIO',flag:'🇳🇮',name:'Nicaragua'},'honduras':{currency:'HNL',flag:'🇭🇳',name:'Honduras'},'el-salvador':{currency:'USD',flag:'🇸🇻',name:'El Salvador'},'french-polynesia':{currency:'XPF',flag:'🇵🇫',name:'French Polynesia'}
 };
 Object.entries(GLOBAL_TRAVEL_COUNTRY_METADATA).forEach(([slug,meta])=>{COUNTRY_CURRENCY_CODES[slug]=meta.currency;COUNTRY_FLAGS[slug]=meta.flag;COUNTRY_CANONICAL_NAMES[slug]=meta.name;});
+// Batch 1180: Home Country Quick Look. This intentionally stays small and fully offline —
+// it is a friendly cultural snapshot, not a replacement for a detailed country guide.
+// Food, animal and plant entries are cultural/national associations; some countries do
+// not have one formally legislated national symbol, so the UI says "symbol" rather than
+// implying every item is an official designation.
+const COUNTRY_QUICK_LOOK_FACTS={
+  'albania':{capital:'Tirana',dish:'Tavë kosi',animal:'Golden eagle',plant:'Red poppy',plantNote:'Wild poppies add vivid colour to Albanian fields and mountain landscapes.',fact:'Albania has coastlines on both the Adriatic and Ionian seas.'},
+  'algeria':{capital:'Algiers',dish:'Couscous',animal:'Fennec fox',plant:'Iris',plantNote:'Irises and hardy Mediterranean plants suit the north, while desert flora dominates the Sahara.',fact:'Most of Algeria lies within the Sahara Desert.'},
+  'andorra':{capital:'Andorra la Vella',dish:'Escudella',animal:'Pyrenean chamois',plant:'Grandalla',plantNote:'The white grandalla, a wild narcissus, is closely associated with Andorra’s Pyrenean mountain landscape.',fact:'Andorra is a small landlocked principality high in the Pyrenees between France and Spain.',language:'Catalan'},
+  'belarus':{capital:'Minsk',dish:'Draniki',animal:'European bison',plant:'Flax',plantNote:'Blue flax flowers are strongly associated with Belarusian fields, textiles and traditional culture.',fact:'Belarus contains part of the ancient Białowieża Forest, one of Europe’s last large primeval lowland forests.'},
+  'kosovo':{capital:'Pristina',dish:'Flija',animal:'Golden eagle',plant:'Kosovo peony',plantNote:'Wild peonies and other Balkan mountain flowers add colour to Kosovo’s spring and early-summer landscapes.',fact:'Kosovo is a landlocked Balkan territory with a young population and mountainous scenery.',language:'Albanian · Serbian'},
+  'moldova':{capital:'Chișinău',dish:'Mămăligă',animal:'Aurochs',plant:'Grape vine',plantNote:'Vineyards are a defining part of Moldova’s rural landscape and centuries-old wine culture.',fact:'Moldova has extensive underground wine cellars, including some of the world’s longest wine-gallery networks.',language:'Romanian'},
+  'san-marino':{capital:'City of San Marino',dish:'Torta Tre Monti',animal:'Peregrine falcon',plant:'Cyclamen',plantNote:'Cyclamen and hardy Mediterranean woodland plants grow on and around Monte Titano.',fact:'San Marino is one of the world’s oldest surviving republics and is entirely surrounded by Italy.',language:'Italian'},
+  'ukraine':{capital:'Kyiv',dish:'Borshch',animal:'Common nightingale',plant:'Sunflower',plantNote:'Sunflowers are one of Ukraine’s most recognisable plants and cover large agricultural areas in summer.',fact:'Ukraine is one of Europe’s largest countries by area.'},
+  'vatican-city':{capital:'Vatican City',dish:'Roman-style pasta',animal:'Dove',plant:'Rose',plantNote:'Formal gardens occupy a large share of Vatican City, with roses, Mediterranean trees and carefully maintained historic plantings.',fact:'Vatican City is the world’s smallest independent state by both area and population.',language:'Italian · Latin'},
+  'argentina':{capital:'Buenos Aires',dish:'Asado',animal:'Rufous hornero',plant:'Ceibo',plantNote:'The bright red ceibo flower is one of Argentina’s best-known botanical symbols.',fact:'Argentina stretches from subtropical north to Patagonia and Tierra del Fuego.'},
+  'australia':{capital:'Canberra',dish:'Meat pie',animal:'Red kangaroo',plant:'Golden wattle',plantNote:'Golden wattle blooms in masses of fragrant yellow flowers and is Australia’s national floral emblem.',fact:'Australia is both a country and a continent.'},
+  'austria':{capital:'Vienna',dish:'Wiener schnitzel',animal:'Golden eagle',plant:'Edelweiss',plantNote:'Edelweiss is a classic Alpine flower associated with high mountain country.',fact:'Around two-thirds of Austria is mountainous.'},
+  'bahamas':{capital:'Nassau',dish:'Conch salad',animal:'Blue marlin',plant:'Yellow elder',plantNote:'Yellow elder produces bright trumpet-shaped flowers well suited to the tropical climate.',fact:'The Bahamas is an archipelago of hundreds of islands and cays.'},
+  'belgium':{capital:'Brussels',dish:'Moules-frites',animal:'Lion',plant:'Red poppy',plantNote:'Red poppies carry especially strong remembrance symbolism across Belgium’s Flanders fields.',fact:'Belgium has three official languages: Dutch, French and German.',language:'Dutch · French · German'},
+  'bosnia-and-herzegovina':{capital:'Sarajevo',dish:'Ćevapi',animal:'Grey wolf',plant:'Golden lily',plantNote:'The golden lily is a long-standing cultural symbol connected with medieval Bosnia.',fact:'Sarajevo hosted the 1984 Winter Olympics.'},
+  'brazil':{capital:'Brasília',dish:'Feijoada',animal:'Jaguar',plant:'Yellow ipê',plantNote:'Yellow ipê trees can cover their branches in spectacular golden blooms during the dry season.',fact:'Brazil contains the largest share of the Amazon rainforest.'},
+  'bulgaria':{capital:'Sofia',dish:'Shopska salad',animal:'Lion',plant:'Damask rose',plantNote:'Bulgaria’s Rose Valley is famous for fragrant Damask roses used in rose oil.',fact:'Bulgaria is one of Europe’s oldest continuously named states.'},
+  'cambodia':{capital:'Phnom Penh',dish:'Fish amok',animal:'Kouprey',plant:'Rumduol',plantNote:'Rumduol is prized for its small, highly fragrant flowers.',fact:'Angkor was once the centre of the vast Khmer Empire.'},
+  'canada':{capital:'Ottawa',dish:'Poutine',animal:'Beaver',plant:'Maple',plantNote:'The maple leaf is Canada’s most recognisable botanical symbol.',fact:'Canada has the world’s longest coastline.',language:'English · French'},
+  'chile':{capital:'Santiago',dish:'Pastel de choclo',animal:'Huemul',plant:'Copihue',plantNote:'The red bell-shaped copihue vine grows naturally in Chilean forests.',fact:'Chile runs for more than 4,000 km along South America’s Pacific coast.'},
+  'china':{capital:'Beijing',dish:'Peking duck',animal:'Giant panda',plant:'Plum blossom',plantNote:'Plum blossoms flower in cold weather and are admired as a symbol of resilience.',fact:'China spans five main time zones geographically but uses one official time zone.'},
+  'colombia':{capital:'Bogotá',dish:'Bandeja paisa',animal:'Andean condor',plant:'Cattleya trianae orchid',plantNote:'Colombia is extraordinarily rich in orchids, including the Cattleya trianae floral emblem.',fact:'Colombia is the only South American country with both Caribbean and Pacific coasts.'},
+  'costa-rica':{capital:'San José',dish:'Gallo pinto',animal:'White-tailed deer',plant:'Guaria morada orchid',plantNote:'The purple guaria morada orchid is widely loved and flowers around the dry-season transition.',fact:'Costa Rica protects a remarkably large share of its land in parks and reserves.'},
+  'croatia':{capital:'Zagreb',dish:'Pašticada',animal:'Pine marten',plant:'Iris',plantNote:'Irises are strongly associated with Croatia and grow in many local forms.',fact:'Croatia has more than a thousand islands, islets and reefs.'},
+  'cyprus':{capital:'Nicosia',dish:'Souvla',animal:'Cyprus mouflon',plant:'Cyclamen',plantNote:'Cyclamen persicum grows naturally on the island and is a favourite winter-flowering plant.',fact:'Nicosia is the world’s last divided national capital.',language:'Greek · Turkish'},
+  'czech-republic':{capital:'Prague',dish:'Svíčková',animal:'Double-tailed lion',plant:'Linden',plantNote:'Linden trees are an important Slavic cultural symbol and are planted widely across Czech towns.',fact:'Prague’s historic centre is famous for architecture spanning many centuries.'},
+  'denmark':{capital:'Copenhagen',dish:'Smørrebrød',animal:'Mute swan',plant:'Marguerite daisy',plantNote:'Daisies and coastal wildflowers suit Denmark’s cool maritime climate.',fact:'Denmark is made up of the Jutland peninsula and hundreds of islands.'},
+  'dominican-republic':{capital:'Santo Domingo',dish:'La bandera',animal:'Palmchat',plant:'Bayahibe rose',plantNote:'The rare Bayahibe rose is a cactus with delicate pink flowers native to Hispaniola.',fact:'Santo Domingo contains some of the oldest surviving European-built structures in the Americas.'},
+  'egypt':{capital:'Cairo',dish:'Koshari',animal:'Steppe eagle',plant:'Blue lotus',plantNote:'Lotus imagery appears throughout ancient Egyptian art and remains one of the country’s most recognisable plant symbols.',fact:'The Nile has supported Egyptian civilisation for thousands of years.'},
+  'estonia':{capital:'Tallinn',dish:'Verivorst',animal:'Grey wolf',plant:'Cornflower',plantNote:'Blue cornflowers are a familiar sight in summer fields and a national floral symbol.',fact:'Estonia has thousands of islands despite its compact size.'},
+  'finland':{capital:'Helsinki',dish:'Karjalanpiirakka',animal:'Brown bear',plant:'Lily-of-the-valley',plantNote:'Lily-of-the-valley carpets Finnish woodland in late spring and early summer.',fact:'Finland is known as the Land of a Thousand Lakes — and actually has far more than a thousand.'},
+  'france':{capital:'Paris',dish:'Pot-au-feu',animal:'Gallic rooster',plant:'Iris / fleur-de-lis',plantNote:'Iris imagery is closely connected with the historic fleur-de-lis symbol.',fact:'Metropolitan France has coastlines on the Atlantic Ocean, English Channel and Mediterranean Sea.'},
+  'germany':{capital:'Berlin',dish:'Sauerbraten',animal:'Federal eagle',plant:'Cornflower',plantNote:'Cornflowers have a long cultural association with Germany and thrive in open sunny ground.',fact:'Germany has more than 20,000 castles and castle ruins by many estimates.'},
+  'greece':{capital:'Athens',dish:'Moussaka',animal:'Dolphin',plant:'Olive',plantNote:'Olive trees can live for centuries and are inseparable from Greek landscape, food and mythology.',fact:'Greece has thousands of islands, though only a fraction are inhabited.'},
+  'hungary':{capital:'Budapest',dish:'Goulash',animal:'Turul bird',plant:'Tulip',plantNote:'Tulip motifs are common in Hungarian folk art and decorative traditions.',fact:'Budapest is split by the Danube into historic Buda and Pest.'},
+  'iceland':{capital:'Reykjavík',dish:'Lamb soup',animal:'Gyrfalcon',plant:'Mountain avens',plantNote:'Mountain avens is a hardy white Arctic-alpine flower that handles Iceland’s exposed conditions.',fact:'Iceland sits directly on the Mid-Atlantic Ridge.'},
+  'india':{capital:'New Delhi',dish:'Biryani',animal:'Bengal tiger',plant:'Lotus',plantNote:'The lotus is India’s national flower and has deep cultural and religious significance.',fact:'India has extraordinary linguistic, climatic and ecological diversity.',language:'Hindi · English + many regional languages'},
+  'indonesia':{capital:'Jakarta',dish:'Nasi goreng',animal:'Komodo dragon',plant:'Jasmine',plantNote:'White jasmine is one of Indonesia’s national flowers and is used in ceremonies and celebrations.',fact:'Indonesia is the world’s largest archipelagic country.'},
+  'ireland':{capital:'Dublin',dish:'Irish stew',animal:'Irish hare',plant:'Shamrock',plantNote:'The shamrock is a small clover and one of Ireland’s strongest national symbols.',fact:'Ireland’s nickname “Emerald Isle” reflects its famously green landscape.'},
+  'italy':{capital:'Rome',dish:'Pizza',animal:'Italian wolf',plant:'Lily',plantNote:'Lilies are commonly associated with Italy, while regional gardens range from Alpine to Mediterranean.',fact:'Italy contains two independent microstates: Vatican City and San Marino.'},
+  'jamaica':{capital:'Kingston',dish:'Ackee and saltfish',animal:'Doctor bird',plant:'Lignum vitae',plantNote:'Lignum vitae is a small tree with vivid blue-purple flowers and exceptionally dense wood.',fact:'Jamaica gave the world reggae music.'},
+  'japan':{capital:'Tokyo',dish:'Sushi',animal:'Green pheasant',plant:'Cherry blossom',plantNote:'Cherry blossom season is celebrated nationwide with hanami flower-viewing gatherings.',fact:'Japan is an archipelago of thousands of islands.'},
+  'jordan':{capital:'Amman',dish:'Mansaf',animal:'Arabian oryx',plant:'Black iris',plantNote:'The dark purple-black iris is Jordan’s national flower and blooms in spring.',fact:'Petra was carved into rose-coloured sandstone by the Nabataeans.'},
+  'laos':{capital:'Vientiane',dish:'Larb',animal:'Asian elephant',plant:'Dok champa',plantNote:'Fragrant dok champa, or plumeria, is a beloved Lao flower often associated with temples, homes and hospitality.',fact:'The Mekong River forms much of Laos’s western boundary.',language:'Lao'},
+  'latvia':{capital:'Riga',dish:'Grey peas with bacon',animal:'White wagtail',plant:'Oxeye daisy',plantNote:'The white oxeye daisy is a familiar meadow flower and Latvian floral symbol.',fact:'More than half of Latvia is covered by forest.'},
+  'liechtenstein':{capital:'Vaduz',dish:'Käsknöpfle',animal:'Golden eagle',plant:'Yellow lily',plantNote:'Alpine flowers thrive on Liechtenstein’s steep mountain slopes.',fact:'Liechtenstein is one of the world’s smallest countries and has no airport.'},
+  'lithuania':{capital:'Vilnius',dish:'Cepelinai',animal:'White stork',plant:'Rue',plantNote:'Rue has a long place in Lithuanian folk tradition and wedding symbolism.',fact:'Lithuania was once part of one of Europe’s largest states, the Polish-Lithuanian Commonwealth.'},
+  'luxembourg':{capital:'Luxembourg City',dish:'Judd mat gaardebounen',animal:'Lion',plant:'Rose',plantNote:'Formal gardens and rose culture have a long place in Luxembourg’s urban landscape.',fact:'Luxembourg is one of the world’s smallest sovereign countries.'},
+  'malaysia':{capital:'Kuala Lumpur',dish:'Nasi lemak',animal:'Malayan tiger',plant:'Hibiscus',plantNote:'The red hibiscus, bunga raya, is Malaysia’s national flower.',fact:'Malaysia is split between Peninsular Malaysia and northern Borneo.',language:'Malay'},
+  'malta':{capital:'Valletta',dish:'Stuffat tal-fenek',animal:'Pharaoh hound',plant:'Maltese centaury',plantNote:'Maltese centaury is an endemic flowering plant found naturally only in the Maltese Islands.',fact:'Malta has an exceptionally dense concentration of historic sites.'},
+  'mexico':{capital:'Mexico City',dish:'Mole',animal:'Golden eagle',plant:'Dahlia',plantNote:'Dahlias are native to Mexico and were cultivated there long before becoming global garden favourites.',fact:'Mexico is one of the world’s major centres of plant domestication, including maize and chillies.'},
+  'monaco':{capital:'Monaco',dish:'Barbajuan',animal:'Mediterranean marine life',plant:'Mediterranean fan palm',plantNote:'Compact Monaco is packed with carefully tended Mediterranean gardens and exotic planting.',fact:'Monaco is the world’s second-smallest independent country.'},
+  'montenegro':{capital:'Podgorica',dish:'Kačamak',animal:'Golden eagle',plant:'Mimosa',plantNote:'Mimosa blooms brighten the Bay of Kotor region in late winter.',fact:'Montenegro combines a dramatic Adriatic coast with rugged mountain interior.'},
+  'morocco':{capital:'Rabat',dish:'Tagine',animal:'Barbary lion',plant:'Argan tree',plantNote:'Argan trees are native to Morocco and produce the kernels used for argan oil.',fact:'Morocco has both Atlantic and Mediterranean coastlines.'},
+  'netherlands':{capital:'Amsterdam',dish:'Stamppot',animal:'Lion',plant:'Tulip',plantNote:'Tulips are not native to the Netherlands, but Dutch growers transformed them into a national horticultural icon.',fact:'A significant part of the Netherlands lies at or below sea level.',language:'Dutch'},
+  'new-zealand':{capital:'Wellington',dish:'Hāngi',animal:'Kiwi',plant:'Kōwhai / silver fern',plantNote:'Kōwhai produces brilliant yellow flowers, while the silver fern is an enduring national plant symbol.',fact:'New Zealand evolved with very few native land mammals.'},
+  'north-macedonia':{capital:'Skopje',dish:'Tavče gravče',animal:'Balkan lynx',plant:'Poppy',plantNote:'Wild poppies add intense colour to spring and early-summer landscapes.',fact:'Lake Ohrid is one of Europe’s oldest and deepest lakes.'},
+  'norway':{capital:'Oslo',dish:'Fårikål',animal:'Moose',plant:'Heather',plantNote:'Heather colours large areas of moorland and mountain country in late summer.',fact:'Norway’s deeply cut coastline is famous for its fjords.'},
+  'oman':{capital:'Muscat',dish:'Shuwa',animal:'Arabian oryx',plant:'Frankincense tree',plantNote:'Frankincense trees have been harvested in southern Oman for aromatic resin for millennia.',fact:'Oman was a major historic hub in the frankincense trade.'},
+  'panama':{capital:'Panama City',dish:'Sancocho',animal:'Harpy eagle',plant:'Holy Ghost orchid',plantNote:'The Holy Ghost orchid is famed for a flower centre that resembles a tiny white dove.',fact:'The Panama Canal links the Atlantic and Pacific oceans.'},
+  'peru':{capital:'Lima',dish:'Ceviche',animal:'Vicuña',plant:'Cantuta',plantNote:'The colourful cantuta is a high-Andean flowering shrub associated with Inca tradition.',fact:'Peru contains coast, Andes and Amazon rainforest within one country.'},
+  'philippines':{capital:'Manila',dish:'Adobo',animal:'Carabao / Philippine eagle',plant:'Sampaguita',plantNote:'Sampaguita jasmine is prized for its tiny intensely fragrant white flowers.',fact:'The Philippines is an archipelago of more than 7,000 islands.'},
+  'poland':{capital:'Warsaw',dish:'Pierogi',animal:'European bison',plant:'Corn poppy',plantNote:'Red corn poppies are a familiar cultural and landscape symbol across Poland.',fact:'Białowieża Forest protects one of Europe’s last large areas of primeval lowland forest.'},
+  'portugal':{capital:'Lisbon',dish:'Bacalhau',animal:'Rooster of Barcelos',plant:'Lavender',plantNote:'Mediterranean herbs, cork oak and lavender all thrive across much of Portugal.',fact:'Portugal is one of Europe’s oldest nation-states with largely unchanged borders.'},
+  'qatar':{capital:'Doha',dish:'Machboos',animal:'Arabian oryx',plant:'Sidra tree',plantNote:'The hardy sidra tree provides shade and has deep cultural importance in the Gulf.',fact:'Qatar is a peninsula extending into the Persian Gulf.'},
+  'romania':{capital:'Bucharest',dish:'Sarmale',animal:'Brown bear',plant:'Peony',plantNote:'Wild peonies bloom in several Romanian reserves and are celebrated as a national floral symbol.',fact:'The Carpathian Mountains support some of Europe’s largest populations of brown bears.'},
+  'russia':{capital:'Moscow',dish:'Pelmeni',animal:'Brown bear',plant:'Chamomile',plantNote:'Chamomile is a familiar Russian floral symbol and grows widely across meadows and fields.',fact:'Russia spans 11 time zones.'},
+  'serbia':{capital:'Belgrade',dish:'Ćevapi',animal:'Grey wolf',plant:'Natalie’s ramonda',plantNote:'Natalie’s ramonda is a resilient Balkan flower able to revive after severe drying.',fact:'Belgrade sits where the Sava and Danube rivers meet.'},
+  'singapore':{capital:'Singapore',dish:'Hainanese chicken rice',animal:'Lion',plant:'Vanda Miss Joaquim orchid',plantNote:'Singapore’s national orchid reflects the city-state’s strong garden and horticultural identity.',fact:'Singapore is both a city and a sovereign country.',language:'English · Malay · Mandarin · Tamil'},
+  'slovakia':{capital:'Bratislava',dish:'Bryndzové halušky',animal:'Tatra chamois',plant:'Linden',plantNote:'Linden trees are a strong Slavic cultural symbol and common in Central European towns.',fact:'The High Tatras pack dramatic alpine scenery into a relatively small area.'},
+  'slovenia':{capital:'Ljubljana',dish:'Potica',animal:'Carniolan honey bee',plant:'Carnation',plantNote:'The red carnation is strongly associated with Slovenian folk culture and alpine homes.',fact:'More than half of Slovenia is forested.'},
+  'south-africa':{capital:'Pretoria',dish:'Bobotie',animal:'Springbok',plant:'King protea',plantNote:'The huge King protea flower is part of the extraordinary Cape Floristic Region.',fact:'South Africa uniquely has three capital cities for different branches of government.',language:'11+ official languages'},
+  'south-korea':{capital:'Seoul',dish:'Kimchi',animal:'Tiger',plant:'Mugunghwa',plantNote:'Mugunghwa, the rose of Sharon, flowers repeatedly through summer and symbolises endurance.',fact:'South Korea combines densely populated megacities with extensive mountain terrain.'},
+  'spain':{capital:'Madrid',dish:'Paella',animal:'Bull',plant:'Red carnation',plantNote:'Red carnations are a traditional Spanish floral symbol and are common in celebrations.',fact:'Spain includes the Balearic and Canary Islands as well as its mainland territory.'},
+  'sri-lanka':{capital:'Sri Jayawardenepura Kotte',dish:'Rice and curry',animal:'Sri Lankan elephant',plant:'Blue water lily',plantNote:'The blue water lily opens in bright tropical light and is Sri Lanka’s national flower.',fact:'Sri Lanka is one of the world’s major tea-producing countries.',language:'Sinhala · Tamil'},
+  'sweden':{capital:'Stockholm',dish:'Swedish meatballs',animal:'Moose',plant:'Twinflower',plantNote:'Twinflower is a delicate woodland plant famously associated with botanist Carl Linnaeus.',fact:'Sweden has tens of thousands of islands.'},
+  'switzerland':{capital:'Bern',dish:'Fondue',animal:'St. Bernard',plant:'Edelweiss',plantNote:'Edelweiss is one of the Alps’ most recognisable high-mountain flowers.',fact:'Switzerland has four national languages.',language:'German · French · Italian · Romansh'},
+  'taiwan':{capital:'Taipei',dish:'Beef noodle soup',animal:'Formosan black bear',plant:'Plum blossom',plantNote:'Plum blossom flowers in cool weather and is admired for resilience.',fact:'Taiwan rises from tropical coast to mountains nearly 4,000 metres high.',language:'Mandarin Chinese'},
+  'thailand':{capital:'Bangkok',dish:'Pad thai',animal:'Elephant',plant:'Ratchaphruek',plantNote:'Ratchaphruek produces long cascades of golden-yellow flowers and is Thailand’s national flower.',fact:'Thailand is the only Southeast Asian country never formally colonised by a European power.'},
+  'tunisia':{capital:'Tunis',dish:'Couscous',animal:'Fennec fox',plant:'Jasmine',plantNote:'Jasmine is deeply associated with Tunisian homes, scent and hospitality.',fact:'Tunisia reaches from Mediterranean beaches to the Sahara.'},
+  'turkey':{capital:'Ankara',dish:'Kuru fasulye & pilav',animal:'Grey wolf',plant:'Tulip',plantNote:'Tulips were cultivated in Ottoman gardens centuries before they became famous in the Netherlands.',fact:'Türkiye spans Europe and Asia, and Istanbul sits on both continents.',language:'Turkish'},
+  'united-arab-emirates':{capital:'Abu Dhabi',dish:'Machboos',animal:'Arabian oryx / falcon',plant:'Ghaf tree',plantNote:'The drought-tolerant ghaf tree survives harsh desert conditions and is the UAE’s national tree.',fact:'The UAE is a federation of seven emirates.',language:'Arabic'},
+  'united-kingdom':{capital:'London',dish:'Fish and chips',animal:'Lion',plant:'Tudor rose',plantNote:'The UK’s nations each have strong plant symbols, including England’s rose and Scotland’s thistle.',fact:'The United Kingdom consists of England, Scotland, Wales and Northern Ireland.',language:'English + regional languages'},
+  'united-states':{capital:'Washington, D.C.',dish:'Hamburger',animal:'Bald eagle',plant:'Rose',plantNote:'The rose is the national floral emblem, while native flora ranges from desert cactus to giant sequoias.',fact:'The United States spans six main time zones across its states.'},
+  'vietnam':{capital:'Hanoi',dish:'Phở',animal:'Water buffalo',plant:'Lotus',plantNote:'The lotus rises from muddy water into a clean flower and carries strong cultural symbolism in Vietnam.',fact:'Vietnam stretches more than 1,600 km from north to south.'},
+  'antigua-and-barbuda':{capital:'St John’s',dish:'Fungee & pepperpot',animal:'Fallow deer',plant:'Dagger log',plantNote:'Dagger log sends up tall flowering spikes and is a familiar dry-island plant.',fact:'Antigua and Barbuda is known for a deeply indented coastline and many sheltered beaches.',language:'English'},
+  'aruba':{capital:'Oranjestad',dish:'Keshi yena',animal:'Burrowing owl',plant:'Divi-divi tree',plantNote:'Divi-divi trees are shaped by Aruba’s trade winds and are one of the island’s most recognisable plants.',fact:'Aruba lies just north of Venezuela and outside the main Caribbean hurricane belt.',language:'Papiamento · Dutch'},
+  'bonaire':{capital:'Kralendijk',dish:'Kabritu stobá',animal:'Caribbean flamingo',plant:'Kadushi cactus',plantNote:'Tall kadushi cacti thrive in Bonaire’s dry climate and are a defining part of the landscape.',fact:'Bonaire is especially well known for shore diving and its protected marine park.',language:'Papiamentu · Dutch'},
+  'curacao':{capital:'Willemstad',dish:'Keshi yena',animal:'Curaçao white-tailed deer',plant:'Kadushi cactus',plantNote:'Cacti and divi-divi trees dominate much of Curaçao’s dry, wind-shaped vegetation.',fact:'Willemstad’s colourful waterfront is a UNESCO World Heritage site.',language:'Papiamentu · Dutch · English'},
+  'guadeloupe':{capital:'Basse-Terre',dish:'Colombo de poulet',animal:'Brown pelican',plant:'Hibiscus',plantNote:'Hibiscus, heliconias and other tropical flowers flourish in Guadeloupe’s warm, humid gardens.',fact:'Guadeloupe is a French overseas department made up of several Caribbean islands.',language:'French · Guadeloupean Creole'},
+  'martinique':{capital:'Fort-de-France',dish:'Colombo de poulet',animal:'Martinique oriole',plant:'Balisier',plantNote:'Bright heliconia-like balisier flowers suit Martinique’s lush tropical slopes.',fact:'Mount Pelée is the active volcano dominating northern Martinique.',language:'French · Martinican Creole'},
+  'sint-maarten':{capital:'Philipsburg',dish:'Johnny cakes',animal:'Brown pelican',plant:'Yellow sage',plantNote:'Yellow sage handles coastal heat well and adds bursts of colour to dry Caribbean gardens.',fact:'The island is shared by Dutch Sint Maarten and French Saint-Martin.',language:'English · Dutch'},
+  'barbados':{capital:'Bridgetown',dish:'Cou-cou & flying fish',animal:'Flying fish',plant:'Pride of Barbados',plantNote:'Pride of Barbados produces fiery orange-red flowers and is strongly associated with the island.',fact:'Barbados is the easternmost island of the Lesser Antilles.',language:'English'},
+  'bermuda':{capital:'Hamilton',dish:'Bermuda fish chowder',animal:'Bermuda petrel',plant:'Bermudiana',plantNote:'The small blue-violet Bermudiana is Bermuda’s national flower and appears in spring.',fact:'Bermuda is a North Atlantic archipelago rather than a Caribbean island.',language:'English'},
+  'british-virgin-islands':{capital:'Road Town',dish:'Fish & fungi',animal:'Green sea turtle',plant:'White cedar',plantNote:'White cedar is native to the region and suits the islands’ dry woodland environment.',fact:'The British Virgin Islands include more than 50 islands and cays.',language:'English'},
+  'cayman-islands':{capital:'George Town',dish:'Cayman-style fish',animal:'Green sea turtle',plant:'Wild banana orchid',plantNote:'The wild banana orchid is the Cayman Islands’ national flower and grows on all three main islands.',fact:'The territory consists of Grand Cayman, Cayman Brac and Little Cayman.',language:'English'},
+  'cuba':{capital:'Havana',dish:'Ropa vieja',animal:'Cuban trogon',plant:'Mariposa',plantNote:'The fragrant white mariposa is Cuba’s national flower and often appears in gardens.',fact:'Cuba is the largest island in the Caribbean.',language:'Spanish'},
+  'dominica':{capital:'Roseau',dish:'Callaloo soup',animal:'Sisserou parrot',plant:'Bwa kwaib',plantNote:'Bwa kwaib bears vivid red flowers and is Dominica’s national flower.',fact:'Dominica is nicknamed the Nature Island for its rainforest, waterfalls and volcanic terrain.',language:'English · Dominican Creole'},
+  'grenada':{capital:'St George’s',dish:'Oil down',animal:'Grenada dove',plant:'Bougainvillea',plantNote:'Bougainvillea thrives in Grenada’s tropical sun and brings intense colour to gardens and roadsides.',fact:'Grenada is widely called the Spice Island because of nutmeg and mace production.',language:'English'},
+  'haiti':{capital:'Port-au-Prince',dish:'Griot',animal:'Hispaniolan trogon',plant:'Hibiscus',plantNote:'Hibiscus is a familiar tropical flower across Haiti and the wider Caribbean.',fact:'Haiti shares the island of Hispaniola with the Dominican Republic.',language:'Haitian Creole · French'},
+  'puerto-rico':{capital:'San Juan',dish:'Mofongo',animal:'Coquí',plant:'Flor de maga',plantNote:'Flor de maga is Puerto Rico’s floral emblem, with large pink-red hibiscus-like blooms.',fact:'Puerto Rico is a Caribbean island and an unincorporated territory of the United States.',language:'Spanish · English'},
+  'saint-kitts-and-nevis':{capital:'Basseterre',dish:'Goat water',animal:'Brown pelican',plant:'Poinciana',plantNote:'Poinciana trees put on a vivid red-orange flowering display during the warmer months.',fact:'Saint Kitts and Nevis is the smallest sovereign state in the Western Hemisphere by area.',language:'English'},
+  'saint-lucia':{capital:'Castries',dish:'Green fig & saltfish',animal:'Saint Lucia parrot',plant:'Rose',plantNote:'Roses are one of Saint Lucia’s traditional national flower symbols and feature in cultural societies.',fact:'The twin volcanic Pitons are among Saint Lucia’s best-known landmarks.',language:'English · Saint Lucian Creole'},
+  'saint-vincent-and-the-grenadines':{capital:'Kingstown',dish:'Roasted breadfruit & jackfish',animal:'Saint Vincent parrot',plant:'Soufrière tree',plantNote:'The native Soufrière tree is associated with the country’s volcanic mountain forests.',fact:'The country is made up of Saint Vincent and a chain of smaller Grenadine islands.',language:'English'},
+  'trinidad-and-tobago':{capital:'Port of Spain',dish:'Doubles',animal:'Scarlet ibis',plant:'Chaconia',plantNote:'The brilliant red chaconia is the national flower and often blooms around Independence season.',fact:'Trinidad and Tobago combines Caribbean island life with exceptionally rich bird diversity.',language:'English'},
+  'turks-and-caicos-islands':{capital:'Cockburn Town',dish:'Conch salad',animal:'Brown pelican',plant:'Turk’s head cactus',plantNote:'The red-capped Turk’s head cactus helped inspire the territory’s name and thrives in dry limestone terrain.',fact:'The islands are surrounded by extensive shallow turquoise banks and coral reefs.',language:'English'},
+  'us-virgin-islands':{capital:'Charlotte Amalie',dish:'Fish & fungi',animal:'Bananaquit',plant:'Yellow cedar',plantNote:'Yellow cedar produces bright trumpet flowers and is the territorial flower.',fact:'The main islands are Saint Thomas, Saint John and Saint Croix.',language:'English'},
+  'ecuador':{capital:'Quito',dish:'Encebollado',animal:'Andean condor',plant:'Ecuadorian rose',plantNote:'High-altitude sunlight helps Ecuador produce exceptionally large, vivid roses for world markets.',fact:'Ecuador is named for the Equator and also includes the Galápagos Islands.',language:'Spanish'},
+  'uruguay':{capital:'Montevideo',dish:'Chivito',animal:'Southern lapwing',plant:'Ceibo',plantNote:'The scarlet ceibo flower is shared as a national floral symbol with neighbouring Argentina.',fact:'Uruguay has a long Atlantic coastline and a strong mate-drinking culture.',language:'Spanish'},
+  'paraguay':{capital:'Asunción',dish:'Sopa paraguaya',animal:'Pampas fox',plant:'Mburucuyá',plantNote:'Mburucuyá is a striking native passionflower with intricate purple, white and green blooms.',fact:'Paraguay is one of South America’s two landlocked countries.',language:'Spanish · Guaraní'},
+  'bolivia':{capital:'Sucre',dish:'Salteñas',animal:'Llama',plant:'Kantuta',plantNote:'The tubular red-yellow-green kantuta is one of Bolivia’s national flowers.',fact:'La Paz is the seat of government while Sucre is the constitutional capital.',language:'Spanish · Quechua · Aymara + others'},
+  'venezuela':{capital:'Caracas',dish:'Pabellón criollo',animal:'Venezuelan troupial',plant:'Flor de Mayo orchid',plantNote:'The lavender Flor de Mayo orchid is Venezuela’s national flower.',fact:'Venezuela is home to Angel Falls, the world’s tallest uninterrupted waterfall.',language:'Spanish'},
+  'guyana':{capital:'Georgetown',dish:'Pepperpot',animal:'Jaguar',plant:'Victoria amazonica',plantNote:'The giant Victoria water lily grows in slow-moving tropical waterways and can form enormous floating leaves.',fact:'Guyana is the only South American country with English as its official language.',language:'English'},
+  'suriname':{capital:'Paramaribo',dish:'Pom',animal:'Jaguar',plant:'Faya lobi',plantNote:'Faya lobi is known for clusters of bright red flowers and is strongly associated with Surinamese gardens.',fact:'Suriname is South America’s smallest sovereign country by area.',language:'Dutch'},
+  'botswana':{capital:'Gaborone',dish:'Seswaa',animal:'Zebra',plant:'Mopane',plantNote:'Mopane woodland is a major part of northern Botswana and supports elephants and many other animals.',fact:'The Okavango Delta spreads across the Kalahari without reaching the sea.',language:'English · Setswana'},
+  'namibia':{capital:'Windhoek',dish:'Kapana',animal:'Oryx',plant:'Welwitschia',plantNote:'Welwitschia can live for centuries in the Namib Desert and grows only two continuously lengthening leaves.',fact:'Namibia contains some of the world’s oldest desert landscapes.',language:'English'},
+  'kenya':{capital:'Nairobi',dish:'Nyama choma',animal:'Lion',plant:'Acacia',plantNote:'Flat-topped acacias are iconic features of East African savanna landscapes.',fact:'Kenya straddles the Equator and includes the Great Rift Valley, highlands and Indian Ocean coast.',language:'Swahili · English'},
+  'tanzania':{capital:'Dodoma',dish:'Ugali',animal:'Giraffe',plant:'African violet',plantNote:'Wild African violets originate in the forests of Tanzania and neighbouring East Africa.',fact:'Tanzania includes Mount Kilimanjaro, Africa’s highest mountain.',language:'Swahili · English'},
+  'uganda':{capital:'Kampala',dish:'Matoke',animal:'Ugandan kob',plant:'Coffee',plantNote:'Robusta coffee grows naturally around Lake Victoria and is one of Uganda’s important native crop plants.',fact:'Uganda contains part of Lake Victoria and the headwaters region of the White Nile.',language:'English · Swahili'},
+  'rwanda':{capital:'Kigali',dish:'Isombe',animal:'Mountain gorilla',plant:'Flame tree',plantNote:'Bright-flowering trees and intensely cultivated green hills give Rwanda a lush garden-like character.',fact:'Rwanda is often called the Land of a Thousand Hills.',language:'Kinyarwanda · English · French · Swahili'},
+  'ghana':{capital:'Accra',dish:'Jollof rice',animal:'Eagle',plant:'Cacao',plantNote:'Cacao trees thrive in Ghana’s humid forest belt and support one of the country’s most important crops.',fact:'Ghana lies on the Gulf of Guinea and was the first sub-Saharan African colony to gain independence in 1957.',language:'English'},
+  'nigeria':{capital:'Abuja',dish:'Jollof rice',animal:'Eagle',plant:'Costus spectabilis',plantNote:'Costus spectabilis is Nigeria’s national floral emblem, with yellow flowers close to the ground.',fact:'Nigeria is Africa’s most populous country.',language:'English'},
+  'ethiopia':{capital:'Addis Ababa',dish:'Injera & doro wat',animal:'Gelada',plant:'Coffee',plantNote:'Arabica coffee originated in Ethiopia’s highlands and still grows wild in forest ecosystems.',fact:'Ethiopia uses a calendar with 13 months.',language:'Amharic + many regional languages'},
+  'mauritius':{capital:'Port Louis',dish:'Dholl puri',animal:'Dodo',plant:'Trochetia',plantNote:'The rare red-flowering Trochetia boutoniana is Mauritius’s national flower.',fact:'Mauritius is a volcanic island nation east of Madagascar.',language:'English · French · Mauritian Creole'},
+  'seychelles':{capital:'Victoria',dish:'Octopus curry',animal:'Aldabra giant tortoise',plant:'Coco de mer',plantNote:'Coco de mer palms produce the world’s largest seed and grow naturally on only a few Seychelles islands.',fact:'Seychelles is an Indian Ocean archipelago of granitic and coral islands.',language:'Seychellois Creole · English · French'},
+  'libya':{capital:'Tripoli',dish:'Bazin',animal:'Fennec fox',plant:'Date palm',plantNote:'Date palms provide shade and food around Libya’s oases and coastal settlements.',fact:'Most of Libya lies within the Sahara Desert.',language:'Arabic'},
+  'senegal':{capital:'Dakar',dish:'Thieboudienne',animal:'Lion',plant:'Baobab',plantNote:'Ancient baobabs are deeply woven into Senegalese landscapes, village life and folklore.',fact:'Dakar sits on the Cap-Vert peninsula, one of mainland Africa’s westernmost points.',language:'French · Wolof widely spoken'},
+  'cote-d-ivoire':{capital:'Yamoussoukro',dish:'Attiéké & grilled fish',animal:'Elephant',plant:'Cacao',plantNote:'Cacao trees are central to Côte d’Ivoire’s landscape and economy; the country is the world’s largest cocoa producer.',fact:'Abidjan is the largest city, while Yamoussoukro is the political capital.',language:'French'},
+  'cameroon':{capital:'Yaoundé',dish:'Ndolé',animal:'Lion',plant:'African cherry',plantNote:'Prunus africana grows in Cameroon’s highland forests and is an important native tree.',fact:'Cameroon is sometimes called Africa in miniature because of its varied landscapes and cultures.',language:'French · English'},
+  'madagascar':{capital:'Antananarivo',dish:'Romazava',animal:'Ring-tailed lemur',plant:'Traveller’s palm',plantNote:'The fan-shaped traveller’s palm is a Madagascar icon, and much of the island’s flora is found nowhere else.',fact:'Madagascar split from other landmasses millions of years ago, helping produce extraordinary endemism.',language:'Malagasy · French'},
+  'hong-kong':{capital:'Hong Kong',dish:'Dim sum',animal:'Chinese white dolphin',plant:'Bauhinia',plantNote:'The stylised Bauhinia flower appears on Hong Kong’s flag and emblem.',fact:'Hong Kong combines dense urban districts with extensive country parks and hiking trails.',language:'Cantonese · English'},
+  'myanmar':{capital:'Naypyidaw',dish:'Mohinga',animal:'Green peafowl',plant:'Padauk',plantNote:'Golden padauk flowers bloom around the hot season and are closely associated with Thingyan celebrations.',fact:'Myanmar is home to thousands of Buddhist temples and pagodas across Bagan.',language:'Burmese'},
+  'nepal':{capital:'Kathmandu',dish:'Dal bhat',animal:'Cow',plant:'Rhododendron',plantNote:'Rhododendron arboreum paints Himalayan hillsides red and is Nepal’s national flower.',fact:'Nepal contains eight of the world’s fourteen mountains above 8,000 metres.',language:'Nepali'},
+  'bangladesh':{capital:'Dhaka',dish:'Hilsa curry',animal:'Royal Bengal tiger',plant:'White water lily',plantNote:'White water lilies are Bangladesh’s national flower and flourish across ponds and wetlands.',fact:'Bangladesh sits on the vast Ganges-Brahmaputra-Meghna river delta.',language:'Bengali'},
+  'pakistan':{capital:'Islamabad',dish:'Biryani',animal:'Markhor',plant:'Jasmine',plantNote:'White jasmine is Pakistan’s national flower and is prized for its fragrance.',fact:'Pakistan includes K2, the world’s second-highest mountain.',language:'Urdu · English'},
+  'kazakhstan':{capital:'Astana',dish:'Beshbarmak',animal:'Snow leopard',plant:'Tulip',plantNote:'Wild tulip species grow across Kazakhstan’s steppe and mountains, part of the plant’s Central Asian origin story.',fact:'Kazakhstan is the world’s largest landlocked country.',language:'Kazakh · Russian'},
+  'uzbekistan':{capital:'Tashkent',dish:'Plov',animal:'Snow leopard',plant:'Tulip',plantNote:'Wild tulips brighten Uzbekistan’s foothills in spring and reflect Central Asia’s rich bulb flora.',fact:'Samarkand and Bukhara were major cities on the Silk Road.',language:'Uzbek'},
+  'mongolia':{capital:'Ulaanbaatar',dish:'Buuz',animal:'Przewalski’s horse',plant:'Saxaul',plantNote:'Saxaul trees survive the Gobi’s extreme dryness and help stabilise desert soils.',fact:'Mongolia is one of the least densely populated countries in the world.',language:'Mongolian'},
+  'georgia':{capital:'Tbilisi',dish:'Khachapuri',animal:'Caucasian leopard',plant:'Grapevine',plantNote:'Georgia has an ancient wine culture, and grapevines are grown from humid western valleys to dry eastern regions.',fact:'Archaeological evidence places winemaking in Georgia thousands of years ago.',language:'Georgian'},
+  'armenia':{capital:'Yerevan',dish:'Khorovats',animal:'Armenian mouflon',plant:'Apricot',plantNote:'Apricot trees are deeply associated with Armenia and flower beautifully before fruiting in summer.',fact:'Armenia was the first state to adopt Christianity as an official religion, in the early fourth century.',language:'Armenian'},
+  'azerbaijan':{capital:'Baku',dish:'Plov',animal:'Karabakh horse',plant:'Khari bulbul orchid',plantNote:'Khari bulbul is a distinctive orchid associated especially with the Karabakh region.',fact:'Azerbaijan has one of the world’s highest concentrations of mud volcanoes.',language:'Azerbaijani'},
+  'israel':{capital:'Jerusalem (status disputed)',dish:'Falafel',animal:'Mountain gazelle',plant:'Cyclamen',plantNote:'Wild cyclamen flower across rocky Mediterranean hillsides during the cooler months.',fact:'The country spans Mediterranean coast, uplands and the Negev Desert within a relatively small area.',language:'Hebrew · Arabic'},
+  'saudi-arabia':{capital:'Riyadh',dish:'Kabsa',animal:'Arabian camel',plant:'Date palm',plantNote:'Date palms are deeply tied to oasis agriculture, food and shade across the Arabian Peninsula.',fact:'Saudi Arabia occupies most of the Arabian Peninsula.',language:'Arabic'},
+  'kuwait':{capital:'Kuwait City',dish:'Machboos',animal:'Arabian camel',plant:'Arfaj',plantNote:'Arfaj is a hardy yellow-flowering desert shrub and Kuwait’s national flower.',fact:'Kuwait sits at the northwestern corner of the Persian Gulf.',language:'Arabic'},
+  'bahrain':{capital:'Manama',dish:'Machboos',animal:'Arabian oryx',plant:'Date palm',plantNote:'Date palms have long supported Bahrain’s oasis settlements and agricultural gardens.',fact:'Bahrain is an island kingdom linked to Saudi Arabia by the King Fahd Causeway.',language:'Arabic'},
+  'lebanon':{capital:'Beirut',dish:'Kibbeh',animal:'Striped hyena',plant:'Lebanon cedar',plantNote:'The Lebanon cedar is the country’s defining botanical symbol and appears on the national flag.',fact:'Lebanon’s mountains rise sharply from the Mediterranean coast.',language:'Arabic · French and English widely used'},
+  'guatemala':{capital:'Guatemala City',dish:'Pepián',animal:'Resplendent quetzal',plant:'Monja blanca orchid',plantNote:'The white monja blanca orchid is Guatemala’s national flower.',fact:'Guatemala contains major Maya archaeological sites and a chain of active volcanoes.',language:'Spanish + Mayan languages'},
+  'belize':{capital:'Belmopan',dish:'Rice & beans',animal:'Baird’s tapir',plant:'Black orchid',plantNote:'Belize’s black orchid has striking purple-brown flowers and is the national flower.',fact:'Belize has the second-largest barrier reef system in the world.',language:'English'},
+  'nicaragua':{capital:'Managua',dish:'Gallo pinto',animal:'Guardabarranco',plant:'Sacuanjoche',plantNote:'Sacuanjoche, a fragrant frangipani, is Nicaragua’s national flower.',fact:'Nicaragua is the largest country in Central America by area.',language:'Spanish'},
+  'honduras':{capital:'Tegucigalpa',dish:'Baleadas',animal:'White-tailed deer',plant:'Brassavola digbyana orchid',plantNote:'The fragrant white Brassavola digbyana is Honduras’s national flower.',fact:'The Maya city of Copán is one of Honduras’s great archaeological sites.',language:'Spanish'},
+  'el-salvador':{capital:'San Salvador',dish:'Pupusas',animal:'Torogoz',plant:'Izote',plantNote:'The creamy white izote flower is El Salvador’s national flower and also used in cooking.',fact:'El Salvador is the smallest mainland country in Central America.',language:'Spanish'},
+  'french-polynesia':{capital:'Papeete',dish:'Poisson cru',animal:'Green sea turtle',plant:'Tiare Tahiti',plantNote:'The fragrant white tiare flower is a beloved symbol of Tahiti and is often worn or used in leis.',fact:'French Polynesia contains more than 100 islands spread across a huge area of the South Pacific.',language:'French · Tahitian'}
+};
+function countryQuickLookProfile(country=''){
+  const slug=slugifyCountry(country),name=canonicalCountryDisplay(country)||trimmedScalarText(country,'Current country')||'Current country',facts=ownMapValue(COUNTRY_QUICK_LOOK_FACTS,slug,null),phrase=ownMapValue(TOILET_PHRASE_BY_COUNTRY,slug,null),currency=countryCurrencyDetails(name,'AUD');
+  return {slug,name,flag:ownMapValue(COUNTRY_FLAGS,slug,'🌐'),capital:facts?.capital||'Not stored offline yet',currency:`${currency.name} (${currency.code})`,language:facts?.language||phrase?.language||'Varies locally',dish:facts?.dish||'Not stored offline yet',animal:facts?.animal||'Not stored offline yet',plant:facts?.plant||'Not stored offline yet',plantNote:facts?.plantNote||'Plant detail is not stored offline for this country yet.',fact:facts?.fact||'Use a web search when you want a deeper read about this country.'};
+}
+function countryQuickLookOverlay(country=''){
+  const info=countryQuickLookProfile(country);
+  return `<div class="country-quick-look-backdrop" data-country-quick-look-backdrop><section class="country-quick-look-panel" role="dialog" aria-modal="true" aria-label="${esc(info.name)} country quick look"><button class="country-quick-look-close" type="button" data-country-quick-look-close aria-label="Close country quick look">×</button><header class="country-quick-look-head"><span class="country-quick-look-flag">${esc(info.flag)}</span><div><small>COUNTRY QUICK LOOK · OFFLINE</small><h2>${esc(info.name)}</h2><p>A few little things to know.</p></div></header><div class="country-quick-look-grid"><div><small>CAPITAL</small><b>${esc(info.capital)}</b></div><div><small>CURRENCY</small><b>${esc(info.currency)}</b></div><div><small>LANGUAGE</small><b>${esc(info.language)}</b></div><div><small>FOOD TO KNOW</small><b>${esc(info.dish)}</b></div><div><small>ANIMAL SYMBOL</small><b>${esc(info.animal)}</b></div></div><div class="country-quick-look-plant"><span aria-hidden="true">🌿</span><div><small>PLANT / FLOWER</small><b>${esc(info.plant)}</b><p>${esc(info.plantNote)}</p></div></div><div class="country-quick-look-fact"><small>QUICK FACT</small><p>${esc(info.fact)}</p></div><footer>Small cultural snapshot only. Food, animal and plant symbols can be traditional or widely associated rather than formally designated.</footer></section></div>`;
+}
 function countryCurrencyCode(country='',fallback='AUD'){
   return ownMapValue(COUNTRY_CURRENCY_CODES,slugifyCountry(country),'')||currencyCode(fallback,'AUD');
 }
@@ -961,9 +1204,9 @@ const defaultState = {
 
 function demoReviewState(){
   const demo=clone(defaultState);
-  const reference='2029-07-24';
+  const reference='2029-07-10';
   demo.version=APP_VERSION;
-  demo.settings={...demo.settings,journeyStart:'2026-01-14',travellers:2,lastDestinationKey:'Fethiye|Turkey|2029-07-27'};
+  demo.settings={...demo.settings,journeyStart:'2026-01-14',travellers:2,lastDestinationKey:'Istanbul|Turkey|2029-06-30'};
   demo.annualBudget=148000;
   demo.annualBudgets={'2026':90000,'2027':140000,'2028':145000,'2029':148000};
   const stays=[
@@ -996,11 +1239,7 @@ function demoReviewState(){
     ['barcelona29','Barcelona','Spain','2029-03-28','2029-04-30','Standard','EUR','€',1.70,6200,155],
     ['morocco29','Marrakesh','Morocco','2029-04-30','2029-05-31','Standard','MAD','DH',0.16,30000,220],
     ['algeria29','Algiers','Algeria','2029-05-31','2029-06-30','Standard','DZD','DA',0.011,430000,190],
-    ['istanbul29','Istanbul','Turkey','2029-06-30','2029-07-08','Standard','TRY','₺',0.046,32000,230],
-    ['ankara29','Ankara','Turkey','2029-07-08','2029-07-14','Standard','TRY','₺',0.046,24000,450],
-    ['cappadocia29','Cappadocia','Turkey','2029-07-14','2029-07-21','Standard','TRY','₺',0.046,28000,290],
-    ['antalya29','Antalya','Turkey','2029-07-21','2029-07-27','Standard','TRY','₺',0.046,26000,540],
-    ['fethiye29','Fethiye','Turkey','2029-07-27','2029-07-31','Standard','TRY','₺',0.046,19000,200],
+    ['istanbul29','Istanbul','Turkey','2029-06-30','2029-07-31','Standard','TRY','₺',0.046,115000,230],
     ['cairo29','Cairo','Egypt','2029-07-31','2029-08-20','Standard','EGP','E£',0.031,125000,210],
     ['alexandria29','Alexandria','Egypt','2029-08-20','2029-08-31','Standard','EGP','E£',0.031,62000,95],
     ['luxor29','Luxor','Egypt','2029-08-31','2029-09-10','Standard','EGP','E£',0.031,70000,125],
@@ -1010,7 +1249,7 @@ function demoReviewState(){
     ['dublin29','Dublin','Ireland','2029-12-05','2029-12-30','Standard','EUR','€',1.72,4700,185]
   ];
   const schengenIds=new Set(['barcelona29','lisbon29']);
-  demo.itinerary=stays.map(([id,city,country,arrival,departure,type,currency,symbol,rate,budget,km])=>({id,coverageType:'Destination',city,country,arrival,departure,type,currency,symbol,rate,budget,km,schengenAllowed:true,schengenStart:schengenIds.has(id)?'2029-09-10':'',schengenEnd:schengenIds.has(id)?'2029-10-19':'',notes:id==='antalya29'?'Current Turkey simulation stay.':id==='fethiye29'?'Next Turkey stop.':id==='lisbon29'?'Future Portugal stay.':id==='euroRV29'?'Planned European RV month.':'Completed simulation itinerary data.'}));
+  demo.itinerary=stays.map(([id,city,country,arrival,departure,type,currency,symbol,rate,budget,km])=>({id,coverageType:'Destination',city,country,arrival,departure,type,currency,symbol,rate,budget,km,schengenAllowed:true,schengenStart:schengenIds.has(id)?'2029-09-10':'',schengenEnd:schengenIds.has(id)?'2029-10-19':'',notes:id==='istanbul29'?'Current Turkey simulation stay.':id==='cairo29'?'Next Egypt stay.':id==='lisbon29'?'Future Portugal stay.':id==='euroRV29'?'Planned European RV month.':'Completed simulation itinerary data.'}));
   const demoRoutes={
     motorhome27:['Munich','Salzburg','Innsbruck','Bolzano','Vaduz','Lucerne','Zurich','Freiburg','Stuttgart','Munich'],
     cruise28:['Rome','Barcelona','Lisbon','Miami'],
@@ -1031,13 +1270,13 @@ function demoReviewState(){
   const positionDate=(entry,fraction)=>{const span=Math.max(1,days(entry.arrival,entry.departure)-1);return addDaysLocal(entry.arrival,Math.max(0,Math.min(span,Math.floor(span*fraction))));};
   demo.itinerary.forEach(entry=>{
     if(entry.arrival>reference)return;
-    const isCurrent=entry.id==='antalya29';
+    const isCurrent=entry.id==='istanbul29';
     const shares=isCurrent?currentShares:completedShares;
     shares.forEach((share,index)=>{
       const date=positionDate(entry,[.12,.27,.43,.58,.73,.86][index]);
       if(date>reference)return;
       const amount=Math.max(1,Math.round(Number(entry.budget||0)*share));
-      exp.push({id:`sim-exp-${expenseNo++}`,date,category:categories[index],amount,currency:entry.currency,symbol:entry.symbol,rate:entry.rate,destinationBudget:'Yes',notes:isCurrent?['Antalya groceries','Turkish cafés and meals','Tram, taxi and local transport','Museum and historic-site visits','Market purchases and travel supplies','Laundry and small costs'][index]:'Completed journey living expense',verified:true});
+      exp.push({id:`sim-exp-${expenseNo++}`,date,category:categories[index],amount,currency:entry.currency,symbol:entry.symbol,rate:entry.rate,notes:isCurrent?['Istanbul groceries','Turkish cafés and meals','Metro, ferry and local transport','Museums, gardens and historic sites','Markets and travel supplies','Laundry and small costs'][index]:'Completed journey living expense',verified:true});
     });
   });
   demo.expenses=exp;
@@ -1049,36 +1288,37 @@ function demoReviewState(){
     const pastOrCurrent=entry.arrival<=reference;
     if(entry.type==='Standard'){
       const audCost=Math.round(Math.max(3,days(entry.arrival,entry.departure))*(nightlyAud[entry.country]||110));
-      reservations.push({id:`sim-res-${reservationNo++}`,title:accommodationName(entry),type:'Hotel',date:entry.arrival,endDate:entry.departure,currency:'AUD',original:audCost,rate:1,aud:audCost,status:pastOrCurrent?'Paid':'Booked',destinationBudget:'No',destinationBudgetPreference:'No',travellers:2,itineraryId:entry.id,reference:`ACCOM-${entry.id.toUpperCase()}`,notes:pastOrCurrent?'Accommodation confirmed and paid.':'Accommodation confirmed in advance.',verified:true});
+      reservations.push({id:`sim-res-${reservationNo++}`,title:accommodationName(entry),type:'Hotel',date:entry.arrival,endDate:entry.departure,currency:'AUD',original:audCost,rate:1,aud:audCost,status:pastOrCurrent?'Paid':'Booked',destinationBudget:'No',travellers:2,itineraryId:entry.id,reference:`ACCOM-${entry.id.toUpperCase()}`,notes:pastOrCurrent?'Accommodation confirmed and paid.':'Accommodation confirmed in advance.',verified:true});
     }
     if(index===0)return;
     const previous=demo.itinerary[index-1];
     if(entry.type==='Cruise'){
-      reservations.push({id:`sim-res-${reservationNo++}`,title:`${itineraryTitle(entry)} Cruise`,type:'Cruise',date:entry.arrival,endDate:entry.departure,currency:'AUD',original:entry.id==='atlantic29'?6000:entry.id==='cruise28'?6000:5000,rate:1,status:pastOrCurrent?'Paid':'Booked',destinationBudget:'No',destinationBudgetPreference:'No',travellers:2,itineraryId:entry.id,reference:`CRUISE-${entry.id.toUpperCase()}`,notes:'Cruise booking confirmed.',verified:true});
+      reservations.push({id:`sim-res-${reservationNo++}`,title:`${itineraryTitle(entry)} Cruise`,type:'Cruise',date:entry.arrival,endDate:entry.departure,currency:'AUD',original:entry.id==='atlantic29'?6000:entry.id==='cruise28'?6000:5000,rate:1,status:pastOrCurrent?'Paid':'Booked',destinationBudget:'No',travellers:2,itineraryId:entry.id,reference:`CRUISE-${entry.id.toUpperCase()}`,notes:'Cruise booking confirmed.',verified:true});
     }else if(entry.type==='Motorhome'){
       const amount=entry.id==='usa29'?12000:entry.id==='euroRV29'?8500:entry.id==='motorhome27'?11000:9000;
-      reservations.push({id:`sim-res-${reservationNo++}`,title:entry.id==='euroRV29'?'European RV Hire — Lisbon to Edinburgh':`${entry.city} RV / Motorhome Hire`,type:'RV',date:entry.arrival,endDate:entry.departure,currency:'AUD',original:amount,rate:1,status:pastOrCurrent?'Paid':'Booked',destinationBudget:'No',destinationBudgetPreference:'No',travellers:2,itineraryId:entry.id,reference:`RV-${entry.id.toUpperCase()}`,notes:'RV booking confirmed.',verified:true});
+      reservations.push({id:`sim-res-${reservationNo++}`,title:entry.id==='euroRV29'?'European RV Hire — Lisbon to Edinburgh':`${entry.city} RV / Motorhome Hire`,type:'RV',date:entry.arrival,endDate:entry.departure,currency:'AUD',original:amount,rate:1,status:pastOrCurrent?'Paid':'Booked',destinationBudget:'No',travellers:2,itineraryId:entry.id,reference:`RV-${entry.id.toUpperCase()}`,notes:'RV booking confirmed.',verified:true});
     }else{
       const trainIds=new Set(['amsterdam27','prague28','alexandria29','luxor29','edinburgh29','dublin29']);
       const type=trainIds.has(entry.id)?'Train':'Flight';
       const currency=entry.currency==='AUD'?'AUD':entry.currency;
       const rate=entry.rate||1;
       const audCost=type==='Train'?180:520;
-      reservations.push({id:`sim-res-${reservationNo++}`,title:`${itineraryTitle(previous)} to ${entry.city} ${type}`,type,date:entry.arrival,currency,original:Math.max(1,Math.round(audCost/Math.max(.000001,rate))),rate,status:pastOrCurrent?'Paid':'Booked',destinationBudget:'No',destinationBudgetPreference:'No',flightScope:type==='Flight'?(countryIdentityEquals(previous.country,entry.country)?'Domestic':'International'):'',travellers:2,itineraryId:entry.id,reference:`TRAVEL-${entry.id.toUpperCase()}`,notes:'Transport confirmed.',verified:true});
+      reservations.push({id:`sim-res-${reservationNo++}`,title:`${itineraryTitle(previous)} to ${entry.city} ${type}`,type,date:entry.arrival,currency,original:Math.max(1,Math.round(audCost/Math.max(.000001,rate))),rate,status:pastOrCurrent?'Paid':'Booked',destinationBudget:'No',travellers:2,itineraryId:entry.id,reference:`TRAVEL-${entry.id.toUpperCase()}`,notes:'Transport confirmed.',flightScope:type==='Flight'?(slugifyCountry(previous.country)===slugifyCountry(entry.country)?'Domestic':'International'):'',trainScope:type==='Train'?(slugifyCountry(previous.country)===slugifyCountry(entry.country)?'Domestic':'International'):'',verified:true});
     }
   });
   reservations.push(
-    {id:`sim-res-${reservationNo++}`,title:'Lisbon Oceanarium',type:'Tickets & Attractions',date:'2029-09-27',currency:'EUR',original:50,rate:1.72,status:'Paid',destinationBudget:'Yes',destinationBudgetPreference:'Yes',travellers:2,itineraryId:'lisbon29',reference:'LIS-OCEAN-0627',notes:'Timed entry confirmed.',verified:true},
-    {id:`sim-res-${reservationNo++}`,title:'Sintra Palaces Day',type:'Tickets & Attractions',date:'2029-10-02',currency:'EUR',original:72,rate:1.72,status:'Booked',destinationBudget:'Yes',destinationBudgetPreference:'Yes',travellers:2,itineraryId:'lisbon29',reference:'SINTRA-0702',notes:'Train and palace entries booked.',verified:true},
-    {id:`sim-res-${reservationNo++}`,title:'Edinburgh Castle',type:'Tickets & Attractions',date:'2029-11-16',currency:'GBP',original:46,rate:1.98,status:'Booked',destinationBudget:'Yes',destinationBudgetPreference:'Yes',travellers:2,itineraryId:'edinburgh29',reference:'EDIN-CASTLE-0816',notes:'Advance timed entry.',verified:true}
+    {id:`sim-res-${reservationNo++}`,title:'Lisbon Oceanarium',type:'Tickets & Attractions',date:'2029-09-27',currency:'EUR',original:50,rate:1.72,status:'Paid',destinationBudget:'Yes',travellers:2,itineraryId:'lisbon29',reference:'LIS-OCEAN-0627',notes:'Timed entry confirmed.',verified:true},
+    {id:`sim-res-${reservationNo++}`,title:'Sintra Palaces Day',type:'Tickets & Attractions',date:'2029-10-02',currency:'EUR',original:72,rate:1.72,status:'Booked',destinationBudget:'Yes',travellers:2,itineraryId:'lisbon29',reference:'SINTRA-0702',notes:'Train and palace entries booked.',verified:true},
+    {id:`sim-res-${reservationNo++}`,title:'Edinburgh Castle',type:'Tickets & Attractions',date:'2029-11-16',currency:'GBP',original:46,rate:1.98,status:'Booked',destinationBudget:'Yes',travellers:2,itineraryId:'edinburgh29',reference:'EDIN-CASTLE-0816',notes:'Advance timed entry.',verified:true}
   );
   demo.reservations=reservations.map(record=>({...record,time:record.time||({Hotel:'15:00',Airbnb:'15:00',Flight:'09:00',Train:'10:00',Cruise:'16:00',RV:'09:00','Tickets & Attractions':'10:00'}[record.type]||'10:00')}));
 
   demo.events=[
-    {id:'evt-tr-1',title:'Antalya Old Town & harbour',date:'2029-07-22',time:'10:00',notes:'Kaleiçi, harbour and an easy walking day.'},
-    {id:'evt-tr-2',title:'Antalya Museum',date:'2029-07-24',time:'10:30',notes:'Current-day simulation event.'},
-    {id:'evt-tr-3',title:'Perge historic site',date:'2029-07-25',time:'09:00',notes:'Morning historic-site visit.'},
-    {id:'evt-tr-4',title:'Prepare for Fethiye',date:'2029-07-26',time:'16:00',notes:'Pack and confirm the next Turkey transfer.'},
+    {id:'evt-ist-1',title:'Topkapı Palace & Gülhane Park',date:'2029-07-11',time:'09:30',notes:'Palace morning, then gardens and an easy walk.'},
+    {id:'evt-ist-2',title:'Bosphorus ferry & Kadıköy market',date:'2029-07-13',time:'10:00',notes:'Ferry across, market lunch and waterfront.'},
+    {id:'evt-ist-3',title:'Istanbul Archaeology Museums',date:'2029-07-17',time:'10:00',notes:'Museum day near Sultanahmet.'},
+    {id:'evt-ist-4',title:'Grand Bazaar & Spice Bazaar',date:'2029-07-21',time:'10:30',notes:'Markets and shopping day.'},
+    {id:'evt-ist-5',title:'Prepare for Cairo transfer',date:'2029-07-30',time:'16:00',notes:'Pack, confirm flight and Cairo accommodation.'},
     {id:'evt-lis-1',title:'Belém and waterfront day',date:'2029-09-26',time:'10:00',notes:'Easy day — monastery, pastries and waterfront.'},
     {id:'evt-lis-2',title:'Lisbon Oceanarium',date:'2029-09-27',time:'11:00',notes:'Tickets already booked.'},
     {id:'evt-lis-3',title:'Alfama and Fado evening',date:'2029-09-29',time:'17:30',notes:'Dinner before the show.'},
@@ -1090,24 +1330,24 @@ function demoReviewState(){
   ];
   demo.checklist=[
     {id:'ck1',list:'Permanent',phase:'Current Stay',task:'Check passports are stored safely',done:true,due:'',required:true,notes:''},
-    {id:'ck2',list:'Permanent',phase:'Before You Leave',task:'Check travel insurance remains current',done:true,due:'2029-07-26',required:true,notes:''},
-    {id:'ck3',list:'Permanent',phase:'Travel Day',task:'Charge iPad and power banks',done:false,due:'2029-07-27',required:true,notes:''},
-    {id:'ck4',list:'Destination',phase:'Before You Leave',task:'Confirm Fethiye accommodation details',done:true,due:'2029-07-26',required:true,notes:'Fethiye stay confirmed.'},
-    {id:'ck5',list:'Destination',phase:'Before You Leave',task:'Confirm Antalya to Fethiye transport details',done:false,due:'2029-07-26',required:true,notes:''},
-    {id:'ck6',list:'Destination',phase:'Before You Leave',task:'Save Fethiye offline map and key addresses',done:false,due:'2029-07-26',required:false,notes:''},
-    {id:'ck7',list:'Destination',phase:'Travel Day',task:'Check out in Antalya and travel to Fethiye',done:false,due:'2029-07-27',required:true,notes:''},
-    {id:'ck8',list:'Destination',phase:'Arrival & Settle In',task:'Check in and confirm Fethiye local transport',done:false,due:'2029-07-27',required:true,notes:''},
-    {id:'his1',list:'His',phase:'Current Stay',task:'Explore an Antalya transport or motoring stop',done:false,due:'',required:false,notes:''},
+    {id:'ck2',list:'Permanent',phase:'Before You Leave',task:'Check travel insurance remains current',done:true,due:'2029-07-29',required:true,notes:''},
+    {id:'ck3',list:'Permanent',phase:'Travel Day',task:'Charge iPad and power banks',done:false,due:'2029-07-31',required:true,notes:''},
+    {id:'ck4',list:'Destination',phase:'Before You Leave',task:'Confirm Cairo accommodation details',done:true,due:'2029-07-29',required:true,notes:'Cairo stay confirmed.'},
+    {id:'ck5',list:'Destination',phase:'Before You Leave',task:'Confirm Istanbul to Cairo flight details',done:false,due:'2029-07-30',required:true,notes:''},
+    {id:'ck6',list:'Destination',phase:'Before You Leave',task:'Save Cairo offline map and key addresses',done:false,due:'2029-07-30',required:false,notes:''},
+    {id:'ck7',list:'Destination',phase:'Travel Day',task:'Check out in Istanbul and travel to Cairo',done:false,due:'2029-07-31',required:true,notes:''},
+    {id:'ck8',list:'Destination',phase:'Arrival & Settle In',task:'Check in and confirm Cairo local transport',done:false,due:'2029-07-31',required:true,notes:''},
+    {id:'his1',list:'His',phase:'Current Stay',task:'Explore an Istanbul transport or motoring stop',done:false,due:'',required:false,notes:''},
     {id:'his2',list:'His',phase:'Current Stay',task:'Check Carlton replay availability',done:true,due:'',required:false,notes:''},
-    {id:'hers1',list:'Hers',phase:'Current Stay',task:'Visit Antalya old town and markets',done:false,due:'',required:false,notes:''},
-    {id:'hers2',list:'Hers',phase:'Current Stay',task:'Choose a Turkish historic-site or coastal day',done:true,due:'',required:false,notes:''}
+    {id:'hers1',list:'Hers',phase:'Current Stay',task:'Visit Istanbul bazaars and markets',done:false,due:'',required:false,notes:''},
+    {id:'hers2',list:'Hers',phase:'Current Stay',task:'Choose an Istanbul garden or historic site day',done:true,due:'',required:false,notes:''}
   ];
   demo.vault=[
     {id:'v1',name:'Cameron Passport',type:'Passport',owner:'Cameron',country:'Australia',reference:'P••••123',expiry:'2031-04-18',notes:'Australian passport',attachments:[]},
     {id:'v2',name:'Kym Passport',type:'Passport',owner:'Kym',country:'Australia',reference:'P••••456',expiry:'2030-11-02',notes:'Australian passport',attachments:[]},
     {id:'v3',name:'Annual Travel Insurance',type:'Insurance',owner:'Shared',country:'Worldwide',reference:'INS-2029',expiry:'2030-01-13',notes:'Emergency assistance details saved',attachments:[]},
     {id:'v4',name:'USA ESTA',type:'Visa',owner:'Shared',country:'United States',reference:'ESTA-2028',expiry:'2030-07-01',notes:'Both travellers approved',attachments:[]},
-    {id:'v5',name:'Antalya Accommodation Details',type:'Accommodation details',owner:'Shared',country:'Turkey',reference:'ACCOM-ANTALYA29',expiry:'',notes:'Current Antalya accommodation — fully paid.',attachments:[]},
+    {id:'v5',name:'Istanbul Accommodation Details',type:'Accommodation details',owner:'Shared',country:'Turkey',reference:'ACCOM-ISTANBUL29',expiry:'',notes:'Current Istanbul accommodation — confirmed.',attachments:[]},
     {id:'v6',name:'European RV Booking',type:'Accommodation details',owner:'Shared',country:'Europe',reference:'RV-EURORV29',expiry:'',notes:'Lisbon pickup to Edinburgh return / finish details.',attachments:[]},
     {id:'v7',name:'Emergency Contact Australia',type:'Emergency contact',owner:'Shared',country:'Australia',reference:'',expiry:'',notes:'Family emergency contact details',attachments:[]}
   ];
@@ -1126,6 +1366,7 @@ let serviceWorkerRegistrationError='';
 let serviceWorkerRegistrationPending=false;
 let state = loadState();
 let lastAppHealthRunIssues=[];
+let appHealthRunActive=false;
 let lastPersistedSnapshot = null;
 // Session-local revision of successfully persisted app state. Async exports use this
 // to detect if the live/persisted data changed while they were validating a snapshot.
@@ -1187,9 +1428,6 @@ let reservationMaxCost = '';
 let reservationQuickWindow = 'All';
 let reservationCurrencyFilter = 'All';
 let reservationReferenceFilter = 'All';
-let reservationTravelYearFilter = 'All';
-let reservationTravelHistoryDrilldownLabel = '';
-let reservationTravelHistoryDrilldownYear = 'All';
 let budgetPeriod = 'stay';
 let budgetYearOverviewOpen = false;
 let budgetAccountsOpen = true;
@@ -1234,7 +1472,9 @@ let vaultStreamingReveal = new Set();
 let vaultStreamingEmailOpen = false;
 let vaultStreamingEmailTapCount = 0;
 let vaultStreamingEmailLastTap = 0;
+let vaultStreamingGestureGuardUntil = 0;
 let toiletPhraseOpen = false;
+let countryQuickLookCountry = '';
 let vaultAttachmentViewers = new Set();
 // Short-lived marker used only while Safari hands focus from The Vault to a newly opened
 // protected screenshot viewer. The main app still relocks/hides during the handoff, but
@@ -1346,7 +1586,7 @@ function lockVaultForPageHide(preserveAttachmentViewer=false){
   const vaultWasExposed=screen==='vault'&&(vaultUnlocked||vaultStreamingOpen||Boolean(vaultFocusWidget)||Boolean(vaultRecordsExpanded)||Boolean(modal?.open)||Boolean(confirmDialog?.open));
   if(vaultWasExposed)vaultPrivacyGeneration++;
   if(!preserveAttachmentViewer)closeVaultAttachmentViewers();
-  vaultUnlocked=false;vaultUnlockTapCount=0;vaultUnlockLastTap=0;vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultFocusWidget='';vaultRecordsExpanded=false;
+  vaultUnlocked=false;vaultUnlockTapCount=0;vaultUnlockLastTap=0;vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;vaultFocusWidget='';vaultRecordsExpanded=false;
   if(vaultWasExposed){
     vaultPageHideRelockPending=true;
     try{document.body?.classList.add('vault-pagehide-locked');}catch{}
@@ -1354,7 +1594,14 @@ function lockVaultForPageHide(preserveAttachmentViewer=false){
     // Close it without running a stale cancel/rollback path; any unsaved form values were
     // never committed to state, while confirmDialog.close() resolves its action as false.
     try{if(!pinLockActive&&modal?.open)closeSharedModal('pagehide');}catch{}
-    try{if(confirmDialog?.open)confirmDialog.close('cancel');}catch{}
+    try{if(confirmDialog?.open)forceDialogClosed(confirmDialog,'cancel');}catch{}
+    // The shared dialogs are siblings of #app, so hiding #app alone is not a sufficient
+    // BFCache privacy boundary. Remove protected Vault form text/images from the DOM even
+    // if Safari needed the forced-close fallback above.
+    try{modalBody?.replaceChildren?.();modalBody.innerHTML='';setModalFeedback('');}catch{}
+    // Toasts are also outside #app and a successful Vault delete can include the protected
+    // record name. Clear them before Safari captures a background/BFCache snapshot.
+    try{[...activeToasts.values()].forEach(toast=>dismissToast(toast,true));activeToasts.clear();toastRegion?.replaceChildren?.();}catch{}
   }
 }
 function refreshAfterPageShow(){
@@ -1405,11 +1652,11 @@ function resetTransientUiAfterDataReplace(){
   calendarCursor=parseDate(itineraryReferenceDate())||parseDate(state.settings?.journeyStart)||parseDate('2026-01-14');
   calendarView='month';calendarSourceFilter='All';calendarTypeFilter='All';calendarSelectedDate='';calendarDayViewDate='';calendarFiltersOpen=false;
   itineraryYearFilter='All';itinerarySearchQuery='';itineraryCoverageMonths=12;itineraryMapExpanded=false;itineraryMapZoom=1.65;itineraryMapPanX=0;itineraryMapPanY=0;itineraryMapPanTouched=false;itineraryMapSelectedId='';itineraryMapActivePinKey='';itineraryMapPositionMode=false;itineraryMapExpandedRange=6;itineraryFocusMetric='';
-  reservationTab='All';reservationSort='Date';reservationStatusFilter='All';reservationOnlyCurrent=false;reservationOnlyUpcoming=true;reservationShowCompleted=false;reservationOnlyOverdue=false;reservationUpcomingOpen=false;reservationToolsOpen=false;reservationSearchQuery='';reservationDestinationFilter='All';reservationCountryFilter='All';reservationBudgetFilter='All';if(reservationSearchTimer){clearTimeout(reservationSearchTimer);reservationSearchTimer=null;}reservationFutureExpanded=false;reservationSortDirection='asc';reservationDateFrom='';reservationDateTo='';reservationMinCost='';reservationMaxCost='';reservationQuickWindow='All';reservationCurrencyFilter='All';reservationReferenceFilter='All';reservationTravelYearFilter='All';reservationTravelHistoryDrilldownLabel='';reservationTravelHistoryDrilldownYear='All';reservationPage=1;reservationPageSize=5;reservationCategoryFocus='';reservationCompletedTypeFilter='All';
+  reservationTab='All';reservationSort='Date';reservationStatusFilter='All';reservationOnlyCurrent=false;reservationOnlyUpcoming=true;reservationShowCompleted=false;reservationOnlyOverdue=false;reservationUpcomingOpen=false;reservationToolsOpen=false;reservationSearchQuery='';reservationDestinationFilter='All';reservationCountryFilter='All';reservationBudgetFilter='All';if(reservationSearchTimer){clearTimeout(reservationSearchTimer);reservationSearchTimer=null;}reservationFutureExpanded=false;reservationSortDirection='asc';reservationDateFrom='';reservationDateTo='';reservationMinCost='';reservationMaxCost='';reservationQuickWindow='All';reservationCurrencyFilter='All';reservationReferenceFilter='All';reservationPage=1;reservationPageSize=5;reservationCategoryFocus='';reservationCompletedTypeFilter='All';
   budgetPeriod='stay';budgetYearOverviewOpen=false;budgetAccountsOpen=true;budgetCategoryView='year';budgetMonthlyHistoryYear=null;budgetMonthlyHistoryManual=false;budgetAdvancedOpen=false;budgetSetupItineraryId='';budgetSetupContextKey='';budgetSetupManual=false;budgetFocusWidget='';
   journeyYearFilter='All';journeyYearFilters=new Set(['All']);journeyPage=1;journeyPageSize=10;journeySearchQuery='';journeyTypeFilter='All';journeyExpandedId='';journeyMapSelectedId='';journeyFocusWidget='';
   checklistPhase='Before You Leave';checklistExpandedLists=new Set();checklistFocusList='';
-  vaultTypeFilter='All';vaultOwnerFilter='All';vaultCountryFilter='All';vaultSearchQuery='';vaultFocusWidget='';vaultRecordsExpanded=false;vaultUnlocked=false;vaultUnlockTapCount=0;vaultUnlockLastTap=0;vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal=new Set();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;toiletPhraseOpen=false;
+  vaultTypeFilter='All';vaultOwnerFilter='All';vaultCountryFilter='All';vaultSearchQuery='';vaultFocusWidget='';vaultRecordsExpanded=false;vaultUnlocked=false;vaultUnlockTapCount=0;vaultUnlockLastTap=0;vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal=new Set();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;toiletPhraseOpen=false;countryQuickLookCountry='';
   mapYearFilters=new Set(['All']);mapModeFilters=new Set(['All']);mapExpanded=false;mapEditMode=false;mapZoom=1;mapPanX=0;mapPanY=0;mapPanTouched=false;
   // A restore/reset replaces the data behind every map gesture. Cancel any in-flight
   // drag/pan so a stale pointer/touch completion cannot write old coordinates into the
@@ -1562,7 +1809,7 @@ function scheduledScreenRefreshWouldDiscardDraft(){
   // Background/offline/data-change refreshes can arrive independently of the control the
   // user is editing. Preserve custom Streaming and inline Save-based drafts exactly as the
   // minute-clock refresh does. Restore is a hard replacement boundary and is exempt below.
-  return (screen==='vault'&&vaultStreamingOpen)||inlineDraftNeedsClockRefreshDeferral()||Boolean(expandedMapGesture||expandedPointerPan||activeMapDrag||activeItineraryMapDrag);
+  return (screen==='vault'&&(vaultStreamingOpen||vaultStreamingEmailOpen))||inlineDraftNeedsClockRefreshDeferral()||Boolean(expandedMapGesture||expandedPointerPan||activeMapDrag||activeItineraryMapDrag);
 }
 function scheduleScreenRefresh(entity='all'){
   if(!mutationAffectsScreen(entity)||mutationRenderQueued) return;
@@ -1655,8 +1902,20 @@ function confirmAction(message,{title='Confirm action',accept='Confirm',danger=t
       queueMicrotask(()=>refreshForDeviceClock());
     };
     confirmDialog.addEventListener('close',close);
-    confirmDialog.showModal();
-    requestAnimationFrame(()=>confirmAccept.focus());
+    try{
+      confirmDialog.showModal();
+      requestAnimationFrame(()=>confirmAccept.focus());
+    }catch(error){
+      // Safari can exceptionally refuse a dialog transition (for example after an
+      // interrupted lifecycle change). Fail closed and, crucially, release the global
+      // confirmation latch so every later Delete/Restore/Discard confirmation still works.
+      confirmDialog.removeEventListener('close',close);
+      confirmPending=false;
+      confirmAccept.disabled=false;
+      try{if(confirmDialog.open)forceDialogClosed(confirmDialog,'cancel');}catch{}
+      try{showToast('Confirmation could not open. No change was made. Try again.','error');}catch{}
+      resolve(false);
+    }
   });
 }
 function setButtonBusy(button,busy,label='Working…'){
@@ -1694,12 +1953,34 @@ function openSharedModal({title,body,feedback='',feedbackType=''}={}){
   modalBody.scrollTop=0;
   modalForm.scrollTop=0;
   setModalFeedback(feedback,feedbackType);
-  modal.showModal();
+  try{
+    modal.showModal();
+  }catch(error){
+    // A transient Safari dialog failure must not poison the next edit session or
+    // leave the application with handlers attached to a modal that never opened.
+    try{if(modal.open)modal.close('open-failed');}catch{}
+    try{showToast('The edit window could not be opened. Try again.','error');}catch{}
+    return false;
+  }
   requestAnimationFrame(()=>{modalBody.scrollTop=0;modalForm.scrollTop=0;modalForm.querySelector('input,select,textarea,button')?.focus({preventScroll:true});});
+  return true;
+}
+function forceDialogClosed(dialog,reason='cancel'){
+  if(!dialog?.open)return true;
+  try{dialog.close(reason);}catch{}
+  if(!dialog.open)return true;
+  // Safari lifecycle/BFCache transitions can exceptionally reject close(). Remove the
+  // open state directly and synthesize a close notification so pending dialog cleanup
+  // and confirmation promises do not remain latched forever.
+  try{dialog.returnValue=reason;dialog.removeAttribute('open');}catch{}
+  if(!dialog.open){
+    try{dialog.dispatchEvent(new Event('close'));}catch{try{dialog.onclose?.({type:'close'});}catch{}}
+  }
+  return !dialog.open;
 }
 function closeSharedModal(reason='cancelled'){
   if(modal.open){
-    modal.close(reason);
+    forceDialogClosed(modal,reason);
     // A form can remain open across a device-clock minute/date boundary. Once the
     // blocking dialog is gone, immediately reconcile the visible screen to the iPad
     // clock rather than waiting for the periodic timer or a focus/navigation event.
@@ -1741,6 +2022,25 @@ function itineraryTitle(entry){
   if(route.length>=2)return `${route[0].label} → ${route[route.length-1].label}`;
   const city=trimmedScalarText(entry?.city,''),country=trimmedScalarText(entry?.country,''),savedTitle=trimmedScalarText(entry?.title,'');
   return [city,country].filter(Boolean).join(', ') || savedTitle || (mode==='Motorhome'?'Motorhome trip':mode==='Cruise'?'Cruise':'Planned travel');
+}
+function itineraryIsRouted(entry={}){return ['Motorhome','Cruise'].includes(itineraryMode(entry?.type||'Standard'));}
+function routedDepartureIdentity(entry={}){
+  if(!entry||entry.coverageType==='Intentional Gap')return {city:'',country:'',label:''};
+  const routed=itineraryIsRouted(entry),route=routed?normalizeDetailedRoutePoints(entry.routePoints):[];
+  const departure=trimmedScalarText(route[0]?.label,trimmedScalarText(entry.city,trimmedScalarText(entry.country,'')));
+  const directCountry=trimmedScalarText(entry.country,'');
+  let country=routed?toiletPhraseDepartureCountry(departure,directCountry):directCountry;
+  if(!country&&directCountry&&!ROUTE_CONTEXT_SUFFIX_KEYS.has(canonicalIdentityKey(directCountry))&&!['cruise','motorhome','world'].includes(slugifyCountry(directCountry)))country=canonicalCountryDisplay(directCountry);
+  const context=routeContextLabelParts(departure),parsed=locationLabelParts(context.place||departure);
+  let city=locationPlaceWithoutRegionQualifier(parsed.countryKnown?parsed.place:(context.place||departure));
+  if(routed&&city){const candidates=offlineGeoCandidates(city).filter(candidate=>candidate&&!knownCountryIdentity(candidate));const resolved=[...candidates].reverse().find(candidate=>offlineGeoLookup(candidate));if(resolved)city=locationPlaceWithoutRegionQualifier(resolved);}
+  if(!city&&country&&!routed)city=trimmedScalarText(entry.city,'');
+  return {city:trimmedScalarText(city,''),country:country?canonicalCountryDisplay(country):'',label:departure};
+}
+function routedJourneyTitle(entry={}){
+  const saved=trimmedScalarText(entry?.title,'');
+  if(itineraryIsRouted(entry)&&saved)return saved;
+  return itineraryTitle(entry);
 }
 function legacyRouteStopIdentityKeyV2(value=''){
   const raw=trimmedScalarText(value,'');if(!raw)return '';
@@ -1861,7 +2161,7 @@ function normalizeItineraryEntry(entry={},fallback={}){
   const rawCountry=trimmedScalarText(entry.country??fallback.country,titleLocation.country);
   const rawCity=trimmedScalarText(entry.city??fallback.city,titleLocation.place||rawTitle);
   const intentionalGap=coverageType==='Intentional Gap';
-  const type=intentionalGap?'Standard':rawType;
+  const type=intentionalGap?'Standard':rawType,routed=!intentionalGap&&['Motorhome','Cruise'].includes(type);
   const country=intentionalGap?'':(knownCountryIdentity(rawCountry)?canonicalCountryDisplay(rawCountry):rawCountry);
   const city=intentionalGap?'':rawCity;
   const fallbackCurrency=currencyCode(entry.currency||fallback.currency||'AUD');
@@ -1889,7 +2189,8 @@ function normalizeItineraryEntry(entry={},fallback={}){
   const historyKm=intentionalGap?0:(entry.historyKm===undefined?undefined:finiteNumber(entry.historyKm,undefined,0,100_000_000));
   const historyNotes=intentionalGap?'':(typeof entry.historyNotes==='string'?entry.historyNotes:undefined);
   const sourceJourneyId=intentionalGap?'':optionalRecordId(entry.sourceJourneyId);
-  return {...entry,id:safeRecordId(entry.id),coverageType,type,city,country,title:itineraryTitle({city,country,title:intentionalGap?'':rawTitle,type,routePoints}),arrival,departure,currency:intentionalGap?'AUD':currency,symbol:intentionalGap?'$':symbol,rate:intentionalGap?1:rate,budget:intentionalGap?0:budget,km,budgetConfigured:intentionalGap?false:budgetConfigured,budgetConfiguredAt:intentionalGap?'':budgetConfiguredAt,schengenAllowed:intentionalGap?true:schengenAllowed,schengenStart:intentionalGap?'':schengenStart,schengenEnd:intentionalGap?'':schengenEnd,mapX,mapY,historyMapX:historyMapPair.mapX,historyMapY:historyMapPair.mapY,historyKm,historyNotes,sourceJourneyId,routePoints,notes:scalarText(entry.notes,''),intentionalLabel:trimmedScalarText(entry.intentionalLabel,rawTitle||'Travel Day / Intentional Gap'),flag:countryVisual(country,type).flag};
+  const normalizedTitle=intentionalGap?'':(routed&&rawTitle?rawTitle:itineraryTitle({city,country,title:rawTitle,type,routePoints}));
+  return {...entry,id:safeRecordId(entry.id),coverageType,type,city,country,title:normalizedTitle,arrival,departure,currency:intentionalGap?'AUD':currency,symbol:intentionalGap?'$':symbol,rate:intentionalGap?1:rate,budget:intentionalGap?0:budget,km,budgetConfigured:intentionalGap?false:budgetConfigured,budgetConfiguredAt:intentionalGap?'':budgetConfiguredAt,schengenAllowed:intentionalGap?true:schengenAllowed,schengenStart:intentionalGap?'':schengenStart,schengenEnd:intentionalGap?'':schengenEnd,mapX,mapY,historyMapX:historyMapPair.mapX,historyMapY:historyMapPair.mapY,historyKm,historyNotes,sourceJourneyId,routePoints,notes:scalarText(entry.notes,''),intentionalLabel:trimmedScalarText(entry.intentionalLabel,rawTitle||'Travel Day / Intentional Gap'),flag:countryVisual(country,type).flag};
 }
 function itineraryFinancialOwnerForDateInRows(date,rows=[]){
   const key=String(date||'');if(!validISODate(key))return null;
@@ -2327,7 +2628,7 @@ function hydrate(raw){
   if(Object.prototype.hasOwnProperty.call(out.settings,'destinationChecklistHistory')){
     const rawHistory=out.settings.destinationChecklistHistory&&typeof out.settings.destinationChecklistHistory==='object'&&!Array.isArray(out.settings.destinationChecklistHistory)?out.settings.destinationChecklistHistory:{};
     const normalizedHistory=Object.create(null);
-    Object.entries(rawHistory).slice(-120).forEach(([destination,snapshot])=>{const key=canonicalChecklistDestinationHistoryKey(destination);if(!key||!snapshot||typeof snapshot!=='object'||Array.isArray(snapshot))return;const normalizedSnapshot=normalizedHistory[key]||Object.create(null);Object.entries(snapshot).forEach(([id,value])=>{const itemId=String(id||'').trim();if(!itemId)return;if(typeof value==='boolean'){normalizedSnapshot[itemId]=value;return;}if(value&&typeof value==='object'&&!Array.isArray(value)){normalizedSnapshot[itemId]={done:boolValue(value.done,false),due:validISODate(trimmedScalarText(value.due,''))?trimmedScalarText(value.due,''):'',notes:scalarText(value.notes,'').trim()};}});normalizedHistory[key]=normalizedSnapshot;});
+    Object.entries(rawHistory).slice(-120).forEach(([destination,snapshot])=>{const key=canonicalChecklistDestinationHistoryKey(destination);if(!key||!snapshot||typeof snapshot!=='object'||Array.isArray(snapshot))return;const normalizedSnapshot=normalizedHistory[key]||Object.create(null);Object.entries(snapshot).forEach(([id,value])=>{const itemId=String(id||'').trim();if(!itemId)return;if(itemId==='__destinationItems'){if(Array.isArray(value))normalizedSnapshot.__destinationItems=value.slice(0,200).filter(item=>item&&typeof item==='object'&&!Array.isArray(item)&&trimmedScalarText(item.task,'')).map(item=>({id:safeRecordId(item.id),list:'Destination',phase:['Current Stay','Before You Leave','Travel Day','Arrival & Settle In'].includes(item.phase)?item.phase:'Before You Leave',task:trimmedScalarText(item.task,''),due:validISODate(trimmedScalarText(item.due,''))?trimmedScalarText(item.due,''):'',required:boolValue(item.required,true),done:boolValue(item.done,false),notes:scalarText(item.notes,'').trim()}));return;}if(typeof value==='boolean'){normalizedSnapshot[itemId]=value;return;}if(value&&typeof value==='object'&&!Array.isArray(value)){normalizedSnapshot[itemId]={done:boolValue(value.done,false),due:validISODate(trimmedScalarText(value.due,''))?trimmedScalarText(value.due,''):'',notes:scalarText(value.notes,'').trim()};}});normalizedHistory[key]=normalizedSnapshot;});
     out.settings.destinationChecklistHistory=normalizedHistory;
   }
   out.settings.journeyHistoryRecovery=sanitizeJourneyHistoryRecovery(out.settings.journeyHistoryRecovery);
@@ -2374,7 +2675,7 @@ function hydrate(raw){
   const itineraryIds=new Set(out.itinerary.map(x=>String(x.id)));
   out.expenses=out.expenses.filter(x=>validISODate(x?.date)&&finiteNumber(x?.amount,0,0,1_000_000_000)>0).map(x=>{const gap=out.itinerary.some(e=>e.coverageType==='Intentional Gap'&&between(x.date,e.arrival,e.departure)),owner=gap?'':String(out.itinerary.find(e=>e.coverageType==='Destination'&&between(x.date,e.arrival,e.departure))?.id||'');const hasChoice=x.destinationBudget==='Yes'||x.destinationBudget==='No',destinationBudget=hasChoice?x.destinationBudget:(owner?'Yes':'No');return {...x,id:normalizeId(x),category:trimmedScalarText(x.category,'')||'Miscellaneous',amount:finiteNumber(x.amount,0,.000001,1_000_000_000),rate:finiteNumber(x.rate,1,.000001,1_000_000),currency:currencyCode(x.currency,'AUD'),symbol:currencySymbol(x.symbol,currencyCode(x.currency,'AUD')==='AUD'?'$':''),notes:trimmedScalarText(x.notes,''),destinationBudget,verified:boolValue(x.verified,false)};});
   const validStatuses=new Set(['Paid','Unpaid','Booked','To Book']),reservationReferencesSeen=new Set();
-  out.reservations=out.reservations.filter(x=>validISODate(x?.date)).map(x=>{const date=x.date,endDate=validISODate(x.endDate)&&x.endDate>=date?x.endDate:'',itineraryId=itineraryIds.has(trimmedScalarText(x.itineraryId,''))?trimmedScalarText(x.itineraryId,''):'',rawType=trimmedScalarText(x.type,''),normalizedType=normalizeReservationType(rawType,''),type=normalizedType||'Tickets & Attractions',rawTypeRecoveryOriginal=trimmedScalarText(x.typeRecoveryOriginal,'').slice(0,80),typeRecoveryOriginal=normalizedType?(normalizedType==='Tickets & Attractions'&&!normalizeReservationType(rawTypeRecoveryOriginal,'')?rawTypeRecoveryOriginal:''):(rawType||'Missing reservation type').slice(0,80);let original=finiteNumber(x.original,0,0,1_000_000_000),rate=finiteNumber(x.rate,1,.000001,1_000_000),currency=currencyCode(x.currency,'AUD');if(currency==='AUD')rate=1;let aud=original*rate,hasSavedBudgetChoice=Object.prototype.hasOwnProperty.call(x,'destinationBudgetPreference')||Object.prototype.hasOwnProperty.call(x,'destinationBudget'),legacyTicketBudgetMissing=type==='Tickets & Attractions'&&!hasSavedBudgetChoice,destinationBudgetPreference=legacyTicketBudgetMissing?'No':reservationAutomaticBudget(type,x.destinationBudgetPreference??x.destinationBudget,{...x,type}),destinationBudget=legacyTicketBudgetMissing?'No':reservationAutomaticBudget(type,x.destinationBudget??x.destinationBudgetPreference,{...x,type});if(typeRecoveryOriginal){destinationBudgetPreference='No';destinationBudget='No';}if(isAccommodationReservation(type)){original=aud;rate=1;currency='AUD';aud=original;}const optionalMoney=value=>value===''||value===null||value===undefined?'':finiteNumber(value,0,0,1_000_000_000);let depositPaidAud=optionalMoney(x.depositPaidAud),balanceDueAud=optionalMoney(x.balanceDueAud),status=validStatuses.has(x.status)?x.status:'Booked',rawReference=trimmedScalarText(x.reference,''),referenceKey=canonicalIdentityKey(rawReference),referenceRecoveryOriginal=rawReference?'':trimmedScalarText(x.referenceRecoveryOriginal,'').slice(0,128),reference=rawReference;if(referenceKey){if(reservationReferencesSeen.has(referenceKey)){referenceRecoveryOriginal=rawReference;reference='';}else reservationReferencesSeen.add(referenceKey);}if(depositPaidAud!==''&&Number(depositPaidAud)>aud)depositPaidAud='';if(balanceDueAud!==''&&Number(balanceDueAud)>aud)balanceDueAud='';if(depositPaidAud!==''&&balanceDueAud!==''&&Math.abs(Number(depositPaidAud)+Number(balanceDueAud)-aud)>.01){depositPaidAud='';balanceDueAud='';}const hydrated={...x,id:normalizeId(x),title:trimmedScalarText(x.title,'')||'Untitled booking',type,typeRecoveryOriginal,date,endDate,time:validClockTime(trimmedScalarText(x.time,''))?trimmedScalarText(x.time,''):'',reference,referenceRecoveryOriginal,currency,original,rate,aud,status,destinationBudget,destinationBudgetPreference,travellers:Math.round(finiteNumber(x.travellers,out.settings.travellers,1,20)),destination:trimmedScalarText(x.destination,''),itineraryId,notes:scalarText(x.notes,''),operator:trimmedScalarText(x.operator,''),serviceNumber:trimmedScalarText(x.serviceNumber,''),departureLocation:trimmedScalarText(x.departureLocation,''),arrivalLocation:trimmedScalarText(x.arrivalLocation,''),terminal:trimmedScalarText(x.terminal,''),seat:trimmedScalarText(x.seat,''),baggage:trimmedScalarText(x.baggage,''),carriage:trimmedScalarText(x.carriage,''),shipName:trimmedScalarText(x.shipName,''),cabin:trimmedScalarText(x.cabin,''),pickupLocation:trimmedScalarText(x.pickupLocation,''),pickupTime:validClockTime(trimmedScalarText(x.pickupTime,''))?trimmedScalarText(x.pickupTime,''):'',returnLocation:trimmedScalarText(x.returnLocation,''),returnTime:validClockTime(trimmedScalarText(x.returnTime,''))?trimmedScalarText(x.returnTime,''):'',propertyAddress:trimmedScalarText(x.propertyAddress,''),propertyContact:trimmedScalarText(x.propertyContact,''),checkInTime:validClockTime(trimmedScalarText(x.checkInTime,''))?trimmedScalarText(x.checkInTime,''):'',checkOutTime:validClockTime(trimmedScalarText(x.checkOutTime,''))?trimmedScalarText(x.checkOutTime,''):'',venue:trimmedScalarText(x.venue,''),entryTime:validClockTime(trimmedScalarText(x.entryTime,''))?trimmedScalarText(x.entryTime,''):'',depositPaidAud,balanceDueAud,paymentDueDate:validISODate(x.paymentDueDate)?x.paymentDueDate:'',cancellationDeadline:validISODate(x.cancellationDeadline)?x.cancellationDeadline:'',refundPolicy:RESERVATION_REFUND_POLICIES.includes(trimmedScalarText(x.refundPolicy,''))?trimmedScalarText(x.refundPolicy,''):'',flightScope:type==='Flight'?reservationTravelScope({...x,type}):'',trainScope:type==='Train'?reservationTravelScope({...x,type}):'',reminderDateSet:boolValue(x.reminderDateSet,true),verified:boolValue(x.verified,false)};if(!MULTI_DAY_RESERVATION_TYPES.has(type))hydrated.endDate='';const activeTravelFields=new Set(reservationTravelFields(type));ALL_RESERVATION_TRAVEL_DETAIL_FIELDS.forEach(name=>{if(!activeTravelFields.has(name))hydrated[name]='';});if(reservationPaymentDueDateIssue(hydrated))hydrated.paymentDueDate='';if(reservationCancellationDeadlineIssue(hydrated))hydrated.cancellationDeadline='';const outstanding=reservationTrackedOutstandingFromFields(hydrated);if(hydrated.status==='Paid'&&outstanding!==null&&outstanding>.01)hydrated.status='Unpaid';else if((hydrated.status==='Unpaid'||hydrated.status==='Booked')&&outstanding!==null&&outstanding<=.01)hydrated.status='Paid';if(hydrated.status==='Unpaid'&&reservationAudValue(hydrated)<=.01)hydrated.status='Booked';if(hydrated.status==='To Book'&&!reservationIsSimpleReminder(hydrated)){hydrated.status='Booked';hydrated.verified=false;}return hydrated;});
+  out.reservations=out.reservations.filter(x=>validISODate(x?.date)).map(x=>{const date=x.date,endDate=validISODate(x.endDate)&&x.endDate>=date?x.endDate:'',itineraryId=itineraryIds.has(trimmedScalarText(x.itineraryId,''))?trimmedScalarText(x.itineraryId,''):'',rawType=trimmedScalarText(x.type,''),normalizedType=normalizeReservationType(rawType,''),type=normalizedType||'Tickets & Attractions',rawTypeRecoveryOriginal=trimmedScalarText(x.typeRecoveryOriginal,'').slice(0,80),typeRecoveryOriginal=normalizedType?(normalizedType==='Tickets & Attractions'&&!normalizeReservationType(rawTypeRecoveryOriginal,'')?rawTypeRecoveryOriginal:''):(rawType||'Missing reservation type').slice(0,80);let original=finiteNumber(x.original,0,0,1_000_000_000),rate=finiteNumber(x.rate,1,.000001,1_000_000),currency=currencyCode(x.currency,'AUD');if(currency==='AUD')rate=1;let aud=original*rate,hasSavedBudgetChoice=Object.prototype.hasOwnProperty.call(x,'destinationBudgetPreference')||Object.prototype.hasOwnProperty.call(x,'destinationBudget'),legacyTicketBudgetMissing=type==='Tickets & Attractions'&&!hasSavedBudgetChoice,destinationBudgetPreference=legacyTicketBudgetMissing?'No':reservationAutomaticBudget(type,x.destinationBudgetPreference??x.destinationBudget,{...x,type}),destinationBudget=legacyTicketBudgetMissing?'No':reservationAutomaticBudget(type,x.destinationBudget??x.destinationBudgetPreference,{...x,type});if(typeRecoveryOriginal){destinationBudgetPreference='No';destinationBudget='No';}const optionalMoney=value=>value===''||value===null||value===undefined?'':finiteNumber(value,0,0,1_000_000_000);let depositPaidAud=optionalMoney(x.depositPaidAud),balanceDueAud=optionalMoney(x.balanceDueAud),status=validStatuses.has(x.status)?x.status:'Booked',rawReference=trimmedScalarText(x.reference,''),referenceKey=canonicalIdentityKey(rawReference),referenceRecoveryOriginal=rawReference?'':trimmedScalarText(x.referenceRecoveryOriginal,'').slice(0,128),reference=rawReference;if(referenceKey){if(reservationReferencesSeen.has(referenceKey)){referenceRecoveryOriginal=rawReference;reference='';}else reservationReferencesSeen.add(referenceKey);}if(depositPaidAud!==''&&Number(depositPaidAud)>aud)depositPaidAud='';if(balanceDueAud!==''&&Number(balanceDueAud)>aud)balanceDueAud='';if(depositPaidAud!==''&&balanceDueAud!==''&&Math.abs(Number(depositPaidAud)+Number(balanceDueAud)-aud)>.01){depositPaidAud='';balanceDueAud='';}const hydrated={...x,id:normalizeId(x),title:trimmedScalarText(x.title,'')||'Untitled booking',type,typeRecoveryOriginal,date,endDate,time:validClockTime(trimmedScalarText(x.time,''))?trimmedScalarText(x.time,''):'',reference,referenceRecoveryOriginal,currency,original,rate,aud,status,destinationBudget,destinationBudgetPreference,travellers:Math.round(finiteNumber(x.travellers,out.settings.travellers,1,20)),destination:trimmedScalarText(x.destination,''),itineraryId,notes:scalarText(x.notes,''),operator:trimmedScalarText(x.operator,''),serviceNumber:trimmedScalarText(x.serviceNumber,''),departureLocation:trimmedScalarText(x.departureLocation,''),arrivalLocation:trimmedScalarText(x.arrivalLocation,''),terminal:trimmedScalarText(x.terminal,''),seat:trimmedScalarText(x.seat,''),baggage:trimmedScalarText(x.baggage,''),carriage:trimmedScalarText(x.carriage,''),shipName:trimmedScalarText(x.shipName,''),cabin:trimmedScalarText(x.cabin,''),pickupLocation:trimmedScalarText(x.pickupLocation,''),pickupTime:validClockTime(trimmedScalarText(x.pickupTime,''))?trimmedScalarText(x.pickupTime,''):'',returnLocation:trimmedScalarText(x.returnLocation,''),returnTime:validClockTime(trimmedScalarText(x.returnTime,''))?trimmedScalarText(x.returnTime,''):'',propertyAddress:trimmedScalarText(x.propertyAddress,''),propertyContact:trimmedScalarText(x.propertyContact,''),checkInTime:validClockTime(trimmedScalarText(x.checkInTime,''))?trimmedScalarText(x.checkInTime,''):'',checkOutTime:validClockTime(trimmedScalarText(x.checkOutTime,''))?trimmedScalarText(x.checkOutTime,''):'',venue:trimmedScalarText(x.venue,''),entryTime:validClockTime(trimmedScalarText(x.entryTime,''))?trimmedScalarText(x.entryTime,''):'',depositPaidAud,balanceDueAud,paymentDueDate:validISODate(x.paymentDueDate)?x.paymentDueDate:'',cancellationDeadline:validISODate(x.cancellationDeadline)?x.cancellationDeadline:'',refundPolicy:RESERVATION_REFUND_POLICIES.includes(trimmedScalarText(x.refundPolicy,''))?trimmedScalarText(x.refundPolicy,''):'',flightScope:type==='Flight'?reservationTravelScope({...x,type}):'',trainScope:type==='Train'?reservationTravelScope({...x,type}):'',reminderDateSet:boolValue(x.reminderDateSet,true),verified:boolValue(x.verified,false)};if(!MULTI_DAY_RESERVATION_TYPES.has(type))hydrated.endDate='';const activeTravelFields=new Set(reservationTravelFields(type));ALL_RESERVATION_TRAVEL_DETAIL_FIELDS.forEach(name=>{if(!activeTravelFields.has(name))hydrated[name]='';});if(reservationPaymentDueDateIssue(hydrated))hydrated.paymentDueDate='';if(reservationCancellationDeadlineIssue(hydrated))hydrated.cancellationDeadline='';const outstanding=reservationTrackedOutstandingFromFields(hydrated);if(hydrated.status==='Paid'&&outstanding!==null&&outstanding>.01)hydrated.status='Unpaid';else if((hydrated.status==='Unpaid'||hydrated.status==='Booked')&&outstanding!==null&&outstanding<=.01)hydrated.status='Paid';if(hydrated.status==='Unpaid'&&reservationAudValue(hydrated)<=.01)hydrated.status='Booked';if(hydrated.status==='To Book'&&!reservationIsSimpleReminder(hydrated)){hydrated.status='Booked';hydrated.verified=false;}return hydrated;});
   out.events=out.events.filter(x=>validISODate(x?.date)&&trimmedScalarText(x?.title,'')).map(x=>({...x,id:normalizeId(x),title:trimmedScalarText(x.title,''),date:x.date,time:validClockTime(trimmedScalarText(x.time,''))?trimmedScalarText(x.time,''):'',notes:scalarText(x.notes,'').trim()}));
   const validJourneyTypes=new Set(['Standard stay','Motorhome','Cruise']);
   out.journeys=out.journeys.filter(x=>validISODate(x?.start)&&validISODate(x?.end)&&x.end>=x.start).map(x=>{const type=validJourneyTypes.has(x.type)?x.type:'Standard stay',city=trimmedScalarText(x.city,''),rawCountry=trimmedScalarText(x.country,''),country=knownCountryIdentity(rawCountry)?canonicalCountryDisplay(rawCountry):rawCountry,rawTitle=trimmedScalarText(x.title,''),generatedRawTitle=[city,rawCountry].filter(Boolean).join(', '),title=!rawTitle||canonicalIdentityKey(rawTitle)===canonicalIdentityKey(generatedRawTitle)?([city,country].filter(Boolean).join(', ')||'Journey'):rawTitle;return {...x,id:normalizeId(x),title,city,country,flag:countryVisual(country,type).flag,type,start:x.start,end:x.end,km:finiteNumber(x.km,0,0,100_000_000),spend:0,notes:scalarText(x.notes,''),sourceItineraryId:itineraryIds.has(trimmedScalarText(x.sourceItineraryId,''))?trimmedScalarText(x.sourceItineraryId,''):'',mapX:storedMapPoint(x)?.x??null,mapY:storedMapPoint(x)?.y??null,routePoints:['Motorhome','Cruise'].includes(type)?normalizeDetailedRoutePoints(x.routePoints):[]};});
@@ -2415,7 +2716,7 @@ function loadState(){
     console.error('Travel Command Centre local storage read failure:',error);
     return hydrate(null);
   }
-  if(!raw)return hydrate(null);
+  if(!raw)return hydrate(demoReviewState());
   try{const parsed=JSON.parse(raw);startupParsedState=parsed;return hydrate(parsed);}
   catch(error){
     startupStorageIssueKind='corrupt';
@@ -2870,7 +3171,9 @@ function reservationDestinationGroups(rows=[],valueFor=()=>1){
 function reservationCurrentCountryName(){
   if(state.currentStay?.planningStatus&&state.currentStay.planningStatus!=='destination')return '';
   const current=activeDestinationItinerary();
-  return canonicalCountryDisplay(current?.country||state.currentStay?.country||'');
+  if(current){const identity=routedDepartureIdentity(current);if(identity.country)return identity.country;}
+  const fallback=trimmedScalarText(state.currentStay?.country,'');
+  return fallback&&!ROUTE_CONTEXT_SUFFIX_KEYS.has(canonicalIdentityKey(fallback))&&!['cruise','motorhome','world'].includes(slugifyCountry(fallback))?canonicalCountryDisplay(fallback):'';
 }
 function canonicalChecklistDestinationHistoryKey(value=''){
   const text=trimmedScalarText(value,'');if(!text)return '';
@@ -3029,11 +3332,11 @@ function migrateRoutedChecklistHistoryKeys(settings={},rows=[],recoveryRows=[],r
   return settings;
 }
 function destinationChecklistSnapshot(){
-  // Permanent tasks are reusable move templates, but their completion/due state belongs
-  // to the move they were completed for. Store both checklist lists against the target
-  // destination so a clock/itinerary rewind can restore prior progress without making a
-  // Permanent task stay completed forever across every future move.
-  return Object.fromEntries(state.checklist.filter(item=>['Permanent','Destination'].includes(item.list)).map(item=>[String(item.id),{done:Boolean(item.done),due:validISODate(item.due)?item.due:'',notes:String(item.notes||'').trim()}]));
+  // Keep the full Destination task collection with each destination. Completion-only
+  // snapshots are not enough: otherwise wording added for one city can leak into the next.
+  const snapshot=Object.fromEntries(state.checklist.filter(item=>['Permanent','Destination'].includes(item.list)).map(item=>[String(item.id),{done:Boolean(item.done),due:validISODate(item.due)?item.due:'',notes:String(item.notes||'').trim()}]));
+  snapshot.__destinationItems=state.checklist.filter(item=>item.list==='Destination').map(item=>({id:String(item.id),list:'Destination',phase:['Current Stay','Before You Leave','Travel Day','Arrival & Settle In'].includes(item.phase)?item.phase:'Before You Leave',task:String(item.task||'').trim(),due:validISODate(item.due)?item.due:'',required:item.required!==false,done:Boolean(item.done),notes:String(item.notes||'').trim()}));
+  return snapshot;
 }
 function destinationChecklistSnapshotValue(value){
   if(typeof value==='boolean')return {legacy:true,done:value,due:'',notes:''};
@@ -3051,12 +3354,18 @@ function setRecentObjectEntry(target,key,value){
   return target;
 }
 function pruneDestinationChecklistHistory(history,checklist=state.checklist){
-  const validIds=new Set((Array.isArray(checklist)?checklist:[]).filter(item=>['Permanent','Destination'].includes(item?.list)).map(item=>String(item.id)));
+  const rows=Array.isArray(checklist)?checklist:[],permanentIds=new Set(rows.filter(item=>item?.list==='Permanent').map(item=>String(item.id))),liveDestinationIds=new Set(rows.filter(item=>item?.list==='Destination').map(item=>String(item.id)));
   Object.values(history||{}).forEach(snapshot=>{
     if(!snapshot||typeof snapshot!=='object'||Array.isArray(snapshot))return;
-    Object.keys(snapshot).forEach(id=>{if(!validIds.has(String(id)))delete snapshot[id];});
+    const savedDestinationIds=new Set(Array.isArray(snapshot.__destinationItems)?snapshot.__destinationItems.map(item=>String(item?.id||'')).filter(Boolean):[]),hasFullDestinationList=Array.isArray(snapshot.__destinationItems);
+    Object.keys(snapshot).forEach(id=>{if(id==='__destinationItems')return;if(permanentIds.has(String(id))||savedDestinationIds.has(String(id))||(!hasFullDestinationList&&liveDestinationIds.has(String(id))))return;delete snapshot[id];});
   });
   return history;
+}
+function scrubDestinationChecklistHistoryItem(itemId){
+  const id=String(itemId||'').trim();if(!id)return false;let changed=false;const history=destinationChecklistHistoryObject();
+  Object.values(history).forEach(snapshot=>{if(!snapshot||typeof snapshot!=='object'||Array.isArray(snapshot))return;if(Object.prototype.hasOwnProperty.call(snapshot,id)){delete snapshot[id];changed=true;}if(Array.isArray(snapshot.__destinationItems)){const before=snapshot.__destinationItems.length;snapshot.__destinationItems=snapshot.__destinationItems.filter(item=>String(item?.id||'')!==id);if(snapshot.__destinationItems.length!==before)changed=true;}});
+  if(changed)state.settings.destinationChecklistHistory=trimDestinationChecklistHistory(history);return changed;
 }
 function trimDestinationChecklistHistory(history){
   const keys=Object.keys(history);if(keys.length>120)for(const key of keys.slice(0,keys.length-120))delete history[key];
@@ -3074,24 +3383,20 @@ function transitionDestinationChecklist(oldKey,newKey){
   const history=pruneDestinationChecklistHistory(destinationChecklistHistoryObject());
   const previousKey=canonicalChecklistDestinationHistoryKey(state.settings.lastDestinationKey||oldKey||'');
   if(previousKey)setRecentObjectEntry(history,previousKey,destinationChecklistSnapshot());
-  const remembered=history[newKey]&&typeof history[newKey]==='object'&&!Array.isArray(history[newKey])?history[newKey]:null;
-  state.checklist=state.checklist.map(item=>{
-    if(!['Permanent','Destination'].includes(item.list))return item;
-    // When there is no next destination, Destination tasks become dormant as before,
-    // while Permanent templates retain their last visible state until another move is
-    // planned. The next non-empty target will reset/restore them for that move.
-    if(!newKey&&item.list==='Permanent')return item;
+  const remembered=history[newKey]&&typeof history[newKey]==='object'&&!Array.isArray(history[newKey])?history[newKey]:null,rememberedDestinationItems=Array.isArray(remembered?.__destinationItems)?clone(remembered.__destinationItems):null;
+  const nonDestination=state.checklist.filter(item=>item.list!=='Destination').map(item=>{
+    if(item.list!=='Permanent')return item;
+    if(!newKey)return item;
     const saved=remembered&&Object.prototype.hasOwnProperty.call(remembered,String(item.id))?destinationChecklistSnapshotValue(remembered[String(item.id)]):null;
-    if(!saved){
-      if(item.list==='Permanent')return {...item,done:false,due:'',notes:item.notes||''};
-      return {...item,done:false,due:'',notes:''};
-    }
-    // Old backups stored completion only. Preserve their current due/notes on the first
-    // migration transition; new snapshots restore all move-specific task fields.
+    if(!saved)return {...item,done:false,due:'',notes:item.notes||''};
     return saved.legacy?{...item,done:saved.done}:{...item,done:saved.done,due:saved.due,notes:saved.notes};
   });
-  // Keep a bounded reversible history so an accidental clock/itinerary correction can
-  // return to the previous destination without destroying checklist completion state.
+  let destinationItems=[];
+  if(newKey&&rememberedDestinationItems){destinationItems=rememberedDestinationItems.map(item=>({...item,list:'Destination',id:safeRecordId(item.id),phase:['Current Stay','Before You Leave','Travel Day','Arrival & Settle In'].includes(item.phase)?item.phase:'Before You Leave',task:String(item.task||'').trim(),due:validISODate(item.due)?item.due:'',required:item.required!==false,done:Boolean(item.done),notes:String(item.notes||'').trim()})).filter(item=>item.task);}
+  else if(newKey&&remembered){destinationItems=state.checklist.filter(item=>item.list==='Destination').map(item=>{const saved=Object.prototype.hasOwnProperty.call(remembered,String(item.id))?destinationChecklistSnapshotValue(remembered[String(item.id)]):null;if(!saved)return {...item,done:false,due:'',notes:''};return saved.legacy?{...item,done:saved.done}:{...item,done:saved.done,due:saved.due,notes:saved.notes};});}
+  // No saved snapshot means a genuinely new destination: do not carry another city's
+  // Destination tasks forward. Users can add the tasks that belong to this destination.
+  state.checklist=[...nonDestination,...destinationItems];
   state.settings.destinationChecklistHistory=trimDestinationChecklistHistory(history);
   state.settings.lastDestinationKey=newKey;
 }
@@ -3491,6 +3796,11 @@ async function validateVaultAttachmentDecodes(data){
 function vaultAttachmentChars(excludeRecordId=''){
   return state.vault.filter(x=>String(x.id)!==String(excludeRecordId)).reduce((sum,record)=>sum+(Array.isArray(record.attachments)?record.attachments.reduce((n,a)=>n+String(a?.data||'').length,0):0),0);
 }
+function restoreStateAfterFailedSave(snapshot=null){
+  state=clone(snapshot||lastPersistedSnapshot||hydrate(null));
+  invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;
+  try{syncLinkedState();}catch{}
+}
 function saveState(entity='none',action='save'){
   if(startupStorageIssueKind&&entity!=='restore'){
     state=clone(lastPersistedSnapshot);journeySpendDirty=true;journeySpendCache=null;
@@ -3502,21 +3812,34 @@ function saveState(entity='none',action='save'){
     return false;
   }
   if(state?.settings&&action!=='app-health'&&entity!=='verification'){state.settings.lastAppHealthAt='';state.settings.lastAppHealthResults={};state.settings.lastAppHealthShellRevision='';lastAppHealthRunIssues=[];}
-  if(entity==='itinerary'||entity==='restore') invalidateItineraryOwnerCache();
-  markJourneySpendDirty(entity);
-  syncLinkedState();
+  try{
+    if(entity==='itinerary'||entity==='restore') invalidateItineraryOwnerCache();
+    markJourneySpendDirty(entity);
+    syncLinkedState();
+  }catch(error){
+    // Linked-state derivation happens before persistence. If malformed transient state or
+    // an exceptional runtime error makes reconciliation fail, restore the last verified
+    // snapshot instead of throwing out through click/change handlers with mutated memory.
+    restoreStateAfterFailedSave();
+    lastStorageError='The change was not saved because linked app data could not be reconciled safely.';
+    suppressSuccessToastUntil=Date.now()+750;
+    try{updateDataStatus();}catch{}
+    try{showToast(lastStorageError,'error');}catch{}
+    if(!scheduledScreenRefreshWouldDiscardDraft())queueMicrotask(()=>{try{render();}catch{}});
+    return false;
+  }
   state.version = APP_VERSION;
   // Mark only successfully-current live storage; canonical/exported backups strip this.
   if(state?.settings)state.settings.storageShellRevision=APP_SHELL_REVISION;
   try{
     const integrityErrors=validateBackup(canonicalBackupPayload(itineraryReferenceDate()));
     if(integrityErrors.length){
-      state=clone(lastPersistedSnapshot||hydrate(null));invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();
+      restoreStateAfterFailedSave();
       lastStorageError=`The change was not saved because it would make local data fail an integrity check: ${integrityErrors[0]}`;
       suppressSuccessToastUntil=Date.now()+750;updateDataStatus();showToast(lastStorageError,'error');if(!scheduledScreenRefreshWouldDiscardDraft())queueMicrotask(()=>{try{render();}catch{}});return false;
     }
   }catch(error){
-    state=clone(lastPersistedSnapshot||hydrate(null));invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();
+    restoreStateAfterFailedSave();
     lastStorageError='The change was not saved because its data integrity could not be verified safely.';
     suppressSuccessToastUntil=Date.now()+750;updateDataStatus();showToast(lastStorageError,'error');if(!scheduledScreenRefreshWouldDiscardDraft())queueMicrotask(()=>{try{render();}catch{}});return false;
   }
@@ -3534,7 +3857,7 @@ function saveState(entity='none',action='save'){
       if(previousEncoded===null)localStorage.removeItem(STORAGE_KEY);else localStorage.setItem(STORAGE_KEY,previousEncoded);
       rollbackVerified=localStorage.getItem(STORAGE_KEY)===previousEncoded;
     }catch{}}
-    state=clone(memoryBeforeSave||hydrate(null));invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();
+    restoreStateAfterFailedSave(memoryBeforeSave);
     if(!rollbackVerified){
       startupStorageIssueKind='write-integrity';
       startupStorageIssue='Local app storage could not be restored after a failed save. Close and reopen the app, then restore a known-good backup before making more changes.';
@@ -3637,12 +3960,12 @@ function resetScreenScroll(){
 function launchLocationPresentation(source=state){
   const currentStay=source?.currentStay||{},itinerary=Array.isArray(source?.itinerary)?source.itinerary:[];
   const activeEntry=itinerary.find(entry=>String(entry?.id||'')===String(currentStay?.itineraryId||''));
-  const hasDestination=activeEntry?.coverageType==='Destination';
-  const country=trimmedScalarText(hasDestination?activeEntry.country:currentStay?.country,'');
-  const city=trimmedScalarText(hasDestination?activeEntry.city:currentStay?.city,'Travel Command Centre');
+  const hasDestination=activeEntry?.coverageType==='Destination',identity=hasDestination?routedDepartureIdentity(activeEntry):{city:'',country:''};
+  const country=trimmedScalarText(hasDestination?(identity.country||activeEntry.country):currentStay?.country,'');
+  const city=trimmedScalarText(hasDestination?(identity.city||activeEntry.city):currentStay?.city,'Travel Command Centre');
   // Launch location is explicitly a country/location identity. Travel-mode icons remain
   // in the in-app banner, but must not replace the national flag on this launch phase.
-  const flag=hasDestination?countryVisual(activeEntry.country,'Standard').flag:trimmedScalarText(currentStay?.flag,'🌐');
+  const flag=hasDestination?countryVisual(country,'Standard').flag:trimmedScalarText(currentStay?.flag,'🌐');
   return {country:country||'CURRENT LOCATION',city,flag:flag||'🌐'};
 }
 
@@ -3680,13 +4003,20 @@ function init(){
   nav.innerHTML = screens.map(([id,icon,label]) => `<button class="nav-btn" data-screen="${id}"><span class="nav-icon">${navIcon(icon)}</span><span class="nav-label">${label}</span></button>`).join('');
   const brandCompass=document.querySelector('.brand .logo');
   if(brandCompass){
-    const openToiletPhrase=e=>{if(screen!=='dashboard')return;e?.preventDefault?.();e?.stopPropagation?.();homeFocusWidget='';toiletPhraseOpen=true;render();requestAnimationFrame(()=>document.querySelector('.toilet-phrase-close')?.focus());};
+    const openToiletPhrase=e=>{if(screen!=='dashboard')return;e?.preventDefault?.();e?.stopPropagation?.();homeFocusWidget='';countryQuickLookCountry='';toiletPhraseOpen=true;render();requestAnimationFrame(()=>document.querySelector('.toilet-phrase-close')?.focus());};
     brandCompass.addEventListener('click',openToiletPhrase);
     brandCompass.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openToiletPhrase(e);});
   }
-  document.addEventListener('click',e=>{if(screen==='vault'&&vaultStreamingOpen&&vaultStreamingEmailTapCount&&!e.target?.closest?.('[data-streaming-email-unlock]')){vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;}},true);
+  document.addEventListener('click',e=>{
+    // iPad Safari can emit a delayed synthetic click after the third physical tap.
+    // If the hidden email store has just opened, swallow that one ghost click so it
+    // cannot immediately close/replace the new popup or trigger the Streaming layer.
+    if(screen==='vault'&&vaultStreamingEmailOpen&&vaultStreamingGestureGuardUntil>Date.now()){e.preventDefault();e.stopImmediatePropagation();return;}
+    if(screen==='vault'&&vaultStreamingOpen&&vaultStreamingEmailTapCount&&!e.target?.closest?.('[data-streaming-email-unlock]')){vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;}
+  },true);
+  document.addEventListener('dblclick',e=>{const target=e.target?.closest?.('[data-vault-streaming-open],[data-streaming-email-unlock]');if(target){e.preventDefault();e.stopPropagation();}},true);
   document.addEventListener('keydown',e=>{if(screen==='vault'&&vaultStreamingOpen&&vaultStreamingEmailTapCount){const unlock=e.target?.closest?.('[data-streaming-email-unlock]');if(!(unlock&&(e.key==='Enter'||e.key===' '))){vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;}}},true);
-  nav.addEventListener('click', e => { const b=e.target.closest('[data-screen]'); if(!b) return; if(screen==='vault'&&b.dataset.screen!=='vault'){vaultUnlocked=false;vaultUnlockTapCount=0;vaultUnlockLastTap=0;vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultFocusWidget='';vaultRecordsExpanded=false;} if(screen==='dashboard'&&b.dataset.screen!=='dashboard')toiletPhraseOpen=false; screen=b.dataset.screen; render(); requestAnimationFrame(resetScreenScroll); });
+  nav.addEventListener('click', e => { const b=e.target.closest('[data-screen]'); if(!b) return; if(screen==='vault'&&b.dataset.screen!=='vault'){vaultUnlocked=false;vaultUnlockTapCount=0;vaultUnlockLastTap=0;vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;vaultFocusWidget='';vaultRecordsExpanded=false;} if(screen==='dashboard'&&b.dataset.screen!=='dashboard'){toiletPhraseOpen=false;countryQuickLookCountry='';} screen=b.dataset.screen; render(); requestAnimationFrame(resetScreenScroll); });
   addBtn.addEventListener('click', () => { const action=headerActions[screen]; if(action) openForm(action.kind); });
   restoreInput.addEventListener('change', restoreFile);
   window.addEventListener('tcc:datachanged',event=>scheduleScreenRefresh(event.detail?.entity||'all'));
@@ -3732,14 +4062,22 @@ function requirePinThenRender(){
   modalUndo.hidden=true;
   modalSave.textContent='Unlock';
   modal.oncancel=e=>e.preventDefault();
-  modal.showModal();
+  try{
+    modal.showModal();
+  }catch(error){
+    // Keep PIN protection fail-closed even if Safari refuses the modal-dialog API.
+    // A non-modal/open-attribute fallback still exposes only the unlock form because
+    // #app remains hidden by body.pin-locked until the correct PIN is entered.
+    try{modal.show?.();}catch{}
+    if(!modal.open){try{modal.setAttribute('open','');}catch{}}
+  }
   modalForm.onsubmit = e => {
     e.preventDefault();
     if (new FormData(e.target).get('unlockPin') !== state.settings.pin) { showToast('Incorrect PIN.','error'); return; }
     markPinSessionUnlocked();
     pinLockActive=false;
     try{document.body?.classList.remove('pin-locked');}catch{}
-    modal.close();
+    forceDialogClosed(modal,'unlocked');
     modalClose.style.display='';
     modalCancel.style.display='';
     modalUndo.hidden=false;
@@ -3772,6 +4110,7 @@ function render(){
   if(screen!=='journeys'&&journeyFocusWidget) journeyFocusWidget='';
   if(screen!=='dashboard'&&homeFocusWidget) homeFocusWidget='';
   if(screen!=='dashboard'&&toiletPhraseOpen) toiletPhraseOpen=false;
+  if(screen!=='dashboard'&&countryQuickLookCountry) countryQuickLookCountry='';
   syncBrandCompassInteraction();
   if(screen!=='budget'&&budgetFocusWidget) budgetFocusWidget='';
   if(screen!=='itinerary'&&itineraryFocusMetric) itineraryFocusMetric='';
@@ -3779,12 +4118,13 @@ function render(){
   if(screen!=='vault'){
     if(vaultFocusWidget) vaultFocusWidget='';
     closeVaultAttachmentViewers();
-    vaultUnlocked=false;vaultUnlockTapCount=0;vaultUnlockLastTap=0;vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;
+    vaultUnlocked=false;vaultUnlockTapCount=0;vaultUnlockLastTap=0;vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;
   }
   document.body.classList.toggle('checklist-focus-open',screen==='checklist'&&Boolean(checklistFocusList));
   document.body.classList.toggle('journey-focus-open',screen==='journeys'&&Boolean(journeyFocusWidget));
   document.body.classList.toggle('readability-focus-open',(screen==='dashboard'&&Boolean(homeFocusWidget))||(screen==='budget'&&Boolean(budgetFocusWidget))||(screen==='itinerary'&&Boolean(itineraryFocusMetric))||(screen==='reservations'&&Boolean(reservationCategoryFocus))||(screen==='vault'&&Boolean(vaultFocusWidget)));
   document.body.classList.toggle('vault-streaming-open',screen==='vault'&&vaultUnlocked&&Boolean(vaultStreamingOpen));
+  document.body.classList.toggle('vault-streaming-email-open',screen==='vault'&&vaultUnlocked&&Boolean(vaultStreamingEmailOpen));
   // Rendering must never rewrite canonical Current Stay state. syncLinkedState()
   // already derives the correct persisted flag, including special planning states
   // (⚠ unplanned gap, 🧭 before journey, ↔ intentional gap). Banner visuals may
@@ -4056,7 +4396,7 @@ function emergencyTravelCardData(){
   // Current Stay uses planning-status text during pre-journey, intentional gaps and
   // after the planning horizon; treating those strings as countries can mislabel the
   // card and match the wrong saved emergency contact.
-  const activeCountry=String(activeDestinationItinerary()?.country||'').trim();
+  const activeEntry=activeDestinationItinerary(),activeCountry=trimmedScalarText(activeEntry?routedDepartureIdentity(activeEntry).country:'','');
   const country=activeCountry||'No active destination';
   const contacts=state.vault.filter(x=>x.type==='Emergency contact');
   const countryMatch=x=>vaultCountryMatches(x.country,country);
@@ -4189,10 +4529,8 @@ function currentDestinationDisplayMetrics(reference=itineraryReferenceDate()){
   return {total,elapsed,remainingIncludingToday,remainingAfterToday:Math.max(0,remainingIncludingToday-(ref>=display.start&&ref<=display.end?1:0))};
 }
 function journeyHeaderTitle(entry=activeDestinationItinerary()){
-  const type=String(state.currentStay.type||entry?.type||'Standard');
-  const country=String(entry?.country||state.currentStay.country||'');
-  if(type==='Cruise') return String(entry?.city||state.currentStay.city||'Cruise Journey');
-  if(type==='Motorhome') return /USA|United States/i.test(country)?'USA RV Adventure':'European RV Adventure';
+  const type=itineraryMode(state.currentStay.type||entry?.type||'Standard');
+  if(['Cruise','Motorhome'].includes(type))return routedJourneyTitle(entry)||itineraryTitle(entry)||(type==='Cruise'?'Cruise Journey':'Motorhome trip');
   return String(state.currentStay.city||entry?.city||'Current Stay');
 }
 function destinationHero(kind='dashboard'){
@@ -4204,10 +4542,10 @@ function destinationHero(kind='dashboard'){
   const currentDisplay=currentDestinationDisplaySegment(),currentDisplayMetrics=currentDestinationDisplayMetrics(),remaining=currentDisplayMetrics.remainingAfterToday,beforeJourney=!journeyHasStarted(),afterHorizon=journeyPlanningHorizonPassed(),noActiveDestination=!beforeJourney&&!afterHorizon&&!intentionalGap&&!current,daysUntilJourney=beforeJourney&&validISODate(state.settings?.journeyStart)?Math.max(0,calendarDayDelta(itineraryReferenceDate(),state.settings.journeyStart)):0;
   const mode=String(state.currentStay.type||current?.type||'Standard');
   const journeyMode=mode==='Cruise'||mode==='Motorhome';
-  const title=journeyHeaderTitle(current);
-  const homeCity=String(state.currentStay.city||title||'Current Stay');
+  const title=journeyHeaderTitle(current),currentIdentity=current?routedDepartureIdentity(current):{city:'',country:''};
+  const homeCity=String(journeyMode?title:(state.currentStay.city||title||'Current Stay'));
   const homeCityClass=homeCity.length>=16?'home-city-xlong':homeCity.length>=12?'home-city-long':homeCity.length>=9?'home-city-medium':'home-city-short';
-  const country=String(state.currentStay.country||current?.country||'');
+  const country=String(journeyMode?(currentIdentity.country||current?.country||''):(state.currentStay.country||current?.country||''));
   const heroClass=mode==='Cruise'?'journey-cruise':mode==='Motorhome'?'journey-motorhome':'journey-standard';
   const label=beforeJourney?'JOURNEY NOT STARTED':afterHorizon?'PLANNING HORIZON ENDED':intentionalGap?'PLANNED TRAVEL DAY':noActiveDestination?'NO ACTIVE DESTINATION':journeyMode?'CURRENT JOURNEY':'CURRENT STAY';
   const heroFlag=beforeJourney||afterHorizon?'🧭':intentionalGap?'↔':noActiveDestination?'⚠':visual.flag;
@@ -4215,8 +4553,8 @@ function destinationHero(kind='dashboard'){
   if(kind==='dashboard'){
     const homeHeroImage=/^Portugal$/i.test(country)?'home-portugal-lock.jpg':visual.image;
     const kicker=beforeJourney?'JOURNEY NOT STARTED':afterHorizon?'PLANNING HORIZON ENDED':intentionalGap?'PLANNED TRAVEL DAY':noActiveDestination?'NO ACTIVE DESTINATION':'CURRENT DESTINATION';
-    return `<section class="destination-lock-hero home-destination-hero ${heroClass}" style="--destination-hero-image:url('${homeHeroImage}');--destination-accent:${visual.accent}" aria-label="${esc(state.currentStay.city)}, ${esc(country)}">
-      <div class="home-hero-identity">
+    return `<section class="destination-lock-hero home-destination-hero ${heroClass}" style="--destination-hero-image:url('${homeHeroImage}');--destination-accent:${visual.accent}" aria-label="${esc(homeCity)}, ${esc(country)}">
+      <div class="home-hero-identity" ${intentionalGap||beforeJourney||afterHorizon||noActiveDestination||!country?'':`data-country-quick-look="${esc(country)}" role="button" tabindex="0" aria-label="Open quick look for ${esc(country)}"`}>
         <span class="home-hero-flag">${esc(heroFlag)}</span>
         <span class="home-hero-kicker">${kicker}</span>
         <b class="${homeCityClass}">${esc(homeCity)}</b>
@@ -4234,7 +4572,7 @@ function destinationHero(kind='dashboard'){
       <div class="budget-lock-hero-current budget-compact-destination">
         <span class="budget-compact-label">${beforeJourney?'JOURNEY NOT STARTED':afterHorizon?'PLANNING HORIZON ENDED':intentionalGap?'PLANNED TRAVEL DAY':noActiveDestination?'NO ACTIVE DESTINATION':'CURRENT DESTINATION'}</span>
         <span class="budget-compact-flag">${esc(heroFlag)}</span>
-        <span class="budget-compact-copy"><b>${esc(state.currentStay.city||title)}</b><em>${esc(country)}</em></span>
+        <span class="budget-compact-copy"><b>${esc(journeyMode?title:(state.currentStay.city||title))}</b><em>${esc(country)}</em></span>
       </div>
       <button class="budget-lock-hero-next budget-compact-destination" data-screen-jump="itinerary" aria-label="Open next destination">
         <span class="budget-compact-label">NEXT DESTINATION</span>
@@ -4267,14 +4605,15 @@ function sharedDestinationContextHero(kind='calendar'){
   const pct=noActiveDestination?0:Math.round(elapsed/total*100);
   const mode=String(state.currentStay.type||current?.type||'Standard');
   const heroClass=mode==='Cruise'?'journey-cruise':mode==='Motorhome'?'journey-motorhome':'journey-standard';
-  const currentTitle=noActiveDestination?'No active destination':!['Cruise','Motorhome'].includes(mode)?`${state.currentStay.city}${state.currentStay.country?`, ${state.currentStay.country}`:''}`:journeyHeaderTitle(current);
-  const currentKicker=beforeJourney?'JOURNEY NOT STARTED':afterHorizon?'PLANNING HORIZON ENDED':intentionalGap?'PLANNED TRAVEL DAY':noActiveDestination?'NO ACTIVE DESTINATION':'CURRENT STAY';
+  const routedMode=['Cruise','Motorhome'].includes(mode);
+  const currentTitle=noActiveDestination?'No active destination':!routedMode?`${state.currentStay.city}${state.currentStay.country?`, ${state.currentStay.country}`:''}`:journeyHeaderTitle(current);
+  const currentKicker=beforeJourney?'JOURNEY NOT STARTED':afterHorizon?'PLANNING HORIZON ENDED':intentionalGap?'PLANNED TRAVEL DAY':noActiveDestination?'NO ACTIVE DESTINATION':routedMode?'CURRENT JOURNEY':'CURRENT STAY';
   const currentFlag=beforeJourney||afterHorizon?'🧭':intentionalGap?'↔':noActiveDestination?'⚠':visual.flag;
   const nextMode=String(next?.type||'Standard');
   const nextIcon=nextMode==='Motorhome'?iconMarkup('motorhome','shared-context-icon'):nextMode==='Cruise'?iconMarkup('cruise','shared-context-icon'):`<span class="shared-context-flag">${esc(next?.flag||'🧭')}</span>`;
   const nextDays=next?itineraryDisplayDayCount(next):0;
   const currentStatus=beforeJourney?`${dayCountLabel(daysUntilJourney).toUpperCase()} UNTIL JOURNEY STARTS`:afterHorizon?`PLANNING HORIZON ENDED ${dateFmt(journeyHorizonEndDate())}`:intentionalGap?'PLANNED TRANSITION':noActiveDestination?'PLANNING REQUIRED':`${dayCountLabel(remaining).toUpperCase()} REMAINING`;
-  const currentAria=beforeJourney?'Journey not started':afterHorizon?'Planning horizon ended':intentionalGap?'Planned travel day':noActiveDestination?'No active destination':`Current stay progress ${pct} percent`;
+  const currentAria=beforeJourney?'Journey not started':afterHorizon?'Planning horizon ended':intentionalGap?'Planned travel day':noActiveDestination?'No active destination':`${routedMode?'Current journey':'Current stay'} progress ${pct} percent`;
   return `<section class="destination-lock-hero shared-destination-context-hero shared-context-${esc(kind)} ${heroClass}" style="--destination-hero-image:url('${visual.image}');--destination-accent:${visual.accent}" aria-label="Current travel context and next destination">
     <div class="shared-context-card shared-context-current">
       <span class="shared-context-kicker">${currentKicker}</span>
@@ -4499,7 +4838,7 @@ function renderDashboard(){
   const homeFocusSchengenEditor=activeDestination?`<div class="readability-section home-focus-schengen-editor"><div class="home-focus-schengen-editor-head"><div><h4>ENTER SCHENGEN DATES</h4><p>Enter the date you entered the Schengen Area and the date you exit. Save here on the Home screen.</p></div><span class="home-focus-schengen-editor-badge">MANUAL</span></div><div class="home-focus-schengen-date-fields"><label><span>ENTRY DATE</span><input id="home-schengen-entry" type="date" value="${esc(state.currentStay.schengenStart||'')}" aria-label="Schengen entry date"><small>${state.currentStay.schengenStart?dateFmt(state.currentStay.schengenStart):'Not set'}</small></label><label><span>EXIT DATE</span><input id="home-schengen-exit" type="date" value="${esc(state.currentStay.schengenEnd||'')}" aria-label="Schengen exit date"><small>${state.currentStay.schengenEnd?dateFmt(state.currentStay.schengenEnd):'Not set'}</small></label></div><div class="home-focus-schengen-save-row"><span id="home-schengen-feedback" aria-live="polite">${state.currentStay.schengenStart&&state.currentStay.schengenEnd?`Current Schengen stay: ${dateFmt(state.currentStay.schengenStart)} – ${dateFmt(state.currentStay.schengenEnd)}`:'Enter both dates, then save.'}</span><button id="save-home-schengen-dates" class="primary">SAVE SCHENGEN DATES</button></div></div>`:`<div class="readability-section home-focus-schengen-editor unavailable"><h4>ENTER SCHENGEN DATES</h4><p>Add or activate a destination in Itinerary first. Schengen dates are then entered here from Home.</p></div>`;
   const homeFocusSchengenBody=`<div class="home-focus-schengen-hero"><div class="home-focus-schengen-gauge ${schengenStatus==='STOP'?'stop':schengenStatus==='LEAVE SOON'?'watch':schengenStatus==='NOT ACTIVE'?'inactive':'safe'}" style="--schengen-used:${schengenUsedPct};--schengen-left:${schengenLeftPct}"><div class="home-focus-schengen-dial" role="img" aria-label="${schengenDays} of 90 Schengen days used. ${schengenRemaining} days remaining."><div class="home-focus-schengen-dial-core"><b>${schengenRemaining}</b><span>DAYS LEFT</span><small>${Math.round(schengenLeftPct)}% REMAINING</small></div></div><div class="home-focus-schengen-legend"><span class="used"><i></i><small>USED</small><b>${schengenDays}</b></span><span class="left"><i></i><small>REMAINING</small><b>${schengenRemaining}</b></span></div></div><div class="home-focus-schengen-copy">${readabilityMetric('STATUS',esc(schengenStatus),'manual Schengen tracker',schengenStatus==='SAFE'?'good':schengenStatus==='LEAVE SOON'?'warn':schengenStatus==='NOT ACTIVE'?'':'bad')}${readabilityMetric('DAYS USED',String(schengenDays),'of 90')}${readabilityMetric('ENTRY',state.currentStay.schengenStart?dateFmt(state.currentStay.schengenStart):'—','entered on Home')}${readabilityMetric('EXIT / LEAVE BY',state.currentStay.schengenEnd?dateFmt(state.currentStay.schengenEnd):'—','entered on Home')}</div></div>${homeFocusSchengenEditor}<div class="readability-section home-focus-schengen-position"><h4>90-DAY ALLOWANCE</h4><div class="home-focus-schengen-bar" role="img" aria-label="${schengenDays} days used and ${schengenRemaining} days remaining out of 90"><div class="home-focus-schengen-bar-head"><span class="used">USED <b>${schengenDays} DAYS</b></span><span class="left">REMAINING <b>${schengenRemaining} DAYS</b></span></div><div class="home-focus-schengen-track ${schengenStatus==='STOP'?'stop':schengenStatus==='LEAVE SOON'?'watch':schengenStatus==='NOT ACTIVE'?'inactive':'safe'}"><em style="width:${schengenUsedPct}%"></em><i style="left:${schengenUsedPct}%"></i></div><div class="home-focus-schengen-axis"><span>0</span><span>45</span><span>90 DAYS</span></div></div><p class="muted">Manual Schengen tracker. Entry and exit dates are maintained directly in this expanded Home view.</p></div>`;
   const homeFocusTimelineBody=`<div class="readability-metric-grid">${readabilityMetric('VISIBLE STOPS',String(timeline.length),'current + forward itinerary')}${readabilityMetric('CURRENT',timeline.find(x=>x.current)?esc(timeline.find(x=>x.current).title):'—','in progress now')}${readabilityMetric('NEXT',timeline.find(x=>!x.current)?esc(timeline.find(x=>!x.current).title):'—','next planned segment')}${readabilityMetric('COVERAGE',timeline.length?`${dateFmt(timeline[0].start)} → ${dateFmt(timeline[timeline.length-1].end)}`:'—','visible timeline')}</div><div class="readability-list">${timeline.map(x=>`<div class="readability-list-row"><span>${x.current?'NOW':'NEXT'}</span><div><b>${esc(x.title)}</b><small>${dateFmt(x.start)} – ${dateFmt(x.end)} · ${esc(x.type)} · ${x.displayDays} days</small></div><strong>${x.current?'IN PROGRESS':x.type==='Intentional Gap'?'INTENTIONAL':'UPCOMING'}</strong></div>`).join('')||empty('No itinerary timeline yet.')}</div>`;
-  const homeFocusMeta=toiletPhraseOpen?null:({daily:{title:'DAILY BUDGET',tone:'home-daily',content:homeFocusDailyBody},destination:{title:'DESTINATION BUDGET',tone:'home-destination',content:homeFocusDestinationBody},annual:{title:'ANNUAL POSITION',tone:'home-annual',content:homeFocusAnnualBody},upcoming:{title:'UPCOMING EVENTS',tone:'home-upcoming',content:homeFocusUpcomingBody},alerts:{title:`ALERTS${alerts.length?` · ${alerts.length}`:''}`,tone:'home-alerts',content:homeFocusAlertsBody},schengen:{title:'SCHENGEN STATUS',tone:'home-schengen',content:homeFocusSchengenBody},timeline:{title:'TRIP TIMELINE',tone:'home-timeline',content:homeFocusTimelineBody}}[homeFocusWidget]||null);
+  const homeFocusMeta=(toiletPhraseOpen||countryQuickLookCountry)?null:({daily:{title:'DAILY BUDGET',tone:'home-daily',content:homeFocusDailyBody},destination:{title:'DESTINATION BUDGET',tone:'home-destination',content:homeFocusDestinationBody},annual:{title:'ANNUAL POSITION',tone:'home-annual',content:homeFocusAnnualBody},upcoming:{title:'UPCOMING EVENTS',tone:'home-upcoming',content:homeFocusUpcomingBody},alerts:{title:`ALERTS${alerts.length?` · ${alerts.length}`:''}`,tone:'home-alerts',content:homeFocusAlertsBody},schengen:{title:'SCHENGEN STATUS',tone:'home-schengen',content:homeFocusSchengenBody},timeline:{title:'TRIP TIMELINE',tone:'home-timeline',content:homeFocusTimelineBody}}[homeFocusWidget]||null);
 
   return `${hero()}
   ${glance}
@@ -4509,7 +4848,7 @@ function renderDashboard(){
     ${readabilityExpandableCard('SCHENGEN STATUS',`<div class="schengen-approved"><div class="schengen-ring ${schengenStatus==='STOP'?'stop':schengenStatus==='LEAVE SOON'?'watch':schengenStatus==='NOT ACTIVE'?'inactive':'safe'}" style="--schengen-used:${graphPercent(schengenDays/90*100)};--schengen-left:${graphPercent(schengenRemaining/90*100)}"><b>${schengenRemaining}</b><span>DAYS LEFT</span><small>OF 90</small></div><div class="schengen-copy"><div class="schengen-metrics"><span><b>${schengenDays}</b><small>USED</small></span><span><b>${schengenRemaining}</b><small>LEFT</small></span></div><small>${schengenStatus==='NOT ACTIVE'?'NO ACTIVE DESTINATION':state.currentStay.schengenEnd?'MUST LEAVE BY':'SET DATES IN EXPANDED VIEW'}</small><strong>${state.currentStay.schengenEnd?dateFmt(state.currentStay.schengenEnd):'—'}</strong></div><div class="schengen-date-grid"><span><small>ENTRY</small><b>${state.currentStay.schengenStart?dateFmt(state.currentStay.schengenStart):'—'}</b></span><span><small>EXIT</small><b>${state.currentStay.schengenEnd?dateFmt(state.currentStay.schengenEnd):'—'}</b></span></div><span class="pill schengen-safe-band ${schengenStatus==='SAFE'?'green':schengenStatus==='LEAVE SOON'?'yellow':schengenStatus==='NOT ACTIVE'?'blue':'red'}">${schengenStatus}</span></div>`,'dashboard-schengen','home','schengen','Schengen Status')}
     ${readabilityExpandableCard('TRIP TIMELINE',`${timeline.slice(0,3).map(x=>{const icon=x.type==='Motorhome'?iconMarkup('motorhome','timeline-travel-icon'):x.type==='Cruise'?iconMarkup('cruise','timeline-travel-icon'):x.type==='Intentional Gap'?'↔':iconMarkup('journeys','timeline-travel-icon');return `<div class="timeline-row home-readonly-row ${x.current?'current-journey':''}"><span class="timeline-dot ${x.current?'current':''}">${icon}</span><div><b>${esc(x.title)}</b><small>${dateFmt(x.start)} – ${dateFmt(x.end)}${['Motorhome','Cruise','Intentional Gap'].includes(x.type)?` · ${esc(x.type)}`:''}</small></div><em>${x.current?'In progress':x.type==='Intentional Gap'?'Intentional':'Upcoming'}</em></div>`;}).join('')||empty('No itinerary timeline yet.')}`,'dashboard-timeline','home','timeline','Trip Timeline')}
   </div>
-  <div class="global-search"><div class="approved-search-field global-search-field">${iconMarkup('search','search-field-icon')}<input id="global-search" aria-label="Search all travel records" value="${esc(globalSearchQuery)}" placeholder="Search destinations, reservations, notes and Vault"></div><div id="global-results"></div></div>${homeFocusMeta?readabilityFocusOverlay('home',homeFocusMeta.title,homeFocusMeta.content,homeFocusMeta.tone,homeFocusWidget==='schengen'?'Enter and save Schengen entry and exit dates here. The Home tracker updates immediately.':homeFocusWidget==='alerts'?'Delete an alert when it no longer needs attention. Other Home information updates automatically.':'Home information remains read-only and updates automatically from Budget, Itinerary, Reservations, Calendar and Checklist.'):''}${toiletPhraseOpen?toiletPhraseOverlay():''}`;
+  <div class="global-search"><div class="approved-search-field global-search-field">${iconMarkup('search','search-field-icon')}<input id="global-search" aria-label="Search all travel records" value="${esc(globalSearchQuery)}" placeholder="Search destinations, reservations, notes and Vault"></div><div id="global-results"></div></div>${homeFocusMeta?readabilityFocusOverlay('home',homeFocusMeta.title,homeFocusMeta.content,homeFocusMeta.tone,homeFocusWidget==='schengen'?'Enter and save Schengen entry and exit dates here. The Home tracker updates immediately.':homeFocusWidget==='alerts'?'Delete an alert when it no longer needs attention. Other Home information updates automatically.':'Home information remains read-only and updates automatically from Budget, Itinerary, Reservations, Calendar and Checklist.'):''}${countryQuickLookCountry&&!toiletPhraseOpen?countryQuickLookOverlay(countryQuickLookCountry):''}${toiletPhraseOpen?toiletPhraseOverlay():''}`;
 }
 function selectedMapJourneys(){
   const routes=[...completedJourneys()].filter(x=>journeyYearsTouched(x.start,x.end).length).sort((a,b)=>String(a.start||'').localeCompare(String(b.start||'')));
@@ -5000,10 +5339,11 @@ function renderBudget(){
   const expensePreJourney=!journeyHasStarted();
   const expenseSectionTitle=activeDestination?'2. EXPENSES · TRACK YOUR SPENDING IN LOCAL CURRENCY':plannedTravelDay?'2. EXPENSES · TRAVEL-DAY SPENDING · AUD':expensePreJourney?'2. EXPENSES · JOURNEY NOT STARTED · AUD ENTRY':'2. EXPENSES · ANNUAL SPENDING · AUD';
   const expenseContextLabel=activeDestination?'LOCAL CURRENCY':'BUDGET CURRENCY',expenseContextValue=activeDestination?state.currentStay.currency:'AUD',expenseContextNote=activeDestination?'Saved with this destination':expensePreJourney?'Outside the travel budget before Journey Start':'Annual Budget only';
-  const reservationContextPrefix=plannedTravelDay?'TRAVEL-DAY':activeDestination?'CURRENT-STAY':'CURRENT-DATE';
+  const activeDestinationRouted=itineraryIsRouted(activeDestination),activeDestinationIdentity=activeDestination?routedDepartureIdentity(activeDestination):{city:'',country:''};
+  const reservationContextPrefix=plannedTravelDay?'TRAVEL-DAY':activeDestination?(activeDestinationRouted?'CURRENT-TRIP':'CURRENT-STAY'):'CURRENT-DATE';
   const reservationReference=itineraryReferenceDate(),reservationAfterHorizon=journeyPlanningHorizonPassed();
-  const reservationContextSubtitle=activeDestination?`${state.currentStay.city}${state.currentStay.country?`, ${state.currentStay.country}`:''}`:plannedTravelDay?`${dateFmt(reservationReference)} · planned travel day`:expensePreJourney?`${dateFmt(reservationReference)} · before Journey Start`:reservationAfterHorizon?`${dateFmt(reservationReference)} · outside planning horizon`:`${dateFmt(reservationReference)} · no active stay`;
-  const reservationEmptyText=plannedTravelDay?'No reservations for this planned travel day.':activeDestination?'No reservations for the current stay.':'No reservations for this date.';
+  const reservationContextSubtitle=activeDestination?(activeDestinationRouted?`${journeyHeaderTitle(activeDestination)}${activeDestinationIdentity.country?` · departs ${activeDestinationIdentity.city?`${activeDestinationIdentity.city}, `:''}${activeDestinationIdentity.country}`:''}`:`${state.currentStay.city}${state.currentStay.country?`, ${state.currentStay.country}`:''}`):plannedTravelDay?`${dateFmt(reservationReference)} · planned travel day`:expensePreJourney?`${dateFmt(reservationReference)} · before Journey Start`:reservationAfterHorizon?`${dateFmt(reservationReference)} · outside planning horizon`:`${dateFmt(reservationReference)} · no active stay`;
+  const reservationEmptyText=plannedTravelDay?'No reservations for this planned travel day.':activeDestination?(activeDestinationRouted?'No reservations for the current trip.':'No reservations for the current stay.'):'No reservations for this date.';
   const stayBudget=Number(state.currentStay.budget||0), stayRemaining=destinationBudgetSet?stayBudget-local:0, stayPct=destinationBudgetSet?budgetProgress(local,stayBudget):0, actualStayPct=destinationBudgetSet?budgetProgress(actualLocal,stayBudget):0;
   const stayElapsedPct=stayProgress();
   const stayPaceDelta=destinationBudgetSet?actualStayPct-stayElapsedPct:0;
@@ -5128,14 +5468,14 @@ function renderBudget(){
   const financeContextKey=`${itineraryReferenceDate()}|${activeDestination?.id||'gap'}|${financeDefault?.id||'none'}`;
   if(financeContextKey!==budgetSetupContextKey){budgetSetupContextKey=financeContextKey;budgetSetupItineraryId=financeDefault?.id||'';budgetSetupManual=false;}
   if(!financeDestinations.some(x=>String(x.id)===String(budgetSetupItineraryId))){budgetSetupItineraryId=financeDefault?.id||'';budgetSetupManual=false;}
-  const budgetSetupEntry=financeDestinations.find(x=>String(x.id)===String(budgetSetupItineraryId))||null;
-  const budgetSetupCity=budgetSetupEntry?.city||'';
-  const budgetSetupCountry=budgetSetupEntry?.country||'';
+  const budgetSetupEntry=financeDestinations.find(x=>String(x.id)===String(budgetSetupItineraryId))||null,budgetSetupIdentity=budgetSetupEntry?routedDepartureIdentity(budgetSetupEntry):{city:'',country:''},budgetSetupRouted=itineraryIsRouted(budgetSetupEntry);
+  const budgetSetupCity=budgetSetupIdentity.city||budgetSetupEntry?.city||'';
+  const budgetSetupCountry=budgetSetupIdentity.country||budgetSetupEntry?.country||'';
   const budgetCurrency=countryCurrencyDetails(budgetSetupCountry,budgetSetupEntry?.currency||'AUD');
   const budgetSetupRate=budgetCurrency.code==='AUD'?1:Number(budgetSetupEntry?.rate||1);
   const budgetSetupAud=budgetSetupEntry?Number(budgetSetupEntry.budget||0)*budgetSetupRate:0;
   const budgetSetupConfigured=itineraryBudgetConfigured(budgetSetupEntry);
-  const budgetSetupStatus=budgetSetupEntry?(itineraryClassification(budgetSetupEntry)==='current'?'CURRENT STAY':budgetSetupConfigured?'BUDGET SET':'NEEDS BUDGET'):'';
+  const budgetSetupStatus=budgetSetupEntry?(itineraryClassification(budgetSetupEntry)==='current'?(budgetSetupRouted?'CURRENT JOURNEY':'CURRENT STAY'):budgetSetupConfigured?'BUDGET SET':'NEEDS BUDGET'):'';
   const annualBudgetHistory=Object.entries(state.annualBudgets||{}).map(([year,value])=>({year:Number(year),value:Number(value||0)})).filter(x=>Number.isInteger(x.year)&&x.year>=firstBudgetYear&&x.year<activeBudgetYear()&&Number.isFinite(x.value)&&x.value>0).sort((a,b)=>b.year-a.year).slice(0,3);
   const filteredCurrencies=[...new Set(filteredExpenses.map(x=>currencyCode(x.currency||state.currentStay.currency,'AUD')))];
   const filteredAverageLocal=filteredExpenses.length&&filteredCurrencies.length===1?filteredExpenses.reduce((sum,x)=>sum+Number(x.amount||0),0)/filteredExpenses.length:null;
@@ -5154,11 +5494,11 @@ function renderBudget(){
   const budgetReservationFocusBody=`<div class="readability-metric-grid">${readabilityMetric(`${reservationContextPrefix} BOOKINGS`,String(reservations.filter(x=>x.status!=='To Book').length),esc(reservationContextSubtitle))}${readabilityMetric('TOTAL BOOKED',money(bookedTotal),'AUD')}${readabilityMetric('DESTINATION BUDGET',money(destinationAllocated),'allocated once')}${readabilityMetric('ANNUAL BUDGET',money(annualAllocated),'allocated once')}${readabilityMetric('PAID',String(reservationStatusCounts.paid),money(reservationPaidTotal),'good')}${readabilityMetric('BOOKED',String(reservationStatusCounts.booked),'confirmed, not marked paid')}${readabilityMetric('UNPAID',String(reservationOutstandingCount),money(unpaidReservationTotal),reservationOutstandingCount?'bad':'good')}${readabilityMetric('TO BOOK',String(reservationStatusCounts.toBook),'planning items only',reservationStatusCounts.toBook?'warn':'')}</div><div class="readability-section"><h4>${reservationContextPrefix} RESERVATIONS</h4><div class="readability-list">${reservations.length?reservations.map(x=>`<div class="readability-list-row budget-reservation-focus-row"><span>${dateFmt(x.date)}</span><div><b>${esc(x.title)}</b><small>${esc(reservationDashboardCategory(x))} · ${esc(x.status)} · ${x.destinationBudget==='Yes'?'Destination Budget':'Annual Budget'}${x.reference?` · Ref ${esc(x.reference)}`:''}</small></div><strong>${money(reservationAudValue(x))}</strong></div>`).join(''):empty(reservationEmptyText)}</div></div>`;
   const budgetAccountsFocusBody=`<section class="budget-expanded-editor budget-expanded-accounts-editor"><div class="budget-expanded-editor-head"><div><small>AUSTRALIAN ACCOUNTS</small><h4>ACCOUNT DETAILS · AUD</h4><p>Account balances are display-only on the Budget screen. Add, edit or delete them here.</p></div><button data-add="accounts" class="primary budget-account-expanded-add">＋ ADD ACCOUNT</button></div>${accountList(true)}<p class="muted budget-account-focus-note">Balances stay intentionally separate. No combined account total is calculated.</p></section><div class="readability-metric-grid">${readabilityMetric('ACCOUNTS TRACKED',String(state.accounts.length),'AUD balances entered manually')}${readabilityMetric('LOWEST BALANCE',lowestAccount?money(lowestAccount.balance):'—',lowestAccount?esc(lowestAccount.name):'No accounts',lowestAccountWarning?'bad':'')}${readabilityMetric('MONTHLY SPEND GUIDE',money(avgMonth),'recorded average')}${readabilityMetric('LOW-BALANCE WATCH',lowestAccountWarning?'CHECK':'CLEAR',lowestAccountWarning?'Review the lowest account':'No low-balance warning',lowestAccountWarning?'warn':'good')}</div>`;
   const budgetMonthlyFocusBody=`${historyYearSwitch}<div class="readability-metric-grid budget-history-metrics">${readabilityMetric(historyIsCurrent?'SPENT YTD':historyIsUpcoming?'RECORDED SPEND':'YEAR TOTAL',money(historyTotal),`${historyYear} · AUD`)}${readabilityMetric('ANNUAL BUDGET',historyBudget?money(historyBudget):'—',historyBudget?'AUD':'No budget saved')}${readabilityMetric('AVERAGE / RECORDED MONTH',money(historyAverage),`${historyPopulated} recorded month${historyPopulated===1?'':'s'}`)}${readabilityMetric('PEAK MONTH',historyPopulated?monthName(historyPeakIndex):'—',historyPopulated?money(historyMonthly[historyPeakIndex]):'No spend')}${readabilityMetric('LIVING SPEND',money(historyLivingAud),'expenses')}${readabilityMetric('RESERVATIONS',money(historyReservationAud),'booked / paid')}${readabilityMetric('QUIETEST RECORDED MONTH',historyLowIndex>=0?monthName(historyLowIndex):'—',historyLowIndex>=0?money(historyMonthly[historyLowIndex]):'No spend')}${readabilityMetric('BUDGET POSITION',historyBudget?money(Math.abs(historyBudgetVariance)):'—',historyBudget?(historyBudgetVariance>=0?'under annual budget':'over annual budget'):'No annual budget',historyBudget?(historyBudgetVariance>=0?'good':'bad'):'')}</div><div class="readability-section"><h4>MONTH BY MONTH · ${historyYear}</h4><div class="budget-focus-month-chart budget-monthly-expanded-chart budget-history-expanded-chart">${historyMonthly.map((v,i)=>`<div class="${historyIsCurrent&&i===currentMonth?'current ':''}month-tone-${(i%6)+1}"><i><em style="height:${Math.max(v?4:0,graphPercent(v/Math.max(1,historyMaxMonth)*100))}%"></em></i><span>${new Date(2020,i,1).toLocaleDateString('en-AU',{month:'short'})}</span></div>`).join('')}</div><div class="budget-focus-month-values budget-history-month-values">${historyMonthly.map((v,i)=>`<span class="month-tone-${(i%6)+1}">${new Date(2020,i,1).toLocaleDateString('en-AU',{month:'short'})}<b>${money(v)}</b></span>`).join('')}</div></div><div class="readability-section budget-history-note"><h4>YEAR HISTORY</h4><p class="muted">Choose any saved year above to review its actual month-by-month spend. ${historyIsCurrent?'The current year remains in progress; forecasts stay in the separate Year Forecast & Budget Summary.':historyIsUpcoming?'This budget year has not started yet; actual travel spend begins from Journey Start.':'This is a historical actual-spend view — no forecast is applied.'}</p></div>`;
-  const budgetDestinationSummaryFocusBody=activeDestination?(destinationBudgetSet?`<div class="readability-metric-grid">${readabilityMetric('STAY BUDGET',localMoney(stayBudget,state.currentStay.symbol),`≈ ${money(stayBudget*Number(state.currentStay.rate||1))} AUD`)}${readabilityMetric('SPENT',localMoney(local,state.currentStay.symbol),`≈ ${money(aud)} AUD`,stayRemaining>=0?'':'bad')}${readabilityMetric(stayRemaining>=0?'REMAINING':'OVER BUDGET',localMoney(Math.abs(stayRemaining),state.currentStay.symbol),`≈ ${money(Math.abs(stayRemaining)*Number(state.currentStay.rate||1))} AUD`,stayRemaining>=0?'good':'bad')}${readabilityMetric('ACTUAL SPEND PACE',`${actualStayPct.toFixed(0)}%`,`${stayElapsedPct.toFixed(0)}% of stay elapsed`,actualStayPct<=stayElapsedPct+5?'good':actualStayPct<=stayElapsedPct+15?'warn':'bad')}${readabilityMetric('DAILY ALLOWANCE',localMoney(plannedDailySpend,state.currentStay.symbol),'planned per day')}${readabilityMetric('ACTUAL DAILY',localMoney(actualDailySpend/Math.max(Number(state.currentStay.rate||1),.000001),state.currentStay.symbol),`${money(actualDailySpend)} AUD per day`,actualDailySpend<=plannedDailySpend*Number(state.currentStay.rate||1)?'good':'bad')}${readabilityMetric('DAYS REMAINING',String(stayDaysRemaining),`${dateFmt(state.currentStay.end)} departure`)}${readabilityMetric('FIXED RATE',`1 ${esc(state.currentStay.currency)} = ${moneyExact(state.currentStay.rate)} AUD`,'locked for this stay')}</div><div class="readability-section"><h4>STAY POSITION</h4><div class="readability-progress-row"><span>Budget used</span><i><em style="width:${graphPercent(stayPct)}%"></em></i><b>${stayPct.toFixed(0)}%</b></div><div class="readability-progress-row"><span>Stay elapsed</span><i><em style="width:${graphPercent(stayElapsedPct)}%"></em></i><b>${stayElapsedPct.toFixed(0)}%</b></div><p class="muted">Budget period: ${dateFmt(state.currentStay.start)} – ${dateFmt(state.currentStay.end)} · ${stayDayMetrics.total} days. Accommodation remains Annual Budget only and is not included in this destination living budget.</p></div>`:`<div class="readability-metric-grid">${readabilityMetric('STAY BUDGET','NOT SET','Save a Destination Budget to start pace tracking','warn')}${readabilityMetric('SPENT',localMoney(local,state.currentStay.symbol),`≈ ${money(aud)} AUD`)}${readabilityMetric('STAY ELAPSED',`${stayElapsedPct.toFixed(0)}%`,`${stayDaysElapsed} of ${stayDayMetrics.total} owned days`)}${readabilityMetric('FIXED RATE',`1 ${esc(state.currentStay.currency)} = ${moneyExact(state.currentStay.rate)} AUD`,'locked for this stay')}</div><div class="readability-section"><h4>DESTINATION CALCULATIONS PAUSED</h4><p class="muted">Remaining budget, daily allowance and spend pace are intentionally blank until a Destination Budget is saved. Recorded spending still counts normally.</p></div>`):empty('No active itinerary destination on the reference date.');
+  const budgetDestinationSummaryFocusBody=activeDestination?(destinationBudgetSet?`<div class="readability-metric-grid">${readabilityMetric('STAY BUDGET',localMoney(stayBudget,state.currentStay.symbol),`≈ ${money(stayBudget*Number(state.currentStay.rate||1))} AUD`)}${readabilityMetric('SPENT',localMoney(local,state.currentStay.symbol),`≈ ${money(aud)} AUD`,stayRemaining>=0?'':'bad')}${readabilityMetric(stayRemaining>=0?'REMAINING':'OVER BUDGET',localMoney(Math.abs(stayRemaining),state.currentStay.symbol),`≈ ${money(Math.abs(stayRemaining)*Number(state.currentStay.rate||1))} AUD`,stayRemaining>=0?'good':'bad')}${readabilityMetric('ACTUAL SPEND PACE',`${actualStayPct.toFixed(0)}%`,`${stayElapsedPct.toFixed(0)}% of stay elapsed`,actualStayPct<=stayElapsedPct+5?'good':actualStayPct<=stayElapsedPct+15?'warn':'bad')}${readabilityMetric('DAILY ALLOWANCE',localMoney(plannedDailySpend,state.currentStay.symbol),'planned per day')}${readabilityMetric('ACTUAL DAILY',localMoney(actualDailySpend/Math.max(Number(state.currentStay.rate||1),.000001),state.currentStay.symbol),`${money(actualDailySpend)} AUD per day`,actualDailySpend<=plannedDailySpend*Number(state.currentStay.rate||1)?'good':'bad')}${readabilityMetric('DAYS REMAINING',String(stayDaysRemaining),`${dateFmt(state.currentStay.end)} departure`)}${readabilityMetric('FIXED RATE',`1 ${esc(state.currentStay.currency)} = ${moneyExact(state.currentStay.rate)} AUD`,'locked for this stay')}</div><div class="readability-section"><h4>STAY POSITION</h4><div class="readability-progress-row"><span>Budget used</span><i><em style="width:${graphPercent(stayPct)}%"></em></i><b>${stayPct.toFixed(0)}%</b></div><div class="readability-progress-row"><span>Stay elapsed</span><i><em style="width:${graphPercent(stayElapsedPct)}%"></em></i><b>${stayElapsedPct.toFixed(0)}%</b></div><p class="muted">Budget period: ${dateFmt(state.currentStay.start)} – ${dateFmt(state.currentStay.end)} · ${stayDayMetrics.total} days. Only costs you allocate to this Destination Budget are included here; Annual-routed costs remain in the Annual Budget.</p></div>`:`<div class="readability-metric-grid">${readabilityMetric('STAY BUDGET','NOT SET','Save a Destination Budget to start pace tracking','warn')}${readabilityMetric('SPENT',localMoney(local,state.currentStay.symbol),`≈ ${money(aud)} AUD`)}${readabilityMetric('STAY ELAPSED',`${stayElapsedPct.toFixed(0)}%`,`${stayDaysElapsed} of ${stayDayMetrics.total} owned days`)}${readabilityMetric('FIXED RATE',`1 ${esc(state.currentStay.currency)} = ${moneyExact(state.currentStay.rate)} AUD`,'locked for this stay')}</div><div class="readability-section"><h4>DESTINATION CALCULATIONS PAUSED</h4><p class="muted">Remaining budget, daily allowance and spend pace are intentionally blank until a Destination Budget is saved. Recorded spending still counts normally.</p></div>`):empty('No active itinerary destination on the reference date.');
   const budgetPaceFocusBody=activeDestination?(destinationBudgetSet?`<div class="readability-metric-grid">${readabilityMetric('PACE STATUS',paceHealthWord,paceHealth==='green'?'On pace':paceHealth==='amber'?'Close to pace limit':'Over pace',paceHealth==='green'?'good':paceHealth==='amber'?'warn':'bad')}${readabilityMetric('STAY ELAPSED',`${stayElapsedPct.toFixed(0)}%`,`${stayDaysElapsed} day${stayDaysElapsed===1?'':'s'} elapsed`)}${readabilityMetric('SPEND PACE',`${actualStayPct.toFixed(0)}%`,'actual spend to date',actualStayPct<=stayElapsedPct+5?'good':actualStayPct<=stayElapsedPct+15?'warn':'bad')}${readabilityMetric('DAILY BUDGET',localMoney(plannedDailySpend,state.currentStay.symbol),'planned per day')}${readabilityMetric('ACTUAL DAILY',localMoney(actualDailySpend/Math.max(Number(state.currentStay.rate||1),.000001),state.currentStay.symbol),`${money(actualDailySpend)} AUD per day`,actualDailySpend<=plannedDailySpend*Number(state.currentStay.rate||1)?'good':'bad')}${readabilityMetric('PROJECTED STAY',localMoney(projectedStaySpend/Math.max(Number(state.currentStay.rate||1),.000001),state.currentStay.symbol),`≈ ${money(projectedStaySpend)} AUD`)}${readabilityMetric('PROJECTED VARIANCE',money(Math.abs(projectedStayVariance)),projectedStayVariance<=0?'under destination budget':'over destination budget',projectedStayVariance<=0?'good':'bad')}${readabilityMetric('REMAINING / DAY',localMoney(dailyRemainingAllowance,state.currentStay.symbol),`${stayDaysRemaining} day${stayDaysRemaining===1?'':'s'} remaining`)}</div><div class="readability-section"><h4>PACE COMPARISON</h4><div class="readability-progress-row"><span>Stay elapsed</span><i><em style="width:${graphPercent(stayElapsedPct)}%"></em></i><b>${stayElapsedPct.toFixed(0)}%</b></div><div class="readability-progress-row"><span>Actual spend pace</span><i><em style="width:${graphPercent(actualStayPct)}%"></em></i><b>${actualStayPct.toFixed(0)}%</b></div><p class="muted">${projectedStayVariance<=0?`At the current average, this stay is projected to finish about ${money(Math.abs(projectedStayVariance))} AUD under budget.`:`At the current average, this stay is projected to finish about ${money(Math.abs(projectedStayVariance))} AUD over budget.`}</p></div>`:`<div class="readability-metric-grid">${readabilityMetric('PACE STATUS','PAUSED','Destination Budget not set','warn')}${readabilityMetric('STAY ELAPSED',`${stayElapsedPct.toFixed(0)}%`,`${stayDaysElapsed} day${stayDaysElapsed===1?'':'s'} elapsed`)}${readabilityMetric('ACTUAL DAILY',localMoney(actualDailySpend/Math.max(Number(state.currentStay.rate||1),.000001),state.currentStay.symbol),`${money(actualDailySpend)} AUD per day`)}${readabilityMetric('SPENT SO FAR',localMoney(local,state.currentStay.symbol),`≈ ${money(aud)} AUD`)}</div><div class="readability-section"><h4>PACE COMPARISON PAUSED</h4><p class="muted">Set a Destination Budget before calculating spend pace, remaining allowance or projected budget variance.</p></div>`):empty('Destination pace calculations are paused because there is no active itinerary stay.');
   const budgetAnnualSetupFocusBody=`<section class="budget-expanded-editor budget-expanded-annual-editor"><div class="budget-expanded-editor-head"><div><small>ANNUAL BUDGET SETUP</small><h4>${activeBudgetYear()} ANNUAL BUDGET</h4><p>Enter the annual AUD budget here, then save it.</p></div><span class="budget-expanded-editor-status">${annualBudgetSet?`${money(annualBudget)} AUD SAVED`:'NOT SET'}</span></div><label class="budget-expanded-field"><span>ANNUAL BUDGET · AUD</span><div class="budget-expanded-money-input"><b>$</b><input id="budget-annual-value" aria-label="Annual budget in AUD" type="text" inputmode="numeric" value="${annualBudgetSet?Number(annualBudget).toLocaleString('en-AU'):''}"><strong>AUD</strong></div></label><button id="save-annual-budget" class="primary budget-expanded-save">SAVE ANNUAL BUDGET</button></section><div class="readability-metric-grid">${readabilityMetric('SPENT SO FAR',money(annual),'AUD')}${annualBudgetSet?readabilityMetric('REMAINING',money(Math.abs(annualRemaining)),annualRemaining>=0?'annual headroom':'over annual budget',annualRemaining>=0?'good':'bad'):readabilityMetric('REMAINING','PAUSED','annual budget required')}${readabilityMetric(annualPeriod.partial?'BUDGET PERIOD ELAPSED':'YEAR ELAPSED',`${Math.round(annualElapsed/Math.max(1,annualDays)*100)}%`,`Day ${annualElapsed} of ${annualDays}`)}${readabilityMetric('PROJECTED YEAR END',money(forecast),annualBudgetSet?'AUD':'spend forecast · AUD',annualBudgetSet?(forecast<=annualBudget?'good':'bad'):'')}</div><div class="readability-section"><h4>RECENT ANNUAL BUDGETS</h4><div class="readability-list">${annualBudgetHistory.length?annualBudgetHistory.map(x=>`<div class="readability-list-row"><span>${x.year}</span><div><b>${money(x.value)}</b><small>AUD annual budget</small></div><strong>${x.value&&annualBudgetSet?`${((annualBudget-x.value)/x.value*100).toFixed(1)}%`:'—'}</strong></div>`).join(''):empty('No previous annual budgets saved yet.')}</div></div>`;
-  const budgetDestinationSetupFocusBody=budgetSetupEntry?`<section class="budget-expanded-editor budget-expanded-destination-editor"><div class="budget-expanded-editor-head"><div><small>DESTINATION BUDGET SETUP</small><h4>${esc(budgetSetupCity)} · ${esc(budgetSetupCountry)}</h4><p>Choose the stay, enter the AUD budget and fixed conversion rate, then save it.</p></div><span class="budget-expanded-editor-status ${budgetSetupConfigured?'configured':'needs-budget'}">${esc(budgetSetupStatus)}</span></div><label class="budget-expanded-field wide"><span>ITINERARY STAY</span><select id="budget-destination-select" aria-label="Choose itinerary stay for destination budget">${financeDestinations.map(x=>`<option value="${x.id}" ${String(x.id)===String(budgetSetupEntry.id)?'selected':''}>${esc(budgetItineraryOptionLabel(x))}</option>`).join('')}</select></label><div class="budget-expanded-destination-context"><span><small>STAY DATES</small><b>${dateFmt(budgetSetupEntry.arrival)} – ${dateFmt(budgetSetupEntry.departure)}</b></span><span><small>LOCAL CURRENCY</small><b>${esc(budgetCurrency.code)} · ${esc(budgetCurrency.name)}</b></span></div><div class="budget-expanded-fields-grid"><label class="budget-expanded-field"><span>DESTINATION BUDGET · AUD</span><div class="budget-expanded-money-input"><b>AUD</b><input id="budget-destination-aud-budget" aria-label="Budget for selected itinerary stay in Australian dollars" type="text" inputmode="numeric" value="${Number(budgetSetupAud||0).toLocaleString('en-AU',{maximumFractionDigits:2})}"></div></label><label class="budget-expanded-field"><span>FIXED RATE · 1 ${esc(budgetCurrency.code)} IN AUD</span><input id="budget-destination-rate" type="number" inputmode="decimal" min="0.000001" step="0.000001" value="${budgetCurrency.code==='AUD'?1:Number(budgetSetupEntry.rate||1)}" ${budgetCurrency.code==='AUD'?'readonly':''}><small id="budget-rate-line">1 ${esc(budgetCurrency.code)} = ${moneyExact(budgetCurrency.code==='AUD'?1:Number(budgetSetupEntry.rate||1))} AUD</small></label><div class="budget-expanded-output"><span>AVAILABLE IN LOCAL CURRENCY</span><b>${esc(budgetCurrency.code)} <strong id="budget-destination-local-value">${Number(budgetSetupEntry.budget||0).toLocaleString('en-AU',{maximumFractionDigits:2})}</strong></b><small>Calculated automatically from the AUD budget and fixed rate.</small></div></div><button id="save-destination-budget" class="primary budget-expanded-save">${budgetSetupConfigured?'UPDATE DESTINATION BUDGET':'SAVE DESTINATION BUDGET'}</button></section><div class="readability-section"><h4>HOW THIS BUDGET WORKS</h4><p class="muted">The destination and local currency come automatically from Itinerary. Budget and conversion-rate changes are made only in this expanded screen. Hotels and Airbnb remain Annual Budget only.</p></div>`:empty('No current or upcoming itinerary stay is available for destination-budget setup.');
-  const budgetFocusMeta={destinationSummary:{title:'DESTINATION BUDGET',tone:'budget-destination-summary',content:budgetDestinationSummaryFocusBody},pace:{title:'DAILY & STAY PACE',tone:'budget-pace',content:budgetPaceFocusBody},annualSetup:{title:'ANNUAL BUDGET',tone:'budget-annual-setup',content:budgetAnnualSetupFocusBody,footer:'Annual budget changes are saved only when SAVE ANNUAL BUDGET is pressed.'},destinationSetup:{title:'DESTINATION BUDGET',tone:'budget-destination-setup',content:budgetDestinationSetupFocusBody,footer:'Destination budget and conversion-rate changes are saved only when SAVE or UPDATE DESTINATION BUDGET is pressed.'},category:{title:'BUDGET BY CATEGORY · AUD',tone:'budget-category',content:budgetCategoryFocusBody},forecast:{title:'YEAR FORECAST & BUDGET SUMMARY',tone:'budget-forecast',content:budgetForecastFocusBody},reservations:{title:'RESERVATIONS · READ ONLY SUMMARY',tone:'budget-reservations',content:budgetReservationFocusBody},travelCosts:{title:`TRAVEL BETWEEN DESTINATIONS · ${activeBudgetYear()}`,tone:'budget-reservations',content:`<div class=\"readability-metric-grid\">${annualTravelBreakdown.map(row=>readabilityMetric(row.label.toUpperCase(),money(row.total),`${row.count} booking${row.count===1?'':'s'}`)).join('')}${readabilityMetric('TOTAL',money(annualTravelTotal),'Reservation travel history · not counted twice')}</div><div class=\"readability-section\"><h4>WHAT IS INCLUDED</h4><p class=\"muted\">Flights, trains, cruises and RV / motorhome hire are reported here as reservation travel history. Domestic flights and trains can belong to a Destination Budget; cruise fare belongs to its Cruise trip budget; RV hire belongs to its RV trip budget; international flights remain Annual Budget. Taxi, scooter hire and other day-to-day transport remain normal Transport expenses.</p></div>`},accounts:{title:'ACCOUNTS · AUD',tone:'budget-accounts',content:budgetAccountsFocusBody},monthly:{title:`MONTHLY SPEND HISTORY · ${historyYear}`,tone:'budget-monthly',content:budgetMonthlyFocusBody,footer:'Monthly history is read-only and uses saved Budget and Reservation records.'}}[budgetFocusWidget]||null;
+  const budgetDestinationSetupFocusBody=budgetSetupEntry?`<section class="budget-expanded-editor budget-expanded-destination-editor"><div class="budget-expanded-editor-head"><div><small>DESTINATION BUDGET SETUP</small><h4>${esc(budgetSetupCity)} · ${esc(budgetSetupCountry)}</h4><p>Choose the stay, enter the AUD budget and fixed conversion rate, then save it.</p></div><span class="budget-expanded-editor-status ${budgetSetupConfigured?'configured':'needs-budget'}">${esc(budgetSetupStatus)}</span></div><label class="budget-expanded-field wide"><span>ITINERARY STAY</span><select id="budget-destination-select" aria-label="Choose itinerary stay for destination budget">${financeDestinations.map(x=>`<option value="${x.id}" ${String(x.id)===String(budgetSetupEntry.id)?'selected':''}>${esc(budgetItineraryOptionLabel(x))}</option>`).join('')}</select></label><div class="budget-expanded-destination-context"><span><small>STAY DATES</small><b>${dateFmt(budgetSetupEntry.arrival)} – ${dateFmt(budgetSetupEntry.departure)}</b></span><span><small>LOCAL CURRENCY</small><b>${esc(budgetCurrency.code)} · ${esc(budgetCurrency.name)}</b></span></div><div class="budget-expanded-fields-grid"><label class="budget-expanded-field"><span>DESTINATION BUDGET · AUD</span><div class="budget-expanded-money-input"><b>AUD</b><input id="budget-destination-aud-budget" aria-label="Budget for selected itinerary stay in Australian dollars" type="text" inputmode="numeric" value="${Number(budgetSetupAud||0).toLocaleString('en-AU',{maximumFractionDigits:2})}"></div></label><label class="budget-expanded-field"><span>FIXED RATE · 1 ${esc(budgetCurrency.code)} IN AUD</span><input id="budget-destination-rate" type="number" inputmode="decimal" min="0.000001" step="0.000001" value="${budgetCurrency.code==='AUD'?1:Number(budgetSetupEntry.rate||1)}" ${budgetCurrency.code==='AUD'?'readonly':''}><small id="budget-rate-line">1 ${esc(budgetCurrency.code)} = ${moneyExact(budgetCurrency.code==='AUD'?1:Number(budgetSetupEntry.rate||1))} AUD</small></label><div class="budget-expanded-output"><span>AVAILABLE IN LOCAL CURRENCY</span><b>${esc(budgetCurrency.code)} <strong id="budget-destination-local-value">${Number(budgetSetupEntry.budget||0).toLocaleString('en-AU',{maximumFractionDigits:2})}</strong></b><small>Calculated automatically from the AUD budget and fixed rate.</small></div></div><button id="save-destination-budget" class="primary budget-expanded-save">${budgetSetupConfigured?'UPDATE DESTINATION BUDGET':'SAVE DESTINATION BUDGET'}</button></section><div class="readability-section"><h4>HOW THIS BUDGET WORKS</h4><p class="muted">The destination and local currency come automatically from Itinerary. Budget and conversion-rate changes are made only in this expanded screen. Every expense and reservation cost can be assigned to Annual Budget or Destination Budget when a matching destination exists.</p></div>`:empty('No current or upcoming itinerary stay is available for destination-budget setup.');
+  const budgetFocusMeta={destinationSummary:{title:'DESTINATION BUDGET',tone:'budget-destination-summary',content:budgetDestinationSummaryFocusBody},pace:{title:'DAILY & STAY PACE',tone:'budget-pace',content:budgetPaceFocusBody},annualSetup:{title:'ANNUAL BUDGET',tone:'budget-annual-setup',content:budgetAnnualSetupFocusBody,footer:'Annual budget changes are saved only when SAVE ANNUAL BUDGET is pressed.'},destinationSetup:{title:'DESTINATION BUDGET',tone:'budget-destination-setup',content:budgetDestinationSetupFocusBody,footer:'Destination budget and conversion-rate changes are saved only when SAVE or UPDATE DESTINATION BUDGET is pressed.'},category:{title:'BUDGET BY CATEGORY · AUD',tone:'budget-category',content:budgetCategoryFocusBody},forecast:{title:'YEAR FORECAST & BUDGET SUMMARY',tone:'budget-forecast',content:budgetForecastFocusBody},reservations:{title:'RESERVATIONS · READ ONLY SUMMARY',tone:'budget-reservations',content:budgetReservationFocusBody},travelCosts:{title:`TRAVEL BETWEEN DESTINATIONS · ${activeBudgetYear()}`,tone:'budget-reservations',content:`<div class=\"readability-metric-grid\">${annualTravelBreakdown.map(row=>readabilityMetric(row.label.toUpperCase(),money(row.total),`${row.count} booking${row.count===1?'':'s'}`)).join('')}${readabilityMetric('TOTAL',money(annualTravelTotal),'Reservation travel history · not counted twice')}</div><div class=\"readability-section\"><h4>WHAT IS INCLUDED</h4><p class=\"muted\">Flights, trains, cruises and RV / motorhome hire are reported here as reservation travel history. Each flight, train, cruise and RV / motorhome booking can be assigned to Annual Budget or its linked Destination Budget. The choice is stored per booking. Taxi, scooter hire and other day-to-day transport remain normal Transport expenses.</p></div>`},accounts:{title:'ACCOUNTS · AUD',tone:'budget-accounts',content:budgetAccountsFocusBody},monthly:{title:`MONTHLY SPEND HISTORY · ${historyYear}`,tone:'budget-monthly',content:budgetMonthlyFocusBody,footer:'Monthly history is read-only and uses saved Budget and Reservation records.'}}[budgetFocusWidget]||null;
 
   return `${cinematicHero('budget')}
   <section class="budget-rich-dashboard">
@@ -5436,10 +5776,6 @@ function reservationSearchText(x){
   const searchableStartDate=reservationUserDate(x);
   return canonicalSearchText([x.title,x.type,reservationTypeGroup(x),reservationDashboardCategory(x),reservationTravelCostLabel(x),reservationTravelScope(x),reservationDestination(x),reservationCountryName(x),x.currency,x.status,x.reference,x.notes,x.time,searchDateTerms(searchableStartDate,x.endDate,x.paymentDueDate,x.cancellationDeadline),searchNumberTerms(x.original,aud,perTraveller),x.original!==undefined?`${x.currency||''} ${Number(x.original||0).toLocaleString('en-AU',{maximumFractionDigits:2})}`:'',`${money(aud)} ${moneyCents(perTraveller)} per traveller`,...travel,...payment].filter(value=>value!==''&&value!==null&&value!==undefined).join(' '));
 }
-function reservationMatchesTravelHistoryDrilldown(x,label=reservationTravelHistoryDrilldownLabel,year=reservationTravelHistoryDrilldownYear){
-  if(!label)return true;
-  return reservationTravelCostLabel(x)===label&&(year==='All'||String(reservationEffectiveBudgetDate(x)||'').slice(0,4)===String(year));
-}
 function reservationMatchesFilters(x){
   const typeOk=reservationTab==='Completed'?reservationIsCompleted(x):(reservationTab==='All'||reservationDashboardCategory(x)===reservationTab);
   const statusOk=reservationStatusFilter==='All'||x.status===reservationStatusFilter;
@@ -5447,7 +5783,6 @@ function reservationMatchesFilters(x){
   const selectedCountryOk=reservationCountryFilter==='All'||countryIdentityEquals(recordCountry,reservationCountryFilter);
   const currentCountryOk=!reservationOnlyCurrent||Boolean(currentCountry)&&countryIdentityEquals(recordCountry,currentCountry);
   const searchOk=!reservationSearchQuery||reservationSearchText(x).includes(canonicalSearchText(reservationSearchQuery));
-  const travelHistoryOk=reservationMatchesTravelHistoryDrilldown(x);
   const destinationOk=reservationDestinationFilter==='All'||reservationDestinationIdentityKey(x)===reservationDestinationIdentityKey(reservationDestinationFilter);
   const budgetOk=reservationBudgetFilter==='All'||(reservationBudgetFilter==='Destination'?x.destinationBudget==='Yes':x.destinationBudget!=='Yes');
   const currencyOk=reservationCurrencyFilter==='All'||String(x.currency||'')===reservationCurrencyFilter;
@@ -5465,7 +5800,7 @@ function reservationMatchesFilters(x){
     quickOk=until!==null&&until>=0&&until<days;
   }
   const overdueOk=!reservationOnlyOverdue||reservationIsOverdue(x);
-  return typeOk&&statusOk&&selectedCountryOk&&currentCountryOk&&searchOk&&travelHistoryOk&&destinationOk&&budgetOk&&currencyOk&&referenceOk&&fromOk&&toOk&&minOk&&maxOk&&quickOk&&overdueOk;
+  return typeOk&&statusOk&&selectedCountryOk&&currentCountryOk&&searchOk&&destinationOk&&budgetOk&&currencyOk&&referenceOk&&fromOk&&toOk&&minOk&&maxOk&&quickOk&&overdueOk;
 }
 function reservationActiveFilters(){
   const filters=[];
@@ -5902,12 +6237,6 @@ function renderReservations(){
   const overdue=summarySource.filter(reservationIsOverdue).length;
   const paymentSummaryRows=all.filter(x=>x.status!=='To Book'&&!reservationWhollyBeforeJourney(x));
   const totalBooked=paymentSummaryRows.reduce((s,x)=>s+reservationAudValue(x),0);
-  const allTravelHistoryRows=state.reservations.filter(x=>x.status!=='To Book'&&!reservationWhollyBeforeJourney(x)&&reservationIsBetweenDestinationTravel(x));
-  const travelHistoryYears=[...new Set(allTravelHistoryRows.map(x=>Number(String(reservationEffectiveBudgetDate(x)||x.date||'').slice(0,4))).filter(Number.isInteger))].sort((a,b)=>b-a);
-  const selectedTravelHistoryYear=reservationTravelYearFilter==='All'?'All':Number(reservationTravelYearFilter);
-  const travelHistoryRows=selectedTravelHistoryYear==='All'?allTravelHistoryRows:allTravelHistoryRows.filter(x=>Number(String(reservationEffectiveBudgetDate(x)||x.date||'').slice(0,4))===selectedTravelHistoryYear);
-  const travelCostBreakdown=reservationTravelCostBreakdown(travelHistoryRows),travelCostTotal=travelCostBreakdown.reduce((sum,row)=>sum+row.total,0);
-  const travelYearControls=`<div class="reservation-travel-year-switch" role="group" aria-label="Travel transport history year"><button type="button" data-res-travel-year="All" class="${selectedTravelHistoryYear==='All'?'active':''}">All Years</button>${travelHistoryYears.map(year=>`<button type="button" data-res-travel-year="${year}" class="${selectedTravelHistoryYear===year?'active':''}">${year}</button>`).join('')}</div>`;
   const paidValue=paymentSummaryRows.reduce((s,x)=>s+reservationPaidAud(x),0);
   const unpaidValue=paymentSummaryRows.reduce((s,x)=>s+reservationOutstandingAud(x),0);
   const paymentPct=graphPercent(totalBooked?Math.round(paidValue/totalBooked*100):0);
@@ -6049,13 +6378,13 @@ function renderReservations(){
   const completedFilterStrip=focusCompleted?`<div class="reservation-completed-filter-strip" role="group" aria-label="Filter completed reservations by type">${completedFilterTabs.map(type=>{const count=type==='All'?completedAll.length:completedAll.filter(x=>reservationCompletedTypeMatches(x,type)).length;const tone=type==='All'?'all':type==='Tickets & Attractions'?'tickets':type.toLowerCase().replaceAll(' ','-').replaceAll('&','and');return `<button class="reservation-completed-filter ${tone} ${reservationCompletedTypeFilter===type?'active':''}" data-res-completed-filter="${esc(type)}"><span>${esc(type)}</span><b>${count}</b></button>`}).join('')}</div>`:'';
   const reservationFocusBody=reservationCategoryFocus?`<div class="readability-metric-grid">${readabilityMetric(focusCompleted?'COMPLETED':'BOOKED RESERVATIONS',String(focusRows.length),focusCompleted?(reservationCompletedTypeFilter==='All'?'completed bookings':`${esc(reservationCompletedTypeFilter)} completed`):`${focusActiveCount} active · ${focusFutureRows.length} upcoming`)}${readabilityMetric('TOTAL VALUE',money(focusValue),'AUD')}${readabilityMetric(focusCompleted?'PAID':'NEXT BOOKING',focusCompleted?String(focusPaid):(focusNext?dateFmt(focusNext.date):'—'),focusCompleted?'completed + paid':(focusNext?esc(focusNext.title):'No future booking'),focusCompleted||focusNext?'good':'')}${readabilityMetric('UNPAID',String(focusUnpaid),focusUnpaid?'needs payment':'nothing outstanding',focusUnpaid?'bad':'good')}</div>${completedFilterStrip}<div class="reservation-focus-actions"><span>${focusCompleted?`Completed history is shown newest first${reservationCompletedTypeFilter==='All'?'.':` · showing ${esc(reservationCompletedTypeFilter)} only.`}`:'Booked reservations shown here are active or upcoming. To Book reminders and completed records are excluded.'}</span>${!focusCompleted?`<button data-reservation-focus-main="${esc(reservationCategoryFocus)}">SHOW ${esc(reservationCategoryFocus).toUpperCase()} IN MAIN LIST</button>`:''}</div><div class="reservation-focus-list">${focusRows.map(x=>{const travel=reservationTravelFields(x.type).map(name=>String(x[name]||'').trim()).filter(Boolean).slice(0,3).join(' · ');const obligation=x.paymentDueDate&&reservationOutstandingAud(x)>.01?`Balance ${money(reservationOutstandingAud(x))} due ${dateFmt(x.paymentDueDate)}`:'';return `<button class="reservation-focus-row" data-edit="reservations:${x.id}" aria-label="Open ${esc(x.title)}"><span class="reservation-focus-date"><b>${dateFmt(x.date)}</b><small>${x.endDate&&x.endDate!==x.date?`to ${dateFmt(x.endDate)}`:esc(reservationRelativeDate(x))}</small></span><span class="reservation-focus-icon">${iconMarkup(reservationIconName(x.type),'reservation-focus-mark')}</span><span class="reservation-focus-copy"><b>${esc(x.title)}</b><small>${esc(reservationDestination(x)||'No destination')} · ${esc(x.reference||'No reference')}</small>${travel||obligation?`<em>${esc([travel,obligation].filter(Boolean).join(' · '))}</em>`:''}</span><span class="reservation-focus-value"><b>${money(reservationAudValue(x))}</b><small class="${reservationStatusClass(x.status)}">${esc(x.status)}</small><em>${x.destinationBudget==='Yes'?'Destination budget':'Annual budget'}</em></span><i>›</i></button>`}).join('')||empty(focusCompleted?`No completed ${reservationCompletedTypeFilter==='All'?'bookings':reservationCompletedTypeFilter.toLowerCase()} found.`:'No active or upcoming bookings in this category.')}</div>`:'';
   const reservationFocusTone=reservationFocusToneClass(reservationCategoryFocus);
-  const reservationFocusTitle=focusCompleted?`Completed · ${reservationCompletedTypeFilter==='All'?'ALL':reservationCompletedTypeFilter.toUpperCase()}`:`${esc(reservationCategoryFocus)} · BOOKED RESERVATIONS`;
+  const reservationFocusTitle=focusCompleted?`Completed · ${reservationCompletedTypeFilter==='All'?'ALL':reservationCompletedTypeFilter.toUpperCase()}`:`${esc(reservationCategoryFocus)} Booked`;
   const reservationFocusOverlay=reservationCategoryFocus?readabilityFocusOverlay('reservation',reservationFocusTitle,reservationFocusBody,`reservation-category ${reservationFocusTone}`,focusCompleted?'Use the quick filters above to review completed bookings by reservation type.':'Reservation category cards count booked reservations that are active or upcoming.') :'';
   const pagination=visibleUpcoming.length>reservationPageSize?`<div class="reservation-pagination"><span>Showing ${pageStart+1}–${Math.min(pageStart+reservationPageSize,visibleUpcoming.length)} of ${visibleUpcoming.length}</span><div><button id="reservation-prev" aria-label="Previous reservations page" ${reservationPage===1?'disabled':''}>‹</button><b>Page ${reservationPage} of ${maxPage}</b><button id="reservation-next" aria-label="Next reservations page" ${reservationPage===maxPage?'disabled':''}>›</button></div></div>`:'';
   const futureBookingsWide=`<article class="card future-panel reservation-future-wide booking-reminders ${reservationFutureExpanded?'expanded':'collapsed'}" data-future-reminders-toggle tabindex="0" role="button" aria-expanded="${reservationFutureExpanded?'true':'false'}" aria-label="${reservationFutureExpanded?'Collapse':'Expand'} Future Bookings and To Book reminders"><header class="booking-reminders-head"><div><small>BOOKING REMINDERS</small><h3>FUTURE BOOKINGS / TO BOOK</h3><p>${future.length?`${future.length} reminder${future.length===1?'':'s'} saved`:'Nothing waiting to be booked'}</p></div><button type="button" class="booking-reminders-chevron" data-future-reminders-chevron aria-label="${reservationFutureExpanded?'Collapse':'Expand'} booking reminders">${reservationFutureExpanded?'⌃':'⌄'}</button></header>${reservationFutureExpanded?`<div class="booking-reminders-actions"><button type="button" class="primary" data-booking-reminder-add>＋ ADD BOOKING REMINDER</button><span>Simple reminders only. Move it into Reservations when it is actually booked.</span></div><div class="booking-reminder-list">${future.length?future.map(x=>`<div class="booking-reminder-row"><span class="booking-reminder-date"><b>${x.reminderDateSet===false?'—':new Date(`${x.date}T12:00:00`).toLocaleDateString('en-AU',{day:'2-digit'})}</b><small>${x.reminderDateSet===false?'ANY':new Date(`${x.date}T12:00:00`).toLocaleDateString('en-AU',{month:'short'}).toUpperCase()}</small></span><div class="booking-reminder-copy"><b>${esc(x.title)}</b><small>${esc(reservationDashboardCategory(x))}${x.notes?` · ${esc(x.notes)}`:''}</small></div><div class="booking-reminder-actions"><button type="button" data-booking-reminder-edit="${x.id}" aria-label="Edit ${esc(x.title)}">${iconMarkup('edit','action-glyph')}<span>EDIT</span></button><button type="button" class="danger" data-delete="reservations:${x.id}" aria-label="Delete ${esc(x.title)}">${iconMarkup('delete','action-glyph')}<span>DELETE</span></button></div></div>`).join(''):empty('Nothing is waiting to be booked. Add a reminder when there is something you need to remember.')}</div>`:`<div class="booking-reminders-collapsed-copy"><b>${future.length?`${future.length} item${future.length===1?'':'s'} to remember`:'No reminders yet'}</b><small>Tap anywhere on this yellow widget to ${future.length?'view or change them':'add one'}.</small></div>`}</article>`;
   return `${cinematicHero('reservations')}<div class="reservation-layout reservations-approved"><div class="reservation-main">
-  <div class="reservation-heading"><div><h2>BOOKED</h2><small>All reservations and bookings in one place</small></div><div class="reservation-view-controls"><label>SORT BY<select id="reservation-sort"><option ${reservationSort==='Date'?'selected':''}>Date</option><option ${reservationSort==='Title'?'selected':''}>Title</option><option ${reservationSort==='Cost'?'selected':''}>Cost</option><option ${reservationSort==='Status'?'selected':''}>Status</option></select></label><button id="reservation-sort-direction" class="secondary icon-button" title="Reverse sort order" aria-label="Reverse sort order">${reservationSortDirection==='asc'?'↑':'↓'}</button><label>FILTER<select id="reservation-status-filter"><option ${reservationStatusFilter==='All'?'selected':''}>All</option><option ${reservationStatusFilter==='Paid'?'selected':''}>Paid</option><option ${reservationStatusFilter==='Booked'?'selected':''}>Booked</option><option ${reservationStatusFilter==='Unpaid'?'selected':''}>Unpaid</option></select></label></div></div>
-  <div class="type-tabs reservation-tabs reservation-category-grid">${categoryTabs.map((t,index)=>{const count=t==='Completed'?completedAll.length:categoryUpcomingAll.filter(x=>reservationDashboardCategory(x)===t).length;const icon=t==='Completed'?'checklist':reservationIconName(t);const countLabel=t==='Completed'?'completed':'booked reservations';return `<button class="type-tab reservation-category-card tone-${index} ${reservationCategoryFocus===t?'active':''}" data-res-tab="${esc(t)}" aria-label="Expand ${esc(t)} ${countLabel}"><span class="type-tab-icon">${iconMarkup(icon,'type-tab-mark')}</span><span class="reservation-category-copy"><b>${esc(t)}</b><span class="reservation-category-count"><strong>${count}</strong><small>${countLabel}</small></span></span></button>`}).join('')}</div>
+  <div class="reservation-heading"><div><h2>BOOKED RESERVATIONS</h2><small>All reservations and bookings in one place</small></div><div class="reservation-view-controls"><label>SORT BY<select id="reservation-sort"><option ${reservationSort==='Date'?'selected':''}>Date</option><option ${reservationSort==='Title'?'selected':''}>Title</option><option ${reservationSort==='Cost'?'selected':''}>Cost</option><option ${reservationSort==='Status'?'selected':''}>Status</option></select></label><button id="reservation-sort-direction" class="secondary icon-button" title="Reverse sort order" aria-label="Reverse sort order">${reservationSortDirection==='asc'?'↑':'↓'}</button><label>FILTER<select id="reservation-status-filter"><option ${reservationStatusFilter==='All'?'selected':''}>All</option><option ${reservationStatusFilter==='Paid'?'selected':''}>Paid</option><option ${reservationStatusFilter==='Booked'?'selected':''}>Booked</option><option ${reservationStatusFilter==='Unpaid'?'selected':''}>Unpaid</option></select></label></div></div>
+  <div class="type-tabs reservation-tabs reservation-category-grid">${categoryTabs.map((t,index)=>{const count=t==='Completed'?completedAll.length:categoryUpcomingAll.filter(x=>reservationDashboardCategory(x)===t).length;const icon=t==='Completed'?'checklist':reservationIconName(t);const countLabel=t==='Completed'?'completed':'bookings';return `<button class="type-tab reservation-category-card tone-${index} ${reservationCategoryFocus===t?'active':''}" data-res-tab="${esc(t)}" aria-label="Expand ${esc(t)} ${countLabel}"><span class="type-tab-icon">${iconMarkup(icon,'type-tab-mark')}</span><span class="reservation-category-copy"><b>${esc(t)}</b><span class="reservation-category-count"><strong>${count}</strong><small>${countLabel}</small></span></span></button>`}).join('')}</div>
   <button class="reservation-add-primary" data-add="reservations"><span>＋</span><b>ADD RESERVATION</b><small>Fast one-screen entry</small></button>
   <div class="reservation-search-only"><div class="approved-search-field reservation-search-field">${iconMarkup('search','search-field-icon')}<input id="reservation-search" class="search" aria-label="Search reservations" value="${esc(reservationSearchQuery)}" placeholder="Search reservations by name, location, type…"></div></div>
   <details id="reservation-tools-panel" class="reservation-tools" ${reservationToolsOpen?'open':''}><summary>More filters and tools</summary><div class="reservation-advanced-filters"><label>Country<select id="reservation-country-filter" aria-label="Filter reservations by country"><option value="All">All Countries</option>${countries.map(country=>`<option value="${esc(country)}" ${reservationCountryFilter!=='All'&&countryIdentityEquals(reservationCountryFilter,country)?'selected':''}>${esc(country)}</option>`).join('')}</select></label><label class="reservation-tool-check"><input id="reservation-current" type="checkbox" ${reservationOnlyCurrent?'checked':''}> Only Current Country</label><label class="reservation-tool-check"><input id="reservation-upcoming" type="checkbox" ${reservationOnlyUpcoming?'checked':''}> Only Active / Upcoming</label><label class="reservation-tool-check"><input id="reservation-completed" type="checkbox" ${reservationShowCompleted?'checked':''}> Show Completed</label><label>Destination<select id="reservation-destination-filter"><option>All</option>${destinations.map(d=>`<option ${reservationDestinationFilter!=='All'&&reservationDestinationIdentityKey(reservationDestinationFilter)===reservationDestinationIdentityKey(d)?'selected':''}>${esc(d)}</option>`).join('')}</select></label><label>Budget<select id="reservation-budget-filter"><option ${reservationBudgetFilter==='All'?'selected':''}>All</option><option ${reservationBudgetFilter==='Annual'?'selected':''}>Annual</option><option ${reservationBudgetFilter==='Destination'?'selected':''}>Destination</option></select></label><label>From<input id="reservation-date-from" aria-label="Reservation start date from" type="date" value="${esc(reservationDateFrom)}"></label><label>To<input id="reservation-date-to" aria-label="Reservation start date to" type="date" value="${esc(reservationDateTo)}"></label><label>Minimum AUD<input id="reservation-min-cost" aria-label="Minimum reservation cost in AUD" type="number" min="0" step="1" value="${esc(reservationMinCost)}" placeholder="0"></label><label>Maximum AUD<input id="reservation-max-cost" aria-label="Maximum reservation cost in AUD" type="number" min="0" step="1" value="${esc(reservationMaxCost)}" placeholder="Any"></label><label>Currency<select id="reservation-currency-filter"><option>All</option>${currencies.map(c=>`<option ${reservationCurrencyFilter===c?'selected':''}>${esc(c)}</option>`).join('')}</select></label><label>Reference<select id="reservation-reference-filter"><option ${reservationReferenceFilter==='All'?'selected':''}>All</option><option ${reservationReferenceFilter==='Has reference'?'selected':''}>Has reference</option><option ${reservationReferenceFilter==='Missing reference'?'selected':''}>Missing reference</option></select></label><label>Quick dates<select id="reservation-quick-window"><option value="All" ${reservationQuickWindow==='All'?'selected':''}>All dates</option><option value="30" ${reservationQuickWindow==='30'?'selected':''}>Next 30 days</option><option value="90" ${reservationQuickWindow==='90'?'selected':''}>Next 90 days</option></select></label><label>Rows<select id="reservation-page-size"><option ${reservationPageSize===5?'selected':''}>5</option><option ${reservationPageSize===8?'selected':''}>8</option><option ${reservationPageSize===12?'selected':''}>12</option><option ${reservationPageSize===20?'selected':''}>20</option></select></label></div><div class="reservation-tool-actions"><button id="reservation-clear-filters" class="secondary" ${activeFilters.length?'':'disabled'}>Clear Filters</button><button id="reservation-copy-summary" aria-label="Copy filtered reservation summary" class="secondary" ${actionRows.length?'':'disabled'}>Copy Summary</button><button id="reservation-overdue-jump" aria-label="Show overdue reservations" class="secondary ${overdue?'warning-button':''}" ${overdue?'':'disabled'}>${reservationOnlyOverdue?'Showing Overdue':'Show Overdue'} (${overdue})</button><button id="reservation-export-filtered" aria-label="Export filtered reservations" class="secondary" ${actionRows.length?'':'disabled'}>Export Results</button></div></details>
@@ -6067,7 +6396,6 @@ function renderReservations(){
   </div><aside class="reservation-side">
   ${card('RESERVATION SUMMARY',`<div class="summary-list reservation-summary-list"><div><span>Total bookings</span><b>${summarySource.filter(x=>x.status!=='To Book').length}</b></div><div><span>Paid</span><b class="success">${paidCount}</b></div><div><span>Booked</span><b>${bookedCount}</b></div><div><span>To Book</span><b class="warning-text">${pending}</b></div><div><span>Outstanding / Overdue</span><b class="danger-text">${paymentOutstandingCount} / ${overdue}</b></div></div>`)}
   ${card('TOTAL BOOKED (AUD)',`<div class="total-booked standalone"><b>${money(totalBooked)}</b><small>${Number(state.settings.travellers||2)} people</small><div class="payment-progress"><div><span>Paid coverage</span><b>${paymentPct}%</b></div>${progress(paymentPct)}<small>${money(paidValue)} paid · ${money(unpaidValue)} unpaid</small></div></div>`)}
-  ${card('TRAVEL BETWEEN DESTINATIONS · AUD',`${travelYearControls}<div class="reservation-travel-cost-list">${travelCostBreakdown.map(row=>`<button type="button" data-res-travel-history="${esc(row.label)}"><span><b>${esc(row.label)}</b><small>${row.count} booking${row.count===1?'':'s'} · tap for history</small></span><strong>${money(row.total)}</strong></button>`).join('')}</div><div class="reservation-travel-cost-total"><span>${selectedTravelHistoryYear==='All'?'ALL RECORDED TRAVEL TRANSPORT':`${selectedTravelHistoryYear} TRAVEL TRANSPORT`}</span><b>${money(travelCostTotal)}</b></div>`,'reservation-travel-cost-card')}
   ${card(`${iconMarkup('calendar','section-heading-mark')}<span>NEXT 5 UPCOMING</span>`,`${datedUpcoming.slice(0,5).map(x=>`<button class="side-booking reservation-next3-row" data-edit="reservations:${x.id}"><span><b>${new Date(`${x.date}T12:00:00`).toLocaleDateString('en-AU',{day:'2-digit'})}</b><small>${new Date(`${x.date}T12:00:00`).toLocaleDateString('en-AU',{month:'short'}).toUpperCase()}</small></span><div><b>${esc(x.title)}</b><small>${esc(reservationDestination(x))}</small></div><i>›</i></button>`).join('')||empty('No upcoming bookings.')}`,'reservation-next3-card')}
   </aside></div>${reservationFocusOverlay}`;
 }
@@ -6102,8 +6430,8 @@ function itineraryStatusSearchTerms(entry){
   return `${duration} day${duration===1?'':'s'} ${classLabel} ${accommodation.label} ${schengen} ${budgetState}`;
 }
 function itinerarySearchText(entry){
-  const route=normalizeDetailedRoutePoints(entry.routePoints).map(point=>point.label).join(' '),budgetAud=Number(entry.budget||0)*Number(entry.rate||1);
-  return `${itineraryTitle(entry)} ${entry.city||''} ${entry.country||''} ${entry.type||''} ${searchDateTerms(entry.arrival,entry.departure,entry.schengenStart,entry.schengenEnd)} ${entry.currency||''} ${entry.symbol||''} ${entry.notes||''} ${entry.intentionalLabel||''} ${route} ${searchNumberTerms(entry.budget,budgetAud,entry.km)} ${entry.symbol||''}${localNumber(entry.budget||0)} ${money(budgetAud)} ${Number(entry.km||0).toLocaleString('en-AU')} km ${itineraryStatusSearchTerms(entry)}`;
+  const routePoints=normalizeDetailedRoutePoints(entry.routePoints),route=routePoints.map(point=>point.label).join(' '),routeCountries=itineraryIsRouted(entry)?uniqueIdentityValues(routePoints.map(point=>journeyCountryForRoutePlace(point.label,entry.country||''))).join(' '):'',departure=itineraryIsRouted(entry)?routedDepartureIdentity(entry):{city:'',country:''},budgetAud=Number(entry.budget||0)*Number(entry.rate||1);
+  return `${routedJourneyTitle(entry)} ${itineraryTitle(entry)} ${entry.city||''} ${entry.country||''} ${departure.city} ${departure.country} ${routeCountries} ${entry.type||''} ${searchDateTerms(entry.arrival,entry.departure,entry.schengenStart,entry.schengenEnd)} ${entry.currency||''} ${entry.symbol||''} ${entry.notes||''} ${entry.intentionalLabel||''} ${route} ${searchNumberTerms(entry.budget,budgetAud,entry.km)} ${entry.symbol||''}${localNumber(entry.budget||0)} ${money(budgetAud)} ${Number(entry.km||0).toLocaleString('en-AU')} km ${itineraryStatusSearchTerms(entry)}`;
 }
 function itineraryStatusBadge(entry){
   const classification=itineraryClassification(entry),accommodation=itineraryAccommodationStatus(entry);
@@ -6466,7 +6794,7 @@ function completedJourneys(){
     return Boolean(entry&&itineraryClassification(entry,reference)==='completed');
   }).map(j=>validISODate(journeyStart)&&validISODate(j.start)&&j.start<journeyStart&&j.end>=journeyStart?{...j,start:journeyStart}:j).sort((a,b)=>String(a.start||'').localeCompare(String(b.start||''))||String(a.end||'').localeCompare(String(b.end||''))||String(a.id||'').localeCompare(String(b.id||'')));
 }
-function journeyCountry(j){ const explicit=String(j?.country||'').trim();if(explicit)return explicit;return locationLabelParts(j?.title||'').country; }
+function journeyCountry(j){ const routed=['Motorhome','Cruise'].includes(String(j?.type||''));if(routed){const route=normalizeDetailedRoutePoints(j?.routePoints),country=route.length?journeyCountryForRoutePlace(route[0].label,j?.country||''):'';if(country&&!ROUTE_CONTEXT_SUFFIX_KEYS.has(canonicalIdentityKey(country)))return canonicalCountryDisplay(country);}const explicit=String(j?.country||'').trim();if(explicit&&!ROUTE_CONTEXT_SUFFIX_KEYS.has(canonicalIdentityKey(explicit))&&!['cruise','motorhome','world'].includes(slugifyCountry(explicit)))return canonicalCountryDisplay(explicit);return locationLabelParts(j?.title||'').country; }
 function journeyCountriesForRecord(journey={}){
   const countries=[],seen=new Set(),add=country=>{country=String(country||'').trim();const key=slugifyCountry(country);if(!country||!key||seen.has(key))return;seen.add(key);countries.push(country);};
   const routed=['Motorhome','Cruise'].includes(String(journey.type||'')),baseCountry=String(journey.country||journeyCountry(journey)||'').trim();
@@ -6577,9 +6905,9 @@ function journeyOwnedDayCountForRows(rows,allRows=completedJourneys(),ownedCount
 }
 function selectedJourneyYears(){ return journeyYearFilters.has('All')?[]:[...journeyYearFilters]; }
 function journeySearchText(journey,ownedDayCounts=null){
-  const counts=ownedDayCounts||journeyOwnedDayCounts(),route=normalizeDetailedRoutePoints(journey.routePoints).map(point=>point.label).join(' '),spend=journeyDestinationSpendAud(journey),duration=Number(counts.get(String(journey.id||''))||0),avg=spend/Math.max(1,duration);
+  const counts=ownedDayCounts||journeyOwnedDayCounts(),route=normalizeDetailedRoutePoints(journey.routePoints).map(point=>point.label).join(' '),countries=journeyCountriesForRecord(journey).join(' '),spend=journeyDestinationSpendAud(journey),duration=Number(counts.get(String(journey.id||''))||0),avg=spend/Math.max(1,duration);
   const linked=state.reservations.filter(r=>r.status!=='To Book'&&journeyOwnerForTransaction(r,'reservation')?.id===journey.id),linkedValue=linked.reduce((sum,r)=>sum+reservationAudValue(r),0),bookingWord=linked.length===1?'booking':'bookings';
-  return `${journey.title} ${journey.city||''} ${journey.country||''} ${journey.notes||''} ${journey.type||''} ${searchDateTerms(journey.start,journey.end)} ${route} ${searchNumberTerms(journey.km,spend,avg,linked.length,linkedValue)} ${Number(journey.km||0).toLocaleString('en-AU')} km ${money(spend)} ${moneyCents(avg)} ${duration} day${duration===1?'':'s'} ${linked.length} ${bookingWord} linked bookings reservation value ${money(linkedValue)}`;
+  return `${journey.title} ${journey.city||''} ${journeyCountry(journey)} ${countries} ${journey.notes||''} ${journey.type||''} ${searchDateTerms(journey.start,journey.end)} ${route} ${searchNumberTerms(journey.km,spend,avg,linked.length,linkedValue)} ${Number(journey.km||0).toLocaleString('en-AU')} km ${money(spend)} ${moneyCents(avg)} ${duration} day${duration===1?'':'s'} ${linked.length} ${bookingWord} linked bookings reservation value ${money(linkedValue)}`;
 }
 function journeyFilteredRows(){
   const q=canonicalIdentityKey(journeySearchQuery);
@@ -6886,8 +7214,8 @@ function renderChecklist(){
   const readyTitle=planningEnded?'PLANNING HORIZON ENDED':!next?'NEXT DESTINATION NOT PLANNED':!destinationTaskCount?'DESTINATION CHECKLIST NOT SET':ready?'READY TO MOVE':'NOT READY TO MOVE';
   const readyMessage=planningEnded?'No further destination is required inside the configured journey planning horizon.':!next?'Add the next destination before using Ready to Move.':!destinationTaskCount?`Add at least one Destination checklist task for ${esc(next.title)} before using Ready to Move.`:ready?'All required checklist tasks are complete.':`${requiredOpen} required checklist task${requiredOpen===1?'':'s'} remaining before ${esc(next.title)}.`;
   return `${cinematicHero('checklist')}<div class="checklist-screen-grid"><main>
-    <nav class="checklist-phases" aria-label="Checklist stage">${phases.map((p,i)=>{const icons=['home','checklist','flight','hotel'];return `<button data-check-phase="${p}" class="${checklistPhase===p?'active':''}"><span>${iconMarkup(icons[i],'checklist-phase-icon')}</span>${p}</button>`;}).join('')}</nav>
     <section class="checklist-ready-panel ${planningEnded?'planning-ended':next&&ready?'ready':'waiting'}"><div class="ready-symbol">${planningEnded?'—':next&&ready?'✓':'!'}</div><div><h2>${readyTitle}</h2><p>${readyMessage}</p></div><button id="checklist-next-stage" aria-label="Move to next checklist stage" ${planningEnded?'disabled aria-disabled="true"':''}>→</button></section>
+    <nav class="checklist-phases checklist-phases-below-readiness" aria-label="Checklist stage">${phases.map((p,i)=>{const icons=['home','checklist','flight','hotel'];return `<button data-check-phase="${p}" class="${checklistPhase===p?'active':''}"><span>${iconMarkup(icons[i],'checklist-phase-icon')}</span>${p}</button>`;}).join('')}</nav>
     <p class="checklist-guidance">ⓘ Complete all required checklist tasks before travel. Optional tasks do not block Ready to Move. The indicator updates automatically.</p>
     <div class="personal-needs-grid">${checklistPersonalCard('His')}${checklistPersonalCard('Hers')}</div>
     <div class="checklist-lists">${checklistListPanel('Permanent')}${checklistListPanel('Destination')}</div>
@@ -7092,7 +7420,7 @@ function renderVault(){
     ${card('EMERGENCY CONTACTS',emergency.length?emergency.slice(0,4).map(x=>{const info=vaultEmergencyContactDisplay(x);return `<button class="emergency-contact emergency-contact-readable" data-edit="vault:${x.id}"><span class="emergency-cross">+</span><div class="emergency-contact-copy"><b>${esc(x.name)}</b><small>${esc(info.meta||'Shared')}</small><strong>${esc(info.primary)}</strong>${info.notes?`<em>${esc(info.notes)}</em>`:''}</div></button>`}).join(''):empty('No emergency contacts saved.'),'vault-side-emergency')}
     ${card('RECENT ACTIVITY',recent.length?recent.map(x=>`<button class="vault-activity" data-edit="vault:${x.id}"><span class="vault-mini-icon">${vaultSectionIcon(x.type)}</span><div><b>${esc(x.name)}</b><small>${esc(x.lastAction||'Saved')} · ${esc(x.owner||'')}</small></div><time>${esc(x.updatedAt||x.addedAt||'')}</time></button>`).join(''):empty('No Vault activity yet.'),'vault-side-activity')}
   </section>
-  </div></div>${vaultUnlocked?'':`<div class="vault-access-veil" aria-label="Vault locked"><div class="vault-access-locked-badge"><span>${iconMarkup('vault','vault-lock-badge-icon')}</span><b>VAULT LOCKED</b><small>Protected access</small></div></div>`}</div>${vaultUnlocked?vaultFocusOverlay:''}${vaultUnlocked&&vaultStreamingOpen?vaultStreamingOverlay():''}`;
+  </div></div>${vaultUnlocked?'':`<div class="vault-access-veil" aria-label="Vault locked"><div class="vault-access-locked-badge"><span>${iconMarkup('vault','vault-lock-badge-icon')}</span><b>VAULT LOCKED</b><small>Protected access</small></div></div>`}</div>${vaultUnlocked?vaultFocusOverlay:''}${vaultUnlocked&&vaultStreamingOpen?vaultStreamingOverlay():''}${vaultUnlocked&&vaultStreamingEmailOpen&&!vaultStreamingOpen?vaultStreamingEmailOverlay():''}`;
 }
 function vaultTable(list){
   if(!list.length) return `<div class="vault-record-list vault-record-empty">${empty('No Vault records match these filters.')}</div>`;
@@ -7184,10 +7512,16 @@ async function requestDelete(type,id){
     if(financialConflict.any){const affected=[financialConflict.expense?'expenses':'',financialConflict.reservation?'reservations':''].filter(Boolean).join(' and ');showToast(`Cannot delete this itinerary entry because existing ${affected} would be reassigned to a different financial stay or budget scope. Move or remove those records first.`,'error');return;}
   }
   const verifiedNote=record.verified?' This verified record will be permanently removed.':'';
+  const deleteVaultGeneration=vaultPrivacyGeneration;
   const ok=await confirmAction(`Delete ${label}?${verifiedNote} This cannot be undone.`,{title:'Confirm deletion',accept:'Delete'});
+  // A Vault privacy boundary can close both dialogs while this confirmation is pending.
+  // Do not let the old continuation mutate data or repopulate an outside-#app toast after
+  // the protected surface has already been scrubbed for background/BFCache privacy.
+  if(type==='vault'&&deleteVaultGeneration!==vaultPrivacyGeneration)return;
   if(!ok){showToast('Deletion cancelled.','warning');return;}
   setButtonBusy(confirmAccept,true,'Deleting…');
   state[type]=state[type].filter(x=>x.id!==id);
+  if(type==='checklist'&&record.list==='Destination')scrubDestinationChecklistHistoryItem(id);
   if(type==='itinerary'){
     state.reservations=state.reservations.map(item=>String(item.itineraryId||'')===String(id)?{...item,itineraryId:''}:item);
     state.journeys=state.journeys.filter(item=>String(item.sourceItineraryId||'')!==String(id));
@@ -7282,7 +7616,19 @@ function showVaultAttachments(id){
   const win=window.open('','_blank');
   if(!win){vaultViewerHandoffPending=false;vaultViewerHandoffUntil=0;showToast('Safari blocked the screenshot viewer.','warning');return;}
   vaultAttachmentViewers.add(win);
-  win.document.write(`<title>${esc(record.name)} screenshots</title><meta name="viewport" content="width=device-width"><style>body{margin:0;padding:20px;background:#06111d;color:#eef8ff;font-family:system-ui}h1{font-size:22px}figure{margin:18px 0;padding:12px;border:1px solid #315574;border-radius:12px;background:#0b1b2d}img{max-width:100%;height:auto;display:block;margin:auto}figcaption{padding-top:8px;color:#a9bed0}</style><h1>${esc(record.name)}</h1>${attachments.map(a=>`<figure><img src="${a.data}" alt="${esc(a.name)}"><figcaption>${esc(a.name)}</figcaption></figure>`).join('')}<script>(()=>{let armed=document.visibilityState==='visible';const lock=()=>{if(!armed)return;armed=false;try{document.documentElement.replaceChildren();}catch{}try{location.replace('about:blank');}catch{}try{window.close();}catch{}};document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')armed=true;else lock();});window.addEventListener('pagehide',lock);})();<\/script>`);win.document.close();
+  try{
+    win.document.write(`<title>${esc(record.name)} screenshots</title><meta name="viewport" content="width=device-width"><style>body{margin:0;padding:20px;background:#06111d;color:#eef8ff;font-family:system-ui}h1{font-size:22px}figure{margin:18px 0;padding:12px;border:1px solid #315574;border-radius:12px;background:#0b1b2d}img{max-width:100%;height:auto;display:block;margin:auto}figcaption{padding-top:8px;color:#a9bed0}</style><h1>${esc(record.name)}</h1>${attachments.map(a=>`<figure><img src="${a.data}" alt="${esc(a.name)}"><figcaption>${esc(a.name)}</figcaption></figure>`).join('')}<script>(()=>{let armed=document.visibilityState==='visible';const lock=()=>{if(!armed)return;armed=false;try{document.documentElement.replaceChildren();}catch{}try{location.replace('about:blank');}catch{}try{window.close();}catch{}};document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')armed=true;else lock();});window.addEventListener('pagehide',lock);})();<\/script>`);
+    win.document.close();
+  }catch(error){
+    // If Safari creates the viewer window but refuses document access/write, remove the
+    // protected surface immediately and clear the handoff grace instead of leaking a
+    // stale tracked viewer or leaving a rejected click handler behind.
+    vaultViewerHandoffPending=false;vaultViewerHandoffUntil=0;
+    vaultAttachmentViewers.delete(win);
+    try{win.location?.replace?.('about:blank');}catch{}
+    try{win.close?.();}catch{}
+    showToast('The screenshot viewer could not be opened safely.','error');
+  }
 }
 
 
@@ -7354,21 +7700,12 @@ function reservationQuickType(value='Flight'){
   return normalizeReservationType(value,'Flight');
 }
 function reservationBudgetRule(type,existing='',record={}){
-  const canonical=reservationQuickType(type),source={...record,type:canonical};
-  // Travel reservations are reported together in travel-cost history, but their budget
-  // ownership follows Cameron & Kym's trip model rather than one blanket rule.
-  // International flights remain Annual Budget. Domestic flights and every train ride
-  // belong to the destination/trip that owns the travel date. Cruise fare belongs to the
-  // Cruise itinerary budget, and RV / motorhome hire belongs to the RV itinerary budget.
-  if(canonical==='Flight'){
-    const scope=reservationTravelScope(source);
-    return {preference:scope==='International'?'No':'Yes',fixed:true,reason:scope==='International'?'International flight · Annual Budget':'Domestic flight · Destination Budget'};
-  }
-  if(canonical==='Train')return {preference:'Yes',fixed:true,reason:'Train · Destination Budget'};
-  if(canonical==='Cruise')return {preference:'Yes',fixed:true,reason:'Cruise fare · Cruise destination budget'};
-  if(canonical==='RV')return {preference:'Yes',fixed:true,reason:'RV / motorhome hire · RV destination budget'};
-  if(existing==='Yes'||existing==='No')return {preference:existing,fixed:false,reason:'Choose where this booking is counted'};
-  return {preference:canonical==='Tickets & Attractions'?'Yes':'No',fixed:false,reason:'Choose where this booking is counted'};
+  reservationQuickType(type); // normalize/validate the reservation type for callers
+  // Every confirmed reservation cost can be assigned by the user to either the Annual
+  // Budget or the linked Destination Budget. Type/scope never forces the allocation.
+  // When no saved choice exists, default to Annual until the user explicitly chooses.
+  const preference=existing==='Yes'||existing==='No'?existing:'No';
+  return {preference,fixed:false,reason:'Choose Annual Budget or Destination Budget'};
 }
 function reservationAutomaticBudget(type,existing='',record={}){
   return reservationBudgetRule(type,existing,record).preference;
@@ -7400,20 +7737,18 @@ function simpleReservationForm(record={}){
   const type=reservationQuickType(record?.type||'Flight');
   const date=record?.date||itineraryReferenceDate();
   const context=reservationDestinationForBudgetRecord({...record,date});
-  const accommodation=isAccommodationReservation(type);
-  const currency=accommodation?'AUD':currencyCode(record?.currency||context?.currency||'AUD','AUD');
-  const rate=accommodation?1:finiteNumber(record?.rate,currency==='AUD'?1:(context&&context.currency===currency?context.rate:1),.000001,1_000_000);
-  const accommodationAud=record?.aud??(record?.original?Number(record.original)*Number(record.rate||1):'');
-  const originalValue=accommodation?accommodationAud:(record?.original??'');
-  const audValue=accommodation?accommodationAud:(record?.aud??(currency==='AUD'?(record?.original??''):(record?.original?Number(record.original)*rate:'')));
+  const currency=currencyCode(record?.currency||context?.currency||'AUD','AUD');
+  const rate=finiteNumber(record?.rate,currency==='AUD'?1:(context&&context.currency===currency?context.rate:1),.000001,1_000_000);
+  const originalValue=record?.original??'';
+  const audValue=record?.aud??(currency==='AUD'?(record?.original??''):(record?.original?Number(record.original)*rate:''));
   const flightScope=['Flight','Train'].includes(type)?reservationTravelScope({...record,type}):'Domestic';
   const routingRecord={...record,type,flightScope:type==='Flight'?flightScope:'',trainScope:type==='Train'?flightScope:''};
   const budgetRule=reservationBudgetRule(type,record?.destinationBudgetPreference??record?.destinationBudget,routingRecord);
   const budgetPreference=budgetRule.preference;
   const budgetChoice=context?budgetPreference:'No';
-  const budgetLockedChoice=context&&budgetRule.fixed?budgetPreference:(!context?'No':'');
-  const budgetHeading=budgetRule.fixed?budgetRule.reason:'Choose where this booking is counted';
-  const budgetNote=!context&&budgetPreference==='Yes'?`${budgetRule.reason}. No matching itinerary destination/trip is linked on this date yet; it will move to that Destination Budget automatically once linked.`:!context?'No matching destination on this date · this booking remains on Annual Budget.':budgetRule.fixed?`${budgetRule.reason}. Travel-cost history still reports it by booking type without counting it twice.`:'Choose Annual Budget or Destination Budget. This booking is counted once.';
+  const budgetLockedChoice=!context?'No':'';
+  const budgetHeading='Choose where this booking is counted';
+  const budgetNote=!context&&budgetPreference==='Yes'?'Destination Budget choice saved. No matching itinerary destination/trip is linked on this date yet; the booking stays on Annual Budget until a destination is available.':!context?'No matching destination on this date · this booking remains on Annual Budget.':'Choose Annual Budget or Destination Budget. This booking is counted once.';
   const types=[['Flight','flight','Flight'],['Train','train','Train'],['Cruise','cruise','Cruise'],['RV','motorhome','RV'],['Hotel','hotel','Hotel'],['Airbnb','home','Airbnb'],['Tickets & Attractions','tickets','Tickets']];
   const multi=MULTI_DAY_RESERVATION_TYPES.has(type);
   return `<div class="quick-entry-form reservation-quick-form" data-reservation-type="${esc(type)}">
@@ -7507,6 +7842,9 @@ function simpleChecklistForm(record={},preset={}){
 }
 
 async function openBookingReminderForm(id=null){
+  // Ignore accidental double activation while another shared edit dialog is already open.
+  // This prevents a second session id from orphaning the active dialog's cleanup handlers.
+  if(modal?.open){try{modal.focus({preventScroll:true});}catch{}return;}
   const sessionId=++modalSessionId,dataGeneration=dataReplacementGeneration;
   const record=id?state.reservations.find(x=>String(x.id)===String(id)&&x.status==='To Book'):null;
   if(id&&!record){showToast('This booking reminder no longer exists.','warning');return;}
@@ -7514,7 +7852,7 @@ async function openBookingReminderForm(id=null){
   const initialDate=record?.reminderDateSet===false?'':(record?.date||'');
   const selectedType=reservationQuickType(record?.type||'Tickets & Attractions');
   const typeChoices=['Flight','Train','Cruise','RV','Hotel','Airbnb','Tickets & Attractions'];
-  openSharedModal({title:id?'Edit Booking Reminder':'Add Booking Reminder',body:`<div class="quick-entry-form booking-reminder-form"><div class="booking-reminder-intro"><span>✎</span><div><small>FUTURE BOOKINGS / TO BOOK</small><b>A simple reminder — not a reservation yet</b><em>When it is booked, add the full booking through Add Reservation.</em></div></div><label class="wide"><span>What do you need to book?</span><input name="title" type="text" value="${esc(record?.title||'')}" placeholder="e.g. Rome Colosseum tickets" required maxlength="120"></label><div class="booking-reminder-form-grid"><label><span>Type</span><select name="type">${typeChoices.map(value=>`<option value="${value}" ${value===selectedType?'selected':''}>${esc(value)}</option>`).join('')}</select></label><label><span>Target date <small>optional</small></span><input name="date" type="date" value="${esc(initialDate)}"></label></div><label class="wide"><span>Note <small>optional</small></span><textarea name="notes" maxlength="500" placeholder="Anything useful to remember">${esc(record?.notes||'')}</textarea></label></div>`});
+  if(!openSharedModal({title:id?'Edit Booking Reminder':'Add Booking Reminder',body:`<div class="quick-entry-form booking-reminder-form"><div class="booking-reminder-intro"><span>✎</span><div><small>FUTURE BOOKINGS / TO BOOK</small><b>A simple reminder — not a reservation yet</b><em>When it is booked, add the full booking through Add Reservation.</em></div></div><label class="wide"><span>What do you need to book?</span><input name="title" type="text" value="${esc(record?.title||'')}" placeholder="e.g. Rome Colosseum tickets" required maxlength="120"></label><div class="booking-reminder-form-grid"><label><span>Type</span><select name="type">${typeChoices.map(value=>`<option value="${value}" ${value===selectedType?'selected':''}>${esc(value)}</option>`).join('')}</select></label><label><span>Target date <small>optional</small></span><input name="date" type="date" value="${esc(initialDate)}"></label></div><label class="wide"><span>Note <small>optional</small></span><textarea name="notes" maxlength="500" placeholder="Anything useful to remember">${esc(record?.notes||'')}</textarea></label></div>`}))return;
   modalSave.textContent=id?'Save Reminder':'Add Reminder';modalSave.dataset.originalText=modalSave.textContent;
   modalUndo.hidden=true;
   let dirty=false,busy=false,initial=formSignature(modalForm);
@@ -7572,8 +7910,11 @@ async function openForm(kind,id=null,preset={}){
     // but must never expose the generic edit form for an automatically derived journey.
     screen='journeys';journeyExpandedId=id||'';journeyMapSelectedId='';render();requestAnimationFrame(()=>document.querySelector(`[data-journey-toggle="${CSS.escape(String(id||''))}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}));return;
   }
-  const sessionId=++modalSessionId,dataGeneration=dataReplacementGeneration,vaultGeneration=vaultPrivacyGeneration;
   const fields=fieldSets[type]; if(!fields) return;
+  // A duplicate hardware/touch activation must never create a second modal session while
+  // the first is open; doing so can orphan the first session's close/cleanup handlers.
+  if(modal?.open){try{modal.focus({preventScroll:true});}catch{}return;}
+  const sessionId=++modalSessionId,dataGeneration=dataReplacementGeneration,vaultGeneration=vaultPrivacyGeneration;
   const record=type==='stay'?state.currentStay:(id?state[type].find(x=>x.id===id):preset);
   if(id&&!record){showToast('This item no longer exists. Refresh and try again.','warning');return;}
   let unlockedVerified=false;
@@ -7594,7 +7935,7 @@ async function openForm(kind,id=null,preset={}){
   else if(type==='checklist') formBody=simpleChecklistForm(record||preset,preset);
   else formBody=genericRecordFormBody(type,record||preset,attachmentManager,formIntro);
   modal.dataset.formType=type;
-  openSharedModal({title:formTitle,body:formBody,feedback:unlockedVerified?'Verified record unlocked for editing.':'',feedbackType:unlockedVerified?'warning':''});
+  if(!openSharedModal({title:formTitle,body:formBody,feedback:unlockedVerified?'Verified record unlocked for editing.':'',feedbackType:unlockedVerified?'warning':''})){editContext=null;return;}
   modalSave.textContent=type==='expenses'?(id?'Save Expense Changes':'Save Expense'):(type==='reservations'?(id?'Save Reservation':'Add Reservation'):type==='vault'?(id?'Save Vault Record':'Add Vault Record'):type==='checklist'?(id?'Save Task':'Add Task'):type==='stay'?'Save Override':type==='itinerary'?(id?'Save Changes':'Add Travel'):'Save');
   modalSave.dataset.originalText=modalSave.textContent;
   let restoreDynamicFormState=()=>{};
@@ -7690,15 +8031,11 @@ async function openForm(kind,id=null,preset={}){
       const routingRecord={...reservationContextRecord(),flightScope:chosen==='Flight'?scopeValue:'',trainScope:chosen==='Train'?scopeValue:''};
       const budgetRule=reservationBudgetRule(chosen,id?(record?.destinationBudgetPreference??record?.destinationBudget):'',routingRecord),automaticBudget=budgetRule.preference;
       const context=reservationDestinationForBudgetRecord(routingRecord);
-      if(budgetRule.fixed){
-        reservationBudgetDraft=automaticBudget;
-        if(automaticBudget==='Yes'&&!context)setReservationBudgetChoice('No','No',`${budgetRule.reason}. No matching itinerary destination/trip is linked on this date yet; it will move to that Destination Budget automatically once linked.`);
-        else setReservationBudgetChoice(automaticBudget,automaticBudget,`${budgetRule.reason}. Travel-cost history still reports it by booking type without counting it twice.`);
-      }else if(!context)setReservationBudgetChoice('No','No','No matching destination on this date · Destination Budget becomes available when the booking is linked to a stay.');
+      if(!context)setReservationBudgetChoice('No','No',reservationBudgetDraft==='Yes'?'Destination Budget choice saved. No matching destination on this date · the booking stays on Annual Budget until a destination is linked.':'No matching destination on this date · Destination Budget becomes available when the booking is linked to a stay.');
       else setReservationBudgetChoice(reservationBudgetDraft??automaticBudget,'');
       if(flightScopeSection)flightScopeSection.hidden=!['Flight','Train'].includes(chosen);if(flightScopeTitle)flightScopeTitle.textContent=chosen==='Train'?'TRAIN TYPE':'FLIGHT TYPE';
-      if(currencyInput){currencyInput.disabled=false;currencyInput.classList.toggle('locked-aud',accommodation);currencyInput.setAttribute('aria-disabled',accommodation?'true':'false');currencyInput.tabIndex=accommodation?-1:0;if(accommodation)currencyInput.value='AUD';}
-      if(accommodation&&audInput&&amountInput){audInput.value=amountInput.value||'';audInput.readOnly=true;}
+      if(currencyInput){currencyInput.disabled=false;currencyInput.classList.remove('locked-aud');currencyInput.setAttribute('aria-disabled','false');currencyInput.tabIndex=0;}
+      if(audInput)audInput.readOnly=false;
       previousReservationType=chosen;
       typeInput.dispatchEvent(new Event('input',{bubbles:true}));updateMoney();
     };
@@ -7708,7 +8045,7 @@ async function openForm(kind,id=null,preset={}){
     dateInput?.addEventListener('change',()=>{const context=updateReservationContext(),chosenType=reservationQuickType(typeInput?.value);updateType(chosenType);if(context&&context.currency&&reservationMayAutoDefaultCurrency({id,type:chosenType,currency:currencyInput?.value,lastAutoCurrency,currencyManuallyTouched,original:amountInput?.value,aud:audInput?.value})){currencyInput.value=context.currency;lastAutoCurrency=currencyCode(context.currency,'AUD');updateMoney();}});
     endDateInput?.addEventListener('change',()=>{updateReservationContext();updateType(typeInput?.value);});
     endDateInput?.addEventListener('input',()=>{updateReservationContext();updateType(typeInput?.value);});
-    currencyInput?.addEventListener('change',()=>{currencyManuallyTouched=true;updateReservationContext();if(isAccommodationReservation(typeInput?.value)){currencyInput.value='AUD';}else if(audInput&&currencyCode(currencyInput.value,'AUD')!=='AUD'&&!id&&!String(amountInput?.value||'').trim())audInput.value='';updateMoney();});
+    currencyInput?.addEventListener('change',()=>{currencyManuallyTouched=true;updateReservationContext();if(audInput&&currencyCode(currencyInput.value,'AUD')!=='AUD'&&!id&&!String(amountInput?.value||'').trim())audInput.value='';updateMoney();});
     amountInput?.addEventListener('input',updateMoney);audInput?.addEventListener('input',updateMoney);
     restoreDynamicFormState=()=>{
       previousReservationType=reservationQuickType(typeInput?.value||record?.type||'Flight');
@@ -7832,6 +8169,7 @@ async function openForm(kind,id=null,preset={}){
     const removedAttachmentIds=new Set([...modalForm.querySelectorAll('[name="removeAttachment"]:checked')].map(input=>input.value));
     if(type==='vault'&&removedAttachmentIds.size){
       const count=removedAttachmentIds.size,confirmed=await confirmAction(`Remove ${count} selected Vault screenshot${count===1?'':'s'}? This cannot be undone after you save.`,{title:'Confirm screenshot removal',accept:count===1?'Remove screenshot':'Remove screenshots'});
+      if(sessionId!==modalSessionId||!modal.open||dataGeneration!==dataReplacementGeneration||vaultGeneration!==vaultPrivacyGeneration)return;
       if(!confirmed){setModalFeedback('Screenshot removal cancelled. Uncheck the screenshot or save again to confirm removal.','warning');return;}
     }
     busy=true;updateModalButtonState({dirty,busy});setButtonBusy(modalSave,true,'Saving…');
@@ -7865,7 +8203,6 @@ async function openForm(kind,id=null,preset={}){
       if(!Number.isFinite(Number(data.aud))||Number(data.aud||0)<0||Number(data.aud)>1_000_000_000){busy=false;setButtonBusy(modalSave,false);updateModalButtonState({dirty,busy});setModalFeedback('Enter the AUD total for this booking.','error');return;}
       const enteredOriginal=Number(data.original||0),enteredAud=Number(data.aud||0);
       if(data.currency!=='AUD'&&((enteredOriginal<=0&&enteredAud>0)||(enteredOriginal>0&&enteredAud<=0))){busy=false;setButtonBusy(modalSave,false);updateModalButtonState({dirty,busy});setModalFeedback('For a foreign-currency booking, enter both the original cost and its AUD total, or leave both at zero.','error');return;}
-      if(isAccommodationReservation(data.type)){data.currency='AUD';data.aud=Number(data.original||0);}
       if(data.currency==='AUD')data.aud=Number(data.original||0);
       data.rate=Number(data.original||0)>0?Number(data.aud||0)/Number(data.original||0):1;
       if(!Number.isFinite(data.rate)||data.rate<=0||data.rate>1_000_000){busy=false;setButtonBusy(modalSave,false);updateModalButtonState({dirty,busy});setModalFeedback('The booking exchange rate is outside the supported range. Check the original and AUD amounts.','error');return;}
@@ -7954,11 +8291,17 @@ async function openForm(kind,id=null,preset={}){
         const kept=(Array.isArray(record?.attachments)?record.attachments:[]).filter(attachment=>!removedAttachmentIds.has(String(attachment.id)));
         const capacityIssue=vaultScreenshotCapacityIssue(kept.length,vaultFiles.length);if(capacityIssue)throw new Error(capacityIssue);
         const added=vaultFiles.length?await readVaultScreenshots(vaultFiles):[];
-        if(dataGeneration!==dataReplacementGeneration||vaultGeneration!==vaultPrivacyGeneration)return;
+        // Screenshot decoding is asynchronous. The user can background/relock the Vault,
+        // replace all data, or close this form before decoding returns. Never let an old
+        // submit continuation mutate state or the controls belonging to a newer modal.
+        if(sessionId!==modalSessionId||!modal.open||dataGeneration!==dataReplacementGeneration||vaultGeneration!==vaultPrivacyGeneration)return;
         data.attachments=[...kept,...added];
         const candidateChars=vaultAttachmentChars(id)+data.attachments.reduce((sum,attachment)=>sum+String(attachment?.data||'').length,0);
         if(candidateChars>MAX_VAULT_DATA_CHARS) throw new Error('Vault screenshot storage is nearly full. Remove unneeded screenshots before adding more.');
-      }catch(error){busy=false;setButtonBusy(modalSave,false);updateModalButtonState({dirty,busy});setModalFeedback(error.message,'error');return;}
+      }catch(error){
+        if(sessionId!==modalSessionId||!modal.open||dataGeneration!==dataReplacementGeneration||vaultGeneration!==vaultPrivacyGeneration)return;
+        busy=false;setButtonBusy(modalSave,false);updateModalButtonState({dirty,busy});setModalFeedback(error.message,'error');return;
+      }
       const vaultActivityStamp=monotonicVaultActivityDateTimeLabel(record?.updatedAt||record?.addedAt||'',id||record?.id||'');
       data.addedAt=record?.addedAt||vaultActivityStamp;
       data.updatedAt=vaultActivityStamp;
@@ -8093,13 +8436,17 @@ function bindScreen(){
     const va=e.target.closest('[data-vault-attachments]'); if(va){e.stopPropagation();showVaultAttachments(va.dataset.vaultAttachments);return;}
   };
   screenEl.onkeydown=e=>{
-    if(screen==='vault'&&vaultStreamingOpen&&e.key==='Tab'){
+    if(screen==='vault'&&(vaultStreamingOpen||vaultStreamingEmailOpen)&&e.key==='Tab'){
       const panel=document.querySelector(vaultStreamingEmailOpen?'.vault-streaming-email-panel':'.vault-streaming-panel');
       if(panel){
         const focusable=[...panel.querySelectorAll('button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')].filter(el=>el.getAttribute('aria-hidden')!=='true'&&!el.hasAttribute('inert'));
         if(focusable.length){const first=focusable[0],last=focusable[focusable.length-1],active=document.activeElement;if(e.shiftKey&&(active===first||!panel.contains(active))){e.preventDefault();last.focus();return;}if(!e.shiftKey&&(active===last||!panel.contains(active))){e.preventDefault();first.focus();return;}}
       }
     }
+    if(screen==='dashboard'&&countryQuickLookCountry&&e.key==='Tab'){
+      const close=document.querySelector('.country-quick-look-close');if(close){e.preventDefault();close.focus();return;}
+    }
+    if(screen==='dashboard'&&countryQuickLookCountry&&e.key==='Escape'){e.preventDefault();countryQuickLookCountry='';render();requestAnimationFrame(()=>document.querySelector('[data-country-quick-look]')?.focus());return;}
     if(screen==='dashboard'&&toiletPhraseOpen&&e.key==='Tab'){
       const close=document.querySelector('.toilet-phrase-close');if(close){e.preventDefault();close.focus();return;}
     }
@@ -8110,20 +8457,27 @@ function bindScreen(){
     if(screen==='reservations'&&reservationCategoryFocus&&e.key==='Escape'){e.preventDefault();reservationCategoryFocus='';reservationCompletedTypeFilter='All';render();return;}
     if(screen==='journeys'&&journeyFocusWidget&&e.key==='Escape'){e.preventDefault();journeyFocusWidget='';render();return;}
     if(screen==='checklist'&&checklistFocusList&&e.key==='Escape'){e.preventDefault();checklistFocusList='';render();return;}
-    if(screen==='vault'&&vaultStreamingEmailOpen&&e.key==='Escape'){e.preventDefault();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;render();requestAnimationFrame(()=>document.querySelector('[data-streaming-email-unlock]')?.focus());return;}
+    if(screen==='vault'&&vaultStreamingEmailOpen&&e.key==='Escape'){e.preventDefault();const returnToStreaming=vaultStreamingOpen;vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector(returnToStreaming?'[data-streaming-email-unlock]':'[data-vault-streaming-open]')?.focus());return;}
     if(screen==='vault'&&vaultStreamingOpen&&e.key==='Escape'){e.preventDefault();vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;render();requestAnimationFrame(()=>document.querySelector('[data-vault-streaming-open]')?.focus());return;}
     if(screen==='vault'&&vaultFocusWidget&&e.key==='Escape'){e.preventDefault();vaultFocusWidget='';render();return;}
     const row=e.target.closest('[data-edit-row]');
-    if(row&&(e.key==='Enter'||e.key===' ')){e.preventDefault();const[type,id]=splitActionToken(row.dataset.editRow);if(type==='itinerary')itineraryMapSelectedId=id;openForm(type,id);}
+    if(row&&!e.repeat&&(e.key==='Enter'||e.key===' ')&&!e.target.closest('button,input,a,select,textarea,label,[role="button"]')){e.preventDefault();const[type,id]=splitActionToken(row.dataset.editRow);if(type==='itinerary')itineraryMapSelectedId=id;openForm(type,id);}
   };
   document.querySelectorAll('[data-check]').forEach(el=>el.onchange=()=>{const x=state.checklist.find(y=>y.id===el.dataset.check);if(x){el.disabled=true;x.done=el.checked;const saved=saveState('checklist','toggle');if(saved)playFeedbackSound(x.done?'complete':'save');}});
   if(screen==='dashboard'){
     bindGlobalSearch();
+    const closeCountryQuickLook=()=>{countryQuickLookCountry='';render();requestAnimationFrame(()=>document.querySelector('[data-country-quick-look]')?.focus());};
+    document.querySelectorAll('[data-country-quick-look]').forEach(card=>{
+      const openCountryQuickLook=e=>{if(e.target.closest('button,input,a,select,textarea'))return;e?.preventDefault?.();homeFocusWidget='';toiletPhraseOpen=false;countryQuickLookCountry=card.dataset.countryQuickLook||state.currentStay.country||'';render();requestAnimationFrame(()=>document.querySelector('.country-quick-look-close')?.focus());};
+      card.onclick=openCountryQuickLook;card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCountryQuickLook(e);}};
+    });
+    document.querySelectorAll('[data-country-quick-look-close]').forEach(button=>button.onclick=e=>{e.stopPropagation();closeCountryQuickLook();});
+    const countryQuickBackdrop=document.querySelector('[data-country-quick-look-backdrop]');if(countryQuickBackdrop)countryQuickBackdrop.onclick=e=>{if(e.target===countryQuickBackdrop)closeCountryQuickLook();};
     const closeToiletPhrase=()=>{toiletPhraseOpen=false;render();requestAnimationFrame(()=>document.querySelector('.brand .logo')?.focus());};
     document.querySelectorAll('[data-toilet-phrase-close]').forEach(button=>button.onclick=e=>{e.stopPropagation();closeToiletPhrase();});
     const toiletBackdrop=document.querySelector('[data-toilet-phrase-backdrop]');if(toiletBackdrop)toiletBackdrop.onclick=e=>{if(e.target===toiletBackdrop)closeToiletPhrase();};
     document.querySelectorAll('[data-home-focus]').forEach(card=>{
-      const openFocus=e=>{if(e.target.closest('button,input,a,select,textarea'))return;homeFocusWidget=card.dataset.homeFocus;render();requestAnimationFrame(()=>document.querySelector('.home-focus-panel .readability-focus-close')?.focus());};
+      const openFocus=e=>{if(e.target.closest('button,input,a,select,textarea'))return;countryQuickLookCountry='';homeFocusWidget=card.dataset.homeFocus;render();requestAnimationFrame(()=>document.querySelector('.home-focus-panel .readability-focus-close')?.focus());};
       card.onclick=openFocus;card.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('button,input,a,select,textarea')){e.preventDefault();openFocus(e);}};
     });
     document.querySelectorAll('[data-home-focus-close]').forEach(button=>button.onclick=e=>{e.stopPropagation();homeFocusWidget='';render();});
@@ -8201,38 +8555,49 @@ function bindScreen(){
       vaultUnlockSurface.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' ')){registerVaultUnlockTap(e);}};
     }
     if(vaultUnlocked){
-    const openVaultStreamingPanel=()=>{vaultFocusWidget='';vaultStreamingOpen=true;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;render();requestAnimationFrame(()=>document.querySelector('.vault-streaming-close')?.focus());};
-    const openVaultStreamingEmailStore=()=>{vaultFocusWidget='';vaultStreamingOpen=true;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=true;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;render();requestAnimationFrame(()=>document.querySelector('#streaming-email-cameron')?.focus());};
+    const openVaultStreamingPanel=()=>{vaultFocusWidget='';vaultStreamingOpen=true;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector('.vault-streaming-close')?.focus());};
+    const openVaultStreamingEmailStore=(fromStreaming=false)=>{vaultFocusWidget='';vaultStreamingOpen=Boolean(fromStreaming);vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=true;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=Date.now()+450;render();requestAnimationFrame(()=>document.querySelector('#streaming-email-cameron')?.focus());};
     const streamingOpen=document.querySelector('[data-vault-streaming-open]');
     if(streamingOpen){
-      let streamingLaunchTapCount=0,streamingLaunchLastTap=0,streamingLaunchTimer=null;
-      streamingOpen.onclick=e=>{
-        e.preventDefault();e.stopPropagation();
+      let streamingLaunchTapCount=0,streamingLaunchLastTap=0,streamingLaunchTimer=null,streamingLaunchPointerAt=0;
+      const registerStreamingLaunchTap=e=>{
+        e?.preventDefault?.();e?.stopPropagation?.();
         const now=Date.now();
         if(!streamingLaunchLastTap||now-streamingLaunchLastTap>1800)streamingLaunchTapCount=0;
         streamingLaunchLastTap=now;streamingLaunchTapCount+=1;
         if(streamingLaunchTimer){clearTimeout(streamingLaunchTimer);streamingLaunchTimer=null;}
-        if(streamingLaunchTapCount>=3){streamingLaunchTapCount=0;streamingLaunchLastTap=0;openVaultStreamingEmailStore();return;}
-        // Keep the normal single-tap Streaming shortcut, but wait briefly so three
-        // deliberate taps on the same shortcut can reach the concealed email store
-        // before the shortcut is replaced by the Streaming overlay on iPad.
-        streamingLaunchTimer=setTimeout(()=>{streamingLaunchTimer=null;streamingLaunchTapCount=0;streamingLaunchLastTap=0;if(screen==='vault'&&vaultUnlocked)openVaultStreamingPanel();},650);
+        if(streamingLaunchTapCount>=3){streamingLaunchTapCount=0;streamingLaunchLastTap=0;openVaultStreamingEmailStore(false);return;}
+        // Count the physical iPad pointer-up immediately. The normal one-tap Streaming
+        // view waits only long enough to distinguish a deliberate triple tap. Each new
+        // tap restarts the timer, so the password view never replaces the shortcut mid-gesture.
+        streamingLaunchTimer=setTimeout(()=>{streamingLaunchTimer=null;streamingLaunchTapCount=0;streamingLaunchLastTap=0;if(screen==='vault'&&vaultUnlocked&&!vaultStreamingEmailOpen)openVaultStreamingPanel();},900);
       };
+      if(typeof window!=='undefined'&&'PointerEvent' in window){
+        streamingOpen.onpointerup=e=>{if(e.button!==undefined&&e.button!==0)return;streamingLaunchPointerAt=Date.now();registerStreamingLaunchTap(e);};
+        streamingOpen.onclick=e=>{if(Date.now()-streamingLaunchPointerAt<1000){e.preventDefault();e.stopPropagation();return;}registerStreamingLaunchTap(e);};
+      }else streamingOpen.onclick=registerStreamingLaunchTap;
+      streamingOpen.ondblclick=e=>{e.preventDefault();e.stopPropagation();};
       streamingOpen.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();openVaultStreamingPanel();}};
     }
     const streamingEmailUnlock=document.querySelector('[data-streaming-email-unlock]');if(streamingEmailUnlock){
-      const registerStreamingEmailTap=e=>{e?.preventDefault?.();e?.stopPropagation?.();const now=Date.now();if(!vaultStreamingEmailLastTap||now-vaultStreamingEmailLastTap>1800)vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=now;vaultStreamingEmailTapCount+=1;if(vaultStreamingEmailTapCount>=3)openVaultStreamingEmailStore();};
+      const registerStreamingEmailTap=e=>{e?.preventDefault?.();e?.stopPropagation?.();const now=Date.now();if(!vaultStreamingEmailLastTap||now-vaultStreamingEmailLastTap>1800)vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=now;vaultStreamingEmailTapCount+=1;if(vaultStreamingEmailTapCount>=3)openVaultStreamingEmailStore(true);};
+      // Physical iPad taps are registered from pointerup rather than relying only on the
+      // delayed synthetic click Safari emits after a touch sequence. The click fallback is
+      // retained for older browsers / mouse input, with deduplication so one tap can never
+      // count twice. This keeps the concealed three-tap interaction deliberate and stable.
       let streamingEmailPointerAt=0;
       if(typeof window!=='undefined'&&'PointerEvent' in window){
         streamingEmailUnlock.onpointerup=e=>{if(e.button!==undefined&&e.button!==0)return;streamingEmailPointerAt=Date.now();registerStreamingEmailTap(e);};
         streamingEmailUnlock.onclick=e=>{if(Date.now()-streamingEmailPointerAt<800){e.preventDefault();e.stopPropagation();return;}registerStreamingEmailTap(e);};
       }else streamingEmailUnlock.onclick=registerStreamingEmailTap;
+      streamingEmailUnlock.ondblclick=e=>{e.preventDefault();e.stopPropagation();};
       streamingEmailUnlock.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' '))registerStreamingEmailTap(e);};
     }
-    document.querySelectorAll('[data-streaming-email-close]').forEach(button=>button.onclick=e=>{e.stopPropagation();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;render();requestAnimationFrame(()=>document.querySelector('[data-streaming-email-unlock]')?.focus());});
-    const streamingEmailBackdrop=document.querySelector('[data-streaming-email-backdrop]');if(streamingEmailBackdrop)streamingEmailBackdrop.onclick=e=>{if(e.target===streamingEmailBackdrop){vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;render();requestAnimationFrame(()=>document.querySelector('[data-streaming-email-unlock]')?.focus());}};
-    const streamingEmailSave=document.querySelector('[data-streaming-email-save]');if(streamingEmailSave)streamingEmailSave.onclick=()=>{const Cameron=normalizeStreamingEmailAddress($('#streaming-email-cameron')?.value||''),Kym=normalizeStreamingEmailAddress($('#streaming-email-kym')?.value||'');if(!validStreamingEmailAddress(Cameron)||!validStreamingEmailAddress(Kym)){showToast('Enter a valid email address, or leave it blank.','warning');return;}state.settings.streamingEmails={Cameron,Kym};if(!saveState('settings','streaming-emails'))return;vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;showToast('Hidden email addresses saved.');render();requestAnimationFrame(()=>document.querySelector('[data-streaming-email-unlock]')?.focus());};
-    const closeVaultStreaming=()=>{vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;render();requestAnimationFrame(()=>document.querySelector('[data-vault-streaming-open]')?.focus());};
+    const closeVaultStreamingEmail=()=>{const returnToStreaming=vaultStreamingOpen;vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector(returnToStreaming?'[data-streaming-email-unlock]':'[data-vault-streaming-open]')?.focus());};
+    document.querySelectorAll('[data-streaming-email-close]').forEach(button=>button.onclick=e=>{e.stopPropagation();closeVaultStreamingEmail();});
+    const streamingEmailBackdrop=document.querySelector('[data-streaming-email-backdrop]');if(streamingEmailBackdrop)streamingEmailBackdrop.onclick=e=>{if(e.target===streamingEmailBackdrop)closeVaultStreamingEmail();};
+    const streamingEmailSave=document.querySelector('[data-streaming-email-save]');if(streamingEmailSave)streamingEmailSave.onclick=()=>{const Cameron=normalizeStreamingEmailAddress($('#streaming-email-cameron')?.value||''),Kym=normalizeStreamingEmailAddress($('#streaming-email-kym')?.value||'');if(!validStreamingEmailAddress(Cameron)||!validStreamingEmailAddress(Kym)){showToast('Enter a valid email address, or leave it blank.','warning');return;}state.settings.streamingEmails={Cameron,Kym};if(!saveState('settings','streaming-emails'))return;const returnToStreaming=vaultStreamingOpen;vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;showToast('Hidden email addresses saved.');render();requestAnimationFrame(()=>document.querySelector(returnToStreaming?'[data-streaming-email-unlock]':'[data-vault-streaming-open]')?.focus());};
+    const closeVaultStreaming=()=>{vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector('[data-vault-streaming-open]')?.focus());};
     document.querySelectorAll('[data-vault-streaming-close]').forEach(button=>button.onclick=e=>{e.stopPropagation();closeVaultStreaming();});
     const streamingBackdrop=document.querySelector('[data-vault-streaming-backdrop]');if(streamingBackdrop)streamingBackdrop.onclick=e=>{if(e.target===streamingBackdrop)closeVaultStreaming();};
     document.querySelectorAll('[data-streaming-service]').forEach(button=>button.onclick=()=>{vaultStreamingService=button.dataset.streamingService||'';vaultStreamingEditing=!state.streamingCodes.some(row=>row.service===vaultStreamingService);vaultStreamingReveal.clear();render();});
@@ -8445,7 +8810,18 @@ function bindGlobalSearch(){
   refreshGlobalSearch();
 }
 
-function downloadBlob(blob,filename){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.append(a);a.click();const url=a.href;a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function downloadBlob(blob,filename){
+  let a=null,url='';
+  try{
+    a=document.createElement('a');url=URL.createObjectURL(blob);a.href=url;a.download=filename;document.body.append(a);a.click();
+    return true;
+  }catch(error){
+    return false;
+  }finally{
+    try{a?.remove();}catch{}
+    if(url)setTimeout(()=>{try{URL.revokeObjectURL(url);}catch{}},1000);
+  }
+}
 function csvDateValue(value){return validISODate(value)?dateFmt(value):'';}
 function csvMoneyValue(value){const number=Number(value);return Number.isFinite(number)?number.toFixed(2):'0.00';}
 function reservationCsvText(rows=[]){
@@ -8455,13 +8831,14 @@ function reservationCsvText(rows=[]){
 function exportReservationRows(rows){
   if(!rows.length) return showToast('No matching reservations to export.','warning');
   const csv=reservationCsvText(rows);
-  downloadBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}),`travel-command-centre-reservations-${itineraryReferenceDate()}.csv`);
+  const downloaded=downloadBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}),`travel-command-centre-reservations-${itineraryReferenceDate()}.csv`);
+  if(!downloaded){showToast('Reservation export failed: Safari could not create the download.','error');return;}
   showToast(`${rows.length} reservation${rows.length===1?'':'s'} exported.`);
 }
 
 function bindReservations(){
   const search=$('#reservation-search');
-  if(search) search.oninput=e=>{const value=e.target.value, caret=e.target.selectionStart;clearTimeout(reservationSearchTimer);reservationSearchTimer=setTimeout(()=>{if(canonicalSearchText(value)!==canonicalSearchText(reservationTravelHistoryDrilldownLabel)){reservationTravelHistoryDrilldownLabel='';reservationTravelHistoryDrilldownYear='All';}reservationSearchQuery=value;reservationPage=1;render();const refreshed=$('#reservation-search');if(refreshed){refreshed.focus();refreshed.setSelectionRange(Math.min(caret,value.length),Math.min(caret,value.length));}},180);};
+  if(search) search.oninput=e=>{const value=e.target.value, caret=e.target.selectionStart;clearTimeout(reservationSearchTimer);reservationSearchTimer=setTimeout(()=>{reservationSearchQuery=value;reservationPage=1;render();const refreshed=$('#reservation-search');if(refreshed){refreshed.focus();refreshed.setSelectionRange(Math.min(caret,value.length),Math.min(caret,value.length));}},180);};
   document.querySelectorAll('[data-res-tab]').forEach(b=>b.onclick=()=>{
     reservationCategoryFocus=b.dataset.resTab;
     if(reservationCategoryFocus==='Completed') reservationCompletedTypeFilter='All';
@@ -8501,7 +8878,7 @@ function bindReservations(){
   const viewSwitch=$('#reservation-view-switch'); if(viewSwitch) viewSwitch.onclick=()=>{setReservationShowCompleted(!reservationShowCompleted);render();requestAnimationFrame(()=>document.querySelector('.reservation-table-panel')?.scrollIntoView({behavior:'smooth',block:'start'}));};
   const clearFilters=$('#reservation-clear-filters');
   if(clearFilters) clearFilters.onclick=()=>{
-    reservationTab='All';reservationSort='Date';reservationSortDirection='asc';reservationStatusFilter='All';reservationOnlyCurrent=false;reservationOnlyUpcoming=true;reservationShowCompleted=false;reservationOnlyOverdue=false;reservationSearchQuery='';reservationDestinationFilter='All';reservationCountryFilter='All';reservationBudgetFilter='All';reservationDateFrom='';reservationDateTo='';reservationMinCost='';reservationMaxCost='';reservationQuickWindow='All';reservationCurrencyFilter='All';reservationReferenceFilter='All';reservationTravelYearFilter='All';reservationTravelHistoryDrilldownLabel='';reservationTravelHistoryDrilldownYear='All';reservationToolsOpen=false;reservationPage=1;render();showToast('Reservation filters cleared.');
+    reservationTab='All';reservationSort='Date';reservationSortDirection='asc';reservationStatusFilter='All';reservationOnlyCurrent=false;reservationOnlyUpcoming=true;reservationShowCompleted=false;reservationOnlyOverdue=false;reservationSearchQuery='';reservationDestinationFilter='All';reservationCountryFilter='All';reservationBudgetFilter='All';reservationDateFrom='';reservationDateTo='';reservationMinCost='';reservationMaxCost='';reservationQuickWindow='All';reservationCurrencyFilter='All';reservationReferenceFilter='All';reservationToolsOpen=false;reservationPage=1;render();showToast('Reservation filters cleared.');
   };
   document.querySelectorAll('[data-remove-res-filter]').forEach(button=>button.onclick=()=>{
     const key=button.dataset.removeResFilter;
@@ -8525,14 +8902,6 @@ function bindReservations(){
     else if(key==='Window') reservationQuickWindow='All';
     reservationPage=1;render();
   });
-  document.querySelectorAll('[data-res-travel-year]').forEach(button=>button.onclick=()=>{reservationTravelYearFilter=button.dataset.resTravelYear||'All';if(reservationTravelHistoryDrilldownLabel)reservationTravelHistoryDrilldownYear=reservationTravelYearFilter;render();requestAnimationFrame(()=>document.querySelector('.reservation-travel-cost-card')?.scrollIntoView({behavior:'smooth',block:'nearest'}));});
-  document.querySelectorAll('[data-res-travel-history]').forEach(button=>button.onclick=()=>{
-    // A travel-cost total is an authoritative history drill-down. Use the same effective
-    // budget-year date as the total itself, so a Cruise/RV spanning Journey Start cannot
-    // disappear merely because its raw start date sits in the prior calendar year.
-    reservationTravelHistoryDrilldownLabel=button.dataset.resTravelHistory||'';reservationTravelHistoryDrilldownYear=reservationTravelYearFilter||'All';
-    reservationTab='All';reservationSearchQuery=reservationTravelHistoryDrilldownLabel;reservationStatusFilter='All';reservationOnlyCurrent=false;reservationOnlyUpcoming=false;reservationShowCompleted=false;reservationOnlyOverdue=false;reservationDestinationFilter='All';reservationCountryFilter='All';reservationBudgetFilter='All';reservationDateFrom='';reservationDateTo='';reservationMinCost='';reservationMaxCost='';reservationQuickWindow='All';reservationCurrencyFilter='All';reservationReferenceFilter='All';reservationPage=1;reservationToolsOpen=false;reservationUpcomingOpen=true;render();requestAnimationFrame(()=>document.querySelector('#reservation-upcoming-panel')?.scrollIntoView({behavior:'smooth',block:'start'}));
-  });
   const filteredRows=()=>reservationFilteredActionRows(reservationSortRows(state.reservations.filter(reservationMatchesFilters)));
   const copySummary=$('#reservation-copy-summary');
   if(copySummary) copySummary.onclick=()=>copyReservationSummary(filteredRows());
@@ -8540,7 +8909,7 @@ function bindReservations(){
   if(overdueJump) overdueJump.onclick=()=>{prepareReservationOverdueView();render();document.querySelector('.reservation-overdue')?.scrollIntoView({behavior:'smooth',block:'center'});};
   const exportFiltered=$('#reservation-export-filtered');
   if(exportFiltered) exportFiltered.onclick=()=>exportReservationRows(filteredRows());
-  document.querySelectorAll('[data-reservation-row]').forEach(row=>row.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('button,select,input,textarea,a')){e.preventDefault();const [type,id]=splitActionToken(row.dataset.editRow);openForm(type,id);}});
+  document.querySelectorAll('[data-reservation-row]').forEach(row=>row.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' ')&&!e.target.closest('button,select,input,textarea,a,label,[role="button"]')){e.preventDefault();e.stopPropagation();const [type,id]=splitActionToken(row.dataset.editRow);openForm(type,id);}});
   if($('#reservation-prev')) $('#reservation-prev').onclick=()=>{reservationPage=Math.max(1,reservationPage-1);render();};
   if($('#reservation-next')) $('#reservation-next').onclick=()=>{reservationPage+=1;render();};
   document.querySelectorAll('[data-reservation-status]').forEach(select=>select.onchange=e=>{
@@ -8683,7 +9052,6 @@ function reservationHealthChecks(){
   const invalidCancellationDeadline=operationalRows.filter(x=>Boolean(reservationCancellationDeadlineIssue(x)));
   const invalidItineraryLink=operationalRows.filter(x=>x.status!=='To Book'&&validISODate(x.date)&&String(x.itineraryId||'')!==String(reservationDestinationForBudgetRecord(x)?.id||''));
   const invalidAudRate=operationalRows.filter(x=>currencyCode(x.currency,'AUD')==='AUD'&&Math.abs(Number(x.rate||0)-1)>.000000001);
-  const accommodationNotAudOnly=operationalRows.filter(x=>isAccommodationReservation(x.type)&&(currencyCode(x.currency,'AUD')!=='AUD'||Math.abs(Number(x.rate||0)-1)>.000000001));
   const fullBookingStoredToBook=operationalRows.filter(x=>x.status==='To Book'&&!reservationIsSimpleReminder(x));
   const missingReference=operationalRows.filter(x=>x.status!=='To Book'&&!String(x.reference||'').trim());
   const missingNotes=operationalRows.filter(x=>!String(x.notes||'').trim());
@@ -8698,7 +9066,7 @@ function reservationHealthChecks(){
     make('AUD totals accurate',audMismatch,'saved AUD total does not match cost × rate','error'),
     make('Budget assignments valid',badBudget,'budget assignment is invalid','error'),
     make('Destination budgets linked',missingBudgetDestination,'destination budget needs a destination','error'),
-    make('Travel budget routing correct',routingMismatch,'budget allocation does not match the flight/train/cruise/RV routing rule','error'),
+    make('Travel budget routing correct',routingMismatch,'budget allocation does not match the saved Annual/Destination choice','error'),
     make('Cruise / RV trip links valid',travelTripTypeMismatch,'cruise or RV booking is dated inside a non-matching itinerary trip','error'),
     make('Statuses valid',badStatus,'status is not recognised','error'),
     make('Reservation types valid',badType,'reservation type is not recognised','error'),
@@ -8719,7 +9087,6 @@ function reservationHealthChecks(){
     make('Cancellation deadlines valid',invalidCancellationDeadline,'cancellation deadline is after the reservation ends','error'),
     make('Itinerary links match booking dates',invalidItineraryLink,'itinerary link does not match the booking date','error'),
     make('AUD bookings use rate 1',invalidAudRate,'AUD booking exchange rate must be 1','error'),
-    make('Accommodation stored as AUD',accommodationNotAudOnly,'accommodation must be stored as AUD-only','error'),
     make('To Book rows are simple reminders',fullBookingStoredToBook,'full booking is incorrectly stored as To Book','error'),
     make('Confirmed references recorded',missingReference,'confirmed reservation has no booking reference'),
     make('Notes coverage complete',missingNotes,'reservation has no notes','info')
@@ -8936,41 +9303,101 @@ function renderAfterBackgroundAction(){
   if(scheduledScreenRefreshWouldDiscardDraft()){try{updateDataStatus();}catch{}return false;}
   render();return true;
 }
-function runAppHealth(){
-  const originalState=clone(state),originalScreen=screen;
-  let liveSections=[],deepIssues=[];
+function appHealthYield(){
+  return new Promise(resolve=>{
+    const done=()=>setTimeout(resolve,0);
+    try{if(typeof requestAnimationFrame==='function')requestAnimationFrame(done);else done();}catch{done();}
+  });
+}
+function setAppHealthProgress(message=''){
+  const result=$('#app-health-result');if(result)result.textContent=message;
+}
+async function runAppHealth(){
+  if(appHealthRunActive)return lastAppHealthRunIssues;
+  appHealthRunActive=true;
+  const trigger=$('#verify');if(trigger){trigger.disabled=true;trigger.setAttribute('aria-busy','true');}
+  let originalState=null,originalScreen=screen,liveSections=[],deepIssues=[];
+  const healthStateRevision=persistedStateRevision,healthDataGeneration=dataReplacementGeneration;
+  const appHealthSourceChanged=()=>persistedStateRevision!==healthStateRevision||dataReplacementGeneration!==healthDataGeneration;
   try{
-    liveSections=liveAppHealthSections();
-    try{localStorage.setItem('__tcc_health_test','1');if(localStorage.getItem('__tcc_health_test')!=='1')deepIssues.push('Local storage did not preserve a test value.');}catch{deepIssues.push('Local storage is unavailable.');}finally{try{localStorage.removeItem('__tcc_health_test');}catch{}}
-    {const offlineIssue=serviceWorkerStatusSummary().issue;if(offlineIssue)deepIssues.push(offlineIssue);}
-    try{const renderMerge=mergeScreenRenderHealthIssues(liveSections,screenRenderIntegrityIssues());liveSections=renderMerge.sections;deepIssues.push(...renderMerge.unmatched);}catch(error){deepIssues.push(`A screen could not be checked: ${error.message}.`);}
-    try{const backupIssues=validateBackup(canonicalBackupPayload(itineraryReferenceDate()));if(backupIssues.length)deepIssues.push('Backup & restore data needs attention.');}catch{deepIssues.push('Backup & restore data could not be checked.');}
-    {const backupIssue=backupReminderHealthIssue();if(backupIssue)deepIssues.push(backupIssue);}
-    try{if(runtimeAssetVersionIssues().length)deepIssues.push('App files are not all on the same version. Close and reopen the app.');}catch{deepIssues.push('App file version alignment could not be checked.');}
+    originalState=clone(state);originalScreen=screen;
+    setAppHealthProgress('Starting App Health check…');
+    await appHealthYield();
+    if(appHealthSourceChanged())return lastAppHealthRunIssues;
+    try{
+      for(const section of APP_HEALTH_SECTION_META){
+        setAppHealthProgress(`Checking ${section.label}…`);
+        await appHealthYield();
+        if(appHealthSourceChanged())return lastAppHealthRunIssues;
+        let issues=[];
+        try{issues=screenHealthIssuesForKey(section.key);}catch(error){issues=[`${section.label} check could not run: ${error.message||'unknown error'}.`];}
+        liveSections.push({...section,issues:[...new Set(issues)]});
+      }
+      setAppHealthProgress('Checking local storage and offline readiness…');
+      await appHealthYield();
+      if(appHealthSourceChanged())return lastAppHealthRunIssues;
+      try{localStorage.setItem('__tcc_health_test','1');if(localStorage.getItem('__tcc_health_test')!=='1')deepIssues.push('Local storage did not preserve a test value.');}catch{deepIssues.push('Local storage is unavailable.');}finally{try{localStorage.removeItem('__tcc_health_test');}catch{}}
+      {const offlineIssue=serviceWorkerStatusSummary().issue;if(offlineIssue)deepIssues.push(offlineIssue);}
+
+      const renderIssues=[];
+      for(const label of ['Home','Budget','Reservations','Itinerary','Calendar','Journey History','Checklist','The Vault','Settings']){
+        setAppHealthProgress(`Checking ${label} screen…`);
+        await appHealthYield();
+        if(appHealthSourceChanged())return lastAppHealthRunIssues;
+        try{renderIssues.push(...screenRenderIntegrityIssues(label));}catch(error){renderIssues.push(`${label} screen rendering failed: ${error.message}.`);}
+      }
+      try{const renderMerge=mergeScreenRenderHealthIssues(liveSections,renderIssues);liveSections=renderMerge.sections;deepIssues.push(...renderMerge.unmatched);}catch(error){deepIssues.push(`A screen could not be checked: ${error.message}.`);}
+
+      setAppHealthProgress('Checking backup and data integrity…');
+      await appHealthYield();
+      if(appHealthSourceChanged())return lastAppHealthRunIssues;
+      try{const backupIssues=validateBackup(canonicalBackupPayload(itineraryReferenceDate()));if(backupIssues.length)deepIssues.push('Backup & restore data needs attention.');}catch{deepIssues.push('Backup & restore data could not be checked.');}
+      {const backupIssue=backupReminderHealthIssue();if(backupIssue)deepIssues.push(backupIssue);}
+
+      setAppHealthProgress('Checking app files…');
+      await appHealthYield();
+      if(appHealthSourceChanged())return lastAppHealthRunIssues;
+      try{if(runtimeAssetVersionIssues().length)deepIssues.push('App files are not all on the same version. Close and reopen the app.');}catch{deepIssues.push('App file version alignment could not be checked.');}
+    }finally{
+      // Every screen/render probe runs against disposable state. Restoration itself must
+      // never be able to strand App Health in its active/disabled state.
+      if(originalState&&!appHealthSourceChanged()){
+        state=originalState;screen=originalScreen;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;
+        try{syncLinkedState();}catch(error){deepIssues.push(`App Health state restoration needed recovery: ${error.message||'unknown error'}.`);}
+      }
+    }
+    if(appHealthSourceChanged())return lastAppHealthRunIssues;
+    const resultSnapshot={};
+    liveSections.forEach(section=>{resultSnapshot[section.key]=boundedStoredAppHealthIssues(section.issues);});
+    resultSnapshot.settings=boundedStoredAppHealthIssues(resultSnapshot.settings,deepIssues);
+    resultSnapshot.app=[];
+    const allIssues=[...liveSections.flatMap(section=>section.issues.map(issue=>`${section.label}: ${issue}`)),...deepIssues.map(issue=>`App & Data: ${issue}`)];
+    state.settings.lastAppHealthAt=appDateTimeLabel();
+    state.settings.lastAppHealthResults=resultSnapshot;
+    state.settings.lastAppHealthShellRevision=APP_SHELL_REVISION;
+    lastAppHealthRunIssues=[...new Set(allIssues)];
+    setAppHealthProgress('Saving App Health result…');
+    await appHealthYield();
+    if(appHealthSourceChanged())return lastAppHealthRunIssues;
+    if(!saveState('verification','app-health'))lastAppHealthRunIssues.push(lastStorageError||'App Health result could not be saved.');
+    const refreshed=renderAfterBackgroundAction();
+    if(!refreshed)setAppHealthProgress(lastAppHealthRunIssues.length?`Check complete — ${lastAppHealthRunIssues.length} item${lastAppHealthRunIssues.length===1?'':'s'} need attention.`:'Check complete — all good.');
+    showToast(lastAppHealthRunIssues.length?`App Health found ${lastAppHealthRunIssues.length} item${lastAppHealthRunIssues.length===1?'':'s'} needing attention.`:'App Health passed — the whole app is OK.',lastAppHealthRunIssues.length?'warning':'success');
+    return lastAppHealthRunIssues;
+  }catch(error){
+    if(originalState&&!appHealthSourceChanged()){
+      state=originalState;screen=originalScreen;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;
+      try{syncLinkedState();}catch{}
+    }
+    const issue=`App & Data: App Health check could not complete: ${error?.message||'unknown error'}.`;
+    lastAppHealthRunIssues=[...new Set([...(Array.isArray(lastAppHealthRunIssues)?lastAppHealthRunIssues:[]),issue])];
+    try{setAppHealthProgress('App Health stopped safely — try the check again.');}catch{}
+    try{showToast('App Health stopped safely. You can run the check again.','error');}catch{}
+    return lastAppHealthRunIssues;
   }finally{
-    state=originalState;screen=originalScreen;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();
+    appHealthRunActive=false;
+    try{const current=$('#verify');if(current){current.disabled=false;current.removeAttribute('aria-busy');}}catch{}
   }
-  const resultSnapshot={};
-  liveSections.forEach(section=>{resultSnapshot[section.key]=boundedStoredAppHealthIssues(section.issues);});
-  // Deep runtime/data failures (storage, offline readiness, backup/restore and asset
-  // alignment) are more urgent than ordinary Settings integrity messages. Preserve them
-  // first so the 40-message storage cap cannot immediately invalidate or hide a critical
-  // condition that this same App Health run just detected.
-  resultSnapshot.settings=boundedStoredAppHealthIssues(resultSnapshot.settings,deepIssues);
-  resultSnapshot.app=[];
-  const allIssues=[...liveSections.flatMap(section=>section.issues.map(issue=>`${section.label}: ${issue}`)),...deepIssues.map(issue=>`App & Data: ${issue}`)];
-  state.settings.lastAppHealthAt=appDateTimeLabel();
-  state.settings.lastAppHealthResults=resultSnapshot;
-  state.settings.lastAppHealthShellRevision=APP_SHELL_REVISION;
-  lastAppHealthRunIssues=[...new Set(allIssues)];
-  if(!saveState('verification','app-health')){
-    // saveState already restored the last persisted snapshot. Keep any earlier saved
-    // App Health result visible instead of replacing it with a false Not Checked state.
-    lastAppHealthRunIssues.push(lastStorageError||'App Health result could not be saved.');
-  }
-  renderAfterBackgroundAction();
-  showToast(lastAppHealthRunIssues.length?`App Health found ${lastAppHealthRunIssues.length} item${lastAppHealthRunIssues.length===1?'':'s'} needing attention.`:'App Health passed — the whole app is OK.',lastAppHealthRunIssues.length?'warning':'success');
-  return lastAppHealthRunIssues;
 }
 
 function canonicalBackupPayload(lastBackupOverride=null){
@@ -9034,8 +9461,9 @@ function budgetCsvText(rows=state.expenses){
   return output.map(r=>r.map(v=>'"'+csvSafe(v).replace(/"/g,'""')+'"').join(',')).join('\n');
 }
 function exportBudgetCsv(){
-  const csv=budgetCsvText(state.expenses);
-  const blob=new Blob([csv],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`travel-command-centre-budget-${itineraryReferenceDate()}.csv`;document.body.append(a);a.click();const url=a.href;a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000); showToast('Budget CSV exported.');
+  const csv=budgetCsvText(state.expenses),blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  if(!downloadBlob(blob,`travel-command-centre-budget-${itineraryReferenceDate()}.csv`)){showToast('Budget export failed: Safari could not create the download.','error');return;}
+  showToast('Budget CSV exported.');
 }
 
 function stableCanonicalJson(value){
@@ -9285,6 +9713,10 @@ function validateBackup(data){
         if(!snapshot||typeof snapshot!=='object'||Array.isArray(snapshot))errors.push(`Destination checklist recovery for ${destination||'a destination'} is invalid.`);
         else Object.entries(snapshot).forEach(([itemId,value])=>{
           if(!String(itemId||'').trim()||String(itemId)!==String(itemId).trim())errors.push(`Destination checklist recovery for ${destination||'a destination'} contains an invalid checklist item key.`);
+          if(itemId==='__destinationItems'){
+            if(!Array.isArray(value)||value.length>200){errors.push(`Destination checklist recovery for ${destination||'a destination'} contains an invalid Destination task list.`);return;}
+            const seenIds=new Set();value.forEach(item=>{if(!item||typeof item!=='object'||Array.isArray(item)){errors.push(`Destination checklist recovery for ${destination||'a destination'} contains an invalid Destination task.`);return;}const keys=Object.keys(item);if(keys.some(key=>!['id','list','phase','task','due','required','done','notes'].includes(key)))errors.push(`Destination checklist recovery for ${destination||'a destination'} contains an unsupported Destination task field.`);const id=String(item.id||'').trim();if(!id||!/^[A-Za-z0-9._:-]{1,128}$/.test(id)||seenIds.has(id))errors.push(`Destination checklist recovery for ${destination||'a destination'} contains an invalid or duplicate Destination task identifier.`);else seenIds.add(id);if(item.list!==undefined&&item.list!=='Destination')errors.push(`Destination checklist recovery for ${destination||'a destination'} contains a non-Destination task.`);if(!['Current Stay','Before You Leave','Travel Day','Arrival & Settle In'].includes(item.phase))errors.push(`Destination checklist recovery for ${destination||'a destination'} contains an invalid Destination task stage.`);if(typeof item.task!=='string'||!item.task.trim())errors.push(`Destination checklist recovery for ${destination||'a destination'} contains a Destination task with no title.`);if(item.due!==undefined&&(typeof item.due!=='string'||(item.due&&!validISODate(item.due))))errors.push(`Destination checklist recovery for ${destination||'a destination'} contains an invalid Destination task due date.`);if(item.required!==undefined&&!validBackupBool(item.required))errors.push(`Destination checklist recovery for ${destination||'a destination'} contains an invalid Destination required flag.`);if(item.done!==undefined&&!validBackupBool(item.done))errors.push(`Destination checklist recovery for ${destination||'a destination'} contains an invalid Destination completion value.`);if(item.notes!==undefined&&typeof item.notes!=='string')errors.push(`Destination checklist recovery for ${destination||'a destination'} contains invalid Destination task notes.`);});return;
+          }
           if(validBackupBool(value))return;
           if(!value||typeof value!=='object'||Array.isArray(value)){errors.push(`Destination checklist recovery for ${destination||'a destination'} contains an invalid task snapshot.`);return;}
           const keys=Object.keys(value);if(keys.some(key=>!['done','due','notes'].includes(key)))errors.push(`Destination checklist recovery for ${destination||'a destination'} contains an unsupported task snapshot field.`);
@@ -9686,7 +10118,7 @@ function coreRegressionFixtureIssues(){
     const bindSource=bindScreen.toString();
     if(bindSource.includes('positions saved locally')||bindSource.includes('Route point positions saved locally'))issues.push('Regression fixture failed: map edit toggles falsely claim a save.');
     const flightBudgetHtml=simpleReservationForm({type:'Flight',date:'2026-03-01',flightScope:'Domestic'}),internationalFlightBudgetHtml=simpleReservationForm({type:'Flight',date:'2026-03-01',flightScope:'International'});
-    if(!flightBudgetHtml.includes('Domestic flight · Destination Budget')||!flightBudgetHtml.includes('data-reservation-budget-option="Yes" aria-pressed="true"')||!internationalFlightBudgetHtml.includes('International flight · Annual Budget')||!internationalFlightBudgetHtml.includes('data-reservation-budget-option="No" aria-pressed="true"'))issues.push('Regression fixture failed: Flight budget routing does not switch Domestic to Destination and International to Annual.');
+    if(!flightBudgetHtml.includes('Choose where this booking is counted')||!flightBudgetHtml.includes('data-reservation-budget-option="No" aria-pressed="true"')||!internationalFlightBudgetHtml.includes('Choose where this booking is counted')||!internationalFlightBudgetHtml.includes('data-reservation-budget-option="No" aria-pressed="true"'))issues.push('Regression fixture failed: Flight budget routing is not manually selectable for both Domestic and International bookings.');
     const journeyOrderSnapshot=state;state=hydrate({settings:{journeyStart:'2026-01-01',__testNow:'2026-12-31T12:00'},annualBudgets:{'2026':100000},currentStay:{city:'X',country:'France',start:'2026-01-01',end:'2026-01-02',currency:'EUR',symbol:'€',rate:1.7,budget:0},itinerary:[],expenses:[],reservations:[],events:[],journeys:[{id:'j3',title:'C',country:'Italy',type:'Standard stay',start:'2026-03-01',end:'2026-03-02',km:0},{id:'j1',title:'A',country:'France',type:'Standard stay',start:'2026-01-01',end:'2026-01-02',km:0},{id:'j2',title:'B',country:'Germany',type:'Standard stay',start:'2026-02-01',end:'2026-02-02',km:0}],checklist:[],vault:[],streamingCodes:[],alerts:[],accounts:[]});
     if(completedJourneys().map(j=>j.id).join(',')!=='j1,j2,j3')issues.push('Regression fixture failed: completed Journey History is not chronological.');
     const overlapSnapshot=clone(state);state.journeys=[{id:'overlap-a',title:'A',country:'France',type:'Standard stay',start:'2026-01-01',end:'2026-01-10',km:0,spend:0},{id:'overlap-b',title:'B',country:'France',type:'Standard stay',start:'2026-01-02',end:'2026-01-03',km:0,spend:0},{id:'overlap-c',title:'C',country:'France',type:'Standard stay',start:'2026-01-04',end:'2026-01-05',km:0,spend:0}];const nestedOverlapCheck=journeyCheckResults().find(check=>check.label==='No overlapping completed stays');if(nestedOverlapCheck?.ok)issues.push('Regression fixture failed: Journey Check misses nested date overlaps.');state=overlapSnapshot;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();
@@ -10254,7 +10686,7 @@ function coreRegressionFixtureIssues(){
     {const archivedConflictBadgeSnapshot=clone(state);state=hydrate({settings:{journeyStart:'2026-08-15',__testNow:'2026-08-21T12:00',travellers:2},annualBudgets:{'2026':60000},annualBudget:60000,itinerary:[],expenses:[],reservations:[{id:'b89-old-a',title:'Archived Hotel A',type:'Hotel',date:'2026-08-01',endDate:'2026-08-10',currency:'AUD',original:500,rate:1,aud:500,status:'Booked',destinationBudget:'No',travellers:2,reference:'B89-A',notes:'Archive'},{id:'b89-old-b',title:'Archived Hotel B',type:'Hotel',date:'2026-08-05',endDate:'2026-08-12',currency:'AUD',original:500,rate:1,aud:500,status:'Booked',destinationBudget:'No',travellers:2,reference:'B89-B',notes:'Archive'},{id:'b89-live-a',title:'Live Hotel A',type:'Hotel',date:'2026-08-20',endDate:'2026-08-25',currency:'AUD',original:500,rate:1,aud:500,status:'Booked',destinationBudget:'No',travellers:2,reference:'B89-C',notes:'Live'},{id:'b89-live-b',title:'Live Hotel B',type:'Hotel',date:'2026-08-22',endDate:'2026-08-27',currency:'AUD',original:500,rate:1,aud:500,status:'Booked',destinationBudget:'No',travellers:2,reference:'B89-D',notes:'Live'}],events:[],journeys:[],checklist:[],vault:[],streamingCodes:[],alerts:[],accounts:[]});invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();const archivedConflictBadgeHtml=reservationTable(state.reservations.filter(x=>x.id.startsWith('b89-old'))),liveConflictBadgeHtml=reservationTable(state.reservations.filter(x=>x.id.startsWith('b89-live')));if(archivedConflictBadgeHtml.includes('DATE CONFLICT')||!liveConflictBadgeHtml.includes('DATE CONFLICT'))issues.push('Regression fixture failed: Completed archive conflict badges do not respect the pre-Journey-Start operational boundary, or live conflict badges were suppressed.');state=archivedConflictBadgeSnapshot;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}
     // Batch 90: active multi-day bookings remain visible as active records, but future-only
     // Reservation surfaces must not present their past start dates as upcoming/next.
-    {const activeUpcomingSnapshot=clone(state),savedCategoryFocus=reservationCategoryFocus,savedTab=reservationTab,savedStatusFilter=reservationStatusFilter,savedOnlyUpcoming=reservationOnlyUpcoming,savedShowCompleted=reservationShowCompleted,savedSearch=reservationSearchQuery,savedDestinationFilter=reservationDestinationFilter,savedCountryFilter=reservationCountryFilter,savedBudgetFilter=reservationBudgetFilter,savedDateFrom=reservationDateFrom,savedDateTo=reservationDateTo,savedMinCost=reservationMinCost,savedMaxCost=reservationMaxCost,savedQuickWindow=reservationQuickWindow,savedCurrencyFilter=reservationCurrencyFilter,savedReferenceFilter=reservationReferenceFilter;state=hydrate({settings:{journeyStart:'2026-01-01',__testNow:'2026-08-22T12:00',travellers:2},annualBudgets:{'2026':100000},annualBudget:100000,itinerary:[{id:'b90-stay',coverageType:'Destination',city:'Paris',country:'France',type:'Standard',arrival:'2026-08-01',departure:'2026-08-31',currency:'EUR',symbol:'€',rate:1.7,budget:5000,budgetConfigured:true}],expenses:[],reservations:[{id:'b90-active-hotel',title:'Active Hotel',type:'Hotel',date:'2026-08-15',endDate:'2026-08-25',currency:'AUD',original:1000,rate:1,aud:1000,status:'Paid',destinationBudget:'No',travellers:2,reference:'B90-A',notes:'Active'},{id:'b90-future-flight',title:'Future Flight',type:'Flight',date:'2026-08-23',currency:'AUD',original:500,rate:1,aud:500,status:'Paid',destinationBudget:'No',travellers:2,reference:'B90-F',notes:'Future'},{id:'b90-future-hotel',title:'Future Hotel',type:'Hotel',date:'2026-08-27',endDate:'2026-08-30',currency:'AUD',original:800,rate:1,aud:800,status:'Paid',destinationBudget:'No',travellers:2,reference:'B90-H',notes:'Future'}],events:[],journeys:[],checklist:[],vault:[],streamingCodes:[],alerts:[],accounts:[]});invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();reservationCategoryFocus='Hotels';reservationTab='All';reservationStatusFilter='All';reservationOnlyUpcoming=true;reservationShowCompleted=false;reservationSearchQuery='';reservationDestinationFilter='All';reservationCountryFilter='All';reservationBudgetFilter='All';reservationDateFrom='';reservationDateTo='';reservationMinCost='';reservationMaxCost='';reservationQuickWindow='All';reservationCurrencyFilter='All';reservationReferenceFilter='All';const activeUpcomingHtml=renderReservations(),nextUpcomingCard=(activeUpcomingHtml.match(/<article class="card reservation-next3-card">([\s\S]*?)<\/article>/)||[])[1]||'';if(nextUpcomingCard.includes('Active Hotel')||!nextUpcomingCard.includes('Future Flight')||!activeUpcomingHtml.includes('<small>booked reservations</small>')||!activeUpcomingHtml.includes('Hotels · BOOKED RESERVATIONS')||!activeUpcomingHtml.includes('<small>NEXT BOOKING</small><b>27/08/2026</b><em>Future Hotel</em>')||activeUpcomingHtml.includes('<small>NEXT BOOKING</small><b>15/08/2026</b><em>Active Hotel</em>'))issues.push('Regression fixture failed: active multi-day reservations are still presented as future/upcoming starts, or the next future booking is not selected correctly.');state=activeUpcomingSnapshot;reservationCategoryFocus=savedCategoryFocus;reservationTab=savedTab;reservationStatusFilter=savedStatusFilter;reservationOnlyUpcoming=savedOnlyUpcoming;reservationShowCompleted=savedShowCompleted;reservationSearchQuery=savedSearch;reservationDestinationFilter=savedDestinationFilter;reservationCountryFilter=savedCountryFilter;reservationBudgetFilter=savedBudgetFilter;reservationDateFrom=savedDateFrom;reservationDateTo=savedDateTo;reservationMinCost=savedMinCost;reservationMaxCost=savedMaxCost;reservationQuickWindow=savedQuickWindow;reservationCurrencyFilter=savedCurrencyFilter;reservationReferenceFilter=savedReferenceFilter;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}
+    {const activeUpcomingSnapshot=clone(state),savedCategoryFocus=reservationCategoryFocus,savedTab=reservationTab,savedStatusFilter=reservationStatusFilter,savedOnlyUpcoming=reservationOnlyUpcoming,savedShowCompleted=reservationShowCompleted,savedSearch=reservationSearchQuery,savedDestinationFilter=reservationDestinationFilter,savedCountryFilter=reservationCountryFilter,savedBudgetFilter=reservationBudgetFilter,savedDateFrom=reservationDateFrom,savedDateTo=reservationDateTo,savedMinCost=reservationMinCost,savedMaxCost=reservationMaxCost,savedQuickWindow=reservationQuickWindow,savedCurrencyFilter=reservationCurrencyFilter,savedReferenceFilter=reservationReferenceFilter;state=hydrate({settings:{journeyStart:'2026-01-01',__testNow:'2026-08-22T12:00',travellers:2},annualBudgets:{'2026':100000},annualBudget:100000,itinerary:[{id:'b90-stay',coverageType:'Destination',city:'Paris',country:'France',type:'Standard',arrival:'2026-08-01',departure:'2026-08-31',currency:'EUR',symbol:'€',rate:1.7,budget:5000,budgetConfigured:true}],expenses:[],reservations:[{id:'b90-active-hotel',title:'Active Hotel',type:'Hotel',date:'2026-08-15',endDate:'2026-08-25',currency:'AUD',original:1000,rate:1,aud:1000,status:'Paid',destinationBudget:'No',travellers:2,reference:'B90-A',notes:'Active'},{id:'b90-future-flight',title:'Future Flight',type:'Flight',date:'2026-08-23',currency:'AUD',original:500,rate:1,aud:500,status:'Paid',destinationBudget:'No',travellers:2,reference:'B90-F',notes:'Future'},{id:'b90-future-hotel',title:'Future Hotel',type:'Hotel',date:'2026-08-27',endDate:'2026-08-30',currency:'AUD',original:800,rate:1,aud:800,status:'Paid',destinationBudget:'No',travellers:2,reference:'B90-H',notes:'Future'}],events:[],journeys:[],checklist:[],vault:[],streamingCodes:[],alerts:[],accounts:[]});invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();reservationCategoryFocus='Hotels';reservationTab='All';reservationStatusFilter='All';reservationOnlyUpcoming=true;reservationShowCompleted=false;reservationSearchQuery='';reservationDestinationFilter='All';reservationCountryFilter='All';reservationBudgetFilter='All';reservationDateFrom='';reservationDateTo='';reservationMinCost='';reservationMaxCost='';reservationQuickWindow='All';reservationCurrencyFilter='All';reservationReferenceFilter='All';const activeUpcomingHtml=renderReservations(),nextUpcomingCard=(activeUpcomingHtml.match(/<article class="card reservation-next3-card">([\s\S]*?)<\/article>/)||[])[1]||'';if(nextUpcomingCard.includes('Active Hotel')||!nextUpcomingCard.includes('Future Flight')||!activeUpcomingHtml.includes('<small>bookings</small>')||!activeUpcomingHtml.includes('Hotels Booked')||!activeUpcomingHtml.includes('<small>NEXT BOOKING</small><b>27/08/2026</b><em>Future Hotel</em>')||activeUpcomingHtml.includes('<small>NEXT BOOKING</small><b>15/08/2026</b><em>Active Hotel</em>'))issues.push('Regression fixture failed: active multi-day reservations are still presented as future/upcoming starts, or the next future booking is not selected correctly.');state=activeUpcomingSnapshot;reservationCategoryFocus=savedCategoryFocus;reservationTab=savedTab;reservationStatusFilter=savedStatusFilter;reservationOnlyUpcoming=savedOnlyUpcoming;reservationShowCompleted=savedShowCompleted;reservationSearchQuery=savedSearch;reservationDestinationFilter=savedDestinationFilter;reservationCountryFilter=savedCountryFilter;reservationBudgetFilter=savedBudgetFilter;reservationDateFrom=savedDateFrom;reservationDateTo=savedDateTo;reservationMinCost=savedMinCost;reservationMaxCost=savedMaxCost;reservationQuickWindow=savedQuickWindow;reservationCurrencyFilter=savedCurrencyFilter;reservationReferenceFilter=savedReferenceFilter;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}
     // Batch 1117: Active / Upcoming includes in-progress multi-day stays plus future starts; copy/export must match that visible result set.
     {const upcomingFilterSnapshot=clone(state),savedTab=reservationTab,savedStatus=reservationStatusFilter,savedOnlyCurrent=reservationOnlyCurrent,savedOnlyUpcoming=reservationOnlyUpcoming,savedShowCompleted=reservationShowCompleted,savedOnlyOverdue=reservationOnlyOverdue,savedSearch=reservationSearchQuery,savedDestination=reservationDestinationFilter,savedCountry=reservationCountryFilter,savedBudget=reservationBudgetFilter,savedFrom=reservationDateFrom,savedTo=reservationDateTo,savedMin=reservationMinCost,savedMax=reservationMaxCost,savedQuick=reservationQuickWindow,savedCurrency=reservationCurrencyFilter,savedReference=reservationReferenceFilter;state=hydrate({settings:{journeyStart:'2026-01-01',__testNow:'2026-08-22T10:00',travellers:2},annualBudgets:{'2026':100000},annualBudget:100000,itinerary:[],expenses:[],reservations:[{id:'b99-active',title:'Active Hotel Filter Probe',type:'Hotel',date:'2026-08-20',endDate:'2026-08-25',currency:'AUD',original:1000,rate:1,aud:1000,status:'Paid',destinationBudget:'No',travellers:2,reference:'B99-A',notes:'Active stay'},{id:'b99-future',title:'Future Flight Filter Probe',type:'Flight',date:'2026-08-24',currency:'AUD',original:500,rate:1,aud:500,status:'Paid',destinationBudget:'No',travellers:2,reference:'B99-F',notes:'Future start'},{id:'b99-completed',title:'Completed Flight Filter Probe',type:'Flight',date:'2026-08-10',currency:'AUD',original:300,rate:1,aud:300,status:'Paid',destinationBudget:'No',travellers:2,reference:'B99-C',notes:'Completed'}],events:[],journeys:[],checklist:[],vault:[],streamingCodes:[],alerts:[],accounts:[]});invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();reservationTab='All';reservationStatusFilter='All';reservationOnlyCurrent=false;reservationOnlyUpcoming=true;reservationShowCompleted=false;reservationOnlyOverdue=false;reservationSearchQuery='';reservationDestinationFilter='All';reservationCountryFilter='All';reservationBudgetFilter='All';reservationDateFrom='';reservationDateTo='';reservationMinCost='';reservationMaxCost='';reservationQuickWindow='All';reservationCurrencyFilter='All';reservationReferenceFilter='All';const upcomingFiltered=reservationSortRows(state.reservations.filter(reservationMatchesFilters)),upcomingActions=reservationFilteredActionRows(upcomingFiltered),upcomingHtml=renderReservations(),upcomingSegment=(upcomingHtml.match(/id="reservation-upcoming-panel"[\s\S]*?id="reservation-completed-panel"/)||[])[0]||'';if(upcomingActions.length!==2||!upcomingActions.some(x=>x.id==='b99-active')||!upcomingActions.some(x=>x.id==='b99-future')||upcomingSegment.includes('Completed Flight Filter Probe')||!upcomingSegment.includes('Active Hotel Filter Probe')||!upcomingSegment.includes('Future Flight Filter Probe'))issues.push('Regression fixture failed: Active / Upcoming omits an in-progress/future booking or exposes a completed booking in the visible or copy/export result set.');reservationShowCompleted=true;const upcomingWithArchiveActions=reservationFilteredActionRows(reservationSortRows(state.reservations.filter(reservationMatchesFilters)));if(upcomingWithArchiveActions.length!==3||!upcomingWithArchiveActions.some(x=>x.id==='b99-future')||!upcomingWithArchiveActions.some(x=>x.id==='b99-completed')||!upcomingWithArchiveActions.some(x=>x.id==='b99-active'))issues.push('Regression fixture failed: Show Completed plus Active / Upcoming omits a visible active, future or archive row.');state=upcomingFilterSnapshot;reservationTab=savedTab;reservationStatusFilter=savedStatus;reservationOnlyCurrent=savedOnlyCurrent;reservationOnlyUpcoming=savedOnlyUpcoming;reservationShowCompleted=savedShowCompleted;reservationOnlyOverdue=savedOnlyOverdue;reservationSearchQuery=savedSearch;reservationDestinationFilter=savedDestination;reservationCountryFilter=savedCountry;reservationBudgetFilter=savedBudget;reservationDateFrom=savedFrom;reservationDateTo=savedTo;reservationMinCost=savedMin;reservationMaxCost=savedMax;reservationQuickWindow=savedQuick;reservationCurrencyFilter=savedCurrency;reservationReferenceFilter=savedReference;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}
     // Batch 1117: Home Upcoming Events must surface the next operational end action for an active multi-day booking.
@@ -10417,7 +10849,7 @@ function coreRegressionFixtureIssues(){
   {const replacePinSource1092=resetTransientUiAfterDataReplace.toString(),renderPinSource1092=render.toString(),unlockPinSource1092=requirePinThenRender.toString();if(!replacePinSource1092.includes('pinLockActive=Boolean(state.settings?.pinEnabled&&state.settings?.pin)')||!renderPinSource1092.includes('if(pinLockActive)return')||!unlockPinSource1092.includes('pinLockActive=false'))issues.push('Regression fixture failed: a PIN-enabled restore can render protected replacement data before or behind the unlock gate.');}
   {const replacePinSource1093=resetTransientUiAfterDataReplace.toString(),unlockPinSource1093=requirePinThenRender.toString();if(!replacePinSource1093.includes("classList.toggle('pin-locked',pinLockActive)")||!unlockPinSource1093.includes("classList.add('pin-locked')")||!unlockPinSource1093.includes("classList.remove('pin-locked')"))issues.push('Regression fixture failed: a PIN-enabled restore can leave the previously painted dataset readable through the unlock-dialog backdrop.');}
   {const initSource1094=init.toString(),closeSource1094=closeVaultAttachmentViewers.toString();if(!initSource1094.includes("addEventListener('pagehide'")||!initSource1094.includes('lockVaultForPageHide()')||!lockVaultForPageHide.toString().includes('vaultUnlocked=false')||!lockVaultForPageHide.toString().includes('vaultStreamingReveal.clear()')||!closeSource1094.includes('viewer.close')||!closeSource1094.includes('vaultAttachmentViewers.clear()'))issues.push('Regression fixture failed: protected Vault screenshot viewers can survive a main-app reload/navigation after the app itself re-locks.');}
-  {const initSource1095=init.toString(),hideSource1095=lockVaultForPageHide.toString(),showSource1095=refreshAfterPageShow.toString();if(!initSource1095.includes("addEventListener('pageshow',refreshAfterPageShow)")||!hideSource1095.includes("classList.add('vault-pagehide-locked')")||!hideSource1095.includes("closeSharedModal('pagehide')")||!hideSource1095.includes("confirmDialog.close('cancel')")||!showSource1095.includes('vaultPageHideRelockPending')||!showSource1095.includes('try{render();}catch(error)')||!showSource1095.includes("classList.remove('vault-pagehide-locked')"))issues.push('Regression fixture failed: Safari BFCache can restore the previously painted unlocked Vault DOM or protected modal after pagehide re-locks only the in-memory flags.');}
+  {const initSource1095=init.toString(),hideSource1095=lockVaultForPageHide.toString(),showSource1095=refreshAfterPageShow.toString();if(!initSource1095.includes("addEventListener('pageshow',refreshAfterPageShow)")||!hideSource1095.includes("classList.add('vault-pagehide-locked')")||!hideSource1095.includes("closeSharedModal('pagehide')")||!hideSource1095.includes("forceDialogClosed(confirmDialog,'cancel')")||!showSource1095.includes('vaultPageHideRelockPending')||!showSource1095.includes('try{render();}catch(error)')||!showSource1095.includes("classList.remove('vault-pagehide-locked')"))issues.push('Regression fixture failed: Safari BFCache can restore the previously painted unlocked Vault DOM or protected modal after pagehide re-locks only the in-memory flags.');}
   // Batch 1102: forms and confirmation dialogs deliberately defer device-clock refreshes
   // while open, so closing them must reconcile the screen immediately after a rollover.
   {const sharedClose1102=closeSharedModal.toString(),confirm1102=confirmAction.toString();if(!sharedClose1102.includes('queueMicrotask(()=>refreshForDeviceClock())')||!confirm1102.includes('resolve(result);')||!confirm1102.includes('queueMicrotask(()=>refreshForDeviceClock())')||confirm1102.indexOf('resolve(result);')>confirm1102.indexOf('queueMicrotask(()=>refreshForDeviceClock())'))issues.push('Regression fixture failed: closing a blocking dialog after a device-clock rollover can leave the visible screen stale until the next timer/focus refresh.');}
@@ -10452,7 +10884,7 @@ function coreRegressionFixtureIssues(){
   {if(validStreamingEmailAddress('cam()@example.com')||validStreamingEmailAddress('cam,evans@example.com')||validStreamingEmailAddress('cam\\evans@example.com')||!validStreamingEmailAddress('cam+travel@example.com')||!validStreamingEmailAddress("o'neil@example.com"))issues.push('Regression fixture failed: hidden Streaming email validation accepts browser-invalid local-part punctuation or rejects normal valid addresses.');}
   // Batch 1139: custom Vault overlays must provide the same keyboard containment/close behaviour
   // as a native modal so protected Streaming controls cannot leak focus into the page behind them.
-  {const bindSource1139=bindScreen.toString();if(!bindSource1139.includes("vaultStreamingOpen&&e.key==='Tab'")||!bindSource1139.includes("vaultStreamingOpen&&e.key==='Escape'")||!bindSource1139.includes("vaultStreamingEmailOpen?'.vault-streaming-email-panel':'.vault-streaming-panel'"))issues.push('Regression fixture failed: Vault Streaming/email overlays do not contain keyboard focus or close safely with Escape.');}
+  {const bindSource1139=bindScreen.toString();if(!bindSource1139.includes("(vaultStreamingOpen||vaultStreamingEmailOpen)&&e.key==='Tab'")||!bindSource1139.includes("vaultStreamingEmailOpen&&e.key==='Escape'")||!bindSource1139.includes("vaultStreamingOpen&&e.key==='Escape'")||!bindSource1139.includes("vaultStreamingEmailOpen?'.vault-streaming-email-panel':'.vault-streaming-panel'"))issues.push('Regression fixture failed: Vault Streaming/email overlays do not contain keyboard focus or close safely with Escape.');}
   // Batch 1140: minute-boundary refresh must preserve every inline Save-based draft,
   // and the Home travel-phrase modal must keep/return keyboard focus safely.
   {const refreshSource1140=refreshForDeviceClock.toString(),draftSource1140=inlineDraftNeedsClockRefreshDeferral.toString(),guardSource1140=scheduledScreenRefreshWouldDiscardDraft.toString(),scheduledSource1140=scheduleScreenRefresh.toString(),saveSource1140=saveState.toString(),backgroundSource1140=renderAfterBackgroundAction.toString(),healthSource1140=runAppHealth.toString(),backupSource1140=doBackup.toString(),bindSource1140=bindScreen.toString();if(!refreshSource1140.includes('scheduledScreenRefreshWouldDiscardDraft()')||!guardSource1140.includes('inlineDraftNeedsClockRefreshDeferral()')||!draftSource1140.includes("homeFocusWidget==='schengen'")||!draftSource1140.includes("budgetFocusWidget==='annualSetup'")||!draftSource1140.includes("budgetFocusWidget==='destinationSetup'")||!draftSource1140.includes("screen==='settings'")||!scheduledSource1140.includes('scheduledScreenRefreshWouldDiscardDraft()')||!saveSource1140.includes('scheduledScreenRefreshWouldDiscardDraft()')||!backgroundSource1140.includes('scheduledScreenRefreshWouldDiscardDraft()')||!healthSource1140.includes('renderAfterBackgroundAction()')||!backupSource1140.includes('renderAfterBackgroundAction()')||!bindSource1140.includes("toiletPhraseOpen&&e.key==='Tab'")||!bindSource1140.includes(".brand .logo")||!bindSource1140.includes('const closeVaultStreaming=')||!bindSource1140.includes("document.querySelector('[data-vault-streaming-open]')?.focus()"))issues.push('Regression fixture failed: automatic/background/save-failure redraw can erase an inline/custom unsaved draft or custom Home/Vault overlays do not contain/restore focus safely.');}
@@ -10462,7 +10894,7 @@ function coreRegressionFixtureIssues(){
   {const scheduledSource1141=scheduledScreenRefreshWouldDiscardDraft.toString(),clockSource1141=refreshForDeviceClock.toString(),touchFinish1141=finishExpandedTouchGesture.toString(),pointerFinish1141=finishExpandedPointerPan.toString();if(!scheduledSource1141.includes('expandedMapGesture')||!scheduledSource1141.includes('expandedPointerPan')||!scheduledSource1141.includes('activeMapDrag')||!scheduledSource1141.includes('activeItineraryMapDrag')||!clockSource1141.includes('scheduledScreenRefreshWouldDiscardDraft()')||!touchFinish1141.includes('refreshForDeviceClock()')||!pointerFinish1141.includes('refreshForDeviceClock()'))issues.push('Regression fixture failed: automatic refresh can still replace an active map drag/pan or fail to catch up immediately after panning ends.');}
   // Batch 1139: device-clock minute refresh must not redraw custom Streaming editors while
   // password/email text is still only in the DOM and has not been saved.
-  {const refreshSource1139=refreshForDeviceClock.toString(),guardSource1139=scheduledScreenRefreshWouldDiscardDraft.toString();if(!refreshSource1139.includes('scheduledScreenRefreshWouldDiscardDraft()')||!guardSource1139.includes("screen==='vault'&&vaultStreamingOpen"))issues.push('Regression fixture failed: device-clock refresh can redraw an open Streaming editor and discard unsaved password/email text.');}
+  {const refreshSource1139=refreshForDeviceClock.toString(),guardSource1139=scheduledScreenRefreshWouldDiscardDraft.toString();if(!refreshSource1139.includes('scheduledScreenRefreshWouldDiscardDraft()')||!guardSource1139.includes("screen==='vault'&&(vaultStreamingOpen||vaultStreamingEmailOpen)"))issues.push('Regression fixture failed: device-clock refresh can redraw an open Streaming editor and discard unsaved password/email text.');}
   // Batch 1142: legacy blank Streaming rows must remain removable, the iPad editor must
   // enforce the same 512-character boundary as Save/restore, and travelling west must not
   // make an existing credential's update metadata move backwards.
@@ -10485,7 +10917,7 @@ function coreRegressionFixtureIssues(){
 
   {const gateSource137=applyStartupIntegrityGate.toString();if(!gateSource137.includes("startupStorageIssueKind='integrity'")||!gateSource137.includes('state=hydrate(null)')||!gateSource137.includes('lastPersistedSnapshot=clone(state)')||!gateSource137.includes('startupStoredIntegrityIssues(startupParsedState)'))issues.push('Regression fixture failed: startup integrity failures can still bypass the recovery quarantine or overwrite the trusted persistence baseline.');}
   // Batch 137: ordinary saves must prove the live runtime can form a strict canonical backup before local data is overwritten.
-  {const saveSource137=saveState.toString();if(!saveSource137.includes('validateBackup(canonicalBackupPayload(itineraryReferenceDate()))')||!saveSource137.includes('lastPersistedSnapshot||hydrate(null)')||!saveSource137.includes('would make local data fail an integrity check'))issues.push('Regression fixture failed: save can overwrite good local data with a runtime state that fails canonical integrity.');}
+  {const saveSource137=saveState.toString();if(!saveSource137.includes('validateBackup(canonicalBackupPayload(itineraryReferenceDate()))')||!(saveSource137.includes('restoreStateAfterFailedSave')||saveSource137.includes('lastPersistedSnapshot||hydrate(null)'))||!saveSource137.includes('would make local data fail an integrity check'))issues.push('Regression fixture failed: save can overwrite good local data with a runtime state that fails canonical integrity.');}
   // Batch 137: successful localStorage.setItem must be verified by exact read-back before the app reports persistence success.
   {const saveSource137=saveState.toString();if(!saveSource137.includes('localStorage.getItem(STORAGE_KEY)!==encoded')||!saveSource137.includes('Local storage did not preserve the exact saved app payload.'))issues.push('Regression fixture failed: save still trusts localStorage.setItem without exact persisted-payload verification.');}
   // Batch 137: current-build raw data with destructive hydrate normalisation must be rejected, while derived fields remain probe-normalised.
@@ -11553,16 +11985,16 @@ function coreRegressionFixtureIssues(){
   {const headerCities1113=[['Kuala Lumpur','Malaysia'],['Siem Reap','Cambodia'],['Luang Prabang','Laos'],['Manila','Philippines'],['Seoul','South Korea'],['Taipei','Taiwan'],['Beijing','China'],['Colombo','Sri Lanka'],['New Delhi','India'],['Tirana','Albania'],['Tallinn','Estonia'],['Riga','Latvia'],['Vilnius','Lithuania'],['Muscat','Oman'],['Doha','Qatar'],['Tunis','Tunisia'],['Nassau','Bahamas'],['Kingston','Jamaica'],['Santo Domingo','Dominican Republic'],['Panama City','Panama'],['San José','Costa Rica'],['Bogotá','Colombia'],['Cape Town','South Africa'],['Rio de Janeiro','Brazil'],['Buenos Aires','Argentina'],['Santiago','Chile'],['Lima','Peru']];const failed1113=headerCities1113.filter(([city,country])=>{const explicit=`${city}, ${country}`,found=offlineGeoLookup(explicit),point=detailedRoutePointInfo({label:explicit},0,1),countryFallback=itineraryMapPointInfo({city:'Unlisted locality',country},0,1),journeyCountry=journeyCountryForRoutePlace(city,''),reservationCountry=reservationCountryName({destination:city});return !found||!point.located||!countryFallback.point||!offlineGeoLookup(country)||!countryIdentityEquals(journeyCountry,country)||!countryIdentityEquals(reservationCountry,country);});if(failed1113.length)issues.push(`Regression fixture failed: photographic-header city/country offline map integration is incomplete for ${failed1113.map(row=>row[0]).join(', ')}.`);const wrongNamesakes1113=['Kingston, Canada','Santiago, Dominican Republic','Panama City, United States'];if(wrongNamesakes1113.some(label=>offlineGeoLookup(label)))issues.push('Regression fixture failed: Batch 1113 header-city atlas expansion weakened explicit-country namesake safety.');}
 
   {const dedicatedHeaderCountries1114=[...BANNER_SLUGS].filter(slug=>!['world','caribbean','cruise','motorhome'].includes(slug)).map(slug=>canonicalCountryDisplay(slug));const failed1114=dedicatedHeaderCountries1114.filter(country=>!offlineGeoLookup(country)||!itineraryMapPointInfo({city:'Unlisted locality',country},0,1).point);if(failed1114.length)issues.push(`Regression fixture failed: dedicated-header country fallback is missing for ${failed1114.join(', ')}.`);}
+  {const supportedQuickLook1189=[...new Set([...Object.keys(COUNTRY_FLAGS),...Object.keys(COUNTRY_CURRENCY_CODES),...Object.keys(COUNTRY_CANONICAL_NAMES),...Object.keys(GLOBAL_TRAVEL_COUNTRY_METADATA)])].filter(slug=>slug&&!ROUTE_CONTEXT_SUFFIX_KEYS.has(slug)&&!['world','cruise','motorhome'].includes(slug)),missingQuickLook1189=supportedQuickLook1189.filter(slug=>!ownMapValue(COUNTRY_QUICK_LOOK_FACTS,slug,null)),incompleteQuickLook1189=supportedQuickLook1189.filter(slug=>{const x=ownMapValue(COUNTRY_QUICK_LOOK_FACTS,slug,null);return !x||['capital','dish','animal','plant','plantNote','fact'].some(key=>!trimmedScalarText(x[key],''));});if(missingQuickLook1189.length)issues.push(`Regression fixture failed: Country Quick Look facts are missing for supported countries: ${missingQuickLook1189.join(', ')}.`);if(incompleteQuickLook1189.length)issues.push(`Regression fixture failed: Country Quick Look profiles are incomplete for supported countries: ${incompleteQuickLook1189.join(', ')}.`);}
 
   {const countryAliases1114=['U.S.A.','United States of America','U.K.','Great Britain','UAE','U.A.E.','Czechia','Türkiye','Republic of Ireland','Éire','Bosnia and Herzegovina'];const failedAliases1114=countryAliases1114.filter(label=>!offlineGeoLookup(label));if(failedAliases1114.length||offlineGeoLookup('Paris, U.S.A.')||offlineGeoLookup('Rome, Georgia, United States'))issues.push(`Regression fixture failed: canonical country-alias map lookup is incomplete or weakened namesake safety${failedAliases1114.length?` (${failedAliases1114.join(', ')})`:''}.`);}
 
   {const supportedWorldCountries1114=Object.keys(GLOBAL_TRAVEL_COUNTRY_METADATA).map(slug=>canonicalCountryDisplay(slug));const failedWorldCountries1114=supportedWorldCountries1114.filter(country=>!offlineGeoLookup(country)||!itineraryMapPointInfo({city:'Unlisted locality',country},0,1).point);if(failedWorldCountries1114.length)issues.push(`Regression fixture failed: supported World-header country fallback is missing for ${failedWorldCountries1114.join(', ')}.`);}
 
-  // Batch 1118: Permanent checklist tasks are reusable templates that repeat for every
-  // move. Their completion/due state must reset for a genuinely new next destination,
-  // while per-destination history keeps clock/itinerary rewinds reversible.
-  {const saved1118=clone(state),savedClockEnabled1118=internalTestClockEnabled,savedClock1118=testDeviceDateTimeOverride;internalTestClockEnabled=true;testDeviceDateTimeOverride='2026-08-25T09:35';state=hydrate({version:APP_VERSION,settings:{journeyStart:'2026-01-01',travellers:2,lastBackup:'2026-08-25'},annualBudgets:{'2026':100000},annualBudget:100000,itinerary:[{id:'b1118-current',coverageType:'Destination',city:'Paris',country:'France',type:'Standard',arrival:'2026-08-01',departure:'2026-08-31',currency:'EUR',symbol:'€',rate:1.7,budget:3000,budgetConfigured:true},{id:'b1118-rome',coverageType:'Destination',city:'Rome',country:'Italy',type:'Standard',arrival:'2026-09-01',departure:'2026-09-10',currency:'EUR',symbol:'€',rate:1.7,budget:3000,budgetConfigured:true},{id:'b1118-tokyo',coverageType:'Destination',city:'Tokyo',country:'Japan',type:'Standard',arrival:'2026-09-20',departure:'2026-09-30',currency:'JPY',symbol:'¥',rate:.011,budget:300000,budgetConfigured:true}],expenses:[],reservations:[],events:[],journeys:[],checklist:[{id:'b1118-permanent',list:'Permanent',phase:'Travel Day',task:'Charge iPad',required:true,done:true,due:'2026-08-31',notes:'Repeat every move'},{id:'b1118-destination',list:'Destination',phase:'Arrival & Settle In',task:'Check local transport',required:false,done:true,due:'2026-09-01',notes:'Rome'}],vault:[],streamingCodes:[],alerts:[],accounts:[]});invalidateItineraryOwnerCache();syncLinkedState();const romeKey1118=state.settings.lastDestinationKey,romePermanent1118=clone(state.checklist.find(x=>x.id==='b1118-permanent'));testDeviceDateTimeOverride='2026-09-01T09:35';syncLinkedState();const arrivalKey1118=state.settings.lastDestinationKey,arrivalPermanent1118=clone(state.checklist.find(x=>x.id==='b1118-permanent')),arrivalDestination1118=clone(state.checklist.find(x=>x.id==='b1118-destination')),arrivalChecklistNext1118=checklistTargetJourney()?.id||'',arrivalGlobalNext1118=nextJourney()?.id||'',arrivalHome1118=sharedDestinationContextHero('calendar'),arrivalHtml1118=renderChecklist(),arrivalCalendar1118=calendarDayItems('2026-09-01').tasks.some(x=>x.id==='b1118-destination');testDeviceDateTimeOverride='2026-09-02T09:35';syncLinkedState();const tokyoKey1118=state.settings.lastDestinationKey,tokyoPermanent1118=clone(state.checklist.find(x=>x.id==='b1118-permanent')),tokyoDestination1118=clone(state.checklist.find(x=>x.id==='b1118-destination')),tokyoReady1118=isReady();state.checklist.find(x=>x.id==='b1118-permanent').done=true;state.checklist.find(x=>x.id==='b1118-permanent').due='2026-09-19';state.checklist.find(x=>x.id==='b1118-destination').notes='Tokyo';testDeviceDateTimeOverride='2026-08-25T09:35';syncLinkedState();const rewindPermanent1118=clone(state.checklist.find(x=>x.id==='b1118-permanent')),rewindDestination1118=clone(state.checklist.find(x=>x.id==='b1118-destination'));testDeviceDateTimeOverride='2026-09-02T09:35';syncLinkedState();const forwardPermanent1118=clone(state.checklist.find(x=>x.id==='b1118-permanent')),forwardDestination1118=clone(state.checklist.find(x=>x.id==='b1118-destination')),backupErrors1118=validateBackup(canonicalBackupPayload('2026-09-02'));if(romeKey1118!=='rome|italy|2026-09-01'||arrivalKey1118!==romeKey1118||arrivalChecklistNext1118!=='b1118-rome'||arrivalGlobalNext1118!=='b1118-tokyo'||!arrivalHome1118.includes('Tokyo, Japan')||!arrivalPermanent1118.done||arrivalPermanent1118.due!=='2026-08-31'||!arrivalDestination1118.done||arrivalDestination1118.notes!=='Rome'||!arrivalHtml1118.includes('Rome, Italy')||!arrivalCalendar1118||tokyoKey1118!=='tokyo|japan|2026-09-20'||!romePermanent1118.done||tokyoPermanent1118.done||tokyoPermanent1118.due||tokyoPermanent1118.notes!=='Repeat every move'||tokyoDestination1118.done||tokyoDestination1118.due||tokyoDestination1118.notes||tokyoReady1118||!rewindPermanent1118.done||rewindPermanent1118.due!=='2026-08-31'||rewindDestination1118.notes!=='Rome'||!forwardPermanent1118.done||forwardPermanent1118.due!=='2026-09-19'||forwardDestination1118.notes!=='Tokyo'||backupErrors1118.length)issues.push('Regression fixture failed: Permanent/Destination checklist state does not remain with the arriving destination through arrival day, repeat cleanly for the following move, or rewind/restore canonically.');state=saved1118;internalTestClockEnabled=savedClockEnabled1118;testDeviceDateTimeOverride=savedClock1118;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}
-
+  // Batch 1189: Permanent checklist tasks remain reusable templates, while Destination
+  // tasks belong to one destination only. A genuinely new destination starts with no
+  // inherited Destination wording, and rewinds/forwards restore each exact task list.
+  {const saved1118=clone(state),savedClockEnabled1118=internalTestClockEnabled,savedClock1118=testDeviceDateTimeOverride;internalTestClockEnabled=true;testDeviceDateTimeOverride='2026-08-25T09:35';state=hydrate({version:APP_VERSION,settings:{journeyStart:'2026-01-01',travellers:2,lastBackup:'2026-08-25'},annualBudgets:{'2026':100000},annualBudget:100000,itinerary:[{id:'b1118-current',coverageType:'Destination',city:'Paris',country:'France',type:'Standard',arrival:'2026-08-01',departure:'2026-08-31',currency:'EUR',symbol:'€',rate:1.7,budget:3000,budgetConfigured:true},{id:'b1118-rome',coverageType:'Destination',city:'Rome',country:'Italy',type:'Standard',arrival:'2026-09-01',departure:'2026-09-10',currency:'EUR',symbol:'€',rate:1.7,budget:3000,budgetConfigured:true},{id:'b1118-tokyo',coverageType:'Destination',city:'Tokyo',country:'Japan',type:'Standard',arrival:'2026-09-20',departure:'2026-09-30',currency:'JPY',symbol:'¥',rate:.011,budget:300000,budgetConfigured:true}],expenses:[],reservations:[],events:[],journeys:[],checklist:[{id:'b1118-permanent',list:'Permanent',phase:'Travel Day',task:'Charge iPad',required:true,done:true,due:'2026-08-31',notes:'Repeat every move'},{id:'b1118-rome-task',list:'Destination',phase:'Arrival & Settle In',task:'Check Rome local transport',required:false,done:true,due:'2026-09-01',notes:'Rome'}],vault:[],streamingCodes:[],alerts:[],accounts:[]});invalidateItineraryOwnerCache();syncLinkedState();const romeKey1118=state.settings.lastDestinationKey,romePermanent1118=clone(state.checklist.find(x=>x.id==='b1118-permanent'));testDeviceDateTimeOverride='2026-09-01T09:35';syncLinkedState();const arrivalKey1118=state.settings.lastDestinationKey,arrivalPermanent1118=clone(state.checklist.find(x=>x.id==='b1118-permanent')),arrivalDestination1118=state.checklist.find(x=>x.id==='b1118-rome-task'),arrivalChecklistNext1118=checklistTargetJourney()?.id||'',arrivalGlobalNext1118=nextJourney()?.id||'',arrivalHome1118=sharedDestinationContextHero('calendar'),arrivalHtml1118=renderChecklist(),arrivalCalendar1118=calendarDayItems('2026-09-01').tasks.some(x=>x.id==='b1118-rome-task');testDeviceDateTimeOverride='2026-09-02T09:35';syncLinkedState();const tokyoKey1118=state.settings.lastDestinationKey,tokyoPermanent1118=clone(state.checklist.find(x=>x.id==='b1118-permanent')),tokyoDestinationCount1118=state.checklist.filter(x=>x.list==='Destination').length,tokyoReady1118=isReady();state.checklist.find(x=>x.id==='b1118-permanent').done=true;state.checklist.find(x=>x.id==='b1118-permanent').due='2026-09-19';state.checklist.push({id:'b1118-tokyo-task',list:'Destination',phase:'Arrival & Settle In',task:'Collect Tokyo rail pass',required:false,done:false,due:'2026-09-20',notes:'Tokyo'});testDeviceDateTimeOverride='2026-08-25T09:35';syncLinkedState();const rewindPermanent1118=clone(state.checklist.find(x=>x.id==='b1118-permanent')),rewindRome1118=state.checklist.find(x=>x.id==='b1118-rome-task'),rewindTokyo1118=state.checklist.find(x=>x.id==='b1118-tokyo-task');testDeviceDateTimeOverride='2026-09-02T09:35';syncLinkedState();const forwardPermanent1118=clone(state.checklist.find(x=>x.id==='b1118-permanent')),forwardTokyo1118=state.checklist.find(x=>x.id==='b1118-tokyo-task'),forwardRome1118=state.checklist.find(x=>x.id==='b1118-rome-task'),backupErrors1118=validateBackup(canonicalBackupPayload('2026-09-02'));if(romeKey1118!=='rome|italy|2026-09-01'||arrivalKey1118!==romeKey1118||arrivalChecklistNext1118!=='b1118-rome'||arrivalGlobalNext1118!=='b1118-tokyo'||!arrivalHome1118.includes('Tokyo, Japan')||!arrivalPermanent1118.done||arrivalPermanent1118.due!=='2026-08-31'||!arrivalDestination1118?.done||arrivalDestination1118?.notes!=='Rome'||!arrivalHtml1118.includes('Rome, Italy')||!arrivalCalendar1118||tokyoKey1118!=='tokyo|japan|2026-09-20'||!romePermanent1118.done||tokyoPermanent1118.done||tokyoPermanent1118.due||tokyoPermanent1118.notes!=='Repeat every move'||tokyoDestinationCount1118!==0||tokyoReady1118||!rewindPermanent1118.done||rewindPermanent1118.due!=='2026-08-31'||rewindRome1118?.notes!=='Rome'||rewindTokyo1118||!forwardPermanent1118.done||forwardPermanent1118.due!=='2026-09-19'||forwardTokyo1118?.notes!=='Tokyo'||forwardRome1118||backupErrors1118.length)issues.push('Regression fixture failed: Permanent tasks do not repeat cleanly or Destination task collections leak between destinations / fail to rewind and restore.');state=saved1118;internalTestClockEnabled=savedClockEnabled1118;testDeviceDateTimeOverride=savedClock1118;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}
 
   // Batch 1119: backups made by Batch 1118 on a destination's arrival date may carry
   // the following destination as the checklist marker. If the arriving destination's
@@ -11579,11 +12011,12 @@ function coreRegressionFixtureIssues(){
   // Batch 1148: the toilet shortcut uses the routed trip's departure locality even when
   // a short region suffix is geographically ambiguous, and it must never stack on a Home
   // readability dialog.
-  {const savedState1148=clone(state),savedHomeFocus1148=homeFocusWidget,savedPhraseOpen1148=toiletPhraseOpen,savedVaultUnlocked1148=vaultUnlocked,savedVaultFocus1148=vaultFocusWidget,savedVaultStreaming1148=vaultStreamingOpen;try{const cases1148=[['Seattle, WA','United States'],['Perth, WA','Australia'],['Cape Town, SA','South Africa'],['Tbilisi, GA','Georgia']];for(const [label,country] of cases1148)if(!countryIdentityEquals(toiletPhraseDepartureCountry(label,'Motorhome'),country))issues.push(`Regression fixture failed: toilet departure language loses ${label} country identity.`);homeFocusWidget='daily';toiletPhraseOpen=true;const home1148=renderDashboard(),init1148=init.toString();if(home1148.includes('readability-focus-backdrop')||!home1148.includes('toilet-phrase-backdrop')||!init1148.includes("homeFocusWidget='';toiletPhraseOpen=true"))issues.push('Regression fixture failed: Home toilet phrase can stack on an existing Home detail dialog.');vaultUnlocked=true;vaultFocusWidget='passport';vaultStreamingOpen=true;const vault1148=renderVault(),bind1148=bindScreen.toString();if(vault1148.includes('readability-focus-backdrop')||!vault1148.includes('vault-streaming-backdrop')||!bind1148.includes("vaultFocusWidget='';vaultStreamingOpen=true"))issues.push('Regression fixture failed: Vault Streaming can stack on an existing Vault readability dialog.');}finally{state=savedState1148;homeFocusWidget=savedHomeFocus1148;toiletPhraseOpen=savedPhraseOpen1148;vaultUnlocked=savedVaultUnlocked1148;vaultFocusWidget=savedVaultFocus1148;vaultStreamingOpen=savedVaultStreaming1148;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}}
+  {const savedState1148=clone(state),savedHomeFocus1148=homeFocusWidget,savedPhraseOpen1148=toiletPhraseOpen,savedCountryQuick1148=countryQuickLookCountry,savedVaultUnlocked1148=vaultUnlocked,savedVaultFocus1148=vaultFocusWidget,savedVaultStreaming1148=vaultStreamingOpen;try{const cases1148=[['Seattle, WA','United States'],['Perth, WA','Australia'],['Cape Town, SA','South Africa'],['Tbilisi, GA','Georgia']];for(const [label,country] of cases1148)if(!countryIdentityEquals(toiletPhraseDepartureCountry(label,'Motorhome'),country))issues.push(`Regression fixture failed: toilet departure language loses ${label} country identity.`);homeFocusWidget='daily';countryQuickLookCountry='Turkey';toiletPhraseOpen=true;const home1148=renderDashboard(),init1148=init.toString();if(home1148.includes('readability-focus-backdrop')||home1148.includes('country-quick-look-backdrop')||!home1148.includes('toilet-phrase-backdrop')||!init1148.includes("homeFocusWidget=''")||!init1148.includes("countryQuickLookCountry=''")||!init1148.includes("toiletPhraseOpen=true"))issues.push('Regression fixture failed: Home toilet phrase can stack on an existing Home detail dialog.');vaultUnlocked=true;vaultFocusWidget='passport';vaultStreamingOpen=true;const vault1148=renderVault(),bind1148=bindScreen.toString();if(vault1148.includes('readability-focus-backdrop')||!vault1148.includes('vault-streaming-backdrop')||!bind1148.includes("vaultFocusWidget='';vaultStreamingOpen=true"))issues.push('Regression fixture failed: Vault Streaming can stack on an existing Vault readability dialog.');}finally{state=savedState1148;homeFocusWidget=savedHomeFocus1148;toiletPhraseOpen=savedPhraseOpen1148;countryQuickLookCountry=savedCountryQuick1148;vaultUnlocked=savedVaultUnlocked1148;vaultFocusWidget=savedVaultFocus1148;vaultStreamingOpen=savedVaultStreaming1148;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}}
   // Batch 1149: transport-context route labels must retain the offline atlas country,
   // and Reservations must not force sovereign Georgia/South Africa localities into the
   // conflicting US/Australian GA/SA region meanings.
   {const transportCases1149=[['Frankfurt Airport','Germany'],['Hamburg Cruise Terminal','Germany'],['Dresden Station','Germany'],['Nuremberg Train Station','Germany'],['Heidelberg Railway Station','Germany'],['Cologne Central Station','Germany'],['Vienna International Airport','Austria'],['Zurich Airport','Switzerland'],['Venice Cruise Terminal','Italy']];for(const [label,country] of transportCases1149){if(!countryIdentityEquals(journeyCountryForRoutePlace(label,''),country)||!countryIdentityEquals(toiletPhraseDepartureCountry(label,'Motorhome'),country))issues.push(`Regression fixture failed: transport-context route label ${label} loses ${country} country identity.`);}const ambiguousTransport1149=[['Cape Town Cruise Terminal, SA','South Africa'],['Seattle Cruise Terminal, WA','United States'],['Perth Airport, WA','Australia'],['Tbilisi Airport, GA','Georgia'],['Atlanta Airport, GA','United States']];for(const [label,country] of ambiguousTransport1149)if(!countryIdentityEquals(toiletPhraseDepartureCountry(label,'Motorhome'),country))issues.push(`Regression fixture failed: ambiguous transport departure ${label} loses ${country} toilet-language identity.`);const reservationConflicts1149=[['Tbilisi, GA','Georgia'],['Tbilisi Airport, GA','Georgia'],['Atlanta, GA','United States'],['Cape Town, SA','South Africa'],['Cape Town Cruise Terminal, SA','South Africa'],['Adelaide, SA','Australia']];for(const [label,country] of reservationConflicts1149)if(!countryIdentityEquals(reservationCountryName({destination:label}),country))issues.push(`Regression fixture failed: Reservation destination ${label} resolves to the wrong country.`);if(reservationCountryName({destination:'Perth, WA'})!==''||reservationCountryName({destination:'Darwin, NT'})!=='')issues.push('Regression fixture failed: Reservation namesake safety over-infers deliberately ambiguous WA/NT abbreviations.');}
+  {const bindSource1173=bindScreen.toString(),renderVaultSource1173=renderVault.toString(),guardSource1173=scheduledScreenRefreshWouldDiscardDraft.toString();if(!bindSource1173.includes('openVaultStreamingEmailStore(false)')||!bindSource1173.includes('openVaultStreamingEmailStore(true)')||!bindSource1173.includes('streamingOpen.onpointerup')||!bindSource1173.includes('vaultStreamingGestureGuardUntil')||!renderVaultSource1173.includes('vaultStreamingEmailOpen&&!vaultStreamingOpen')||!guardSource1173.includes('vaultStreamingOpen||vaultStreamingEmailOpen'))issues.push('Regression fixture failed: hidden Vault Streaming email triple-tap can still be replaced by the Streaming overlay, lose physical iPad taps, or be redrawn while editing.');}
   {const conflicts1150=[['Tbilisi, GA','Georgia'],['Tbilisi Airport, GA','Georgia'],['Cape Town, SA','South Africa'],['Cape Town Cruise Terminal, SA','South Africa'],['Atlanta, GA','United States'],['Adelaide, SA','Australia']];for(const [label,country] of conflicts1150)if(!countryIdentityEquals(journeyCountryForRoutePlace(label,''),country))issues.push(`Regression fixture failed: Journey route ${label} resolves to the wrong country.`);if(journeyCountryForRoutePlace('Perth, WA','')!==''||journeyCountryForRoutePlace('Darwin, NT','')!=='')issues.push('Regression fixture failed: Journey namesake safety over-infers deliberately ambiguous WA/NT abbreviations.');const savedService1150=vaultStreamingService,savedEditing1150=vaultStreamingEditing;try{vaultStreamingService='';vaultStreamingEditing=false;const root1150=vaultStreamingOverlay();vaultStreamingService=STREAMING_APP_CATALOG[0]?.service||'Netflix';vaultStreamingEditing=true;const editor1150=vaultStreamingOverlay();if(!root1150.includes('data-streaming-email-unlock')||editor1150.includes('data-streaming-email-unlock'))issues.push('Regression fixture failed: hidden Streaming email unlock can redraw and discard an active password editor draft.');}finally{vaultStreamingService=savedService1150;vaultStreamingEditing=savedEditing1150;}}
   // Batch 1151: "Port of …" is a common cruise-departure form. Resolve the
   // underlying locality consistently across Journey, Reservations and the Home toilet
@@ -11602,12 +12035,12 @@ function coreRegressionFixtureIssues(){
   // from the annual cap. Also preserve the original migration promise for old flights:
   // unresolved no-scope records default Domestic rather than inferring scope from a legacy
   // Annual/Destination allocation that was saved before scope existed.
-  {const saved1172=clone(state),savedClockEnabled1172=internalTestClockEnabled,savedClock1172=testDeviceDateTimeOverride;try{internalTestClockEnabled=true;testDeviceDateTimeOverride='2026-08-25T12:00';state=hydrate({version:APP_VERSION,settings:{journeyStart:'2026-01-01',travellers:2},annualBudgets:{'2026':100000},annualBudget:100000,itinerary:[{id:'b1172-stay',coverageType:'Destination',city:'Melbourne',country:'Australia',type:'Standard',arrival:'2026-08-01',departure:'2026-08-31',currency:'AUD',symbol:'$',rate:1,budget:5000,budgetConfigured:true}],expenses:[{id:'b1172-exp',date:'2026-08-10',category:'Transport',amount:100,rate:1,currency:'AUD',symbol:'$',destinationBudget:'Yes'}],reservations:[{id:'b1172-domestic',title:'Legacy domestic',type:'Flight',date:'2026-08-11',currency:'AUD',original:200,rate:1,aud:200,status:'Paid',destinationBudget:'No',destinationBudgetPreference:'No',travellers:2,reference:'B1172-D'},{id:'b1172-international',title:'Explicit international',type:'Flight',date:'2026-08-12',currency:'AUD',original:300,rate:1,aud:300,status:'Paid',flightScope:'International',destinationBudget:'Yes',destinationBudgetPreference:'Yes',travellers:2,reference:'B1172-I'}],events:[],journeys:[],checklist:[],vault:[],streamingCodes:[],alerts:[],accounts:[]});invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();const legacy1172=state.reservations.find(x=>x.id==='b1172-domestic'),international1172=state.reservations.find(x=>x.id==='b1172-international');if(legacy1172?.flightScope!=='Domestic'||legacy1172?.destinationBudget!=='Yes'||international1172?.flightScope!=='International'||international1172?.destinationBudget!=='No'||Math.abs(annualSpendAud()-600)>.01||Math.abs(staySpendAud()-300)>.01)issues.push('Regression fixture failed: destination allocations fall out of the annual cap or unresolved legacy flights are reclassified from obsolete budget allocation.');}finally{state=saved1172;internalTestClockEnabled=savedClockEnabled1172;testDeviceDateTimeOverride=savedClock1172;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}}
+  {const saved1172=clone(state),savedClockEnabled1172=internalTestClockEnabled,savedClock1172=testDeviceDateTimeOverride;try{internalTestClockEnabled=true;testDeviceDateTimeOverride='2026-08-25T12:00';state=hydrate({version:APP_VERSION,settings:{journeyStart:'2026-01-01',travellers:2},annualBudgets:{'2026':100000},annualBudget:100000,itinerary:[{id:'b1172-stay',coverageType:'Destination',city:'Melbourne',country:'Australia',type:'Standard',arrival:'2026-08-01',departure:'2026-08-31',currency:'AUD',symbol:'$',rate:1,budget:5000,budgetConfigured:true}],expenses:[{id:'b1172-exp',date:'2026-08-10',category:'Transport',amount:100,rate:1,currency:'AUD',symbol:'$',destinationBudget:'Yes'}],reservations:[{id:'b1172-domestic',title:'Legacy domestic',type:'Flight',date:'2026-08-11',currency:'AUD',original:200,rate:1,aud:200,status:'Paid',destinationBudget:'No',destinationBudgetPreference:'No',travellers:2,reference:'B1172-D'},{id:'b1172-international',title:'Explicit international',type:'Flight',date:'2026-08-12',currency:'AUD',original:300,rate:1,aud:300,status:'Paid',flightScope:'International',destinationBudget:'Yes',destinationBudgetPreference:'Yes',travellers:2,reference:'B1172-I'}],events:[],journeys:[],checklist:[],vault:[],streamingCodes:[],alerts:[],accounts:[]});invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();const legacy1172=state.reservations.find(x=>x.id==='b1172-domestic'),international1172=state.reservations.find(x=>x.id==='b1172-international');if(legacy1172?.flightScope!=='Domestic'||legacy1172?.destinationBudget!=='No'||legacy1172?.destinationBudgetPreference!=='No'||international1172?.flightScope!=='International'||international1172?.destinationBudget!=='Yes'||international1172?.destinationBudgetPreference!=='Yes'||Math.abs(annualSpendAud()-600)>.01||Math.abs(staySpendAud()-400)>.01)issues.push('Regression fixture failed: manual reservation budget choices are altered by travel scope or destination allocations fall out of the annual cap.');}finally{state=saved1172;internalTestClockEnabled=savedClockEnabled1172;testDeviceDateTimeOverride=savedClock1172;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}}
 
   // Batch 1171: a single uncovered overnight-flight bridge between planned stays is a
   // valid travel day, not an itinerary gap. Booked movement still needs the correct
   // arriving-destination ownership without changing international flights to Destination Budget.
-  {const saved1171=clone(state),savedClockEnabled1171=internalTestClockEnabled,savedClock1171=testDeviceDateTimeOverride;try{internalTestClockEnabled=true;testDeviceDateTimeOverride='2026-08-10T12:00';state=hydrate({version:APP_VERSION,settings:{journeyStart:'2026-01-01',travellers:2},annualBudgets:{'2026':100000},annualBudget:100000,itinerary:[{id:'b1171-paris',coverageType:'Destination',city:'Paris',country:'France',type:'Standard',arrival:'2026-08-01',departure:'2026-08-10',currency:'EUR',symbol:'€',rate:1.7,budget:3000,budgetConfigured:true},{id:'b1171-rome',coverageType:'Destination',city:'Rome',country:'Italy',type:'Standard',arrival:'2026-08-12',departure:'2026-08-30',currency:'EUR',symbol:'€',rate:1.7,budget:3000,budgetConfigured:true}],expenses:[],reservations:[{id:'b1171-flight',title:'Paris to Rome',type:'Flight',date:'2026-08-11',currency:'AUD',original:300,rate:1,aud:300,status:'Paid',destinationBudget:'No',destinationBudgetPreference:'No',flightScope:'Domestic',travellers:2},{id:'b1171-train',title:'Transfer train',type:'Train',date:'2026-08-11',currency:'AUD',original:80,rate:1,aud:80,status:'Paid',destinationBudget:'No',destinationBudgetPreference:'No',trainScope:'International',travellers:2}],events:[],journeys:[],checklist:[],vault:[],streamingCodes:[],alerts:[],accounts:[]});invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();const flight1171=state.reservations.find(x=>x.id==='b1171-flight'),train1171=state.reservations.find(x=>x.id==='b1171-train'),coverage1171=itineraryCoverage('2026-08-10',6),segment1171=coverage1171.segments.find(segment=>between('2026-08-11',segment.start,segment.end));if(flight1171?.itineraryId!=='b1171-rome'||flight1171?.destinationBudget!=='Yes'||train1171?.itineraryId!=='b1171-rome'||train1171?.destinationBudget!=='Yes'||segment1171?.kind!=='flight-void'||coverage1171.gaps.some(segment=>between('2026-08-11',segment.start,segment.end)))issues.push('Regression fixture failed: a confirmed one-day domestic-flight bridge is still treated as an unplanned gap or loses arriving Destination Budget ownership.');flight1171.flightScope='International';flight1171.destinationBudget='Yes';flight1171.destinationBudgetPreference='Yes';syncItineraryDerivedState();const international1171=state.reservations.find(x=>x.id==='b1171-flight');if(international1171?.itineraryId!=='b1171-rome'||international1171?.destinationBudget!=='No')issues.push('Regression fixture failed: an international flight on a one-day bridge loses history ownership or leaks into Destination Budget.');state.reservations=state.reservations.filter(x=>x.id!=='b1171-flight');syncItineraryDerivedState();const noFlightCoverage1171=itineraryCoverage('2026-08-10',6),noFlightSegment1171=noFlightCoverage1171.segments.find(segment=>between('2026-08-11',segment.start,segment.end));if(noFlightSegment1171?.kind!=='gap')issues.push('Regression fixture failed: an uncovered one-day bridge without a confirmed flight is incorrectly hidden from forward-planning gaps.');}finally{state=saved1171;internalTestClockEnabled=savedClockEnabled1171;testDeviceDateTimeOverride=savedClock1171;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}}
+  {const saved1171=clone(state),savedClockEnabled1171=internalTestClockEnabled,savedClock1171=testDeviceDateTimeOverride;try{internalTestClockEnabled=true;testDeviceDateTimeOverride='2026-08-10T12:00';state=hydrate({version:APP_VERSION,settings:{journeyStart:'2026-01-01',travellers:2},annualBudgets:{'2026':100000},annualBudget:100000,itinerary:[{id:'b1171-paris',coverageType:'Destination',city:'Paris',country:'France',type:'Standard',arrival:'2026-08-01',departure:'2026-08-10',currency:'EUR',symbol:'€',rate:1.7,budget:3000,budgetConfigured:true},{id:'b1171-rome',coverageType:'Destination',city:'Rome',country:'Italy',type:'Standard',arrival:'2026-08-12',departure:'2026-08-30',currency:'EUR',symbol:'€',rate:1.7,budget:3000,budgetConfigured:true}],expenses:[],reservations:[{id:'b1171-flight',title:'Paris to Rome',type:'Flight',date:'2026-08-11',currency:'AUD',original:300,rate:1,aud:300,status:'Paid',destinationBudget:'No',destinationBudgetPreference:'No',flightScope:'Domestic',travellers:2},{id:'b1171-train',title:'Transfer train',type:'Train',date:'2026-08-11',currency:'AUD',original:80,rate:1,aud:80,status:'Paid',destinationBudget:'No',destinationBudgetPreference:'No',trainScope:'International',travellers:2}],events:[],journeys:[],checklist:[],vault:[],streamingCodes:[],alerts:[],accounts:[]});invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();const flight1171=state.reservations.find(x=>x.id==='b1171-flight'),train1171=state.reservations.find(x=>x.id==='b1171-train'),coverage1171=itineraryCoverage('2026-08-10',6),segment1171=coverage1171.segments.find(segment=>between('2026-08-11',segment.start,segment.end));if(flight1171?.itineraryId!=='b1171-rome'||flight1171?.destinationBudget!=='No'||train1171?.itineraryId!=='b1171-rome'||train1171?.destinationBudget!=='No'||segment1171?.kind!=='flight-void'||coverage1171.gaps.some(segment=>between('2026-08-11',segment.start,segment.end)))issues.push('Regression fixture failed: a confirmed one-day travel bridge loses arriving itinerary ownership or changes the saved manual budget allocation.');flight1171.flightScope='International';flight1171.destinationBudget='Yes';flight1171.destinationBudgetPreference='Yes';syncItineraryDerivedState();const international1171=state.reservations.find(x=>x.id==='b1171-flight');if(international1171?.itineraryId!=='b1171-rome'||international1171?.destinationBudget!=='Yes'||international1171?.destinationBudgetPreference!=='Yes')issues.push('Regression fixture failed: changing flight scope alters its saved manual budget allocation or loses itinerary ownership.');state.reservations=state.reservations.filter(x=>x.id!=='b1171-flight');syncItineraryDerivedState();const noFlightCoverage1171=itineraryCoverage('2026-08-10',6),noFlightSegment1171=noFlightCoverage1171.segments.find(segment=>between('2026-08-11',segment.start,segment.end));if(noFlightSegment1171?.kind!=='gap')issues.push('Regression fixture failed: an uncovered one-day bridge without a confirmed flight is incorrectly hidden from forward-planning gaps.');}finally{state=saved1171;internalTestClockEnabled=savedClockEnabled1171;testDeviceDateTimeOverride=savedClock1171;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}}
 
   // Batch 1112: working continuity shell revisions are cache/runtime identities, while
   // APP_VERSION remains the last formally promoted backup/schema build. App Health and
@@ -11618,17 +12051,17 @@ function coreRegressionFixtureIssues(){
   return issues;
 }
 
-function screenRenderIntegrityIssues(){
+function screenRenderIntegrityIssues(onlyLabel=''){
   const issues=[];
   // Some renderers intentionally normalize their own pagination/history/setup cursor when
   // that screen is actually opened. App Health renders every screen off-screen, so it must
   // not silently change those user UI selections merely by checking render integrity.
-  const transient={reservationPage,reservationTravelYearFilter,reservationTravelHistoryDrilldownLabel,reservationTravelHistoryDrilldownYear,journeyPage,budgetMonthlyHistoryYear,budgetMonthlyHistoryManual,budgetSetupItineraryId,budgetSetupContextKey,budgetSetupManual,vaultUnlocked,vaultStreamingOpen,vaultStreamingEditId,vaultStreamingService,vaultStreamingEditing,vaultStreamingReveal:new Set(vaultStreamingReveal),vaultStreamingEmailOpen,vaultStreamingEmailTapCount,vaultStreamingEmailLastTap,toiletPhraseOpen,itineraryMapExpanded,itineraryMapZoom,itineraryMapPanX,itineraryMapPanY,itineraryMapPanTouched,itineraryMapSelectedId,itineraryMapActivePinKey,itineraryMapPositionMode,mapExpanded,mapEditMode,mapZoom,mapPanX,mapPanY,mapPanTouched,journeyExpandedId,journeyMapSelectedId,calendarView,calendarSelectedDate,calendarDayViewDate,calendarFiltersOpen,homeFocusWidget,budgetFocusWidget,reservationCategoryFocus,reservationCompletedTypeFilter,reservationFutureExpanded,itineraryFocusMetric,journeyFocusWidget,checklistFocusList,checklistExpandedLists:new Set(checklistExpandedLists),vaultFocusWidget,vaultRecordsExpanded};
+  const transient={reservationPage,journeyPage,budgetMonthlyHistoryYear,budgetMonthlyHistoryManual,budgetSetupItineraryId,budgetSetupContextKey,budgetSetupManual,vaultUnlocked,vaultStreamingOpen,vaultStreamingEditId,vaultStreamingService,vaultStreamingEditing,vaultStreamingReveal:new Set(vaultStreamingReveal),vaultStreamingEmailOpen,vaultStreamingEmailTapCount,vaultStreamingEmailLastTap,toiletPhraseOpen,countryQuickLookCountry,itineraryMapExpanded,itineraryMapZoom,itineraryMapPanX,itineraryMapPanY,itineraryMapPanTouched,itineraryMapSelectedId,itineraryMapActivePinKey,itineraryMapPositionMode,mapExpanded,mapEditMode,mapZoom,mapPanX,mapPanY,mapPanTouched,journeyExpandedId,journeyMapSelectedId,calendarView,calendarSelectedDate,calendarDayViewDate,calendarFiltersOpen,homeFocusWidget,budgetFocusWidget,reservationCategoryFocus,reservationCompletedTypeFilter,reservationFutureExpanded,itineraryFocusMetric,journeyFocusWidget,checklistFocusList,checklistExpandedLists:new Set(checklistExpandedLists),vaultFocusWidget,vaultRecordsExpanded};
   // Expanded readability panels are substantial user-visible branches. Checking only the
   // collapsed/default shell can report VERIFIED while the panel opened by tapping a KPI/card
   // is broken. Exercise every supported focus branch for each shared overlay system, plus
   // the structurally distinct expanded modes where the renderer changes its markup.
-  const renderHomeForIntegrity=()=>{const prior=homeFocusWidget,priorPhrase=toiletPhraseOpen;try{const parts=[];homeFocusWidget='';toiletPhraseOpen=false;parts.push(renderDashboard());toiletPhraseOpen=true;parts.push(renderDashboard());toiletPhraseOpen=false;for(const key of ['daily','destination','annual','upcoming','alerts','schengen','timeline']){homeFocusWidget=key;parts.push(renderDashboard());}parts.push(globalSearchResultsMarkup('__health_search_probe__',[{label:'Health-check result',sub:'Calendar reminder',target:'calendar',edit:'events:health-probe'}]));parts.push(globalSearchResultsMarkup('__health_search_empty__',[]));return parts.join('');}finally{homeFocusWidget=prior;toiletPhraseOpen=priorPhrase;}};
+  const renderHomeForIntegrity=()=>{const prior=homeFocusWidget,priorPhrase=toiletPhraseOpen,priorCountryQuickLook=countryQuickLookCountry;try{const parts=[];homeFocusWidget='';toiletPhraseOpen=false;countryQuickLookCountry='';parts.push(renderDashboard());countryQuickLookCountry='Turkey';parts.push(renderDashboard());countryQuickLookCountry='';toiletPhraseOpen=true;parts.push(renderDashboard());toiletPhraseOpen=false;for(const key of ['daily','destination','annual','upcoming','alerts','schengen','timeline']){homeFocusWidget=key;parts.push(renderDashboard());}parts.push(globalSearchResultsMarkup('__health_search_probe__',[{label:'Health-check result',sub:'Calendar reminder',target:'calendar',edit:'events:health-probe'}]));parts.push(globalSearchResultsMarkup('__health_search_empty__',[]));return parts.join('');}finally{homeFocusWidget=prior;toiletPhraseOpen=priorPhrase;countryQuickLookCountry=priorCountryQuickLook;}};
   const renderBudgetForIntegrity=()=>{const prior=budgetFocusWidget;try{const parts=[];budgetFocusWidget='';parts.push(renderBudget());for(const key of ['destinationSummary','pace','annualSetup','destinationSetup','category','forecast','reservations','accounts','monthly']){budgetFocusWidget=key;parts.push(renderBudget());}return parts.join('');}finally{budgetFocusWidget=prior;}};
   const renderReservationsForIntegrity=()=>{const priorFocus=reservationCategoryFocus,priorCompleted=reservationCompletedTypeFilter,priorFuture=reservationFutureExpanded;try{const parts=[];reservationCategoryFocus='';reservationFutureExpanded=false;parts.push(renderReservations());reservationFutureExpanded=true;parts.push(renderReservations());reservationFutureExpanded=false;for(const key of ['Flights','Trains','Cruises','RV','Hotels','Airbnb','Tickets & Attractions']){reservationCategoryFocus=key;parts.push(renderReservations());}reservationCategoryFocus='Completed';for(const key of ['All','Flights','Trains','Cruises','RV','Hotels','Airbnb','Tickets & Attractions']){reservationCompletedTypeFilter=key;parts.push(renderReservations());}return parts.join('');}finally{reservationCategoryFocus=priorFocus;reservationCompletedTypeFilter=priorCompleted;reservationFutureExpanded=priorFuture;}};
   // App Health must render the substantial alternate screen modes as well as the state the
@@ -11657,12 +12090,13 @@ function screenRenderIntegrityIssues(){
   const renderVaultEditorsForIntegrity=()=>['Passport','Visa','Insurance','Accommodation details','Emergency contact'].map(type=>simpleVaultForm({type,name:'Health-check form probe',owner:'Shared',country:type==='Emergency contact'?'France':'Australia',reference:'',expiry:'',notes:'',attachments:[]})).join('');
   const renderSettingsForIntegrity=()=>{const priorPin=state.settings.pin,priorEnabled=state.settings.pinEnabled;try{state.settings.pin='';state.settings.pinEnabled=false;const off=renderSettings();state.settings.pin='1234';state.settings.pinEnabled=true;return off+renderSettings()+pinUnlockFormBody();}finally{state.settings.pin=priorPin;state.settings.pinEnabled=priorEnabled;}};
   const renderers=[['Home',renderHomeForIntegrity],['Home',renderHomeEditorForIntegrity],['Budget',renderBudgetForIntegrity],['Budget',renderBudgetEditorForIntegrity],['Reservations',renderReservationsForIntegrity],['Reservations',renderReservationEditorsForIntegrity],['Itinerary',renderItineraryForIntegrity],['Itinerary',renderItineraryEditorsForIntegrity],['Calendar',renderCalendarForIntegrity],['Calendar',renderCalendarEditorForIntegrity],['Journey History',renderJourneysForIntegrity],['Checklist',renderChecklistForIntegrity],['Checklist',renderChecklistEditorsForIntegrity],['The Vault',renderVaultForIntegrity],['The Vault',renderVaultEditorsForIntegrity],['Settings',renderSettingsForIntegrity]];
-  try{renderers.forEach(([label,renderer])=>{try{const html=renderer();if(typeof html!=='string'||!html.length)issues.push(`${label} screen did not render content.`);}catch(error){issues.push(`${label} screen rendering failed: ${error.message}.`);}});}
+  const selectedRenderers=onlyLabel?renderers.filter(([label])=>label===onlyLabel):renderers;
+  try{selectedRenderers.forEach(([label,renderer])=>{try{const html=renderer();if(typeof html!=='string'||!html.length)issues.push(`${label} screen did not render content.`);}catch(error){issues.push(`${label} screen rendering failed: ${error.message}.`);}});}
   finally{
-    reservationPage=transient.reservationPage;reservationTravelYearFilter=transient.reservationTravelYearFilter;reservationTravelHistoryDrilldownLabel=transient.reservationTravelHistoryDrilldownLabel;reservationTravelHistoryDrilldownYear=transient.reservationTravelHistoryDrilldownYear;journeyPage=transient.journeyPage;
+    reservationPage=transient.reservationPage;journeyPage=transient.journeyPage;
     budgetMonthlyHistoryYear=transient.budgetMonthlyHistoryYear;budgetMonthlyHistoryManual=transient.budgetMonthlyHistoryManual;
     budgetSetupItineraryId=transient.budgetSetupItineraryId;budgetSetupContextKey=transient.budgetSetupContextKey;budgetSetupManual=transient.budgetSetupManual;
-    vaultUnlocked=transient.vaultUnlocked;vaultStreamingOpen=transient.vaultStreamingOpen;vaultStreamingEditId=transient.vaultStreamingEditId;vaultStreamingService=transient.vaultStreamingService;vaultStreamingEditing=transient.vaultStreamingEditing;vaultStreamingReveal=new Set(transient.vaultStreamingReveal);vaultStreamingEmailOpen=transient.vaultStreamingEmailOpen;vaultStreamingEmailTapCount=transient.vaultStreamingEmailTapCount;vaultStreamingEmailLastTap=transient.vaultStreamingEmailLastTap;toiletPhraseOpen=transient.toiletPhraseOpen;itineraryMapExpanded=transient.itineraryMapExpanded;itineraryMapZoom=transient.itineraryMapZoom;itineraryMapPanX=transient.itineraryMapPanX;itineraryMapPanY=transient.itineraryMapPanY;itineraryMapPanTouched=transient.itineraryMapPanTouched;itineraryMapSelectedId=transient.itineraryMapSelectedId;itineraryMapActivePinKey=transient.itineraryMapActivePinKey;itineraryMapPositionMode=transient.itineraryMapPositionMode;mapExpanded=transient.mapExpanded;mapEditMode=transient.mapEditMode;mapZoom=transient.mapZoom;mapPanX=transient.mapPanX;mapPanY=transient.mapPanY;mapPanTouched=transient.mapPanTouched;journeyExpandedId=transient.journeyExpandedId;journeyMapSelectedId=transient.journeyMapSelectedId;
+    vaultUnlocked=transient.vaultUnlocked;vaultStreamingOpen=transient.vaultStreamingOpen;vaultStreamingEditId=transient.vaultStreamingEditId;vaultStreamingService=transient.vaultStreamingService;vaultStreamingEditing=transient.vaultStreamingEditing;vaultStreamingReveal=new Set(transient.vaultStreamingReveal);vaultStreamingEmailOpen=transient.vaultStreamingEmailOpen;vaultStreamingEmailTapCount=transient.vaultStreamingEmailTapCount;vaultStreamingEmailLastTap=transient.vaultStreamingEmailLastTap;toiletPhraseOpen=transient.toiletPhraseOpen;countryQuickLookCountry=transient.countryQuickLookCountry;itineraryMapExpanded=transient.itineraryMapExpanded;itineraryMapZoom=transient.itineraryMapZoom;itineraryMapPanX=transient.itineraryMapPanX;itineraryMapPanY=transient.itineraryMapPanY;itineraryMapPanTouched=transient.itineraryMapPanTouched;itineraryMapSelectedId=transient.itineraryMapSelectedId;itineraryMapActivePinKey=transient.itineraryMapActivePinKey;itineraryMapPositionMode=transient.itineraryMapPositionMode;mapExpanded=transient.mapExpanded;mapEditMode=transient.mapEditMode;mapZoom=transient.mapZoom;mapPanX=transient.mapPanX;mapPanY=transient.mapPanY;mapPanTouched=transient.mapPanTouched;journeyExpandedId=transient.journeyExpandedId;journeyMapSelectedId=transient.journeyMapSelectedId;
     calendarView=transient.calendarView;calendarSelectedDate=transient.calendarSelectedDate;calendarDayViewDate=transient.calendarDayViewDate;calendarFiltersOpen=transient.calendarFiltersOpen;
     homeFocusWidget=transient.homeFocusWidget;budgetFocusWidget=transient.budgetFocusWidget;reservationCategoryFocus=transient.reservationCategoryFocus;reservationCompletedTypeFilter=transient.reservationCompletedTypeFilter;reservationFutureExpanded=transient.reservationFutureExpanded;itineraryFocusMetric=transient.itineraryFocusMetric;journeyFocusWidget=transient.journeyFocusWidget;checklistFocusList=transient.checklistFocusList;checklistExpandedLists=new Set(transient.checklistExpandedLists);vaultFocusWidget=transient.vaultFocusWidget;vaultRecordsExpanded=transient.vaultRecordsExpanded;
   }
@@ -11692,9 +12126,9 @@ function runFullWorkflowTest(){
     ok('Destination budget figures support long currencies',budgetCurrencyFigure(987654321012.34,'VND','₫').includes('budget-amount-xxl')&&budgetCurrencyFigure(987654321012.34,'VND','₫').includes('VND'));
     ok('Accommodation supports manual budget allocation',reservationAutomaticBudget('Hotel','Yes')==='Yes'&&reservationAutomaticBudget('Airbnb','Yes')==='Yes');
     const accommodationForm=simpleReservationForm({type:'Hotel',currency:'EUR',original:100,rate:1.7,aud:170,status:'Paid'});
-    ok('Accommodation entry stays AUD-only while budget allocation remains selectable',accommodationForm.includes('<option value="AUD" selected>')&&accommodationForm.includes('data-reservation-budget-option="No"')&&accommodationForm.includes('data-reservation-budget-option="Yes"'));
+    ok('Accommodation preserves original currency while budget allocation remains selectable',accommodationForm.includes('<option value="EUR" selected>')&&accommodationForm.includes('data-reservation-budget-option="No"')&&accommodationForm.includes('data-reservation-budget-option="Yes"')&&!accommodationForm.includes('locked-aud'));
     const flightBudgetForm=simpleReservationForm({type:'Flight',status:'Booked'});
-    ok('Travel reservation budget routing follows trip model',reservationAutomaticBudget('Flight','No',{type:'Flight',flightScope:'International'})==='No'&&reservationAutomaticBudget('Flight','No',{type:'Flight',flightScope:'Domestic'})==='Yes'&&reservationAutomaticBudget('Train','No',{type:'Train',trainScope:'International'})==='Yes'&&reservationAutomaticBudget('Cruise','No',{type:'Cruise'})==='Yes'&&reservationAutomaticBudget('RV','No',{type:'RV'})==='Yes'&&flightBudgetForm.includes('BUDGET ALLOCATION')&&flightBudgetForm.includes('Domestic flight · Destination Budget'));
+    ok('All reservation types preserve manual budget routing',reservationAutomaticBudget('Flight','Yes',{type:'Flight',flightScope:'International'})==='Yes'&&reservationAutomaticBudget('Flight','No',{type:'Flight',flightScope:'Domestic'})==='No'&&reservationAutomaticBudget('Train','No',{type:'Train',trainScope:'International'})==='No'&&reservationAutomaticBudget('Cruise','No',{type:'Cruise'})==='No'&&reservationAutomaticBudget('RV','Yes',{type:'RV'})==='Yes'&&flightBudgetForm.includes('BUDGET ALLOCATION')&&flightBudgetForm.includes('Choose where this booking is counted'));
     {const annualRollupSnapshot=clone(state),annualRollupClockEnabled=internalTestClockEnabled,annualRollupClock=testDeviceDateTimeOverride;try{internalTestClockEnabled=true;testDeviceDateTimeOverride='2026-08-25T12:00';state=hydrate({version:APP_VERSION,settings:{journeyStart:'2026-01-01',travellers:2},annualBudgets:{'2026':100000},annualBudget:100000,itinerary:[{id:'__annual_rollup',coverageType:'Destination',city:'Melbourne',country:'Australia',type:'Standard',arrival:'2026-08-01',departure:'2026-08-31',currency:'AUD',symbol:'$',rate:1,budget:5000,budgetConfigured:true}],expenses:[{id:'__annual_exp',date:'2026-08-10',category:'Transport',amount:100,rate:1,currency:'AUD',symbol:'$',destinationBudget:'Yes'}],reservations:[{id:'__annual_domestic',title:'Domestic flight',type:'Flight',date:'2026-08-11',currency:'AUD',original:200,rate:1,aud:200,status:'Paid',flightScope:'Domestic',destinationBudget:'Yes',destinationBudgetPreference:'Yes',travellers:2,reference:'ROLLUP-DOM'},{id:'__annual_international',title:'International flight',type:'Flight',date:'2026-08-12',currency:'AUD',original:300,rate:1,aud:300,status:'Paid',flightScope:'International',destinationBudget:'No',destinationBudgetPreference:'No',travellers:2,reference:'ROLLUP-INT'}],events:[],journeys:[],checklist:[],vault:[],streamingCodes:[],alerts:[],accounts:[]});invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();ok('Destination allocations roll up once into Annual Budget',Math.abs(annualSpendAud()-600)<.01&&Math.abs(staySpendAud()-300)<.01&&state.reservations.find(x=>x.id==='__annual_domestic')?.destinationBudget==='Yes'&&state.reservations.find(x=>x.id==='__annual_international')?.destinationBudget==='No');}finally{state=annualRollupSnapshot;internalTestClockEnabled=annualRollupClockEnabled;testDeviceDateTimeOverride=annualRollupClock;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();}}
     ok('Legacy flight and train scope infers from known route countries',reservationTravelScope({type:'Flight',departureLocation:'Paris, France',arrivalLocation:'London, United Kingdom'})==='International'&&reservationTravelScope({type:'Train',departureLocation:'Rome, Italy',arrivalLocation:'Milan, Italy'})==='Domestic');
     ok('Legacy unresolved flight defaults safely to Domestic scope',reservationTravelScope({type:'Flight',destinationBudget:'No'})==='Domestic'&&reservationTravelScope({type:'Flight',destinationBudget:'Yes'})==='Domestic');
@@ -11707,13 +12141,12 @@ function runFullWorkflowTest(){
     const standardProbe=normalizeItineraryEntry({id:'__route_standard',coverageType:'Destination',city:'Paris',country:'France',type:'Standard',arrival:routingProbeStart,departure:routingProbeEnd,currency:'EUR',symbol:'€',rate:1.7,budget:1000,budgetConfigured:true});
     ok('Cruise and RV fares cannot attach to a Standard stay',reservationDestinationForBudgetRecordInRows({type:'Cruise',date:routingProbeStart},[standardProbe])===null&&reservationDestinationForBudgetRecordInRows({type:'RV',date:routingProbeStart},[standardProbe])===null);
     const routingJourneyStart=String(state.settings?.journeyStart||''),routingCrossYear=validISODate(routingJourneyStart)?{type:'Cruise',date:isoLocal(dateOffsetFrom(routingJourneyStart,-2)),endDate:isoLocal(dateOffsetFrom(routingJourneyStart,2)),status:'Paid'}:null;
-    ok('Travel history drill-down uses effective budget year',!routingCrossYear||reservationMatchesTravelHistoryDrilldown(routingCrossYear,'Cruises',routingJourneyStart.slice(0,4)));
     ok('Accommodation allocation choice is explained',accommodationForm.includes('BUDGET ALLOCATION')&&accommodationForm.includes('data-res-budget-note'));
     const reservationsVisualLockHtml=renderReservations();
-    ok('Reservations heading lock',reservationsVisualLockHtml.includes('<h2>BOOKED</h2>')&&reservationsVisualLockHtml.includes('<small>All reservations and bookings in one place</small>'));
+    ok('Reservations heading lock',reservationsVisualLockHtml.includes('<h2>BOOKED RESERVATIONS</h2>')&&reservationsVisualLockHtml.includes('<small>All reservations and bookings in one place</small>'));
     ok('Reservations eight-category visual lock',['Flights','Trains','Cruises','RV','Hotels','Airbnb','Completed'].every(label=>reservationsVisualLockHtml.includes(`<b>${label}</b>`))&&reservationsVisualLockHtml.includes('<b>Tickets &amp; Attractions</b>')&&!reservationsVisualLockHtml.includes('<b>Accommodation</b>'));
-    ok('Reservation category cards label booked reservations without redundant expand cue',renderReservations().includes('<small>booked reservations</small>')&&!renderReservations().includes('Tap to expand ↗'));
-    ok('Reservation travel-cost history has direct year controls',renderReservations().includes('data-res-travel-year="All"')&&renderReservations().includes('Travel transport history year'));
+    ok('Reservation category cards use concise bookings label without redundant expand cue',renderReservations().includes('<small>bookings</small>')&&!renderReservations().includes('Tap to expand ↗'));
+    ok('Reservations travel-cost widget stays removed while travel routing remains available',!renderReservations().includes('data-res-travel-year="All"')&&!renderReservations().includes('TRAVEL BETWEEN DESTINATIONS · AUD')&&reservationTravelCostBreakdown.toString().includes('International Flights'));
     const priorReservationCategoryFocus=reservationCategoryFocus;reservationCategoryFocus='Tickets & Attractions';const categoryFocusHtml=renderReservations();reservationCategoryFocus=priorReservationCategoryFocus;
     ok('Reservation category expanded view shows booked reservation detail',categoryFocusHtml.includes('reservation-focus-panel reservation-category')&&categoryFocusHtml.includes('Test booking')&&categoryFocusHtml.includes('Booked reservations shown here are active or upcoming.'));
     const priorBudgetFocus=budgetFocusWidget;budgetFocusWidget='reservations';const budgetReservationFocusHtml=renderBudget();budgetFocusWidget='accounts';const budgetAccountFocusHtml=renderBudget();budgetFocusWidget='monthly';const budgetMonthlyFocusHtml=renderBudget();budgetFocusWidget='destinationSummary';const budgetDestinationSummaryFocusHtml=renderBudget();budgetFocusWidget='pace';const budgetPaceFocusHtml=renderBudget();budgetFocusWidget='annualSetup';const budgetAnnualSetupFocusHtml=renderBudget();budgetFocusWidget='destinationSetup';const budgetDestinationSetupFocusHtml=renderBudget();budgetFocusWidget=priorBudgetFocus;
@@ -11852,6 +12285,7 @@ function runFullWorkflowTest(){
     ok('Home map removed',!renderDashboard().includes('journey-map-shell')&&!renderDashboard().includes('world-grid'));
     ok('Itinerary planning map installed',renderItinerary().includes('itinerary-map-panel')&&renderItineraryPlanningMap().includes('data-itinerary-map-expand'));
     ok('Home header country outline installed',renderDashboard().includes('home-hero-country-outline')&&countryOutlineMarkup('Egypt').includes('<path')&&Boolean(COUNTRY_OUTLINE_DATA.egypt));
+    ok('Home country quick look is compact and plant-forward',destinationHero.toString().includes('data-country-quick-look')&&countryQuickLookOverlay('Turkey').includes('COUNTRY QUICK LOOK · OFFLINE')&&countryQuickLookOverlay('Turkey').includes('Tulip')&&countryQuickLookOverlay('Turkey').includes('Ottoman gardens'));
     ok('Embedded itinerary map keeps true geography',renderItineraryPlanningMap().includes('itinerary-map-shell')&&renderItineraryPlanningMap().includes('world-grid'));
     ok('Itinerary route legend locked to Flight Motorhome Cruise',(()=>{const html=renderItineraryPlanningMap({large:true,fullPage:true});return html.includes('>Flight<')&&html.includes('>Motorhome<')&&html.includes('>Cruise<')&&!html.includes('>Standard<');})());
     ok('Itinerary offline atlas includes Split and Ljubljana',Boolean(OFFLINE_GEO.split)&&Boolean(OFFLINE_GEO.ljubljana)&&itineraryMapPointInfo({city:'Split',country:'Croatia'},0,1).located);
@@ -11874,7 +12308,7 @@ function runFullWorkflowTest(){
       invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();
       const integrityCats=journeyLifetimeCategoryTotals();
       ok('Legacy reservation type aliases migrate safely',state.reservations.find(x=>x.id==='integrity-hotel')?.type==='Hotel'&&state.reservations.find(x=>x.id==='integrity-airbnb')?.type==='Airbnb'&&state.reservations.find(x=>x.id==='integrity-flight')?.type==='Flight'&&state.reservations.find(x=>x.id==='integrity-ticket')?.type==='Tickets & Attractions');
-      ok('Between-destination legacy allocation migrates to Annual Budget',state.reservations.find(x=>x.id==='integrity-flight')?.destinationBudget==='No'&&state.reservations.find(x=>x.id==='integrity-flight')?.destinationBudgetPreference==='No');
+      ok('Between-destination reservation preserves manual allocation',state.reservations.find(x=>x.id==='integrity-flight')?.destinationBudget==='Yes'&&state.reservations.find(x=>x.id==='integrity-flight')?.destinationBudgetPreference==='Yes');
       ok('Legacy international flight scope is recovered from route endpoints',state.reservations.find(x=>x.id==='integrity-flight')?.flightScope==='International');
       ok('Accommodation can be routed to Destination Budget when linked',state.reservations.filter(x=>isAccommodationReservation(x.type)).every(x=>['Yes','No'].includes(x.destinationBudget)));
       ok('Accommodation category exact regression fixture',Math.abs(integrityCats.Accommodation-300)<.01,JSON.stringify(integrityCats));
@@ -11946,16 +12380,6 @@ async function resetAll(){
   const ok=await confirmAction('This permanently removes all locally stored Travel Command Centre data on this iPad.',{title:'Reset all local data',accept:'Reset everything'});
   if(!ok)return;
   state=hydrate(null); const saved=saveState('restore','reset'); if(!saved)return; resetTransientUiAfterDataReplace(); showToast('All local data reset.','warning');
-}
-
-if(TCC_SIMULATION_RUNTIME){
-  let simulationSaved='';
-  try{simulationSaved=localStorage.getItem(STORAGE_KEY)||'';}catch{}
-  if(!simulationSaved){
-    state=hydrate(demoReviewState());
-    invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;syncLinkedState();
-    const simDate=parseDate(itineraryReferenceDate());if(simDate)calendarCursor=simDate;
-  }
 }
 
 init();

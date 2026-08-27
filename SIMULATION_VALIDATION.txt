@@ -1,0 +1,22 @@
+TRAVEL COMMAND CENTRE — TURKEY SIMULATION BATCH 1193 VALIDATION
+27/08/2026
+
+Simulation date/time: 10/07/2029 12:00
+Active stay: Istanbul, Turkey
+Itinerary entries: 37
+Expenses: 176
+Reservations: 68
+Events: 13
+Checklist items: 12
+Generated Journey History records after sync: 29
+
+JavaScript syntax: PASS
+Service Worker syntax: PASS
+Compact shell missing files: 0
+Semantic integrity after startup sync: 0 issues
+Reservation structural health errors: 0
+Manual Annual/Destination routing: retained
+Accommodation original currency + AUD conversion: retained
+Obsolete accommodation AUD-only health rule: removed
+
+Package target: screenshot/testing simulation.
