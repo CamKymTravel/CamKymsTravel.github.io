@@ -1,14 +1,29 @@
-TRAVEL COMMAND CENTRE — UPDATED TURKEY SIMULATION
-Batch 1193 — 27/08/2026
+TRAVEL COMMAND CENTRE — POPULATED SIMULATION BUILD
 
-Simulation clock: 10/07/2029 12:00
+Build: 4.5.677 Simulation Batch 1197 Compact
+Simulation date: 10/07/2029
 Current destination: Istanbul, Turkey
-Journey start: 14/01/2026
-Travellers: Cameron & Kym / 2
+Next destination: Cairo, Egypt
 
-This is a screenshot/testing simulation build, not the clean production-data build.
-It opens with several years of populated itinerary, expenses, reservations, events, checklist, Vault and accounts.
-All expense and reservation costs retain user-selectable Annual Budget or Destination Budget routing.
-Hotel/Airbnb bookings preserve original currency + AUD conversion.
+This compact package is intended for iPad screenshot/review testing.
+It contains the fully populated multi-year simulation state and only the country/header assets reachable by that simulation, keeping the package below the 100-file upload limit.
 
-Compact package: under 100 files. Country artwork not required by this simulation falls back to the generic world banner.
+Latest locked behaviour included:
+- Budget Add Expense always routes to Destination Budget.
+- Reservations can be allocated to Annual or Destination Budget.
+- Calendar Agenda uses the same destination/travel colour identity as Month view.
+- Checklist large status panel remains READY TO MOVE; missing setup is supporting text only.
+- Premium widget colour/depth treatment applies across main screens and opened subviews/forms.
+- Vault > Streaming > triple-tap TV & MOVIES opens the hidden Cameron/Kym email store.
+- App Health pulse/heartbeat treatment retained.
+- Journey History simplified Journey Snapshot treatment retained.
+
+Simulation population:
+- 37 itinerary entries
+- 176 expense entries
+- 68 reservations
+- 13 calendar events
+- 7 checklist items
+- 7 Vault records
+
+Open index.html through the same local/offline PWA workflow used for prior builds.

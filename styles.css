@@ -24738,3 +24738,516 @@ body[data-screen="dashboard"] .home-hero-identity[data-country-quick-look]:focus
 .country-quick-look-fact p{margin:7px 0 0;color:#e7f2fb;font-size:15px;line-height:1.45}
 .country-quick-look-panel footer{margin-top:14px;color:#819caf;font-size:11px;line-height:1.4}
 @media(max-width:1100px){.country-quick-look-backdrop{padding:18px}.country-quick-look-panel{width:min(760px,calc(100vw - 36px));padding:21px;max-height:86vh}.country-quick-look-head{padding-right:56px}.country-quick-look-flag{font-size:50px}.country-quick-look-head h2{font-size:33px}.country-quick-look-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}.country-quick-look-grid>div{padding:13px;min-height:84px}.country-quick-look-grid b{font-size:16px}.country-quick-look-plant{padding:15px}.country-quick-look-plant b{font-size:21px}}
+
+
+/* ==========================================================================
+   BATCH 1193 — ROUTING CORRECTION + READABILITY + PREMIUM POLISH
+   27 AUG 2026 — colours remain authorised; depth/highlight only.
+   ========================================================================== */
+#modal:has(.simple-expense-form) .expense-destination-lock{margin-top:10px;min-height:82px;padding:12px 15px;border:1px solid #3f9e85;border-radius:14px;background:linear-gradient(145deg,rgba(20,91,72,.72),rgba(7,35,38,.96));box-shadow:inset 0 1px rgba(255,255,255,.08),0 8px 22px rgba(0,0,0,.24);display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center}
+#modal:has(.simple-expense-form) .expense-destination-lock>span{grid-row:1/3;align-self:stretch;display:grid;place-items:center;padding:0 14px;border-right:1px solid rgba(119,226,190,.24);color:#8bf0c8;font-size:13px;font-weight:950;letter-spacing:.12em}
+#modal:has(.simple-expense-form) .expense-destination-lock>strong{font-size:18px;color:#fff;line-height:1.15}
+#modal:has(.simple-expense-form) .expense-destination-lock>small{font-size:13px;line-height:1.35;color:#c7e5db}
+#modal:has(.simple-expense-form) .expense-destination-lock.is-unlinked{border-color:#a9783d;background:linear-gradient(145deg,rgba(102,69,20,.55),rgba(31,27,20,.96))}
+#modal:has(.simple-expense-form) .expense-destination-lock.is-unlinked>span{color:#ffd078;border-right-color:rgba(255,208,120,.22)}
+
+/* Add Reservation: increase text size, breathing room and touch targets without changing its approved palette. */
+#modal[data-form-type="reservations"]{width:min(1030px,96vw)!important;max-height:calc(100vh - 22px)!important}
+#modal:has(.reservation-quick-form) #modal-body{padding:16px 18px!important}
+#modal:has(.reservation-quick-form) .quick-entry-form{gap:12px!important}
+#modal:has(.reservation-quick-form) .quick-entry-intro{min-height:62px!important;padding:11px 15px!important}
+#modal:has(.reservation-quick-form) .quick-entry-intro small{font-size:11px!important}
+#modal:has(.reservation-quick-form) .quick-entry-intro b{font-size:20px!important}
+#modal:has(.reservation-quick-form) .quick-entry-intro>span{font-size:13px!important;line-height:1.3!important}
+#modal:has(.reservation-quick-form) .quick-type-section{padding:14px!important;gap:12px!important}
+#modal:has(.reservation-quick-form) .quick-section-label span{font-size:15px!important;font-weight:850!important}
+#modal:has(.reservation-quick-form) .quick-type-tab{min-height:72px!important;padding:8px 5px!important}
+#modal:has(.reservation-quick-form) .quick-type-tab>span{font-size:12px!important;font-weight:850!important}
+#modal:has(.reservation-quick-form) .reservation-quick-details{padding:14px!important;gap:12px!important;grid-template-columns:minmax(270px,1.55fr) repeat(3,minmax(145px,.72fr))!important}
+#modal:has(.reservation-quick-form) label>span{font-size:13.5px!important;font-weight:800!important;line-height:1.2!important}
+#modal:has(.reservation-quick-form) input,#modal:has(.reservation-quick-form) select{min-height:50px!important;font-size:16px!important;padding:9px 11px!important}
+#modal:has(.reservation-quick-form) .reservation-money-panel{grid-template-columns:170px minmax(0,1fr) 275px!important;padding:14px 16px!important;gap:14px!important}
+#modal:has(.reservation-quick-form) .money-panel-heading b{font-size:17px!important}
+#modal:has(.reservation-quick-form) .money-panel-heading small{font-size:12px!important;line-height:1.3!important}
+#modal:has(.reservation-quick-form) .reservation-budget-choice{padding:12px!important;gap:9px!important}
+#modal:has(.reservation-quick-form) .reservation-budget-choice-title b{font-size:12px!important}
+#modal:has(.reservation-quick-form) .reservation-budget-choice-title small{font-size:11px!important;line-height:1.3!important}
+#modal:has(.reservation-quick-form) .reservation-budget-option{min-height:64px!important;padding:8px!important}
+#modal:has(.reservation-quick-form) .reservation-budget-option strong{font-size:13px!important}
+#modal:has(.reservation-quick-form) .reservation-budget-option span{font-size:11px!important}
+#modal:has(.reservation-quick-form) .reservation-budget-note{font-size:12.5px!important;line-height:1.35!important}
+#modal:has(.reservation-quick-form) .reservation-quick-finish{padding:14px!important;gap:12px!important}
+#modal:has(.reservation-quick-form) .reservation-optional-panel summary{min-height:54px!important;padding:11px 14px!important}
+#modal:has(.reservation-quick-form) .reservation-optional-panel summary b{font-size:13px!important}
+#modal:has(.reservation-quick-form) .reservation-optional-panel summary strong{font-size:14px!important}
+#modal:has(.reservation-quick-form) .reservation-optional-panel summary small{font-size:11px!important}
+#modal:has(.reservation-quick-form) .dialog-actions button{min-height:48px!important;font-size:15px!important}
+@media(max-width:1080px){#modal[data-form-type="reservations"]{width:min(940px,97vw)!important}#modal:has(.reservation-quick-form) .reservation-quick-details{grid-template-columns:minmax(240px,1.4fr) repeat(3,minmax(125px,.72fr))!important}#modal:has(.reservation-quick-form) .reservation-money-panel{grid-template-columns:145px minmax(0,1fr) 245px!important}}
+
+/* App Health pulse: visible heartbeat on the status target and check button. */
+@keyframes tcc-health-pulse-ring{0%{transform:scale(.72);opacity:.72}70%{transform:scale(1.65);opacity:0}100%{transform:scale(1.65);opacity:0}}
+@keyframes tcc-health-heartbeat{0%,38%,100%{transform:scale(1)}42%{transform:scale(1.035)}47%{transform:scale(.992)}52%{transform:scale(1.022)}58%{transform:scale(1)}}
+body[data-screen="settings"] .app-health-widget.is-unchecked .app-health-overall>span{position:relative;color:#ff5d65!important;border:2px solid rgba(255,79,89,.78)!important;background:rgba(88,10,17,.18)!important;box-shadow:0 0 0 5px rgba(255,69,79,.07),0 0 18px rgba(255,69,79,.18)}
+body[data-screen="settings"] .app-health-widget.is-unchecked .app-health-overall>span::before{content:"";position:absolute;inset:-7px;border:2px solid rgba(255,76,86,.55);border-radius:50%;animation:tcc-health-pulse-ring 1.65s ease-out infinite;pointer-events:none}
+body[data-screen="settings"] .app-health-run{position:relative;overflow:hidden;background:linear-gradient(180deg,#d52e39,#a71725)!important;border-color:#ff7c84!important;color:#fff!important;box-shadow:inset 0 1px rgba(255,255,255,.2),0 8px 22px rgba(0,0,0,.28),0 0 18px rgba(209,38,51,.15)!important;animation:tcc-health-heartbeat 2.7s ease-in-out infinite}
+body[data-screen="settings"] .app-health-run::before,body[data-screen="settings"] .app-health-run::after{content:"+";position:absolute;top:50%;transform:translateY(-51%);font-size:38px;line-height:1;color:rgba(255,255,255,.16);font-weight:900}
+body[data-screen="settings"] .app-health-run::before{left:20px}body[data-screen="settings"] .app-health-run::after{right:20px}
+@media(prefers-reduced-motion:reduce){body[data-screen="settings"] .app-health-widget.is-unchecked .app-health-overall>span::before,body[data-screen="settings"] .app-health-run{animation:none!important}}
+
+/* Whole-app premium finishing pass. Preserve every authorised background/accent colour; add only edge-light, depth and separation. */
+body[data-screen] #screen .card,body[data-screen] #screen .reservation-category-card,body[data-screen] #screen .reservation-record,body[data-screen] #screen .future-panel,body[data-screen] #screen .itinerary-card,body[data-screen] #screen .itinerary-metric,body[data-screen] #screen .calendar-approved-header,body[data-screen] #screen .calendar-filter-panel,body[data-screen] #screen .calendar-agenda,body[data-screen] #screen .journey-kpi,body[data-screen] #screen .journey-records-card,body[data-screen] #screen .journey-support-card,body[data-screen] #screen .checklist-ready-panel,body[data-screen] #screen .checklist-list-card,body[data-screen] #screen .personal-needs-card,body[data-screen] #screen .vault-category,body[data-screen] #screen .vault-records-card,body[data-screen] #screen .vault-filter-card,body[data-screen] #screen .settings-card-dashboard,body[data-screen] #screen .settings-column,body[data-screen] #screen .settings-panel,body[data-screen] #screen .app-health-widget{box-shadow:inset 0 1px 0 rgba(255,255,255,.11),inset 0 0 0 1px rgba(255,255,255,.018),0 14px 34px rgba(0,0,0,.31)!important}
+body[data-screen] #screen .card,body[data-screen] #screen .reservation-category-card,body[data-screen] #screen .itinerary-card,body[data-screen] #screen .journey-kpi,body[data-screen] #screen .checklist-list-card,body[data-screen] #screen .vault-category,body[data-screen] #screen .settings-panel{background-clip:padding-box!important}
+body[data-screen] #screen button:not(.nav-btn):focus-visible,body[data-screen] #screen [tabindex="0"]:focus-visible{outline:2px solid rgba(198,236,255,.82)!important;outline-offset:3px!important}
+
+
+/* Batch 1194 — exact Vault TV & Movies hidden-email gesture on physical iPad. */
+body[data-screen="vault"] .vault-streaming-panel>header h2[data-streaming-email-unlock]{
+  display:inline-flex!important;align-items:center!important;min-height:54px!important;
+  margin:0 -10px!important;padding:4px 10px!important;cursor:default!important;
+  touch-action:manipulation!important;-webkit-user-select:none!important;user-select:none!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+
+
+/* ==========================================================================
+   BATCH 1195 — JOURNEY HISTORY SNAPSHOT CLARITY
+   Simplifies the dense analytics block without changing its approved colours.
+   ========================================================================== */
+body[data-screen="journeys"] #screen .journey-side-stats-locked{
+  background:linear-gradient(145deg,rgba(16,61,91,.74),rgba(5,20,32,.98))!important;
+  border-color:#3f7899!important;
+  box-shadow:inset 0 1px 0 rgba(119,213,245,.13),inset 0 0 40px rgba(23,112,160,.10),0 12px 30px rgba(0,0,0,.25)!important;
+}
+body[data-screen="journeys"] #screen .journey-side-stats-locked>h3{
+  margin-bottom:12px!important;
+}
+body[data-screen="journeys"] #screen .journey-snapshot{display:grid!important;gap:12px!important}
+body[data-screen="journeys"] #screen .journey-snapshot-highlights{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;
+}
+body[data-screen="journeys"] #screen .journey-snapshot-tile{
+  min-height:96px!important;padding:11px 12px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;
+  border:1px solid rgba(84,142,173,.45)!important;border-radius:11px!important;
+  background:linear-gradient(150deg,rgba(12,49,73,.86),rgba(7,27,42,.96))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 5px 14px rgba(0,0,0,.16)!important;
+}
+body[data-screen="journeys"] #screen .journey-snapshot-tile>small{
+  display:block!important;margin:0 0 7px!important;color:#9bcde2!important;font-size:9.5px!important;font-weight:900!important;letter-spacing:.9px!important;line-height:1.15!important;
+}
+body[data-screen="journeys"] #screen .journey-snapshot-tile>b{
+  display:block!important;color:#f6fbff!important;font-size:18px!important;line-height:1.08!important;font-weight:950!important;overflow-wrap:anywhere!important;
+}
+body[data-screen="journeys"] #screen .journey-snapshot-tile>strong{
+  display:block!important;margin-top:4px!important;font-size:14.5px!important;line-height:1.08!important;font-weight:950!important;
+}
+body[data-screen="journeys"] #screen .journey-snapshot-tile>em{
+  display:block!important;margin-top:5px!important;color:#9cb3c3!important;font-size:9.5px!important;font-style:normal!important;line-height:1.2!important;
+}
+/* Preserve the existing metric accent family used in this widget. */
+body[data-screen="journeys"] #screen .journey-snapshot-tile.metric-low>strong{color:#67e69a!important}
+body[data-screen="journeys"] #screen .journey-snapshot-tile.metric-high>strong{color:#ff7083!important}
+body[data-screen="journeys"] #screen .journey-snapshot-tile.metric-long>strong{color:#c783ff!important}
+body[data-screen="journeys"] #screen .journey-booking-summary{
+  padding:11px!important;border:1px solid rgba(67,125,158,.48)!important;border-radius:12px!important;
+  background:linear-gradient(150deg,rgba(8,42,63,.78),rgba(5,24,38,.96))!important;
+}
+body[data-screen="journeys"] #screen .journey-booking-summary>header{
+  display:flex!important;align-items:end!important;justify-content:space-between!important;gap:12px!important;padding:1px 2px 10px!important;margin-bottom:9px!important;border-bottom:1px solid rgba(78,135,164,.34)!important;
+}
+body[data-screen="journeys"] #screen .journey-booking-summary>header small{display:block!important;color:#8fd7ef!important;font-size:9.5px!important;font-weight:900!important;letter-spacing:.9px!important}
+body[data-screen="journeys"] #screen .journey-booking-summary>header b{display:block!important;margin-top:4px!important;color:#fff!important;font-size:16px!important;line-height:1!important}
+body[data-screen="journeys"] #screen .journey-booking-summary>header strong{color:#67d7ff!important;font-size:22px!important;line-height:1!important;white-space:nowrap!important}
+body[data-screen="journeys"] #screen .journey-booking-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+body[data-screen="journeys"] #screen .journey-booking-grid>div{
+  min-height:63px!important;padding:8px 10px!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:auto auto!important;column-gap:8px!important;align-items:center!important;
+  border:1px solid rgba(61,111,139,.37)!important;border-radius:9px!important;background:rgba(5,28,43,.70)!important;
+}
+body[data-screen="journeys"] #screen .journey-booking-grid span{grid-column:1/-1!important;color:#d8e8f0!important;font-size:10.5px!important;font-weight:820!important;line-height:1.12!important;overflow-wrap:anywhere!important}
+body[data-screen="journeys"] #screen .journey-booking-grid b{font-size:16px!important;line-height:1!important;color:#fff!important}
+body[data-screen="journeys"] #screen .journey-booking-grid small{font-size:10px!important;line-height:1!important;color:#9fc7d9!important;text-align:right!important;white-space:nowrap!important}
+body[data-screen="journeys"] #screen .journey-km-summary{
+  min-height:55px!important;padding:10px 12px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;border:1px solid rgba(58,117,148,.45)!important;border-radius:11px!important;background:rgba(7,31,47,.78)!important;
+}
+body[data-screen="journeys"] #screen .journey-km-summary span{color:#9bcde2!important;font-size:9.5px!important;font-weight:900!important;letter-spacing:.8px!important}
+body[data-screen="journeys"] #screen .journey-km-summary b{color:#fff!important;font-size:18px!important;line-height:1!important;white-space:nowrap!important}
+/* The long category name is important information; never ellipsize it. */
+body[data-screen="journeys"] #screen .journey-side-spend-locked .journey-spend-bar-row{grid-template-columns:minmax(122px,1.18fr) minmax(86px,1.25fr) 70px 34px!important}
+body[data-screen="journeys"] #screen .journey-side-spend-locked .journey-spend-bar-label b{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.06!important}
+@media(max-width:1180px){
+  body[data-screen="journeys"] #screen .journey-snapshot-highlights{grid-template-columns:1fr!important}
+  body[data-screen="journeys"] #screen .journey-booking-grid{grid-template-columns:1fr!important}
+}
+
+/* ========================================================================== */
+/* BATCH 1196 — WHOLE-APP COLOUR DEPTH / VAULT-BENCHMARK POLISH              */
+/* 27 AUG 2026 — strengthen each EXISTING semantic hue; no palette swaps.     */
+/* The top five Vault cards remain the visual benchmark.                       */
+/* ========================================================================== */
+
+/* Shared colour-depth recipe: brighter top edge, same-hue inner light and a
+   restrained same-hue outer halo. It deliberately does not replace backgrounds. */
+body[data-screen] #screen .tcc-colour-depth,
+body[data-screen="dashboard"] #screen .home-command-card,
+body[data-screen="dashboard"] #screen .dashboard-upcoming,
+body[data-screen="dashboard"] #screen .dashboard-alerts,
+body[data-screen="dashboard"] #screen .dashboard-schengen,
+body[data-screen="dashboard"] #screen .dashboard-timeline,
+body[data-screen="budget"] #screen .budget-destination-card,
+body[data-screen="budget"] #screen .budget-status-card,
+body[data-screen="budget"] #screen .budget-approved-category,
+body[data-screen="budget"] #screen .budget-approved-forecast,
+body[data-screen="budget"] #screen .budget-command-card,
+body[data-screen="budget"] #screen .budget-expenses-card,
+body[data-screen="budget"] #screen .budget-reservations-card,
+body[data-screen="budget"] #screen .budget-travel-cost-card,
+body[data-screen="budget"] #screen .budget-accounts-card,
+body[data-screen="budget"] #screen .budget-monthly-card,
+body[data-screen="reservations"] #screen .reservation-category-card,
+body[data-screen="reservations"] #screen .reservation-side>.card,
+body[data-screen="reservations"] #screen .reservation-future-wide,
+body[data-screen="reservations"] #screen .reservation-table-panel,
+body[data-screen="itinerary"] #screen .itinerary-map-panel,
+body[data-screen="itinerary"] #screen .itinerary-coverage-card,
+body[data-screen="itinerary"] #screen .itinerary-metric,
+body[data-screen="itinerary"] #screen .itinerary-toolbar,
+body[data-screen="itinerary"] #screen .itinerary-card,
+body[data-screen="journeys"] #screen .journey-kpi,
+body[data-screen="journeys"] #screen .journey-history-map,
+body[data-screen="journeys"] #screen .journey-side-spend-locked,
+body[data-screen="journeys"] #screen .journey-side-stats-locked,
+body[data-screen="journeys"] #screen .journey-support-card,
+body[data-screen="journeys"] #screen .journey-filter-panel,
+body[data-screen="journeys"] #screen .journey-records-card,
+body[data-screen="checklist"] #screen .checklist-ready-panel,
+body[data-screen="checklist"] #screen .personal-needs-card,
+body[data-screen="checklist"] #screen .checklist-list-card,
+body[data-screen="checklist"] #screen .checklist-overview-card,
+body[data-screen="checklist"] #screen .checklist-next-destination,
+body[data-screen="checklist"] #screen .checklist-next-card,
+body[data-screen="vault"] #screen .vault-side-summary,
+body[data-screen="vault"] #screen .vault-side-expiry,
+body[data-screen="vault"] #screen .vault-side-emergency-travel,
+body[data-screen="vault"] #screen .vault-side-emergency,
+body[data-screen="vault"] #screen .vault-side-activity,
+body[data-screen="settings"] #screen .app-health-widget,
+body[data-screen="settings"] #screen .settings-backup-panel,
+body[data-screen="settings"] #screen .settings-status-panel,
+body[data-screen="settings"] #screen .settings-defaults-panel,
+body[data-screen="settings"] #screen .settings-pin-panel,
+body[data-screen="settings"] #screen .settings-reset-panel{
+  border-color:color-mix(in srgb,var(--tcc-widget-accent,#65cfff) 62%,#304d63)!important;
+  border-top-color:color-mix(in srgb,var(--tcc-widget-accent,#65cfff) 78%,#d9f5ff)!important;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb,var(--tcc-widget-accent,#65cfff) 30%,rgba(255,255,255,.14)),
+    inset 0 0 34px color-mix(in srgb,var(--tcc-widget-accent,#65cfff) 8%,transparent),
+    0 0 20px color-mix(in srgb,var(--tcc-widget-accent,#65cfff) 10%,transparent),
+    0 13px 29px rgba(0,0,0,.29)!important;
+}
+
+/* HOME — keep the approved cyan / violet / gold / alert / Schengen families. */
+body[data-screen="dashboard"] #screen .home-daily-budget-card{--tcc-widget-accent:#58d6ff}
+body[data-screen="dashboard"] #screen .home-destination-card{--tcc-widget-accent:#b378ff}
+body[data-screen="dashboard"] #screen .home-annual-card{--tcc-widget-accent:#d8b55a}
+body[data-screen="dashboard"] #screen .dashboard-upcoming{--tcc-widget-accent:#55cfff}
+body[data-screen="dashboard"] #screen .dashboard-alerts{--tcc-widget-accent:#e8ad43}
+body[data-screen="dashboard"] #screen .dashboard-schengen{--tcc-widget-accent:#59dfa5}
+body[data-screen="dashboard"] #screen .dashboard-timeline{--tcc-widget-accent:#a987ff}
+
+/* BUDGET — these are approved screen colours; strengthen, do not remap. */
+body[data-screen="budget"] #screen .budget-destination-card{--tcc-widget-accent:#4de1da}
+body[data-screen="budget"] #screen .budget-status-card{--tcc-widget-accent:#5d9fff}
+body[data-screen="budget"] #screen .budget-approved-category{--tcc-widget-accent:#e4b84d}
+body[data-screen="budget"] #screen .budget-approved-forecast{--tcc-widget-accent:#56d7f5}
+body[data-screen="budget"] #screen .budget-command-card.annual{--tcc-widget-accent:#ee5a9c}
+body[data-screen="budget"] #screen .budget-command-card.destination{--tcc-widget-accent:#55e685}
+body[data-screen="budget"] #screen .budget-expenses-card{--tcc-widget-accent:#55cfff}
+body[data-screen="budget"] #screen .budget-reservations-card{--tcc-widget-accent:#c16ff0}
+body[data-screen="budget"] #screen .budget-travel-cost-card{--tcc-widget-accent:#61d8ff}
+body[data-screen="budget"] #screen .budget-accounts-card{--tcc-widget-accent:#4ad1df}
+body[data-screen="budget"] #screen .budget-monthly-card{--tcc-widget-accent:#8bd94d}
+
+/* RESERVATIONS — retain the existing category colour identity. */
+body[data-screen="reservations"] #screen .reservation-category-card.tone-1{--tcc-widget-accent:#51a9ff}
+body[data-screen="reservations"] #screen .reservation-category-card.tone-2{--tcc-widget-accent:#55da82}
+body[data-screen="reservations"] #screen .reservation-category-card.tone-3{--tcc-widget-accent:#50cbd9}
+body[data-screen="reservations"] #screen .reservation-category-card.tone-4{--tcc-widget-accent:#e6873d}
+body[data-screen="reservations"] #screen .reservation-category-card.tone-5{--tcc-widget-accent:#e1b52c}
+body[data-screen="reservations"] #screen .reservation-category-card.tone-6{--tcc-widget-accent:#ed5eaa}
+body[data-screen="reservations"] #screen .reservation-category-card.tone-7{--tcc-widget-accent:#a780ff}
+body[data-screen="reservations"] #screen .reservation-category-card.tone-8{--tcc-widget-accent:#a9bac8}
+body[data-screen="reservations"] #screen .reservation-future-wide{--tcc-widget-accent:#e2ad35}
+body[data-screen="reservations"] #screen .reservation-table-panel{--tcc-widget-accent:#58cfff}
+body[data-screen="reservations"] #screen .reservation-side>.card:nth-child(1){--tcc-widget-accent:#54d7d1}
+body[data-screen="reservations"] #screen .reservation-side>.card:nth-child(2){--tcc-widget-accent:#a979f2}
+body[data-screen="reservations"] #screen .reservation-side>.card:nth-child(3){--tcc-widget-accent:#f05f75}
+body[data-screen="reservations"] #screen .reservation-next3-row{
+  box-shadow:inset 0 1px rgba(255,255,255,.10),0 5px 13px rgba(0,0,0,.20),0 0 12px rgba(235,82,106,.08)!important;
+}
+
+/* ITINERARY — route map blue; status metrics retain screenshot families. */
+body[data-screen="itinerary"] #screen .itinerary-map-panel{--tcc-widget-accent:#58cfff}
+body[data-screen="itinerary"] #screen .itinerary-coverage-card{--tcc-widget-accent:#56cfa1}
+body[data-screen="itinerary"] #screen .itinerary-toolbar{--tcc-widget-accent:#58cfff}
+body[data-screen="itinerary"] #screen .itinerary-card{--tcc-widget-accent:#55bfe9}
+body[data-screen="itinerary"] #screen .itinerary-metric:nth-child(1){--tcc-widget-accent:#59df8a}
+body[data-screen="itinerary"] #screen .itinerary-metric:nth-child(2){--tcc-widget-accent:#5aa6ff}
+body[data-screen="itinerary"] #screen .itinerary-metric:nth-child(3){--tcc-widget-accent:#b576ff}
+body[data-screen="itinerary"] #screen .itinerary-metric:nth-child(4){--tcc-widget-accent:#ef6177}
+body[data-screen="itinerary"] #screen .itinerary-metric:nth-child(5){--tcc-widget-accent:#e8b64e}
+body[data-screen="itinerary"] #screen .itinerary-metric:nth-child(6){--tcc-widget-accent:#59d8ee}
+
+/* CALENDAR — keep itinerary-driven day colours. Add dimensional colour instead
+   of painting the cells a different hue. */
+body[data-screen="calendar"] #screen .calendar-approved-header,
+body[data-screen="calendar"] #screen .calendar-filter-panel,
+body[data-screen="calendar"] #screen .calendar-bottom-bar,
+body[data-screen="calendar"] #screen .calendar-agenda,
+body[data-screen="calendar"] #screen .calendar-selected-panel{
+  border-color:#3c7899!important;
+  border-top-color:#69d8f6!important;
+  box-shadow:inset 0 1px rgba(143,226,255,.14),inset 0 0 30px rgba(66,183,226,.055),0 12px 28px rgba(0,0,0,.28)!important;
+}
+body[data-screen="calendar"] #screen .calendar-large .day{
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.065),inset 0 -24px 34px rgba(0,0,0,.14),inset 0 0 30px rgba(255,255,255,.018)!important;
+}
+body[data-screen="calendar"] #screen .calendar-large .day.today{
+  box-shadow:inset 0 0 0 2px #68d8ff,inset 0 2px rgba(255,255,255,.10),0 0 18px rgba(75,205,255,.18)!important;
+}
+body[data-screen="calendar"] #screen .calendar-large .day-shading{
+  filter:saturate(1.10) brightness(1.035);
+}
+body[data-screen="calendar"] #screen .calendar-large .event{
+  box-shadow:inset 0 1px rgba(255,255,255,.10),inset 0 -8px 15px rgba(0,0,0,.10),0 4px 11px rgba(0,0,0,.22)!important;
+}
+body[data-screen="calendar"] #screen .day-head{
+  background:linear-gradient(180deg,#174d72,#0d3150)!important;
+  box-shadow:inset 0 1px rgba(164,231,255,.18),inset 0 -1px rgba(0,0,0,.22)!important;
+}
+
+/* JOURNEY HISTORY — preserve KPI/spend/snapshot/support colour families. */
+body[data-screen="journeys"] #screen .journey-kpi.tone-purple{--tcc-widget-accent:#b076ff}
+body[data-screen="journeys"] #screen .journey-kpi.tone-green{--tcc-widget-accent:#67d968}
+body[data-screen="journeys"] #screen .journey-kpi.tone-blue{--tcc-widget-accent:#58b7ff}
+body[data-screen="journeys"] #screen .journey-kpi.tone-gold{--tcc-widget-accent:#e8b047}
+body[data-screen="journeys"] #screen .journey-kpi.tone-teal{--tcc-widget-accent:#55d2cf}
+body[data-screen="journeys"] #screen .journey-history-map{--tcc-widget-accent:#58cfff}
+body[data-screen="journeys"] #screen .journey-side-spend-locked{--tcc-widget-accent:#a873e8}
+body[data-screen="journeys"] #screen .journey-side-stats-locked{--tcc-widget-accent:#57c7ee}
+body[data-screen="journeys"] #screen .journey-support-card:nth-of-type(1){--tcc-widget-accent:#ad78ef}
+body[data-screen="journeys"] #screen .journey-support-card:nth-of-type(2){--tcc-widget-accent:#59bde6}
+body[data-screen="journeys"] #screen .journey-support-card:nth-of-type(3){--tcc-widget-accent:#4fd3c8}
+body[data-screen="journeys"] #screen .journey-filter-panel,
+body[data-screen="journeys"] #screen .journey-records-card{--tcc-widget-accent:#5abde8}
+body[data-screen="journeys"] #screen .journey-snapshot-tile,
+body[data-screen="journeys"] #screen .journey-booking-summary,
+body[data-screen="journeys"] #screen .journey-km-summary{
+  box-shadow:inset 0 1px rgba(135,221,255,.10),inset 0 0 20px rgba(68,185,230,.045),0 6px 15px rgba(0,0,0,.19)!important;
+}
+
+/* CHECKLIST — retain amber readiness, blue His, pink Hers, green Permanent,
+   cyan Destination, teal overview and violet next-destination. */
+body[data-screen="checklist"] #screen .checklist-ready-panel{--tcc-widget-accent:#e9b743}
+body[data-screen="checklist"] #screen .checklist-ready-panel.ready{--tcc-widget-accent:#77df70}
+body[data-screen="checklist"] #screen .personal-needs-card.his{--tcc-widget-accent:#58aaff}
+body[data-screen="checklist"] #screen .personal-needs-card.hers{--tcc-widget-accent:#ef66ae}
+body[data-screen="checklist"] #screen .checklist-list-card.permanent{--tcc-widget-accent:#55d48d}
+body[data-screen="checklist"] #screen .checklist-list-card.destination{--tcc-widget-accent:#59cfea}
+body[data-screen="checklist"] #screen .checklist-overview-card{--tcc-widget-accent:#54d5cf}
+body[data-screen="checklist"] #screen .checklist-next-destination,
+body[data-screen="checklist"] #screen .checklist-next-card{--tcc-widget-accent:#9b86ff}
+body[data-screen="checklist"] #screen .personal-needs-readonly-item,
+body[data-screen="checklist"] #screen .checklist-task-row-readonly{
+  box-shadow:inset 0 1px rgba(255,255,255,.065),0 3px 9px rgba(0,0,0,.15)!important;
+}
+
+/* VAULT — top five remain untouched because they already are the benchmark.
+   Lift the lower widgets into the same colour/depth language. */
+body[data-screen="vault"] #screen .vault-side-summary{--tcc-widget-accent:#59cde2}
+body[data-screen="vault"] #screen .vault-side-expiry{--tcc-widget-accent:#e8b34c}
+body[data-screen="vault"] #screen .vault-side-emergency-travel{--tcc-widget-accent:#dfa84b}
+body[data-screen="vault"] #screen .vault-side-emergency{--tcc-widget-accent:#ef5c8d}
+body[data-screen="vault"] #screen .vault-side-activity{--tcc-widget-accent:#9a82ee}
+body[data-screen="vault"] #screen .vault-category{
+  box-shadow:inset 0 1px rgba(255,255,255,.11),inset 0 0 30px color-mix(in srgb,var(--vault-accent,#55cfff) 9%,transparent),0 0 18px color-mix(in srgb,var(--vault-accent,#55cfff) 11%,transparent),0 12px 27px rgba(0,0,0,.28)!important;
+}
+body[data-screen="vault"] #screen .vault-summary-grid>div,
+body[data-screen="vault"] #screen .vault-reminder,
+body[data-screen="vault"] #screen .emergency-contact,
+body[data-screen="vault"] #screen .vault-activity{
+  box-shadow:inset 0 1px rgba(255,255,255,.085),inset 0 -10px 18px rgba(0,0,0,.08),0 5px 13px rgba(0,0,0,.18)!important;
+}
+
+/* SETTINGS — approved purple/gold/green/magenta/red cards plus cyan App Health. */
+body[data-screen="settings"] #screen .app-health-widget{--tcc-widget-accent:#58d6e7}
+body[data-screen="settings"] #screen .settings-backup-panel{--tcc-widget-accent:#a878eb}
+body[data-screen="settings"] #screen .settings-status-panel{--tcc-widget-accent:#e0ad3e}
+body[data-screen="settings"] #screen .settings-defaults-panel{--tcc-widget-accent:#5bd483}
+body[data-screen="settings"] #screen .settings-pin-panel{--tcc-widget-accent:#e660a6}
+body[data-screen="settings"] #screen .settings-reset-panel{--tcc-widget-accent:#ef5966}
+body[data-screen="settings"] #screen .app-health-row{
+  border-color:rgba(84,154,183,.40)!important;
+  box-shadow:inset 0 1px rgba(137,220,248,.085),0 5px 13px rgba(0,0,0,.18)!important;
+}
+/* Prevent the physical-iPad wrapping seen in “Reservations”. */
+body[data-screen="settings"] #screen .app-health-row-copy b{
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+  hyphens:none!important;
+  line-height:1.12!important;
+}
+body[data-screen="settings"] #screen .app-health-row>summary{
+  grid-template-columns:34px minmax(118px,1fr) auto 18px!important;
+  column-gap:9px!important;
+}
+@media(max-width:1120px){
+  body[data-screen="settings"] #screen .app-health-screen-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+/* Controls within coloured widgets should feel set into the card, rather than
+   floating on a flat surface. This is neutral and keeps their semantic hue. */
+body[data-screen] #screen .home-command-card button,
+body[data-screen] #screen .budget-command-card button,
+body[data-screen] #screen .reservation-category-card button,
+body[data-screen] #screen .itinerary-metric button,
+body[data-screen] #screen .journey-kpi button,
+body[data-screen] #screen .checklist-ready-panel button,
+body[data-screen] #screen .vault-category button,
+body[data-screen] #screen .settings-panel button{
+  box-shadow:inset 0 1px rgba(255,255,255,.09),0 4px 10px rgba(0,0,0,.17);
+}
+
+
+/* Batch 1196 final Calendar/Checklist correction.
+   Agenda uses the exact destination/travel colour identity from Month view.
+   The large Checklist status widget remains the Ready to Move widget at all times. */
+body[data-screen="calendar"] #screen .calendar-agenda-full .agenda-row{
+  background:linear-gradient(115deg,color-mix(in srgb,var(--agenda-colour,#2f7cff) 31%,#071522),color-mix(in srgb,var(--agenda-colour,#2f7cff) 16%,#071522))!important;
+  border-color:color-mix(in srgb,var(--agenda-colour,#2f7cff) 62%,#274861)!important;
+  border-left:5px solid var(--agenda-colour,#2f7cff)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 0 28px color-mix(in srgb,var(--agenda-colour,#2f7cff) 11%,transparent),0 8px 20px rgba(0,0,0,.25)!important;
+}
+body[data-screen="calendar"] #screen .calendar-agenda-full .agenda-row.agenda-transition{
+  background:linear-gradient(100deg,color-mix(in srgb,var(--agenda-colour) 34%,#071522) 0%,color-mix(in srgb,var(--agenda-colour) 25%,#071522) 46%,color-mix(in srgb,var(--agenda-secondary-colour) 25%,#071522) 54%,color-mix(in srgb,var(--agenda-secondary-colour) 34%,#071522) 100%)!important;
+  border-left-color:var(--agenda-colour)!important;
+  border-right:5px solid var(--agenda-secondary-colour)!important;
+}
+body[data-screen="calendar"] #screen .calendar-agenda-full .agenda-row .agenda-date{border-right-color:color-mix(in srgb,var(--agenda-colour,#2f7cff) 50%,#25425a)!important}
+body[data-screen="calendar"] #screen .calendar-agenda-full .agenda-row:focus-visible{outline:2px solid color-mix(in srgb,var(--agenda-colour,#2f7cff) 80%,white)!important;outline-offset:2px}
+body[data-screen="checklist"] #screen .checklist-ready-panel h2{letter-spacing:.015em!important}
+
+
+/* ========================================================================== */
+/* BATCH 1197 — OPENED-VIEW / SUBSCREEN PREMIUM COLOUR-DEPTH COMPLETION       */
+/* 27 AUG 2026 — every opened form, expanded panel and concealed subview now  */
+/* receives the same dimensional treatment as its source widget. Existing     */
+/* semantic hues are retained; this layer adds edge light, depth and clarity. */
+/* ========================================================================== */
+
+/* Shared dialog shell. The accent only colours light/shadow; authored panel
+   backgrounds and controls below keep their existing semantic colours. */
+#modal,#confirm-dialog{--tcc-open-accent:#63d3f2}
+#modal[data-form-type="expenses"]{--tcc-open-accent:#55cfff}
+#modal[data-form-type="reservations"]{--tcc-open-accent:#5aaeff}
+#modal[data-form-type="itinerary"]{--tcc-open-accent:#58cfff}
+#modal[data-form-type="events"]{--tcc-open-accent:#a987ff}
+#modal[data-form-type="checklist"]{--tcc-open-accent:#e7b64b}
+#modal[data-form-type="vault"]{--tcc-open-accent:#57d3dc}
+#modal[data-form-type="accounts"]{--tcc-open-accent:#52cadb}
+#modal[data-form-type="stay"]{--tcc-open-accent:#55d7c9}
+#modal,#confirm-dialog{
+  border-top-color:color-mix(in srgb,var(--tcc-open-accent) 76%,white 12%)!important;
+  box-shadow:0 30px 92px rgba(0,0,0,.78),0 0 28px color-mix(in srgb,var(--tcc-open-accent) 13%,transparent),inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+#modal .dialog-head,#confirm-dialog .dialog-head{
+  box-shadow:inset 0 1px rgba(255,255,255,.09),inset 0 -1px color-mix(in srgb,var(--tcc-open-accent) 30%,transparent),0 7px 18px rgba(0,0,0,.16)!important;
+}
+#modal .dialog-actions,#confirm-dialog .dialog-actions{
+  box-shadow:inset 0 1px color-mix(in srgb,var(--tcc-open-accent) 24%,transparent)!important;
+}
+#modal :is(input,select,textarea),#confirm-dialog :is(input,select,textarea){
+  box-shadow:inset 0 1px rgba(255,255,255,.045),inset 0 0 14px rgba(0,0,0,.10)!important;
+}
+#modal :is(input,select,textarea):focus{
+  border-color:color-mix(in srgb,var(--tcc-open-accent) 72%,white 10%)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--tcc-open-accent) 18%,transparent),inset 0 1px rgba(255,255,255,.06)!important;
+  outline:none!important;
+}
+
+/* All add/edit form building blocks receive a premium raised edge while
+   preserving their existing fills. */
+#modal :is(.simple-form-intro,.simple-form-step,.simple-form-block,.quick-entry-intro,.quick-type-section,.reservation-quick-details,.reservation-money-panel,.reservation-quick-finish,.reservation-optional-panel,.reservation-travel-panel,.reservation-payment-panel,.itinerary-quick-intro,.itinerary-choice-form,.itinerary-gap-form,.checklist-add-context,.vault-upload-panel,.vault-detail-panel,.booking-reminder-form,.form-note){
+  border-top-color:color-mix(in srgb,var(--tcc-open-accent) 58%,rgba(255,255,255,.30))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.085),inset 0 0 22px color-mix(in srgb,var(--tcc-open-accent) 5%,transparent),0 6px 15px rgba(0,0,0,.20)!important;
+}
+#modal :is(.simple-form-step,.reservation-quick-details,.reservation-money-panel,.reservation-quick-finish,.itinerary-choice-form,.checklist-add-context,.vault-upload-panel,.vault-detail-panel) > :is(h3,h4,header,summary):first-child{
+  text-shadow:0 0 15px color-mix(in srgb,var(--tcc-open-accent) 13%,transparent)!important;
+}
+#modal details[open]{
+  box-shadow:inset 0 1px rgba(255,255,255,.08),0 0 16px color-mix(in srgb,var(--tcc-open-accent) 7%,transparent),0 6px 16px rgba(0,0,0,.18)!important;
+}
+
+/* Expanded/readability overlays already inherit the source hue. Strengthen
+   their edge lighting and the smaller cards inside them to match the Vault. */
+:is(.readability-focus-panel,.journey-focus-panel,.checklist-focus-panel){
+  box-shadow:0 32px 86px rgba(0,0,0,.69),0 0 42px rgba(var(--focus-rgb,58,184,235),.20),inset 0 1px rgba(255,255,255,.11)!important;
+}
+:is(.readability-focus-panel,.journey-focus-panel,.checklist-focus-panel) :is(.readability-metric,.readability-section,.readability-list-row,.journey-stat-list>div,.journey-total-focus-row,.journey-milestones>div,.checklist-focus-item,.checklist-focus-summary){
+  box-shadow:inset 0 1px rgba(255,255,255,.08),inset 0 -12px 22px rgba(0,0,0,.08),0 6px 16px rgba(0,0,0,.19)!important;
+}
+
+/* Full-page expanded map remains the Itinerary's established cyan family. */
+body[data-screen="itinerary"] .itinerary-expanded-map-page .itinerary-map-panel{
+  border-top-color:#82ddff!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.09),0 0 22px rgba(78,196,242,.11),0 12px 28px rgba(0,0,0,.27)!important;
+}
+
+/* Calendar day drill-in / Agenda drill-in keep Calendar's own destination and
+   transit colours, rather than reverting to a flat generic card. */
+body[data-screen="calendar"] :is(.calendar-day-view,.calendar-selected-panel,.calendar-filter-panel){
+  box-shadow:inset 0 1px rgba(255,255,255,.09),0 10px 24px rgba(0,0,0,.25)!important;
+}
+body[data-screen="calendar"] .day-agenda-row{
+  border-left:4px solid var(--day-accent,#58cfff)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.075),inset 0 -9px 16px rgba(0,0,0,.09),0 5px 13px rgba(0,0,0,.18)!important;
+}
+
+/* Vault Streaming, hidden email store, toilet phrase and country quick-look
+   are real app screens/panels too; give them the same premium finish. */
+body[data-screen="vault"] .vault-streaming-panel{
+  border-top-color:#79dcf7!important;
+  box-shadow:0 30px 88px rgba(0,0,0,.70),0 0 32px rgba(79,198,239,.15),inset 0 1px rgba(255,255,255,.10)!important;
+}
+body[data-screen="vault"] :is(.vault-streaming-app-tile,.vault-streaming-credential-readout,.vault-streaming-detail,.vault-streaming-editor){
+  box-shadow:inset 0 1px rgba(255,255,255,.085),inset 0 -10px 18px rgba(0,0,0,.08),0 5px 14px rgba(0,0,0,.20)!important;
+}
+body[data-screen="vault"] .vault-streaming-email-panel{
+  border-top-color:#8be5fa!important;
+  box-shadow:0 31px 92px rgba(0,0,0,.76),0 0 34px rgba(83,205,240,.17),inset 0 1px rgba(255,255,255,.11)!important;
+}
+body[data-screen="vault"] .vault-streaming-email-fields label{
+  box-shadow:inset 0 1px rgba(255,255,255,.055),0 4px 11px rgba(0,0,0,.15)!important;
+}
+.toilet-phrase-panel,.country-quick-look-panel{
+  border-top-color:#8ae3ff!important;
+  box-shadow:0 30px 92px rgba(0,0,0,.68),0 0 34px rgba(72,193,238,.15),inset 0 1px rgba(255,255,255,.10)!important;
+}
+.country-quick-look-panel :is(.country-quick-look-grid>div,.country-quick-look-plant){
+  box-shadow:inset 0 1px rgba(255,255,255,.075),0 5px 14px rgba(0,0,0,.18)!important;
+}
+
+/* Settings App Health expanded result rows and details are part of the opened
+   health experience, so they receive the same cyan health edge treatment. */
+body[data-screen="settings"] #screen :is(.app-health-row[open],.app-health-row-details,.app-health-result){
+  border-color:rgba(86,185,217,.48)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.075),inset 0 0 18px rgba(65,182,220,.05),0 5px 14px rgba(0,0,0,.18)!important;
+}
+
+/* Checklist focus/quick screens keep the source list identity and never replace
+   the large Ready to Move widget's purpose. */
+body[data-screen="checklist"] .checklist-ready-panel h2{white-space:nowrap!important}
+
+/* Controls inside any opened surface have consistent tactile depth without
+   replacing their authored colour. */
+:is(#modal,.readability-focus-panel,.journey-focus-panel,.checklist-focus-panel,.vault-streaming-panel,.vault-streaming-email-panel,.toilet-phrase-panel,.country-quick-look-panel) button{
+  box-shadow:inset 0 1px rgba(255,255,255,.10),0 4px 11px rgba(0,0,0,.18);
+}
