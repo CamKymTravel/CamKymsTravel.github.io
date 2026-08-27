@@ -1,9 +1,9 @@
 'use strict';
 
-const STORAGE_KEY = 'travelCommandCentre.v1.simulationBatch1197';
+const STORAGE_KEY = 'travelCommandCentre.v1.simulationBatch1202';
 const LEGACY_STORAGE_KEYS = [];
-const APP_VERSION = '4.5.677-simulation-batch1197-20260827';
-const APP_SHELL_REVISION = '4.5.677-shell-simulation-batch1197-compact1-20260827';
+const APP_VERSION = '4.5.677-simulation-batch1202-20260828';
+const APP_SHELL_REVISION = '4.5.677-shell-simulation-batch1202-20260828';
 const TCC_BACKUP_FORMAT = 'travel-command-centre-v1-canonical';
 const TCC_BACKUP_SCHEMA = 4;
 const MAX_JOURNEY_YEARS = 30;
@@ -1039,7 +1039,7 @@ const localNumber = value => Number(value || 0).toLocaleString('en-AU', {maximum
 function budgetCurrencyFigure(value,currency='AUD',symbol='',tone=''){
   const code=currencyCode(currency,'AUD'),details=currencyDetails(code),mark=currencySymbol(symbol||details.symbol,'');
   const amount=localNumber(value),length=amount.length;
-  const fit=length>=18?'budget-amount-xxl':length>=15?'budget-amount-xl':length>=12?'budget-amount-lg':length>=9?'budget-amount-md':'budget-amount-normal';
+  const fit=length>=18?'budget-amount-xxl':length>=15?'budget-amount-xl':length>=12?'budget-amount-lg':length>=7?'budget-amount-md':'budget-amount-normal';
   return `<div class="budget-currency-id"><strong>${esc(code)}</strong>${mark?`<em>${esc(mark)}</em>`:''}</div><b class="budget-local-figure ${esc(tone)} ${fit}">${esc(amount)}</b>`;
 }
 const parseDate = value => value ? new Date(`${value}T12:00:00`) : null;
@@ -1204,9 +1204,9 @@ const defaultState = {
 
 function demoReviewState(){
   const demo=clone(defaultState);
-  const reference='2029-07-10';
+  const reference='2029-05-10';
   demo.version=APP_VERSION;
-  demo.settings={...demo.settings,journeyStart:'2026-01-14',travellers:2,lastDestinationKey:'cairo|egypt|2029-07-31'};
+  demo.settings={...demo.settings,journeyStart:'2026-01-14',travellers:2,lastDestinationKey:'Marrakesh|Morocco|2029-04-30'};
   demo.annualBudget=148000;
   demo.annualBudgets={'2026':90000,'2027':140000,'2028':145000,'2029':148000};
   const stays=[
@@ -1249,7 +1249,7 @@ function demoReviewState(){
     ['dublin29','Dublin','Ireland','2029-12-05','2029-12-30','Standard','EUR','€',1.72,4700,185]
   ];
   const schengenIds=new Set(['barcelona29','lisbon29']);
-  demo.itinerary=stays.map(([id,city,country,arrival,departure,type,currency,symbol,rate,budget,km])=>({id,coverageType:'Destination',city,country,arrival,departure,type,currency,symbol,rate,budget,km,schengenAllowed:true,schengenStart:schengenIds.has(id)?'2029-09-10':'',schengenEnd:schengenIds.has(id)?'2029-10-19':'',notes:id==='istanbul29'?'Current Istanbul simulation stay.':id==='lisbon29'?'Future Portugal stay.':id==='euroRV29'?'Planned European RV month.':'Completed simulation itinerary data.'}));
+  demo.itinerary=stays.map(([id,city,country,arrival,departure,type,currency,symbol,rate,budget,km])=>({id,coverageType:'Destination',city,country,arrival,departure,type,currency,symbol,rate,budget,km,schengenAllowed:true,schengenStart:schengenIds.has(id)?'2029-09-10':'',schengenEnd:schengenIds.has(id)?'2029-10-19':'',notes:id==='morocco29'?'Current Morocco simulation stay.':id==='lisbon29'?'Future Portugal stay.':id==='euroRV29'?'Planned European RV month.':'Completed simulation itinerary data.'}));
   const demoRoutes={
     motorhome27:['Munich','Salzburg','Innsbruck','Bolzano','Vaduz','Lucerne','Zurich','Freiburg','Stuttgart','Munich'],
     cruise28:['Rome','Barcelona','Lisbon','Miami'],
@@ -1270,13 +1270,13 @@ function demoReviewState(){
   const positionDate=(entry,fraction)=>{const span=Math.max(1,days(entry.arrival,entry.departure)-1);return addDaysLocal(entry.arrival,Math.max(0,Math.min(span,Math.floor(span*fraction))));};
   demo.itinerary.forEach(entry=>{
     if(entry.arrival>reference)return;
-    const isCurrent=entry.id==='istanbul29';
+    const isCurrent=entry.id==='morocco29';
     const shares=isCurrent?currentShares:completedShares;
     shares.forEach((share,index)=>{
       const date=positionDate(entry,[.12,.27,.43,.58,.73,.86][index]);
       if(date>reference)return;
       const amount=Math.max(1,Math.round(Number(entry.budget||0)*share));
-      exp.push({id:`sim-exp-${expenseNo++}`,date,category:categories[index],amount,currency:entry.currency,symbol:entry.symbol,rate:entry.rate,notes:isCurrent?['Istanbul groceries','Turkish cafés and meals','Istanbul local transport','Museums and Bosphorus activities','Markets and travel supplies','Laundry and small costs'][index]:'Completed journey living expense',verified:true});
+      exp.push({id:`sim-exp-${expenseNo++}`,date,category:categories[index],amount,currency:entry.currency,symbol:entry.symbol,rate:entry.rate,notes:isCurrent?['Marrakesh groceries','Moroccan cafés and meals','Taxi and local transport','Gardens and historic sites','Souk purchases and travel supplies','Laundry and small costs'][index]:'Completed journey living expense',verified:true});
     });
   });
   demo.expenses=exp;
@@ -1314,11 +1314,10 @@ function demoReviewState(){
   demo.reservations=reservations.map(record=>({...record,time:record.time||({Hotel:'15:00',Airbnb:'15:00',Flight:'09:00',Train:'10:00',Cruise:'16:00',RV:'09:00','Tickets & Attractions':'10:00'}[record.type]||'10:00')}));
 
   demo.events=[
-    {id:'evt-ist-1',title:'Topkapi Palace & Gülhane Park',date:'2029-07-11',time:'09:30',notes:'Palace and gardens morning.'},
-    {id:'evt-ist-2',title:'Bosphorus ferry & Kadıköy market',date:'2029-07-13',time:'10:00',notes:'Ferry crossing and market day.'},
-    {id:'evt-ist-3',title:'Istanbul Archaeology Museums',date:'2029-07-17',time:'10:00',notes:'Museum day.'},
-    {id:'evt-ist-4',title:'Grand Bazaar & Spice Bazaar',date:'2029-07-21',time:'10:30',notes:'Markets and old city.'},
-    {id:'evt-ist-5',title:'Prepare for Cairo transfer',date:'2029-07-30',time:'16:00',notes:'Pack and confirm flight and Cairo stay.'},
+    {id:'evt-mar-1',title:'Jardin Majorelle & YSL Museum',date:'2029-05-12',time:'10:00',notes:'Garden and museum morning.'},
+    {id:'evt-mar-2',title:'Marrakesh medina & souks',date:'2029-05-15',time:'10:00',notes:'Explore the medina, markets and historic lanes.'},
+    {id:'evt-mar-3',title:'Atlas Mountains day trip',date:'2029-05-20',time:'08:00',notes:'Full-day trip from Marrakesh.'},
+    {id:'evt-mar-4',title:'Prepare for Algiers transfer',date:'2029-05-30',time:'16:00',notes:'Pack, confirm flight and Algiers accommodation.'},
     {id:'evt-lis-1',title:'Belém and waterfront day',date:'2029-09-26',time:'10:00',notes:'Easy day — monastery, pastries and waterfront.'},
     {id:'evt-lis-2',title:'Lisbon Oceanarium',date:'2029-09-27',time:'11:00',notes:'Tickets already booked.'},
     {id:'evt-lis-3',title:'Alfama and Fado evening',date:'2029-09-29',time:'17:30',notes:'Dinner before the show.'},
@@ -1329,21 +1328,26 @@ function demoReviewState(){
     {id:'evt-ie-1',title:'Dublin museum day',date:'2029-12-12',time:'10:00',notes:'National Museum and city centre.'}
   ];
   demo.checklist=[
-    {id:'ck1',list:'Permanent',phase:'Before You Leave',task:'Check travel insurance remains current',done:false,due:'2029-07-29',required:true,notes:''},
-    {id:'ck2',list:'Permanent',phase:'Travel Day',task:'Charge iPad and power banks',done:false,due:'2029-07-31',required:true,notes:''},
-    {id:'ck3',list:'Permanent',phase:'Before You Leave',task:'Check passport validity and Vault copies',done:false,due:'2029-07-29',required:true,notes:''},
-    {id:'his1',list:'His',phase:'Current Stay',task:'Explore an Istanbul transport or motoring stop',done:false,due:'',required:false,notes:''},
+    {id:'ck1',list:'Permanent',phase:'Current Stay',task:'Check passports are stored safely',done:true,due:'',required:true,notes:''},
+    {id:'ck2',list:'Permanent',phase:'Before You Leave',task:'Check travel insurance remains current',done:true,due:'2029-05-29',required:true,notes:''},
+    {id:'ck3',list:'Permanent',phase:'Travel Day',task:'Charge iPad and power banks',done:false,due:'2029-05-31',required:true,notes:''},
+    {id:'ck4',list:'Destination',phase:'Before You Leave',task:'Confirm Algiers accommodation details',done:true,due:'2029-05-29',required:true,notes:'Algiers stay confirmed.'},
+    {id:'ck5',list:'Destination',phase:'Before You Leave',task:'Confirm Marrakesh to Algiers flight details',done:false,due:'2029-05-30',required:true,notes:''},
+    {id:'ck6',list:'Destination',phase:'Before You Leave',task:'Save Algiers offline map and key addresses',done:false,due:'2029-05-30',required:false,notes:''},
+    {id:'ck7',list:'Destination',phase:'Travel Day',task:'Check out in Marrakesh and travel to Algiers',done:false,due:'2029-05-31',required:true,notes:''},
+    {id:'ck8',list:'Destination',phase:'Arrival & Settle In',task:'Check in and confirm Algiers local transport',done:false,due:'2029-05-31',required:true,notes:''},
+    {id:'his1',list:'His',phase:'Current Stay',task:'Explore a Marrakesh transport or motoring stop',done:false,due:'',required:false,notes:''},
     {id:'his2',list:'His',phase:'Current Stay',task:'Check Carlton replay availability',done:true,due:'',required:false,notes:''},
-    {id:'hers1',list:'Hers',phase:'Current Stay',task:'Visit Istanbul bazaars and markets',done:false,due:'',required:false,notes:''},
-    {id:'hers2',list:'Hers',phase:'Current Stay',task:'Choose an Istanbul garden or historic site day',done:true,due:'',required:false,notes:''}
+    {id:'hers1',list:'Hers',phase:'Current Stay',task:'Visit Marrakesh souks and markets',done:false,due:'',required:false,notes:''},
+    {id:'hers2',list:'Hers',phase:'Current Stay',task:'Choose a Moroccan garden or historic site day',done:true,due:'',required:false,notes:''}
   ];
   demo.vault=[
     {id:'v1',name:'Cameron Passport',type:'Passport',owner:'Cameron',country:'Australia',reference:'P••••123',expiry:'2031-04-18',notes:'Australian passport',attachments:[]},
     {id:'v2',name:'Kym Passport',type:'Passport',owner:'Kym',country:'Australia',reference:'P••••456',expiry:'2030-11-02',notes:'Australian passport',attachments:[]},
     {id:'v3',name:'Annual Travel Insurance',type:'Insurance',owner:'Shared',country:'Worldwide',reference:'INS-2029',expiry:'2030-01-13',notes:'Emergency assistance details saved',attachments:[]},
     {id:'v4',name:'USA ESTA',type:'Visa',owner:'Shared',country:'United States',reference:'ESTA-2028',expiry:'2030-07-01',notes:'Both travellers approved',attachments:[]},
-    {id:'v5',name:'Istanbul Accommodation Details',type:'Accommodation details',owner:'Shared',country:'Turkey',reference:'ACCOM-ISTANBUL29',expiry:'',notes:'Current Istanbul accommodation — fully paid.',attachments:[]},
-    {id:'v6',name:'Cairo Accommodation Details',type:'Accommodation details',owner:'Shared',country:'Egypt',reference:'ACCOM-CAIRO29',expiry:'',notes:'Next Cairo stay details.',attachments:[]},
+    {id:'v5',name:'Marrakesh Accommodation Details',type:'Accommodation details',owner:'Shared',country:'Morocco',reference:'ACCOM-MOROCCO29',expiry:'',notes:'Current Marrakesh accommodation — fully paid.',attachments:[]},
+    {id:'v6',name:'European RV Booking',type:'Accommodation details',owner:'Shared',country:'Europe',reference:'RV-EURORV29',expiry:'',notes:'Lisbon pickup to Edinburgh return / finish details.',attachments:[]},
     {id:'v7',name:'Emergency Contact Australia',type:'Emergency contact',owner:'Shared',country:'Australia',reference:'',expiry:'',notes:'Family emergency contact details',attachments:[]}
   ];
   demo.alerts=[];
@@ -7387,8 +7391,8 @@ function vaultStreamingOverlay(){
       body=`<section class="vault-streaming-detail" aria-label="${esc(selectedApp.service)} password details"><button class="vault-streaming-back" type="button" data-streaming-back>‹ APPS</button><div class="vault-streaming-selected-brand">${brand(selectedApp)}</div><div class="vault-streaming-credential-readout"><div><span>OWNER</span><b>${esc(record.owner||'Shared')}</b></div><div><span>EMAIL</span><b>${esc(record.emailType||'—')}</b></div><div><span>PASSWORD</span><b class="vault-streaming-password">${password}</b>${record.code?`<button data-streaming-toggle="${record.id}">${revealed?'HIDE':'SHOW'}</button>`:''}</div></div><div class="vault-streaming-detail-actions"><button class="primary" data-streaming-edit-service>EDIT</button><button class="danger" data-streaming-delete="${record.id}">DELETE</button></div></section>`;
     }
   }
-  const emailUnlockAttrs=selectedApp?'':' data-streaming-email-unlock tabindex="0" aria-label="TV and Movies"';
-  return `<div class="vault-streaming-backdrop" data-vault-streaming-backdrop role="presentation"${vaultStreamingEmailOpen?' aria-hidden="true" inert':''}><section class="vault-streaming-panel" role="dialog" aria-modal="true" aria-label="TV and streaming passwords"><header><div><small>PRIVATE · LOCAL · OFFLINE</small><h2${emailUnlockAttrs}>TV &amp; MOVIES</h2><p>Tap an app to see Cameron / Kym, Yahoo / Apple and the password.</p></div><button class="vault-streaming-close" data-vault-streaming-close aria-label="Close streaming passwords">×</button></header><div class="vault-streaming-content">${body}</div><footer><span>Stored locally on this iPad.</span><button data-vault-streaming-close>CLOSE</button></footer></section></div>${vaultStreamingEmailOpen?vaultStreamingEmailOverlay():''}`;
+  const emailUnlockHeading=selectedApp?'<h2>TV &amp; MOVIES</h2>':'<button class="vault-streaming-email-unlock" type="button" data-streaming-email-unlock aria-label="TV and Movies"><span>TV &amp; MOVIES</span></button>';
+  return `<div class="vault-streaming-backdrop" data-vault-streaming-backdrop role="presentation"${vaultStreamingEmailOpen?' aria-hidden="true" inert':''}><section class="vault-streaming-panel" role="dialog" aria-modal="true" aria-label="TV and streaming passwords"><header><div><small>PRIVATE · LOCAL · OFFLINE</small>${emailUnlockHeading}<p>Tap an app to see Cameron / Kym, Yahoo / Apple and the password.</p></div><button class="vault-streaming-close" data-vault-streaming-close aria-label="Close streaming passwords">×</button></header><div class="vault-streaming-content">${body}</div><footer><span>Stored locally on this iPad.</span><button data-vault-streaming-close>CLOSE</button></footer></section></div>${vaultStreamingEmailOpen?vaultStreamingEmailOverlay():''}`;
 }
 function parseAppDateTimeValue(value){
   const text=String(value||'').trim();
@@ -8587,13 +8591,15 @@ function bindScreen(){
     const streamingEmailUnlock=document.querySelector('[data-streaming-email-unlock]');if(streamingEmailUnlock){
       let streamingEmailPhysicalAt=0;
       const registerStreamingEmailTap=(e,physical=false)=>{
-        e?.preventDefault?.();e?.stopPropagation?.();
+        if(e?.cancelable)e.preventDefault();e?.stopPropagation?.();
+        if(vaultStreamingService||vaultStreamingEditing)return;
         const now=Date.now();
-        // Safari may emit a synthetic click after a touch/pointer event. Never count that
-        // synthetic click as an additional tap.
-        if(!physical&&streamingEmailPhysicalAt&&now-streamingEmailPhysicalAt<700)return;
+        // iPad Safari can emit pointer/touch plus a delayed synthetic click for the same
+        // physical tap. The actual heading is now a button so text selection/zoom cannot
+        // steal the gesture; physical taps count once and click remains a fallback.
+        if(!physical&&streamingEmailPhysicalAt&&now-streamingEmailPhysicalAt<900)return;
         if(physical)streamingEmailPhysicalAt=now;
-        if(!vaultStreamingEmailLastTap||now-vaultStreamingEmailLastTap>2600)vaultStreamingEmailTapCount=0;
+        if(!vaultStreamingEmailLastTap||now-vaultStreamingEmailLastTap>3400)vaultStreamingEmailTapCount=0;
         vaultStreamingEmailLastTap=now;
         vaultStreamingEmailTapCount+=1;
         if(vaultStreamingEmailTapCount>=3){
@@ -8602,13 +8608,15 @@ function bindScreen(){
         }
       };
       if(typeof window!=='undefined'&&'PointerEvent' in window){
-        streamingEmailUnlock.onpointerup=e=>{if(e.button!==undefined&&e.button!==0)return;registerStreamingEmailTap(e,true);};
+        streamingEmailUnlock.onpointerdown=e=>{if(e.button!==undefined&&e.button!==0)return;registerStreamingEmailTap(e,true);};
       }else{
-        streamingEmailUnlock.ontouchend=e=>registerStreamingEmailTap(e,true);
+        streamingEmailUnlock.ontouchstart=e=>registerStreamingEmailTap(e,true);
       }
       streamingEmailUnlock.onclick=e=>registerStreamingEmailTap(e,false);
-      streamingEmailUnlock.ondblclick=e=>{e.preventDefault();e.stopPropagation();};
-      streamingEmailUnlock.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' '))registerStreamingEmailTap(e,false);};
+      streamingEmailUnlock.ondblclick=e=>{if(e.cancelable)e.preventDefault();e.stopPropagation();};
+      // Button keyboard activation naturally produces one click. Ignore held-key repeats
+      // without adding a second keyboard tap counter.
+      streamingEmailUnlock.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' '))return;if(e.repeat&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();}};
     }
     const closeVaultStreamingEmail=()=>{const returnToStreaming=vaultStreamingOpen;vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector(returnToStreaming?'[data-streaming-email-unlock]':'[data-vault-streaming-open]')?.focus());};
     document.querySelectorAll('[data-streaming-email-close]').forEach(button=>button.onclick=e=>{e.stopPropagation();closeVaultStreamingEmail();});
@@ -12037,7 +12045,7 @@ function coreRegressionFixtureIssues(){
   // and Reservations must not force sovereign Georgia/South Africa localities into the
   // conflicting US/Australian GA/SA region meanings.
   {const transportCases1149=[['Frankfurt Airport','Germany'],['Hamburg Cruise Terminal','Germany'],['Dresden Station','Germany'],['Nuremberg Train Station','Germany'],['Heidelberg Railway Station','Germany'],['Cologne Central Station','Germany'],['Vienna International Airport','Austria'],['Zurich Airport','Switzerland'],['Venice Cruise Terminal','Italy']];for(const [label,country] of transportCases1149){if(!countryIdentityEquals(journeyCountryForRoutePlace(label,''),country)||!countryIdentityEquals(toiletPhraseDepartureCountry(label,'Motorhome'),country))issues.push(`Regression fixture failed: transport-context route label ${label} loses ${country} country identity.`);}const ambiguousTransport1149=[['Cape Town Cruise Terminal, SA','South Africa'],['Seattle Cruise Terminal, WA','United States'],['Perth Airport, WA','Australia'],['Tbilisi Airport, GA','Georgia'],['Atlanta Airport, GA','United States']];for(const [label,country] of ambiguousTransport1149)if(!countryIdentityEquals(toiletPhraseDepartureCountry(label,'Motorhome'),country))issues.push(`Regression fixture failed: ambiguous transport departure ${label} loses ${country} toilet-language identity.`);const reservationConflicts1149=[['Tbilisi, GA','Georgia'],['Tbilisi Airport, GA','Georgia'],['Atlanta, GA','United States'],['Cape Town, SA','South Africa'],['Cape Town Cruise Terminal, SA','South Africa'],['Adelaide, SA','Australia']];for(const [label,country] of reservationConflicts1149)if(!countryIdentityEquals(reservationCountryName({destination:label}),country))issues.push(`Regression fixture failed: Reservation destination ${label} resolves to the wrong country.`);if(reservationCountryName({destination:'Perth, WA'})!==''||reservationCountryName({destination:'Darwin, NT'})!=='')issues.push('Regression fixture failed: Reservation namesake safety over-infers deliberately ambiguous WA/NT abbreviations.');}
-  {const bindSource1173=bindScreen.toString(),renderVaultSource1173=renderVault.toString(),streamOverlaySource1173=vaultStreamingOverlay.toString(),guardSource1173=scheduledScreenRefreshWouldDiscardDraft.toString();if(bindSource1173.includes('openVaultStreamingEmailStore(false)')||!bindSource1173.includes('openVaultStreamingEmailStore(true)')||!bindSource1173.includes('streamingOpen.onclick')||!bindSource1173.includes('streamingEmailUnlock.onpointerup')||!bindSource1173.includes('streamingEmailPhysicalAt')||!streamOverlaySource1173.includes('<h2${emailUnlockAttrs}>TV &amp; MOVIES</h2>')||!renderVaultSource1173.includes('vaultStreamingEmailOpen&&!vaultStreamingOpen')||!guardSource1173.includes('vaultStreamingOpen||vaultStreamingEmailOpen'))issues.push('Regression fixture failed: hidden Vault TV & Movies email triple-tap is not isolated to the actual heading, can double-count Safari synthetic clicks, or can be redrawn while editing.');}
+  {const bindSource1173=bindScreen.toString(),renderVaultSource1173=renderVault.toString(),streamOverlaySource1173=vaultStreamingOverlay.toString(),guardSource1173=scheduledScreenRefreshWouldDiscardDraft.toString();if(bindSource1173.includes('openVaultStreamingEmailStore(false)')||!bindSource1173.includes('openVaultStreamingEmailStore(true)')||!bindSource1173.includes('streamingOpen.onclick')||!bindSource1173.includes('streamingEmailUnlock.onpointerdown')||!bindSource1173.includes('streamingEmailPhysicalAt')||!streamOverlaySource1173.includes('vault-streaming-email-unlock')||!streamOverlaySource1173.includes('data-streaming-email-unlock')||!streamOverlaySource1173.includes('<span>TV &amp; MOVIES</span>')||!renderVaultSource1173.includes('vaultStreamingEmailOpen&&!vaultStreamingOpen')||!guardSource1173.includes('vaultStreamingOpen||vaultStreamingEmailOpen'))issues.push('Regression fixture failed: hidden Vault TV & Movies email triple-tap is not isolated to the actual heading, can double-count Safari synthetic clicks, or can be redrawn while editing.');}
   {const conflicts1150=[['Tbilisi, GA','Georgia'],['Tbilisi Airport, GA','Georgia'],['Cape Town, SA','South Africa'],['Cape Town Cruise Terminal, SA','South Africa'],['Atlanta, GA','United States'],['Adelaide, SA','Australia']];for(const [label,country] of conflicts1150)if(!countryIdentityEquals(journeyCountryForRoutePlace(label,''),country))issues.push(`Regression fixture failed: Journey route ${label} resolves to the wrong country.`);if(journeyCountryForRoutePlace('Perth, WA','')!==''||journeyCountryForRoutePlace('Darwin, NT','')!=='')issues.push('Regression fixture failed: Journey namesake safety over-infers deliberately ambiguous WA/NT abbreviations.');const savedService1150=vaultStreamingService,savedEditing1150=vaultStreamingEditing;try{vaultStreamingService='';vaultStreamingEditing=false;const root1150=vaultStreamingOverlay();vaultStreamingService=STREAMING_APP_CATALOG[0]?.service||'Netflix';vaultStreamingEditing=true;const editor1150=vaultStreamingOverlay();if(!root1150.includes('data-streaming-email-unlock')||editor1150.includes('data-streaming-email-unlock'))issues.push('Regression fixture failed: hidden Streaming email unlock can redraw and discard an active password editor draft.');}finally{vaultStreamingService=savedService1150;vaultStreamingEditing=savedEditing1150;}}
   // Batch 1151: "Port of …" is a common cruise-departure form. Resolve the
   // underlying locality consistently across Journey, Reservations and the Home toilet
@@ -12145,6 +12153,7 @@ function runFullWorkflowTest(){
     ok('Saved traveller default',testReservation.travellers===Number(state.settings.travellers||2));
     ok('Destination budget allocation',testReservation.destinationBudget==='Yes');
     ok('Destination budget figures support long currencies',budgetCurrencyFigure(987654321012.34,'VND','₫').includes('budget-amount-xxl')&&budgetCurrencyFigure(987654321012.34,'VND','₫').includes('VND'));
+    ok('Destination budget seven-digit figures use compact physical-iPad fit',budgetCurrencyFigure(115000,'TRY','₺').includes('budget-amount-md')&&!budgetCurrencyFigure(26000,'TRY','₺').includes('budget-amount-md'));
     ok('Accommodation supports manual budget allocation',reservationAutomaticBudget('Hotel','Yes')==='Yes'&&reservationAutomaticBudget('Airbnb','Yes')==='Yes');
     const accommodationForm=simpleReservationForm({type:'Hotel',currency:'EUR',original:100,rate:1.7,aud:170,status:'Paid'});
     ok('Accommodation preserves original currency while budget allocation remains selectable',accommodationForm.includes('<option value="EUR" selected>')&&accommodationForm.includes('data-reservation-budget-option="No"')&&accommodationForm.includes('data-reservation-budget-option="Yes"')&&!accommodationForm.includes('locked-aud'));
