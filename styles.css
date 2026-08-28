@@ -26046,3 +26046,172 @@ body[data-screen="journeys"] #screen .journey-overview-side-locked>.card{min-hei
 body[data-screen="journeys"] #screen .journey-history-support-row{grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:stretch!important}
 body[data-screen="journeys"] #screen .journey-history-support-row>.card{height:100%!important}
 @media(max-width:1050px) and (orientation:landscape){body[data-screen="journeys"] #screen .journey-overview-side-locked{grid-template-columns:1fr 1fr!important}body[data-screen="journeys"] #screen .journey-history-support-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+
+/* ========================================================================== */
+/* BATCH 1226 — FULL-SCREEN SCREENSHOT RECTIFICATION                          */
+/* 28 AUG 2026 — corrections from complete physical-iPad screenshot review.  */
+/* ========================================================================== */
+
+/* Budget Option 3: heading belongs at the top.  Older iPad breakpoint rules
+   made the new body order before the heading, which visually put the title at
+   the bottom of the widget. */
+body[data-screen="budget"] #screen .budget-destination-option3-card{
+  display:flex!important;flex-direction:column!important;gap:0!important;
+}
+body[data-screen="budget"] #screen .budget-destination-option3-card>h3{
+  order:0!important;flex:0 0 auto!important;margin:0 0 10px!important;
+}
+body[data-screen="budget"] #screen .budget-destination-option3-card>.budget-destination-option3{
+  order:1!important;flex:1 1 auto!important;width:100%!important;
+}
+/* Keep the Option 3 secondary surfaces visibly part of the aqua parent instead
+   of reverting to pasted-on navy boxes. */
+body[data-screen="budget"] #screen .budget-destination-option3-card .budget-destination-total{
+  background:linear-gradient(145deg,rgba(24,133,139,.50),rgba(6,64,72,.64))!important;
+}
+body[data-screen="budget"] #screen .budget-destination-context.option3>span,
+body[data-screen="budget"] #screen .budget-destination-option3-card .budget-period{
+  background:linear-gradient(145deg,rgba(17,92,103,.46),rgba(5,53,63,.58))!important;
+}
+body[data-screen="budget"] #screen .budget-reservations-merged-card .budget-reservation-category-list>button{
+  background:linear-gradient(145deg,rgba(111,23,70,.44),rgba(63,14,52,.46))!important;
+  border-color:rgba(255,128,190,.25)!important;
+}
+body[data-screen="budget"] #screen .budget-reservations-merged-card .budget-reservation-merged-head .reservation-status-summary>span{
+  background:rgba(120,28,73,.30)!important;
+}
+
+/* Journey History: the five analytics widgets now use the parent colour all the
+   way through.  Internal divisions are translucent tonal layers, not black/navy
+   cards sitting inside a coloured frame. */
+body[data-screen="journeys"] #screen .journey-overview-side-locked{
+  align-items:start!important;
+}
+body[data-screen="journeys"] #screen .journey-overview-side-locked>.card{
+  height:auto!important;min-height:0!important;align-self:start!important;
+}
+body[data-screen="journeys"] #screen .journey-side-spend-locked .journey-spend-chart{
+  flex:none!important;display:grid!important;grid-template-rows:none!important;gap:7px!important;
+}
+body[data-screen="journeys"] #screen .journey-side-spend-locked .journey-spend-bar-row{
+  min-height:39px!important;padding:4px 0!important;
+}
+body[data-screen="journeys"] #screen .journey-side-stats-locked .journey-snapshot-highlights{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;
+}
+body[data-screen="journeys"] #screen .journey-side-stats-locked .journey-snapshot-tile{
+  min-height:86px!important;
+  border-color:rgba(255,205,145,.28)!important;
+  background:linear-gradient(145deg,rgba(151,79,28,.25),rgba(92,49,17,.18))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.06)!important;
+}
+body[data-screen="journeys"] #screen .journey-side-stats-locked .journey-booking-summary{
+  padding:10px!important;border-color:rgba(255,198,125,.25)!important;
+  background:linear-gradient(145deg,rgba(137,70,22,.24),rgba(83,45,17,.17))!important;
+}
+body[data-screen="journeys"] #screen .journey-side-stats-locked .journey-booking-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;
+}
+body[data-screen="journeys"] #screen .journey-side-stats-locked .journey-booking-grid>div{
+  min-height:57px!important;padding:7px 8px!important;
+  border-color:rgba(255,203,139,.20)!important;
+  background:rgba(255,174,86,.065)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.045)!important;
+}
+body[data-screen="journeys"] #screen .journey-side-stats-locked .journey-km-summary{
+  min-height:48px!important;border-color:rgba(255,200,132,.24)!important;
+  background:rgba(255,175,91,.075)!important;
+}
+/* Cyan milestone parent. */
+body[data-screen="journeys"] #screen .journey-milestones-locked .journey-milestones>div{
+  min-height:86px!important;background:rgba(77,195,228,.075)!important;
+  border-right-color:rgba(126,225,247,.18)!important;border-bottom-color:rgba(126,225,247,.18)!important;
+}
+/* Gold destination totals parent. */
+body[data-screen="journeys"] #screen .journey-destination-totals-card .journey-destination-totals>button{
+  background:linear-gradient(145deg,rgba(255,207,79,.105),rgba(212,158,31,.055))!important;
+  border-color:rgba(255,218,111,.20)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.045)!important;
+}
+/* Violet travel-mix parent. */
+body[data-screen="journeys"] #screen .journey-travel-mix-card .journey-travel-mix-row{
+  background:linear-gradient(145deg,rgba(188,121,226,.105),rgba(111,70,150,.06))!important;
+  border-color:rgba(210,158,239,.20)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.045)!important;
+}
+body[data-screen="journeys"] #screen .journey-history-support-row>.card{
+  min-height:0!important;height:auto!important;align-self:start!important;
+}
+
+/* App Health: restore the approved compact 3 x 3 health grid at iPad landscape.
+   Outstanding travel work does not affect these green system-readiness cards. */
+@media (max-width:1100px) and (orientation:landscape){
+  body[data-screen="settings"] #screen .app-health-screen-list{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;padding:0 20px 20px!important;
+  }
+  body[data-screen="settings"] #screen .app-health-row>summary{
+    min-height:70px!important;padding:10px 9px!important;
+    grid-template-columns:12px 38px minmax(0,1fr) auto 14px!important;gap:7px!important;
+  }
+  body[data-screen="settings"] #screen .app-health-row-icon{width:36px!important;height:36px!important}
+  body[data-screen="settings"] #screen .app-health-row-icon svg{width:22px!important;height:22px!important}
+  body[data-screen="settings"] #screen .app-health-row-copy b{font-size:14px!important}
+  body[data-screen="settings"] #screen .app-health-row-copy small{font-size:10px!important}
+  body[data-screen="settings"] #screen .app-health-row strong{font-size:9px!important}
+}
+
+/* Checklist summary rows: due date and status previously competed for the same
+   narrow grid cell. Put the date below the task and reserve its own status area. */
+body[data-screen="checklist"] #screen .checklist-list-card .checklist-task-row-readonly{
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) auto!important;
+  grid-template-areas:"check task status" "check due status"!important;
+  column-gap:10px!important;row-gap:4px!important;
+  min-height:88px!important;padding:10px!important;align-items:center!important;
+}
+body[data-screen="checklist"] #screen .checklist-list-card .checklist-task-row-readonly>.check-readonly-box{grid-area:check!important}
+body[data-screen="checklist"] #screen .checklist-list-card .checklist-task-row-readonly>.check-task-copy{grid-area:task!important}
+body[data-screen="checklist"] #screen .checklist-list-card .checklist-task-row-readonly>.check-due{
+  grid-area:due!important;justify-self:start!important;text-align:left!important;white-space:nowrap!important;
+}
+body[data-screen="checklist"] #screen .checklist-list-card .checklist-task-row-readonly>.check-status{
+  grid-area:status!important;justify-self:end!important;align-self:center!important;white-space:nowrap!important;margin:0!important;
+}
+
+/* Hidden email overlay: preserve the left navigation, but make the entire email
+   card viewport-centred and visible regardless of how far down The Vault was
+   scrolled. The email overlay only exists while Streaming remains open. */
+body.vault-streaming-email-open{overflow:hidden!important}
+body.vault-streaming-email-open #screen{filter:none!important}
+body.vault-streaming-email-open #app>main{transform:none!important;overflow:visible!important}
+body[data-screen="vault"].vault-streaming-email-open .vault-streaming-email-backdrop{
+  position:fixed!important;top:0!important;bottom:0!important;right:0!important;left:var(--sidebar,232px)!important;
+  width:auto!important;height:100vh!important;padding:20px!important;display:grid!important;place-items:center!important;
+}
+body[data-screen="vault"].vault-streaming-email-open .vault-streaming-email-panel{
+  width:min(720px,calc(100% - 28px))!important;max-width:720px!important;
+  max-height:calc(100vh - 40px)!important;overflow:auto!important;margin:0!important;transform:none!important;
+}
+@media(max-width:1100px) and (orientation:landscape){
+  body[data-screen="vault"].vault-streaming-email-open .vault-streaming-email-backdrop{left:var(--sidebar,196px)!important;padding:14px!important}
+  body[data-screen="vault"].vault-streaming-email-open .vault-streaming-email-panel{max-height:calc(100vh - 28px)!important}
+}
+
+
+/* Batch 1227 — reservation dates use the app-wide Australian DD/MM/YYYY visual control. */
+#modal:has(.reservation-quick-form) .reservation-date-control{width:100%!important;min-height:54px!important}
+#modal:has(.reservation-quick-form) .reservation-date-control>b{min-height:54px!important;display:flex!important;align-items:center!important;padding:0 13px!important;font-size:17px!important;font-weight:800!important;color:#f4fbff!important;white-space:nowrap!important}
+#modal:has(.reservation-quick-form) .reservation-date-control input{min-height:54px!important}
+
+/* Batch 1227 — hidden email manager must always sit above the Streaming overlay. */
+body[data-screen="vault"].vault-streaming-email-open .vault-streaming-email-backdrop{z-index:2800!important}
+body[data-screen="vault"].vault-streaming-email-open .vault-streaming-email-panel{position:relative!important;z-index:1!important}
+
+
+/* Batch 1227 release audit — reservation dirty-state feedback stays fully visible above the sticky action bar. */
+#modal:has(.reservation-quick-form) .modal-feedback:empty{display:none!important}
+#modal:has(.reservation-quick-form) .modal-feedback:not(:empty){
+  position:sticky!important;bottom:71px!important;z-index:4!important;margin:0!important;padding:6px 18px!important;min-height:30px!important;
+  border-top:1px solid rgba(86,190,230,.28)!important;background:linear-gradient(90deg,#08263b,#0a3048)!important;
+  box-shadow:0 -8px 16px rgba(0,0,0,.16)!important;
+}

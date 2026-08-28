@@ -1,7 +1,7 @@
 {
   "name": "Travel Command Centre",
   "short_name": "Travel Command",
-  "start_url": "./index.html?v=4.5.677-shell-batch1225-20260828",
+  "start_url": "./index.html?v=4.5.680-shell-batch1229-20260829",
   "display": "standalone",
   "orientation": "landscape",
   "background_color": "#000000",
