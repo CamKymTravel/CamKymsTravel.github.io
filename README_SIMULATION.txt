@@ -8,3 +8,13 @@ This build uses a simulation-only local-storage key and will not intentionally u
 It is seeded with several years of itinerary, reservations, expenses, calendar items, checklist items, Vault records and accounts.
 
 The package is deliberately compact (under 100 files) while retaining the assets required by the seeded screenshot build and offline PWA shell.
+
+
+BATCH 1225 SCREENSHOT CONSOLIDATION
+- Calendar: one destination colour per date; approved month-grid composition restored.
+- Budget: Option 3 Destination Budget; Reservations Summary + Accounts side by side; Accounts has no combined total.
+- Journey Map controls compacted.
+- App Health checks system/data integrity, not unfinished travel tasks.
+- Journey History full-width map + balanced analytics and broader colour palette.
+- Vault hidden emails: unlock The Vault, then tap the sidebar compass/logo.
+- Screenshot simulation date: 10/07/2029, Istanbul.

@@ -1,9 +1,9 @@
 'use strict';
 
-const STORAGE_KEY = 'travelCommandCentre.v1.batch1221ScreenshotSimulation';
+const STORAGE_KEY = 'travelCommandCentre.v1.batch1225ScreenshotSimulation';
 const LEGACY_STORAGE_KEYS = [];
-const APP_VERSION = '4.5.677-continuity-batch1221-20260828';
-const APP_SHELL_REVISION = '4.5.677-shell-batch1221-20260828';
+const APP_VERSION = '4.5.677-continuity-batch1225-20260828';
+const APP_SHELL_REVISION = '4.5.677-shell-batch1225-20260828';
 const TCC_BACKUP_FORMAT = 'travel-command-centre-v1-canonical';
 const TCC_BACKUP_SCHEMA = 4;
 const MAX_JOURNEY_YEARS = 30;
@@ -1215,7 +1215,7 @@ function demoReviewState(){
   const demo=clone(defaultState);
   const reference='2029-07-10';
   demo.version=APP_VERSION;
-  demo.settings={...demo.settings,journeyStart:'2026-01-14',travellers:2,lastDestinationKey:'Istanbul|Turkey|2029-06-30'};
+  demo.settings={...demo.settings,journeyStart:'2026-01-14',travellers:2,lastDestinationKey:'Cairo|Egypt|2029-07-31'};
   demo.annualBudget=148000;
   demo.annualBudgets={'2026':90000,'2027':140000,'2028':145000,'2029':148000};
   const stays=[
@@ -1318,7 +1318,9 @@ function demoReviewState(){
   reservations.push(
     {id:`sim-res-${reservationNo++}`,title:'Lisbon Oceanarium',type:'Tickets & Attractions',date:'2029-09-27',currency:'EUR',original:50,rate:1.72,status:'Paid',destinationBudget:'Yes',travellers:2,itineraryId:'lisbon29',reference:'LIS-OCEAN-0627',notes:'Timed entry confirmed.',verified:true},
     {id:`sim-res-${reservationNo++}`,title:'Sintra Palaces Day',type:'Tickets & Attractions',date:'2029-10-02',currency:'EUR',original:72,rate:1.72,status:'Booked',destinationBudget:'Yes',travellers:2,itineraryId:'lisbon29',reference:'SINTRA-0702',notes:'Train and palace entries booked.',verified:true},
-    {id:`sim-res-${reservationNo++}`,title:'Edinburgh Castle',type:'Tickets & Attractions',date:'2029-11-16',currency:'GBP',original:46,rate:1.98,status:'Booked',destinationBudget:'Yes',travellers:2,itineraryId:'edinburgh29',reference:'EDIN-CASTLE-0816',notes:'Advance timed entry.',verified:true}
+    {id:`sim-res-${reservationNo++}`,title:'Edinburgh Castle',type:'Tickets & Attractions',date:'2029-11-16',currency:'GBP',original:46,rate:1.98,status:'Booked',destinationBudget:'Yes',travellers:2,itineraryId:'edinburgh29',reference:'EDIN-CASTLE-0816',notes:'Advance timed entry.',verified:true},
+    {id:`sim-res-${reservationNo++}`,title:'Cairo museum tickets',type:'Tickets & Attractions',date:'2029-08-04',currency:'EGP',original:0,rate:0.031,aud:0,status:'To Book',destinationBudget:'Yes',travellers:2,itineraryId:'cairo29',reference:'',notes:'Book after confirming the preferred museum day.',verified:true},
+    {id:`sim-res-${reservationNo++}`,title:'Lisbon Fado evening',type:'Tickets & Attractions',date:'2029-09-29',currency:'EUR',original:0,rate:1.72,aud:0,status:'To Book',destinationBudget:'Yes',travellers:2,itineraryId:'lisbon29',reference:'',notes:'Choose a small venue in Alfama.',verified:true}
   );
   demo.reservations=reservations.map(record=>({...record,time:record.time||({Hotel:'15:00',Airbnb:'15:00',Flight:'09:00',Train:'10:00',Cruise:'16:00',RV:'09:00','Tickets & Attractions':'10:00'}[record.type]||'10:00')}));
 
@@ -1354,11 +1356,13 @@ function demoReviewState(){
   demo.vault=[
     {id:'v1',name:'Cameron Passport',type:'Passport',owner:'Cameron',country:'Australia',reference:'P••••123',expiry:'2031-04-18',notes:'Australian passport',attachments:[]},
     {id:'v2',name:'Kym Passport',type:'Passport',owner:'Kym',country:'Australia',reference:'P••••456',expiry:'2030-11-02',notes:'Australian passport',attachments:[]},
-    {id:'v3',name:'Annual Travel Insurance',type:'Insurance',owner:'Shared',country:'Worldwide',reference:'INS-2029',expiry:'2030-01-13',notes:'Emergency assistance details saved',attachments:[]},
+    {id:'v3',name:'Annual Travel Insurance',type:'Insurance',owner:'Shared',country:'Worldwide',reference:'INS-2029',expiry:'2030-01-13',insuranceProvider:'Travel Cover',policyStart:'2029-01-14',assistancePhone:'+61 2 9000 2029',notes:'Emergency assistance details saved',attachments:[]},
     {id:'v4',name:'USA ESTA',type:'Visa',owner:'Shared',country:'United States',reference:'ESTA-2028',expiry:'2030-07-01',notes:'Both travellers approved',attachments:[]},
     {id:'v5',name:'Istanbul Accommodation Details',type:'Accommodation details',owner:'Shared',country:'Turkey',reference:'ACCOM-TURKEY29',expiry:'',notes:'Current Istanbul accommodation — fully paid.',attachments:[]},
     {id:'v6',name:'European RV Booking',type:'Accommodation details',owner:'Shared',country:'Europe',reference:'RV-EURORV29',expiry:'',notes:'Lisbon pickup to Edinburgh return / finish details.',attachments:[]},
-    {id:'v7',name:'Emergency Contact Australia',type:'Emergency contact',owner:'Shared',country:'Australia',reference:'',expiry:'',notes:'Family emergency contact details',attachments:[]}
+    {id:'v7',name:'Emergency Contact Australia',type:'Emergency contact',owner:'Shared',country:'Australia',reference:'+61 4 0000 0000',expiry:'',notes:'Family emergency contact details',attachments:[]},
+    {id:'v8',name:'Turkey Emergency Services',type:'Emergency contact',owner:'Shared',country:'Turkey',reference:'112',expiry:'',notes:'Local emergency services',attachments:[]},
+    {id:'v9',name:'Australian Embassy Ankara',type:'Emergency contact',owner:'Shared',country:'Turkey',reference:'+90 312 459 9500',expiry:'',notes:'Australian Embassy emergency contact',attachments:[]}
   ];
   demo.alerts=[];
   demo.accounts=[
@@ -4078,19 +4082,24 @@ function init(){
   nav.innerHTML = screens.map(([id,icon,label]) => `<button class="nav-btn" data-screen="${id}"><span class="nav-icon">${navIcon(icon)}</span><span class="nav-label">${label}</span></button>`).join('');
   const brandCompass=document.querySelector('.brand .logo');
   if(brandCompass){
-    const openToiletPhrase=e=>{if(screen!=='dashboard')return;e?.preventDefault?.();e?.stopPropagation?.();homeFocusWidget='';countryQuickLookCountry='';toiletPhraseOpen=true;render();requestAnimationFrame(()=>document.querySelector('.toilet-phrase-close')?.focus());};
-    brandCompass.addEventListener('click',openToiletPhrase);
-    brandCompass.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openToiletPhrase(e);});
+    const openBrandCompassShortcut=e=>{
+      if(screen==='dashboard'){
+        e?.preventDefault?.();e?.stopPropagation?.();homeFocusWidget='';countryQuickLookCountry='';toiletPhraseOpen=true;render();requestAnimationFrame(()=>document.querySelector('.toilet-phrase-close')?.focus());return;
+      }
+      if(screen==='vault'&&vaultUnlocked){
+        e?.preventDefault?.();e?.stopPropagation?.();vaultFocusWidget='';vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=true;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector('#streaming-email-cameron')?.focus());
+      }
+    };
+    brandCompass.addEventListener('click',openBrandCompassShortcut);
+    brandCompass.addEventListener('keydown',e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' '))openBrandCompassShortcut(e);});
   }
   document.addEventListener('click',e=>{
     // iPad Safari can emit a delayed synthetic click after the third physical tap.
     // If the hidden email store has just opened, swallow that one ghost click so it
     // cannot immediately close/replace the new popup or trigger the Streaming layer.
     if(screen==='vault'&&vaultStreamingEmailOpen&&vaultStreamingGestureGuardUntil>Date.now()){e.preventDefault();e.stopImmediatePropagation();return;}
-    if(screen==='vault'&&vaultStreamingOpen&&vaultStreamingEmailTapCount&&!e.target?.closest?.('[data-streaming-email-unlock]')){vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;}
   },true);
-  document.addEventListener('dblclick',e=>{const target=e.target?.closest?.('[data-vault-streaming-open],[data-streaming-email-unlock]');if(target){e.preventDefault();e.stopPropagation();}},true);
-  document.addEventListener('keydown',e=>{if(screen==='vault'&&vaultStreamingOpen&&vaultStreamingEmailTapCount){const unlock=e.target?.closest?.('[data-streaming-email-unlock]');if(!(unlock&&(e.key==='Enter'||e.key===' '))){vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;}}},true);
+  document.addEventListener('dblclick',e=>{const target=e.target?.closest?.('[data-vault-streaming-open]');if(target){e.preventDefault();e.stopPropagation();}},true);
   nav.addEventListener('click', e => { const b=e.target.closest('[data-screen]'); if(!b) return; if(screen==='vault'&&b.dataset.screen!=='vault'){vaultUnlocked=false;vaultUnlockTapCount=0;vaultUnlockLastTap=0;vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;vaultFocusWidget='';vaultRecordsExpanded=false;} if(screen==='dashboard'&&b.dataset.screen!=='dashboard'){toiletPhraseOpen=false;countryQuickLookCountry='';} screen=b.dataset.screen; render(); requestAnimationFrame(resetScreenScroll); });
   addBtn.addEventListener('click', () => { const action=headerActions[screen]; if(action) openForm(action.kind); });
   restoreInput.addEventListener('change', restoreFile);
@@ -4168,9 +4177,13 @@ function requirePinThenRender(){
 
 function syncBrandCompassInteraction(){
   const logo=document.querySelector('.brand .logo');if(!logo)return;
-  const active=screen==='dashboard';
-  if(active){logo.setAttribute('role','button');logo.setAttribute('tabindex','0');logo.setAttribute('aria-label','Travel phrase shortcut');}
-  else{logo.removeAttribute('role');logo.removeAttribute('tabindex');logo.removeAttribute('aria-label');}
+  if(screen==='dashboard'){
+    logo.setAttribute('role','button');logo.setAttribute('tabindex','0');logo.setAttribute('aria-label','Travel phrase shortcut');return;
+  }
+  if(screen==='vault'&&vaultUnlocked){
+    logo.setAttribute('role','button');logo.setAttribute('tabindex','0');logo.setAttribute('aria-label','Open private Vault email addresses');return;
+  }
+  logo.removeAttribute('role');logo.removeAttribute('tabindex');logo.removeAttribute('aria-label');
 }
 
 function render(){
@@ -5455,6 +5468,12 @@ function renderBudget(){
   const reservationStatusCounts={paid:reservations.filter(x=>x.status==='Paid').length,booked:reservations.filter(x=>x.status==='Booked').length,unpaid:reservations.filter(x=>x.status==='Unpaid').length,toBook:reservations.filter(x=>x.status==='To Book').length};
   const reservationOutstandingCount=reservations.filter(x=>x.status!=='To Book'&&reservationOutstandingAud(x)>.01).length;
   const unpaidReservationTotal=reservations.filter(x=>x.status!=='To Book').reduce((sum,x)=>sum+reservationOutstandingAud(x),0);
+  const budgetDestinationOption3Body=`<div class="budget-destination-option3"><div class="budget-destination-total"><span>TOTAL BUDGET</span><div class="budget-destination-total-value">${budgetCurrencyFigure(stayBudget,state.currentStay.currency,state.currentStay.symbol)}</div><small>≈ ${money(stayBudget*state.currentStay.rate)} AUD</small></div><div class="budget-destination-secondary"><div class="spent"><span>SPENT</span>${budgetCurrencyFigure(local,state.currentStay.currency,state.currentStay.symbol,'danger-text')}<small>≈ ${money(aud)} AUD</small></div><div class="remaining"><span>${stayRemaining>=0?'REMAINING':'OVER BUDGET'}</span>${budgetCurrencyFigure(Math.abs(stayRemaining),state.currentStay.currency,state.currentStay.symbol,stayRemaining>=0?'success':'danger-text')}<small>≈ ${money(Math.abs(stayRemaining)*state.currentStay.rate)} AUD</small></div></div><div class="budget-destination-context option3"><span><i class="budget-context-symbol">${iconSvg('calendar')}</i><em>DAILY ALLOWANCE</em><b>${localMoney(stayBudget/stayDaysTotal,state.currentStay.symbol)}</b><small>per day</small></span><span><i class="budget-context-symbol">${iconSvg('calendar')}</i><em>DAYS REMAINING</em><b>${Math.max(0,stayDayMetrics.remainingAfterToday)}</b><small>days</small></span><span><i class="budget-context-symbol exchange">↻</i><em>FIXED RATE</em><b>1 ${esc(state.currentStay.currency)} = ${moneyExact(state.currentStay.rate)} AUD</b><small>locked for this stay</small></span></div><div class="budget-period">Budget period: ${dateFmt(state.currentStay.start)} – ${dateFmt(state.currentStay.end)} (${stayDayMetrics.total} days)</div></div>`;
+  const budgetYearReservationRows=linkedReservations().filter(x=>!reservationWhollyBeforeJourney(x)&&inBudgetYear(reservationEffectiveBudgetDate(x),activeBudgetYear()));
+  const budgetYearStatusCounts={paid:budgetYearReservationRows.filter(x=>x.status==='Paid').length,booked:budgetYearReservationRows.filter(x=>x.status==='Booked').length,unpaid:budgetYearReservationRows.filter(x=>x.status==='Unpaid').length,toBook:state.reservations.filter(x=>x.status==='To Book'&&inBudgetYear(x.date,activeBudgetYear())).length};
+  const budgetYearBookedTotal=budgetYearReservationRows.reduce((sum,x)=>sum+reservationAudValue(x),0);
+  const budgetReservationRows=[...annualTravelBreakdown.map(row=>({label:row.label,count:row.count,total:row.total,icon:/Flight/i.test(row.label)?'flight':/Train/i.test(row.label)?'train':/Cruise/i.test(row.label)?'cruise':'motorhome'})),{label:'Accommodation',icon:'hotel',count:budgetYearReservationRows.filter(x=>isAccommodationReservation(x.type)).length,total:budgetYearReservationRows.filter(x=>isAccommodationReservation(x.type)).reduce((sum,x)=>sum+reservationAudValue(x),0)},{label:'Tickets & Other',icon:'tickets',count:budgetYearReservationRows.filter(x=>!reservationTravelCostLabel(x)&&!isAccommodationReservation(x.type)).length,total:budgetYearReservationRows.filter(x=>!reservationTravelCostLabel(x)&&!isAccommodationReservation(x.type)).reduce((sum,x)=>sum+reservationAudValue(x),0)}].filter(row=>row.count||row.total);
+  const budgetReservationMergedBody=`<div class="budget-reservation-merged-head"><div class="reservation-status-summary"><span class="paid"><b>${budgetYearStatusCounts.paid}</b> Paid</span><span class="booked"><b>${budgetYearStatusCounts.booked}</b> Booked</span><span class="unpaid"><b>${budgetYearStatusCounts.unpaid}</b> Unpaid</span><span class="tobook"><b>${budgetYearStatusCounts.toBook}</b> To Book</span></div><div class="reservation-total"><span>TOTAL BOOKED · ${activeBudgetYear()}</span><b>${money(budgetYearBookedTotal)}</b></div></div><div class="budget-reservation-category-list">${budgetReservationRows.length?budgetReservationRows.map(row=>`<button type="button" data-screen-jump="reservations"><i>${iconMarkup(row.icon,'budget-reservation-row-icon')}</i><span><b>${esc(row.label)}</b><small>${row.count} booking${row.count===1?'':'s'}</small></span><strong>${money(row.total)}</strong><em>›</em></button>`).join(''):empty('No booked reservations in this budget year.')}</div><div class="budget-reservation-merged-footer">All reservation costs remain allocated to their saved Annual or Destination/Trip budget.</div>`;
   const periodRange=budgetPeriodRange();
   const monthly=Array.from({length:12},(_,m)=>yearExpenses.filter(x=>parseDate(x.date)?.getMonth()===m).reduce((sum,x)=>sum+Number(x.amount||0)*Number(x.rate||1),0)+linkedReservations().filter(x=>{const d=reservationEffectiveBudgetDate(x);return isActualBudgetDate(d)&&parseDate(d)?.getMonth()===m;}).reduce((sum,x)=>sum+reservationAudValue(x),0));
   const maxMonth=Math.max(1,...monthly);
@@ -5590,7 +5609,7 @@ function renderBudget(){
   return `${cinematicHero('budget')}
   <section class="budget-rich-dashboard">
   <div class="budget-overview-grid">
-    ${activeDestination?(destinationBudgetSet?readabilityExpandableCard('DESTINATION BUDGET',`<div class="budget-destination-visual budget-destination-no-gauge"><div class="budget-three"><div><span>BUDGET</span>${budgetCurrencyFigure(stayBudget,state.currentStay.currency,state.currentStay.symbol)}<small>≈ ${money(stayBudget*state.currentStay.rate)} AUD</small></div><div><span>SPENT</span>${budgetCurrencyFigure(local,state.currentStay.currency,state.currentStay.symbol,'danger-text')}<small>≈ ${money(aud)} AUD</small></div><div><span>REMAINING</span>${budgetCurrencyFigure(Math.abs(stayRemaining),state.currentStay.currency,state.currentStay.symbol,stayRemaining>=0?'success':'danger-text')}<small>≈ ${money(Math.abs(stayRemaining)*state.currentStay.rate)} AUD</small></div></div></div><div class="budget-period">Budget period: ${dateFmt(state.currentStay.start)} – ${dateFmt(state.currentStay.end)} (${stayDayMetrics.total} days)</div><div class="budget-destination-context"><span><i class="budget-context-symbol">${iconSvg('calendar')}</i><em>Daily allowance</em><b>${localMoney(stayBudget/stayDaysTotal,state.currentStay.symbol)}</b></span><span><i class="budget-context-symbol">${iconSvg('calendar')}</i><em>Days remaining</em><b>${Math.max(0,stayDayMetrics.remainingAfterToday)}</b></span><span><i class="budget-context-symbol exchange">↻</i><em>Fixed rate</em><b>1 ${esc(state.currentStay.currency)} = ${moneyExact(state.currentStay.rate)} AUD</b></span></div>`,'budget-destination-card','budget','destinationSummary','Destination Budget'):readabilityExpandableCard('DESTINATION BUDGET',`<div class="budget-gap-panel compact"><b>DESTINATION BUDGET NOT SET</b><p>${localMoney(local,state.currentStay.symbol)} (${money(aud)} AUD) has been recorded for this stay. Remaining budget and daily allowance stay blank until a Destination Budget is saved.</p><div class="budget-period">Budget period: ${dateFmt(state.currentStay.start)} – ${dateFmt(state.currentStay.end)} (${stayDayMetrics.total} days)</div></div>`,'budget-destination-card budget-gap-card','budget','destinationSummary','Destination Budget')):currentItinerarySegment()?.coverageType==='Intentional Gap'?card('1. DESTINATION BUDGET · PLANNED TRAVEL DAY',`<div class="budget-gap-panel"><b>${esc(state.currentStay.city||'Intentional travel day')} is planned for ${dateFmt(itineraryReferenceDate())}.</b><p>No Destination Budget is active for day-to-day spending. Living expense entry is paused on this travel day because expenses must belong to a Destination Budget. Reservations can still be assigned to Annual Budget or a linked Destination Budget.</p></div>`,'budget-destination-card budget-gap-card'):journeyPlanningHorizonPassed()?card('1. DESTINATION BUDGET · PLANNING HORIZON ENDED',`<div class="budget-gap-panel"><b>The configured planning horizon ended ${dateFmt(journeyHorizonEndDate())}.</b><p>This date is outside the itinerary planning range, so no Destination Budget or Plan This Date action is available.</p></div>`,'budget-destination-card budget-gap-card'):journeyHasStarted()?card('1. DESTINATION BUDGET · NO ACTIVE STAY',`<div class="budget-gap-panel"><b>No itinerary entry covers ${dateFmt(itineraryReferenceDate())}.</b><p>Add or cover this date in Itinerary before entering living expenses. Reservations can still be assigned to Annual Budget or Destination Budget when linked.</p><button class="primary" data-plan-itinerary-date="${itineraryReferenceDate()}">PLAN THIS DATE</button></div>`,'budget-destination-card budget-gap-card'):card('1. DESTINATION BUDGET · JOURNEY NOT STARTED',`<div class="budget-gap-panel"><b>Journey starts ${dateFmt(state.settings?.journeyStart)}.</b><p>Destination calculations are waiting for travel to begin. Living expense entry stays unavailable until a Destination Budget is active; future confirmed reservations remain visible as commitments.</p></div>`,'budget-destination-card budget-gap-card')}
+    ${activeDestination?(destinationBudgetSet?readabilityExpandableCard('DESTINATION BUDGET',budgetDestinationOption3Body,'budget-destination-card budget-destination-option3-card','budget','destinationSummary','Destination Budget'):readabilityExpandableCard('DESTINATION BUDGET',`<div class="budget-gap-panel compact"><b>DESTINATION BUDGET NOT SET</b><p>${localMoney(local,state.currentStay.symbol)} (${money(aud)} AUD) has been recorded for this stay. Remaining budget and daily allowance stay blank until a Destination Budget is saved.</p><div class="budget-period">Budget period: ${dateFmt(state.currentStay.start)} – ${dateFmt(state.currentStay.end)} (${stayDayMetrics.total} days)</div></div>`,'budget-destination-card budget-gap-card','budget','destinationSummary','Destination Budget')):currentItinerarySegment()?.coverageType==='Intentional Gap'?card('1. DESTINATION BUDGET · PLANNED TRAVEL DAY',`<div class="budget-gap-panel"><b>${esc(state.currentStay.city||'Intentional travel day')} is planned for ${dateFmt(itineraryReferenceDate())}.</b><p>No Destination Budget is active for day-to-day spending. Living expense entry is paused on this travel day because expenses must belong to a Destination Budget. Reservations can still be assigned to Annual Budget or a linked Destination Budget.</p></div>`,'budget-destination-card budget-gap-card'):journeyPlanningHorizonPassed()?card('1. DESTINATION BUDGET · PLANNING HORIZON ENDED',`<div class="budget-gap-panel"><b>The configured planning horizon ended ${dateFmt(journeyHorizonEndDate())}.</b><p>This date is outside the itinerary planning range, so no Destination Budget or Plan This Date action is available.</p></div>`,'budget-destination-card budget-gap-card'):journeyHasStarted()?card('1. DESTINATION BUDGET · NO ACTIVE STAY',`<div class="budget-gap-panel"><b>No itinerary entry covers ${dateFmt(itineraryReferenceDate())}.</b><p>Add or cover this date in Itinerary before entering living expenses. Reservations can still be assigned to Annual Budget or Destination Budget when linked.</p><button class="primary" data-plan-itinerary-date="${itineraryReferenceDate()}">PLAN THIS DATE</button></div>`,'budget-destination-card budget-gap-card'):card('1. DESTINATION BUDGET · JOURNEY NOT STARTED',`<div class="budget-gap-panel"><b>Journey starts ${dateFmt(state.settings?.journeyStart)}.</b><p>Destination calculations are waiting for travel to begin. Living expense entry stays unavailable until a Destination Budget is active; future confirmed reservations remain visible as commitments.</p></div>`,'budget-destination-card budget-gap-card')}
     ${activeDestination?(destinationBudgetSet?readabilityExpandableCard('DAILY & STAY PACE',`<div class="budget-pace-subtitle">Simple stay status — green, amber or red</div><div class="budget-pace-refined pace-${paceHealth}"><div class="budget-pace-ring pace-${paceHealth}" style="--pace:${graphPercent(paceDial)}"><div class="budget-pace-ring-marker"></div><div class="budget-pace-ring-core"><small>${paceHealthLabel}</small><b class="pace-health-word">${paceHealthWord}</b><em>${actualStayPct.toFixed(0)}% actual spend · ${stayElapsedPct.toFixed(0)}% stay elapsed</em></div></div><div class="budget-pace-bars"><span><i class="pace-side-icon">◷</i><small>STAY ELAPSED</small><b>${stayElapsedPct.toFixed(0)}%</b><em><u style="width:${graphPercent(stayElapsedPct)}%"></u></em></span><span class="pace-spend-${paceHealth}"><i class="pace-side-icon">$</i><small>SPEND PACE</small><b>${actualStayPct.toFixed(0)}%</b><em><u style="width:${graphPercent(actualStayPct)}%"></u></em></span></div></div><div class="budget-pace-bottom-locked"><span><i>${iconSvg('budget')}</i><small>DAILY BUDGET</small><b>${localMoney(plannedDailySpend,state.currentStay.symbol)}</b><em>per day</em></span><span><i>${iconSvg('linechart')}</i><small>ACTUAL DAILY</small><b class="${actualDailySpend<=plannedDailySpend*Number(state.currentStay.rate||1)?'success':'danger-text'}">${localMoney(actualDailySpend/Math.max(Number(state.currentStay.rate||1),.000001),state.currentStay.symbol)}</b><em>per day</em></span><span><i>${iconSvg('suitcase')}</i><small>PROJECTED STAY SPEND</small><b>${localMoney(projectedStaySpend/Math.max(Number(state.currentStay.rate||1),.000001),state.currentStay.symbol)}</b><em>≈ ${money(projectedStaySpend)} AUD</em></span></div><p class="budget-pace-note ${projectedStayVariance<=0?'under':'over'}">✓ You are ${paceHealth==='green'?'on pace':paceHealth==='amber'?'close to your pace limit':'over pace'} and projected to be ${projectedStayVariance<=0?'under':'over'} budget by ≈ ${money(Math.abs(projectedStayVariance))} AUD</p>`,'budget-status-card','budget','pace','Daily and Stay Pace'):readabilityExpandableCard('DAILY & STAY PACE',`<div class="budget-gap-panel compact"><b>DESTINATION PACE PAUSED</b><p>Set a Destination Budget before calculating daily allowance, spend pace or projected budget variance. Actual spending continues to be recorded.</p><div class="budget-period">Stay elapsed: ${stayElapsedPct.toFixed(0)}% · ${stayDaysElapsed} of ${stayDayMetrics.total} owned days</div></div>`,'budget-status-card budget-gap-card','budget','pace','Daily and Stay Pace')):card('DESTINATION STATUS',`<div class="budget-gap-panel compact"><b>${!journeyHasStarted()?'Waiting for Journey Start':journeyPlanningHorizonPassed()?'Planning horizon ended':currentItinerarySegment()?.coverageType==='Intentional Gap'?'Planned travel day':'Destination calculations paused'}</b><p>${!journeyHasStarted()?`Destination pace begins on ${dateFmt(state.settings?.journeyStart)}.`:journeyPlanningHorizonPassed()?`Destination pace is inactive after ${dateFmt(journeyHorizonEndDate())}, the end of the configured planning horizon.`:currentItinerarySegment()?.coverageType==='Intentional Gap'?'Destination pace is intentionally paused during this transition. Annual AUD tracking continues normally.':'There is no active itinerary destination on the reference date.'}</p></div>`,'budget-status-card budget-gap-card')}
   </div>
   <div class="budget-approved-analytics">
@@ -5604,11 +5623,10 @@ function renderBudget(){
   </section>
   <div class="budget-workspace gap-top">
     ${card(`<span class="budget-expenses-title premium-panel-heading">${iconMarkup('coins','premium-panel-heading-icon')}<span>${expenseSectionTitle}</span></span><button class="budget-section-add" data-add="expenses">＋ Add Expense</button>`,`<div class="budget-period-tabs">${[['stay',currentItinerarySegment()?'THIS STAY':journeyHasStarted()?'THIS DATE':'THIS STAY'],['week','WEEK'],['month','MONTH'],['3months','3 MONTHS'],['6months','6 MONTHS']].map(([key,label])=>`<button class="period-${key} ${budgetPeriod===key?'active':''}" data-budget-period="${key}">${label}</button>`).join('')}</div><div class="expense-toolbar expense-toolbar-locked"><div class="expense-context-card currency"><i class="expense-context-art currency-art">${iconSvg('coins')}</i><span>${expenseContextLabel}</span><b>${esc(expenseContextValue)}</b><small>${expenseContextNote}</small></div><div class="expense-context-card date"><i class="expense-context-art">${iconSvg('calendar')}</i><span>ENTRY DATE</span><b>${dateFmt(itineraryReferenceDate())}</b><small>Uses the iPad clock</small></div><button id="undo-last-expense" class="expense-tool-card secondary"><i class="expense-context-art">${iconSvg('undo')}</i><b>Undo Last Entry</b><small>New expenses added from Add Expense</small></button></div><div class="expense-period-range"><span>${budgetPeriodLabel()}</span><b>${periodRange.inactive?`NOT ACTIVE · Journey starts ${dateFmt(state.settings?.journeyStart)}`:`${dateFmt(periodRange.start)} – ${dateFmt(periodRange.end)}`}</b><small>${filteredExpenses.length} entr${filteredExpenses.length===1?'y':'ies'}</small></div>${expenseTable(filteredExpenses)}<div class="expense-period-insights"><span class="insight-average">${iconMarkup('bars','expense-insight-icon')}<small>AVERAGE ENTRY</small><b>${filteredAverageLocal===null?'—':localMoney(filteredAverageLocal,filteredAverageSymbol)}</b><em>${money(filteredAverage)} AUD</em></span><span class="insight-largest">${iconMarkup('star','expense-insight-icon')}<small>LARGEST ENTRY</small><b>${largestFiltered?localMoney(Number(largestFiltered.amount||0),largestFiltered.symbol||state.currentStay.symbol):localMoney(0,state.currentStay.symbol)}</b>${largestFiltered?`<em>${esc(largestFiltered.category)} · ${money(largestFilteredAud)} AUD</em>`:''}</span><span class="insight-count">${iconMarkup('list','expense-insight-icon')}<small>ENTRIES</small><b>${filteredExpenses.length}</b><em>${budgetPeriodLabel()}</em></span></div><div class="expense-period-total"><span>${budgetPeriodLabel()} total</span><b>${money(filteredExpenseAud)}</b></div>`,'budget-expenses-card')}
-    <aside class="budget-side-stack">
-      ${readabilityExpandableCard('RESERVATIONS · READ ONLY SUMMARY',`${reservationSummary.length?`<div class="reservation-summary-list">${reservationSummary.map(x=>`<button data-screen-jump="reservations"><span>${esc(x.type)} <small>(${x.count})</small></span><b>${money(x.total)}</b><small class="pill ${x.status==='Paid'?'green':x.status==='Booked'?'yellow':x.status==='Unpaid'?'red':''}">${esc(x.status)}</small></button>`).join('')}</div>`:empty(reservationEmptyText)}<div class="reservation-status-summary"><span class="paid"><b>${reservationStatusCounts.paid}</b> Paid</span><span class="booked"><b>${reservationStatusCounts.booked}</b> Booked</span><span class="unpaid"><b>${reservationStatusCounts.unpaid}</b> Unpaid</span><span class="tobook"><b>${reservationStatusCounts.toBook}</b> To Book</span></div><div class="reservation-allocation"><span>Destination budget <b>${money(destinationAllocated)}</b></span><span>Annual budget <b>${money(annualAllocated)}</b></span><span>Outstanding unpaid <b class="${unpaidReservationTotal?'danger-text':''}">${money(unpaidReservationTotal)}</b></span></div><div class="reservation-total"><span>TOTAL BOOKED (AUD)</span><b>${money(bookedTotal)}</b></div>`,'budget-reservations-card','budget','reservations','Reservations read only summary')}
-      ${readabilityExpandableCard(`TRAVEL BETWEEN DESTINATIONS · ${activeBudgetYear()}`,`<div class="budget-travel-cost-list">${annualTravelBreakdown.map(row=>`<div><span><b>${esc(row.label)}</b><small>${row.count} booking${row.count===1?'':'s'}</small></span><strong>${money(row.total)}</strong></div>`).join('')}</div><div class="budget-travel-cost-total"><span>TRAVEL RESERVATION TOTAL</span><b>${money(annualTravelTotal)}</b><small>Reservation travel history · allocation remains with its Annual or Destination/Trip budget</small></div>`,'budget-travel-cost-card','budget','travelCosts','Travel between destinations')}
-      ${readabilityExpandableCard('ACCOUNTS · AUD',`${accountList(false)}<p class="muted account-readonly-note">Display only · tap anywhere on this widget to manage account details.</p>`,'budget-accounts-card','budget','accounts','Accounts AUD')}
-    </aside>
+  </div>
+  <div class="budget-summary-pair gap-top">
+    ${readabilityExpandableCard('RESERVATIONS SUMMARY',budgetReservationMergedBody,'budget-reservations-card budget-reservations-merged-card','budget','reservations','Reservations summary')}
+    ${readabilityExpandableCard('ACCOUNTS · AUD',`${accountList(false)}<p class="muted account-readonly-note">Balances are read-only · tap this widget to manage account details.</p>`,'budget-accounts-card budget-accounts-paired-card','budget','accounts','Accounts AUD')}
   </div>
   <div class="budget-monthly-wide gap-top">${readabilityExpandableCard('MONTHLY SPEND HISTORY',`${historyYearSwitch}<div class="budget-history-standard-meta"><span><small>VIEWING</small><b>${historyYear}</b><em>${historyYearLabel}</em></span><span><small>${historyBudget?'AVERAGE MONTHLY TARGET':'ANNUAL BUDGET'}</small><b>${historyBudget?money(historyAverageMonthlyTarget):'—'}</b><em>${historyBudget?(historyIsPartialFirstYear?'day-weighted across the partial first budget year':'annual budget allocated by calendar days'):'No budget saved'}</em></span></div><div class="month-chart budget-history-standard-chart">${historyMonthly.map((v,i)=>`<div class="month-col ${historyIsCurrent&&i===currentMonth?'current-month':''}"><b>${money(v)}</b><div><i style="height:${Math.max(3,graphPercent(graphNumber(v)/Math.max(1,graphNumber(historyChartMax))*100))}%"></i>${historyBudget&&historyMonthlyTargets[i]>0?`<em style="bottom:${graphPercent(graphNumber(historyMonthlyTargets[i])/Math.max(1,graphNumber(historyChartMax))*100)}%"></em>`:''}</div><span>${new Date(2020,i,1).toLocaleDateString('en-AU',{month:'short'})}</span></div>`).join('')}</div><div class="budget-month-summary budget-history-summary"><span><i class="month-summary-icon">${iconSvg('linechart')}</i><em>${historyIsCurrent?'Year to Date':historyIsUpcoming?'Recorded Spend':'Year Total'}</em><b>${money(historyTotal)}</b><small>${historyPopulated} recorded month${historyPopulated===1?'':'s'}</small></span><span><i class="month-summary-icon">${iconSvg('bars')}</i><em>Average / Recorded Month</em><b>${money(historyAverage)}</b></span><span><i class="month-summary-icon">${iconSvg('trophy')}</i><em>Peak Month</em><b>${historyPopulated?monthName(historyPeakIndex):'—'}</b><small>${historyPopulated?money(historyMonthly[historyPeakIndex]):'No spend recorded'}</small></span><span><i class="month-summary-icon">${iconSvg('target')}</i><em>Annual Budget Position</em><b class="${historyBudget?(historyBudgetVariance>=0?'success':'danger-text'):''}">${historyBudget?`${money(Math.abs(historyBudgetVariance))} ${historyBudgetVariance>=0?'UNDER':'OVER'}`:'No budget'}</b></span></div>`,'budget-monthly-card','budget','monthly','Monthly Spend History')}</div>
   </section>${budgetFocusMeta?readabilityFocusOverlay('budget',budgetFocusMeta.title,budgetFocusMeta.content,budgetFocusMeta.tone,budgetFocusMeta.footer||'Budget detail views are read-only summaries. Existing Budget controls and calculations remain unchanged.'):''}`;
@@ -6811,7 +6829,7 @@ function renderCalendarDayView(date){
   const transition=calendarTransitionForDate(date),entry=transition?.arriving||itineraryEntryForDate(date),band=travelBandForDate(date),items=calendarDayItems(date),dayLabel=parseDate(date).toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   const accentEntry=transition?.arriving||entry;
   const accent=accentEntry?calendarDestinationColour(itineraryTitle(accentEntry)):'#2f7cff';
-  const secondaryAccent=transition?.departing?calendarDestinationColour(itineraryTitle(transition.departing)):accent;
+  const secondaryAccent=accent;
   const contextTitle=transition?`${transition.departing.city||itineraryTitle(transition.departing)} → ${transition.arriving.city||itineraryTitle(transition.arriving)}`:band.label;
   const schedule=[];
   const addSchedule=(time,title,detail,icon,action,sortKey)=>{const clock=reservationClockMinutes(time);schedule.push({time:time||'ALL DAY',title,detail,icon,action,sortKey:sortKey??(clock===null?9000:clock)});};
@@ -6867,8 +6885,8 @@ function renderCalendar(){
   let cells='';
   for(let i=0;i<42;i++){
     const d=new Date(start);d.setDate(start.getDate()+i);const key=isoLocal(d),dayItems=itemsByDate.get(key)||[],transition=calendarTransitionForDate(key),band=travelBandForDate(key,calendarContext),entry=transition?.arriving||itineraryEntryForDate(key),showStayLabel=Boolean(entry&&(entry.arrival===key||(entry.coverageType==='Destination'&&segmentStartKeys.has(`${entry.id}|${key}`)))),colour=entry?calendarDestinationColour(itineraryTitle(entry)):'';
-    const transitionStyle=transition?`--departing-colour:${calendarDestinationColour(itineraryTitle(transition.departing))};--arriving-colour:${calendarDestinationColour(itineraryTitle(transition.arriving))};`:'';
-    const shading=transition?'<div class="day-shading transition-shading"><i class="departing"></i><i class="arriving"></i></div>':'<div class="day-shading"></div>';
+    const transitionStyle='';
+    const shading='<div class="day-shading"></div>';
     const stayLabel=transition?`<div class="destination-stay-label transition-label"><b><span>${esc(transition.departing.city||itineraryTitle(transition.departing))}</span><i>→</i><span>${esc(transition.arriving.city||itineraryTitle(transition.arriving))}</span></b><small>DEPART / ARRIVE</small></div>`:showStayLabel?`<div class="destination-stay-label"><b>${esc(entry.coverageType==='Intentional Gap'?(entry.intentionalLabel||'Intentional gap'):itineraryTitle(entry))}</b><small>${esc(band.statusLabel)}</small></div>`:'';
     const majorDay=Boolean(transition||dayItems.length>=2||dayItems.some(x=>/(flight|train|cruise|motorhome|\brv\b|day trip|tour)/i.test(`${x.type||''} ${x.title||''}`)));
     const visibleEventLimit=majorDay?2:1;
@@ -6879,8 +6897,8 @@ function renderCalendar(){
   }
   const agendaRows=agendaItems.length?agendaItems.map(x=>{
     const meta=calendarEventMeta(x),transition=calendarTransitionForDate(x.date),entry=transition?.arriving||itineraryEntryForDate(x.date),band=travelBandForDate(x.date,calendarContext);
-    const agendaPrimary=transition?calendarDestinationColour(itineraryTitle(transition.departing)):entry?calendarDestinationColour(itineraryTitle(entry)):band.status==='unplanned'?'#85384a':band.status==='intentional-gap'?'#4f91b9':'#2f7cff';
-    const agendaSecondary=transition?calendarDestinationColour(itineraryTitle(transition.arriving)):agendaPrimary;
+    const agendaPrimary=entry?calendarDestinationColour(itineraryTitle(entry)):band.status==='unplanned'?'#85384a':band.status==='intentional-gap'?'#4f91b9':'#2f7cff';
+    const agendaSecondary=agendaPrimary;
     const agendaTone=transition?'agenda-transition':entry?.coverageType==='Intentional Gap'?'agenda-intentional':band.status==='unplanned'?'agenda-unplanned':'agenda-destination';
     return `<button class="agenda-row calendar-${meta.className} ${agendaTone}" style="--agenda-colour:${agendaPrimary};--agenda-secondary-colour:${agendaSecondary}" data-event="${x.source}:${x.id}"><span class="agenda-date"><b>${parseDate(x.date).getDate()}</b><small>${parseDate(x.date).toLocaleDateString('en-AU',{month:'short'})}</small></span><span class="agenda-icon">${meta.icon}</span><span><b>${esc(x.title)}</b><small>${esc(meta.label)}${x.time?` · ${esc(x.time)}`:''}</small></span><em>${x.source==='reservations'?esc(x.status||'Booked'):x.source==='checklist'?(x.done?'Done':'Checklist'):'Personal'}</em></button>`;
   }).join(''):empty(calendarSelectedDate?'No events on this selected date.':'No events for this month.');
@@ -7524,7 +7542,7 @@ function vaultIssueList(){
 function vaultSectionIcon(type){return type==='Passport'?iconMarkup('itinerary','vault-mark'):type==='Visa'?iconMarkup('tickets','vault-mark'):type==='Insurance'?iconMarkup('checklist','vault-mark'):type==='Accommodation details'?iconMarkup('hotel','vault-mark'):'<span class="emergency-cross vault-emergency-cross">+</span>'; }
 function vaultStreamingEmailOverlay(){
   const emails=streamingEmailAddresses(state.settings?.streamingEmails);
-  return `<div class="vault-streaming-email-backdrop" data-streaming-email-backdrop><section class="vault-streaming-email-panel" role="dialog" aria-modal="true" aria-label="Hidden streaming email addresses"><header><div><small>PRIVATE · LOCAL · OFFLINE</small><h3>EMAIL ADDRESSES</h3></div><button type="button" data-streaming-email-close aria-label="Close email addresses">×</button></header><div class="vault-streaming-email-fields"><label><span>CAMERON</span><input id="streaming-email-cameron" type="email" value="${esc(emails.Cameron)}" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Email address"></label><label><span>KYM</span><input id="streaming-email-kym" type="email" value="${esc(emails.Kym)}" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Email address"></label></div><div class="vault-streaming-email-actions"><button type="button" data-streaming-email-close>CANCEL</button><button class="primary" type="button" data-streaming-email-save>SAVE EMAILS</button></div></section></div>`;
+  return `<div class="vault-streaming-email-backdrop" data-streaming-email-backdrop><section class="vault-streaming-email-panel" role="dialog" aria-modal="true" aria-label="Private Vault email addresses"><header><div><small>PRIVATE · LOCAL · OFFLINE</small><h3>EMAIL ADDRESSES</h3></div><button type="button" data-streaming-email-close aria-label="Close email addresses">×</button></header><div class="vault-streaming-email-fields"><label><span>CAMERON</span><input id="streaming-email-cameron" type="email" value="${esc(emails.Cameron)}" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Email address"></label><label><span>KYM</span><input id="streaming-email-kym" type="email" value="${esc(emails.Kym)}" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Email address"></label></div><div class="vault-streaming-email-actions"><button type="button" data-streaming-email-close>CANCEL</button><button class="primary" type="button" data-streaming-email-save>SAVE EMAILS</button></div></section></div>`;
 }
 function vaultStreamingOverlay(){
   const rows=Array.isArray(state.streamingCodes)?state.streamingCodes:[];
@@ -7548,7 +7566,7 @@ function vaultStreamingOverlay(){
       body=`<section class="vault-streaming-detail" aria-label="${esc(selectedApp.service)} password details"><button class="vault-streaming-back" type="button" data-streaming-back>‹ APPS</button><div class="vault-streaming-selected-brand">${brand(selectedApp)}</div><div class="vault-streaming-credential-readout"><div><span>OWNER</span><b>${esc(record.owner||'Shared')}</b></div><div><span>EMAIL</span><b>${esc(record.emailType||'—')}</b></div><div><span>PASSWORD</span><b class="vault-streaming-password">${password}</b>${record.code?`<button data-streaming-toggle="${record.id}">${revealed?'HIDE':'SHOW'}</button>`:''}</div></div><div class="vault-streaming-detail-actions"><button class="primary" data-streaming-edit-service>EDIT</button><button class="danger" data-streaming-delete="${record.id}">DELETE</button></div></section>`;
     }
   }
-  const emailUnlockHeading=selectedApp?'<h2>TV &amp; MOVIES</h2>':'<button class="vault-streaming-email-unlock" type="button" data-streaming-email-unlock aria-label="TV and Movies"><span>TV &amp; MOVIES</span></button>';
+  const emailUnlockHeading='<h2>TV &amp; MOVIES</h2>';
   return `<div class="vault-streaming-backdrop" data-vault-streaming-backdrop role="presentation"${vaultStreamingEmailOpen?' aria-hidden="true" inert':''}><section class="vault-streaming-panel" role="dialog" aria-modal="true" aria-label="TV and streaming passwords"><header><div><small>PRIVATE · LOCAL · OFFLINE</small>${emailUnlockHeading}<p>Tap an app to see Cameron / Kym, Yahoo / Apple and the password.</p></div><button class="vault-streaming-close" data-vault-streaming-close aria-label="Close streaming passwords">×</button></header><div class="vault-streaming-content">${body}</div><footer><span>Stored locally on this iPad.</span><button data-vault-streaming-close>CLOSE</button></footer></section></div>${vaultStreamingEmailOpen?vaultStreamingEmailOverlay():''}`;
 }
 function parseAppDateTimeValue(value){
@@ -8578,7 +8596,6 @@ function openCurrentStayItineraryContext(){
 }
 function bindScreen(){
   screenEl.onclick=e=>{
-    if(screen==='vault'&&vaultStreamingOpen&&vaultStreamingEmailTapCount&&!e.target.closest('[data-streaming-email-unlock]')){vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;}
     if(screen==='vault'&&!vaultUnlocked&&!e.target.closest('[data-vault-unlock-surface]')){e.preventDefault();e.stopPropagation();return;}
     const jump=e.target.closest('[data-screen-jump]'); if(jump){screen=jump.dataset.screenJump;render();requestAnimationFrame(resetScreenScroll);return;}
     const jump2=e.target.closest('[data-jump]'); if(jump2){screen=jump2.dataset.jump;render();requestAnimationFrame(resetScreenScroll);return;}
@@ -8635,7 +8652,7 @@ function bindScreen(){
     if(screen==='reservations'&&reservationCategoryFocus&&e.key==='Escape'){e.preventDefault();reservationCategoryFocus='';reservationCompletedTypeFilter='All';render();return;}
     if(screen==='journeys'&&journeyFocusWidget&&e.key==='Escape'){e.preventDefault();journeyFocusWidget='';render();return;}
     if(screen==='checklist'&&checklistFocusList&&e.key==='Escape'){e.preventDefault();checklistFocusList='';render();return;}
-    if(screen==='vault'&&vaultStreamingEmailOpen&&e.key==='Escape'){e.preventDefault();const returnToStreaming=vaultStreamingOpen;vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector(returnToStreaming?'[data-streaming-email-unlock]':'[data-vault-streaming-open]')?.focus());return;}
+    if(screen==='vault'&&vaultStreamingEmailOpen&&e.key==='Escape'){e.preventDefault();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector('.brand .logo')?.focus());return;}
     if(screen==='vault'&&vaultStreamingOpen&&e.key==='Escape'){e.preventDefault();vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;render();requestAnimationFrame(()=>document.querySelector('[data-vault-streaming-open]')?.focus());return;}
     if(screen==='vault'&&vaultFocusWidget&&e.key==='Escape'){e.preventDefault();vaultFocusWidget='';render();return;}
     const row=e.target.closest('[data-edit-row]');
@@ -8734,7 +8751,6 @@ function bindScreen(){
     }
     if(vaultUnlocked){
     const openVaultStreamingPanel=()=>{vaultFocusWidget='';vaultStreamingOpen=true;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector('.vault-streaming-close')?.focus());};
-    const openVaultStreamingEmailStore=(fromStreaming=false)=>{vaultFocusWidget='';vaultStreamingOpen=Boolean(fromStreaming);vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=true;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=Date.now()+450;render();requestAnimationFrame(()=>document.querySelector('#streaming-email-cameron')?.focus());};
     const streamingOpen=document.querySelector('[data-vault-streaming-open]');
     if(streamingOpen){
       // The visible Streaming shortcut has one job: open the normal TV & Movies view.
@@ -8745,65 +8761,11 @@ function bindScreen(){
       streamingOpen.ondblclick=e=>{e.preventDefault();e.stopPropagation();};
       streamingOpen.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();openVaultStreamingPanel();}};
     }
-    const streamingEmailUnlock=document.querySelector('[data-streaming-email-unlock]');if(streamingEmailUnlock){
-      let emailHoldTimer=0,emailHoldOpened=false,emailPointerStart=null,emailPointerMoved=false;
-      const clearEmailHold=()=>{if(emailHoldTimer){clearTimeout(emailHoldTimer);emailHoldTimer=0;}};
-      const registerStreamingEmailTap=e=>{
-        e?.preventDefault?.();e?.stopPropagation?.();
-        if(vaultStreamingService||vaultStreamingEditing||emailHoldOpened)return;
-        const now=Date.now();
-        if(!vaultStreamingEmailLastTap||now-vaultStreamingEmailLastTap>2600)vaultStreamingEmailTapCount=0;
-        vaultStreamingEmailLastTap=now;
-        vaultStreamingEmailTapCount+=1;
-        if(vaultStreamingEmailTapCount>=3){
-          vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;
-          openVaultStreamingEmailStore(true);
-        }
-      };
-      const startStreamingEmailHold=e=>{
-        if(e?.button!==undefined&&e.button!==0)return;
-        emailHoldOpened=false;emailPointerMoved=false;clearEmailHold();
-        emailPointerStart=(Number.isFinite(e?.clientX)&&Number.isFinite(e?.clientY))?{x:e.clientX,y:e.clientY,id:e.pointerId}:null;
-        if(e?.pointerId!==undefined&&e?.currentTarget?.setPointerCapture){try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}}
-        emailHoldTimer=setTimeout(()=>{emailHoldTimer=0;emailHoldOpened=true;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;openVaultStreamingEmailStore(true);},1350);
-      };
-      const moveStreamingEmailHold=e=>{
-        if(!emailPointerStart||!Number.isFinite(e?.clientX)||!Number.isFinite(e?.clientY))return;
-        if(Math.hypot(e.clientX-emailPointerStart.x,e.clientY-emailPointerStart.y)>24){emailPointerMoved=true;clearEmailHold();}
-      };
-      const cancelStreamingEmailHold=e=>{clearEmailHold();emailPointerStart=null;emailPointerMoved=false;if(e?.pointerId!==undefined&&e?.currentTarget?.releasePointerCapture){try{if(e.currentTarget.hasPointerCapture?.(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId);}catch(_){}}};
-      const finishStreamingEmailTap=e=>{
-        clearEmailHold();
-        if(e?.pointerId!==undefined&&e?.currentTarget?.releasePointerCapture){try{if(e.currentTarget.hasPointerCapture?.(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId);}catch(_){}}
-        emailPointerStart=null;
-        if(emailPointerMoved){emailPointerMoved=false;e?.preventDefault?.();e?.stopPropagation?.();return;}
-        if(emailHoldOpened){emailHoldOpened=false;e?.preventDefault?.();e?.stopPropagation?.();return;}
-        registerStreamingEmailTap(e);
-      };
-      const pointerEventsAvailable=typeof window!=='undefined'&&'PointerEvent' in window;
-      if(pointerEventsAvailable){
-        // Physical iPad path: count finger/stylus pointer-up directly. Safari's delayed
-        // synthetic click is suppressed rather than being trusted as the gesture source.
-        streamingEmailUnlock.onpointerdown=startStreamingEmailHold;
-        streamingEmailUnlock.onpointermove=moveStreamingEmailHold;
-        streamingEmailUnlock.onpointerup=finishStreamingEmailTap;
-        streamingEmailUnlock.onpointercancel=cancelStreamingEmailHold;
-        streamingEmailUnlock.onpointerleave=null;
-        streamingEmailUnlock.onclick=e=>{e?.preventDefault?.();e?.stopPropagation?.();};
-      }else{
-        // Legacy/browser fallback: ordinary click counting, plus touch hold support.
-        streamingEmailUnlock.onclick=registerStreamingEmailTap;
-        streamingEmailUnlock.ontouchstart=startStreamingEmailHold;
-        streamingEmailUnlock.ontouchend=finishStreamingEmailTap;
-        streamingEmailUnlock.ontouchcancel=clearEmailHold;
-      }
-      streamingEmailUnlock.ondblclick=e=>{if(e.cancelable)e.preventDefault();e.stopPropagation();};
-      streamingEmailUnlock.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' ')){registerStreamingEmailTap(e);}else if(e.repeat&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();}};
-    }
-    const closeVaultStreamingEmail=()=>{const returnToStreaming=vaultStreamingOpen;vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector(returnToStreaming?'[data-streaming-email-unlock]':'[data-vault-streaming-open]')?.focus());};
+    // Hidden email access is intentionally not exposed inside Streaming. The unlocked Vault compass is the single reliable concealed trigger.
+    const closeVaultStreamingEmail=()=>{vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector('.brand .logo')?.focus());};
     document.querySelectorAll('[data-streaming-email-close]').forEach(button=>button.onclick=e=>{e.stopPropagation();closeVaultStreamingEmail();});
     const streamingEmailBackdrop=document.querySelector('[data-streaming-email-backdrop]');if(streamingEmailBackdrop)streamingEmailBackdrop.onclick=e=>{if(e.target===streamingEmailBackdrop)closeVaultStreamingEmail();};
-    const streamingEmailSave=document.querySelector('[data-streaming-email-save]');if(streamingEmailSave)streamingEmailSave.onclick=()=>{const Cameron=normalizeStreamingEmailAddress($('#streaming-email-cameron')?.value||''),Kym=normalizeStreamingEmailAddress($('#streaming-email-kym')?.value||'');if(!validStreamingEmailAddress(Cameron)||!validStreamingEmailAddress(Kym)){showToast('Enter a valid email address, or leave it blank.','warning');return;}state.settings.streamingEmails={Cameron,Kym};if(!saveState('settings','streaming-emails'))return;const returnToStreaming=vaultStreamingOpen;vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;showToast('Hidden email addresses saved.');render();requestAnimationFrame(()=>document.querySelector(returnToStreaming?'[data-streaming-email-unlock]':'[data-vault-streaming-open]')?.focus());};
+    const streamingEmailSave=document.querySelector('[data-streaming-email-save]');if(streamingEmailSave)streamingEmailSave.onclick=()=>{const Cameron=normalizeStreamingEmailAddress($('#streaming-email-cameron')?.value||''),Kym=normalizeStreamingEmailAddress($('#streaming-email-kym')?.value||'');if(!validStreamingEmailAddress(Cameron)||!validStreamingEmailAddress(Kym)){showToast('Enter a valid email address, or leave it blank.','warning');return;}state.settings.streamingEmails={Cameron,Kym};if(!saveState('settings','streaming-emails'))return;vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;showToast('Hidden email addresses saved.');render();requestAnimationFrame(()=>document.querySelector('.brand .logo')?.focus());};
     const closeVaultStreaming=()=>{vaultStreamingOpen=false;vaultStreamingEditId='';vaultStreamingService='';vaultStreamingEditing=false;vaultStreamingReveal.clear();vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector('[data-vault-streaming-open]')?.focus());};
     document.querySelectorAll('[data-vault-streaming-close]').forEach(button=>button.onclick=e=>{e.stopPropagation();closeVaultStreaming();});
     const streamingBackdrop=document.querySelector('[data-vault-streaming-backdrop]');if(streamingBackdrop)streamingBackdrop.onclick=e=>{if(e.target===streamingBackdrop)closeVaultStreaming();};
@@ -9472,7 +9434,58 @@ function appHealthLightDataIntegrityIssues(){
   }
   return [...new Set(issues)];
 }
+function appHealthSystemIssuesForKey(key,context=null){
+  // App Health answers one question: is the app/data system working correctly? Normal
+  // travel work (To Book, unpaid balances, checklist tasks, itinerary planning, alerts,
+  // expiry reminders and backup reminders) belongs on its own screen and must not make
+  // the whole app look unhealthy.
+  if(key==='dashboard'){
+    const issues=[];
+    try{if(!Number.isFinite(staySpendAud())||!Number.isFinite(annualSpendAud()))issues.push('Home budget totals could not be calculated.');computedAlerts(context?.coverage18?context.coverage18():undefined);}catch(error){issues.push(`Home calculations could not run: ${error.message||'unknown error'}.`);}
+    return issues;
+  }
+  if(key==='budget'){
+    if(!context?.preSynced)syncLinkedState();
+    const issues=[];
+    if(!Number.isFinite(staySpendLocal())||!Number.isFinite(annualSpendAud()))issues.push('Linked totals could not be calculated.');
+    if(Number(state.currentStay.rate)<=0)issues.push('Exchange rate must be above zero.');
+    if(Number(state.currentStay.budget)<0)issues.push('Destination budget cannot be negative.');
+    if(annualBudgetForYear()<0)issues.push('Annual budget cannot be negative.');
+    state.expenses.forEach((x,i)=>{if(Number(x.amount)<0)issues.push(`Expense ${i+1} is negative.`);if(Number(x.amount||0)>0&&Number(x.rate)<=0)issues.push(`Expense ${i+1} has an invalid exchange rate.`);});
+    state.reservations.forEach((x,i)=>{if(Math.abs(Number(x.aud||0)-reservationAudValue(x))>.01)issues.push(`Reservation ${i+1} AUD total is out of sync.`);});
+    issues.push(...budgetVerificationAdvisories());
+    return [...new Set(issues)];
+  }
+  if(key==='reservations'){
+    const structuralLabels=new Set(['Required details','Destinations present','Date order valid','Currency codes valid','Costs non-negative','Exchange rates valid','AUD totals accurate','Budget assignments valid','Destination budgets linked','Travel budget routing correct','Cruise / RV trip links valid','Statuses valid','Reservation types valid','Recovered types reviewed','Recovered references reviewed','Traveller counts valid','References unique','No likely duplicates','No date conflicts','Long bookings have end dates','Long bookings stay within their itinerary','Same-day times ordered','Payment split within total','Paid bookings have no balance','Booked status has a balance','Payment due dates valid','Cancellation deadlines valid','Itinerary links match booking dates','AUD bookings use rate 1','To Book rows are simple reminders']);
+    const issues=[];
+    reservationHealthChecks().filter(check=>!check.ok&&structuralLabels.has(check.label)).forEach(check=>check.items.forEach((row,i)=>issues.push(`${row.title||`Reservation ${i+1}`}: ${check.message}.`)));
+    return [...new Set(issues)];
+  }
+  if(key==='itinerary'){
+    const issues=[];
+    state.itinerary.forEach((entry,index)=>{if(!validISODate(entry.arrival)||!validISODate(entry.departure)||entry.departure<entry.arrival)issues.push(`Itinerary ${index+1} has invalid dates.`);if(entry.coverageType!=='Intentional Gap'&&(!String(entry.city||'').trim()||!String(entry.country||'').trim()))issues.push(`Itinerary ${index+1} is missing its destination.`);if(Number(entry.rate||0)<=0)issues.push(`Itinerary ${index+1} has an invalid exchange rate.`);if(Number(entry.budget||0)<0)issues.push(`Itinerary ${index+1} has a negative budget.`);});
+    const overlaps=itineraryOverlapEntriesForRows(state.itinerary);if(overlaps.length)issues.push(`${overlaps.length} itinerary overlap${overlaps.length===1?'':'s'} need attention.`);
+    return [...new Set(issues)];
+  }
+  if(key==='calendar'){
+    const issues=[];
+    state.events.forEach((event,index)=>{if(!String(event.title||'').trim())issues.push(`Calendar note ${index+1} is missing its title.`);if(!validISODate(event.date))issues.push(`${event.title||`Calendar note ${index+1}`} has an invalid date.`);if(!validClockTime(String(event.time||'')))issues.push(`${event.title||`Calendar note ${index+1}`} has an invalid time.`);});
+    try{calendarAllItems();}catch(error){issues.push(`Calendar could not build its event list: ${error.message}.`);}
+    return [...new Set(issues)];
+  }
+  if(key==='journeys')return journeyCheckResults().filter(check=>!check.ok).map(check=>check.detail||check.label);
+  if(key==='checklist'){
+    const issues=[];
+    state.checklist.forEach((item,index)=>{if(!['Permanent','Destination','His','Hers'].includes(item.list))issues.push(`Checklist item ${index+1} has an invalid list.`);if(!String(item.task||'').trim())issues.push(`Checklist item ${index+1} is missing its task title.`);if(item.due&&!validISODate(item.due))issues.push(`${item.task||`Checklist item ${index+1}`} has an invalid due date.`);});
+    return [...new Set(issues)];
+  }
+  if(key==='vault')return vaultIssueList().filter(issue=>!/( has expired\.| expires within (?:90|180) days\.| local emergency contact is not saved|Australian embassy \/ consulate contact is not saved|No current travel insurance record is available|emergency assistance number saved)/i.test(String(issue)));
+  if(key==='settings')return [...new Set(appHealthLightDataIntegrityIssues())];
+  return [];
+}
 function screenHealthIssuesForKey(key,context=null){
+  if(context?.userFacing)return appHealthSystemIssuesForKey(key,context);
   if(key==='dashboard')return homeHealthIssues(context);
   if(key==='budget')return [...budgetVerificationIssues({skipSync:Boolean(context?.preSynced)}),...budgetVerificationAdvisories()];
   if(key==='reservations')return reservationHealthIssues();
@@ -9481,14 +9494,7 @@ function screenHealthIssuesForKey(key,context=null){
   if(key==='journeys')return journeyCheckResults().filter(check=>!check.ok).map(check=>check.detail||check.label);
   if(key==='checklist')return checklistHealthIssues();
   if(key==='vault')return vaultIssueList();
-  if(key==='settings'){
-    const issues=context?.userFacing?[...appHealthLightDataIntegrityIssues()]:[...semanticIntegrityIssues()],backup=backupReminderStatus();
-    // BACKUP & RESTORE is a prominent Settings readiness surface. Missing, overdue or
-    // future-dated backup state must reach App Health rather than showing BACKUP REMINDER
-    // beside a green App & Data result.
-    {const backupIssue=backupReminderHealthIssue(backup);if(backupIssue)issues.push(backupIssue);}
-    return [...new Set(issues)];
-  }
+  if(key==='settings')return [...new Set(semanticIntegrityIssues())];
   return [];
 }
 function liveAppHealthSections(){return APP_HEALTH_SECTION_META.map(section=>{let issues=[];try{issues=screenHealthIssuesForKey(section.key);}catch(error){issues=[`${section.label} check could not run: ${error.message||'unknown error'}.`];}return {...section,issues:[...new Set(issues)]};});}
@@ -9510,9 +9516,9 @@ function appHealthQuickIssueCount(){return appHealthSections().reduce((sum,secti
 function screenHealthStatusMarkup(key){
   const checked=appHealthResultIsCurrent(),issues=checked?[...storedAppHealthIssues(key)]:[];
   if(checked&&key==='settings')issues.push(...storedAppHealthIssues('app'));
-  const tone=!checked?'unchecked':issues.length?'attention':'ok';
-  const label=!checked?'NOT CHECKED':issues.length?'NEEDS ATTENTION':'VERIFIED';
-  return `<span class="screen-health-chip ${tone}" aria-label="App Health: ${esc(label)}">${!checked?'○':issues.length?'!':'✓'} ${label}</span>`;
+  const tone=!checked?'ready':issues.length?'attention':'ok';
+  const label=!checked?'READY':issues.length?'NEEDS ATTENTION':'VERIFIED';
+  return `<span class="screen-health-chip ${tone}" aria-label="App Health: ${esc(label)}">${!checked?'✓':issues.length?'!':'✓'} ${label}</span>`;
 }
 function appHealthWidget(){
   const checked=appHealthResultIsCurrent(),sections=appHealthSections(),attentionAreas=checked?sections.filter(section=>section.issues.length).length:0;
@@ -9521,17 +9527,17 @@ function appHealthWidget(){
   // retained issue messages; otherwise a large check can misleadingly display 40 when
   // the live App Health run actually found more than 40 items needing attention.
   const allGood=checked&&attentionAreas===0;
-  const headline=allGood?'ALL GOOD':checked&&attentionAreas?`ATTENTION NEEDED — ${attentionAreas} AREA${attentionAreas===1?'':'S'}`:'READY TO CHECK';
-  const subline=allGood?'Everything checked successfully. Expand any row below for its details.':checked&&attentionAreas?'Expand any amber row below to see exactly what needs attention.':'Tap the big button once. App Health checks the whole Travel Command Centre for you.';
+  const headline=allGood?'ALL GOOD':checked&&attentionAreas?`ATTENTION NEEDED — ${attentionAreas} AREA${attentionAreas===1?'':'S'}`:'SYSTEM READY';
+  const subline=allGood?'Everything checked successfully. Expand any row below for its details.':checked&&attentionAreas?'Expand any amber row below to see the genuine app or data fault.':'No app fault is currently detected. Tap the button any time for a full system check.';
   const rows=sections.map(section=>{
-    const issues=section.issues,tone=!checked?'unchecked':issues.length?'attention':'ok',label=!checked?'NOT CHECKED':issues.length?'NEEDS ATTENTION':'VERIFIED';
-    const summary=!checked?'Waiting for the App Health check.':issues.length?`${issues.length} item${issues.length===1?'':'s'} need attention.`:'No problems found.';
-    const detailHeading=!checked?'NOT CHECKED':issues.length?'WHAT NEEDS ATTENTION':'CHECK RESULT';
-    const detailBody=!checked?'<p>Run <b>CHECK THE WHOLE APP</b> to populate this section.</p>':issues.length?`<ul>${issues.map(issue=>`<li>${esc(issue)}</li>`).join('')}</ul>`:`<p>${esc(section.label)} passed the last App Health check. No problems were found.</p>`;
+    const issues=section.issues,tone=!checked?'ready':issues.length?'attention':'ok',label=!checked?'READY':issues.length?'NEEDS ATTENTION':'VERIFIED';
+    const summary=!checked?'Ready for a system check.':issues.length?`${issues.length} genuine app/data issue${issues.length===1?'':'s'} found.`:'No problems found.';
+    const detailHeading=!checked?'SYSTEM READY':issues.length?'WHAT NEEDS ATTENTION':'CHECK RESULT';
+    const detailBody=!checked?'<p>This area is ready. Run <b>CHECK THE WHOLE APP</b> when you want a fresh system verification.</p>':issues.length?`<ul>${issues.map(issue=>`<li>${esc(issue)}</li>`).join('')}</ul>`:`<p>${esc(section.label)} passed the last App Health check. No problems were found.</p>`;
     const healthIcon={dashboard:'home',budget:'budget',reservations:'flight',itinerary:'pin',calendar:'calendar',journeys:'journeys',checklist:'checklist',vault:'vault',settings:'settings'}[section.key]||'settings';
     return `<details class="app-health-row ${tone}" data-health-section="${section.key}"><summary><span class="app-health-row-icon" aria-hidden="true">${iconSvg(healthIcon)}</span><span class="app-health-row-copy"><b>${esc(section.label)}</b><small>${esc(summary)}</small></span><strong>${label}</strong><i aria-hidden="true">⌄</i></summary><div class="app-health-row-details"><b>${detailHeading}</b>${detailBody}</div></details>`;
   }).join('');
-  return `<section class="app-health-widget ${allGood?'is-ok':checked&&attentionAreas?'has-attention':'is-unchecked'}" aria-label="App Health"><header class="app-health-head"><div class="app-health-ambulance" aria-hidden="true">🚑</div><div><small>ONE SIMPLE CHECK FOR THE WHOLE APP</small><h2>APP HEALTH</h2><p>${esc(subline)}</p></div><div class="app-health-overall"><span>${allGood?'✓':checked&&attentionAreas?'!':'○'}</span><b>${esc(headline)}</b><small>${checked?`Last checked ${esc(state.settings.lastAppHealthAt)}`:'Not checked yet'}</small></div></header><div class="app-health-how"><span><b>1</b> Tap the button</span><span><b>2</b> Green = all good</span><span><b>3</b> Amber = expand for details</span></div><button id="verify" class="app-health-run primary" type="button">CHECK THE WHOLE APP</button><div id="app-health-result" class="app-health-result" aria-live="polite"></div><div class="app-health-screen-list">${rows}</div></section>`;
+  return `<section class="app-health-widget ${allGood?'is-ok':checked&&attentionAreas?'has-attention':'is-ready'}" aria-label="App Health"><header class="app-health-head"><div class="app-health-ambulance" aria-hidden="true">🚑</div><div><small>ONE SIMPLE CHECK FOR THE WHOLE APP</small><h2>APP HEALTH</h2><p>${esc(subline)}</p></div><div class="app-health-overall"><span>${checked&&attentionAreas?'!':'✓'}</span><b>${esc(headline)}</b><small>${checked?`Last checked ${esc(state.settings.lastAppHealthAt)}`:'Ready whenever you are'}</small></div></header><div class="app-health-how"><span><b>1</b> Tap to check</span><span><b>2</b> Green = app healthy</span><span><b>3</b> Amber = genuine fault</span></div><button id="verify" class="app-health-run primary" type="button">CHECK THE WHOLE APP</button><div id="app-health-result" class="app-health-result" aria-live="polite"></div><div class="app-health-screen-list">${rows}</div></section>`;
 }
 function renderAfterBackgroundAction(){
   // Backup/App Health can complete while unsaved Settings fields are still on screen.
@@ -9598,7 +9604,6 @@ async function runAppHealth(){
         if(unknownIssue||payload?._tccBackupFormat!==TCC_BACKUP_FORMAT||payload?._tccBackupSchema!==TCC_BACKUP_SCHEMA||payload?.settings?._tccBackupSchema!==TCC_BACKUP_SCHEMA)deepIssues.push('Backup & restore data needs attention.');
         else JSON.stringify(payload);
       }catch{deepIssues.push('Backup & restore data could not be checked.');}
-      {const backupIssue=backupReminderHealthIssue();if(backupIssue)deepIssues.push(backupIssue);}
 
       setAppHealthProgress('Checking app files…');
       await appHealthYield();
@@ -12282,8 +12287,8 @@ function coreRegressionFixtureIssues(){
   // and Reservations must not force sovereign Georgia/South Africa localities into the
   // conflicting US/Australian GA/SA region meanings.
   {const transportCases1149=[['Frankfurt Airport','Germany'],['Hamburg Cruise Terminal','Germany'],['Dresden Station','Germany'],['Nuremberg Train Station','Germany'],['Heidelberg Railway Station','Germany'],['Cologne Central Station','Germany'],['Vienna International Airport','Austria'],['Zurich Airport','Switzerland'],['Venice Cruise Terminal','Italy']];for(const [label,country] of transportCases1149){if(!countryIdentityEquals(journeyCountryForRoutePlace(label,''),country)||!countryIdentityEquals(toiletPhraseDepartureCountry(label,'Motorhome'),country))issues.push(`Regression fixture failed: transport-context route label ${label} loses ${country} country identity.`);}const ambiguousTransport1149=[['Cape Town Cruise Terminal, SA','South Africa'],['Seattle Cruise Terminal, WA','United States'],['Perth Airport, WA','Australia'],['Tbilisi Airport, GA','Georgia'],['Atlanta Airport, GA','United States']];for(const [label,country] of ambiguousTransport1149)if(!countryIdentityEquals(toiletPhraseDepartureCountry(label,'Motorhome'),country))issues.push(`Regression fixture failed: ambiguous transport departure ${label} loses ${country} toilet-language identity.`);const reservationConflicts1149=[['Tbilisi, GA','Georgia'],['Tbilisi Airport, GA','Georgia'],['Atlanta, GA','United States'],['Cape Town, SA','South Africa'],['Cape Town Cruise Terminal, SA','South Africa'],['Adelaide, SA','Australia']];for(const [label,country] of reservationConflicts1149)if(!countryIdentityEquals(reservationCountryName({destination:label}),country))issues.push(`Regression fixture failed: Reservation destination ${label} resolves to the wrong country.`);if(reservationCountryName({destination:'Perth, WA'})!==''||reservationCountryName({destination:'Darwin, NT'})!=='')issues.push('Regression fixture failed: Reservation namesake safety over-infers deliberately ambiguous WA/NT abbreviations.');}
-  {const bindSource1173=bindScreen.toString(),renderVaultSource1173=renderVault.toString(),streamOverlaySource1173=vaultStreamingOverlay.toString(),guardSource1173=scheduledScreenRefreshWouldDiscardDraft.toString();if(bindSource1173.includes('openVaultStreamingEmailStore(false)')||!bindSource1173.includes('openVaultStreamingEmailStore(true)')||!bindSource1173.includes('streamingOpen.onclick')||!bindSource1173.includes('streamingEmailUnlock.onclick=registerStreamingEmailTap')||!bindSource1173.includes('now-vaultStreamingEmailLastTap>2600')||!bindSource1173.includes('1350')||!streamOverlaySource1173.includes('vault-streaming-email-unlock')||!streamOverlaySource1173.includes('data-streaming-email-unlock')||!streamOverlaySource1173.includes('<span>TV &amp; MOVIES</span>')||!renderVaultSource1173.includes('vaultStreamingEmailOpen&&!vaultStreamingOpen')||!guardSource1173.includes('vaultStreamingOpen||vaultStreamingEmailOpen'))issues.push('Regression fixture failed: hidden Vault TV & Movies email store is not isolated to the actual heading, lacks the proven click-count triple tap / hold fallback, or can be redrawn while editing.');}
-  {const conflicts1150=[['Tbilisi, GA','Georgia'],['Tbilisi Airport, GA','Georgia'],['Cape Town, SA','South Africa'],['Cape Town Cruise Terminal, SA','South Africa'],['Atlanta, GA','United States'],['Adelaide, SA','Australia']];for(const [label,country] of conflicts1150)if(!countryIdentityEquals(journeyCountryForRoutePlace(label,''),country))issues.push(`Regression fixture failed: Journey route ${label} resolves to the wrong country.`);if(journeyCountryForRoutePlace('Perth, WA','')!==''||journeyCountryForRoutePlace('Darwin, NT','')!=='')issues.push('Regression fixture failed: Journey namesake safety over-infers deliberately ambiguous WA/NT abbreviations.');const savedService1150=vaultStreamingService,savedEditing1150=vaultStreamingEditing;try{vaultStreamingService='';vaultStreamingEditing=false;const root1150=vaultStreamingOverlay();vaultStreamingService=STREAMING_APP_CATALOG[0]?.service||'Netflix';vaultStreamingEditing=true;const editor1150=vaultStreamingOverlay();if(!root1150.includes('data-streaming-email-unlock')||editor1150.includes('data-streaming-email-unlock'))issues.push('Regression fixture failed: hidden Streaming email unlock can redraw and discard an active password editor draft.');}finally{vaultStreamingService=savedService1150;vaultStreamingEditing=savedEditing1150;}}
+  {const initSource1173=init.toString(),brandSource1173=syncBrandCompassInteraction.toString(),renderVaultSource1173=renderVault.toString(),streamOverlaySource1173=vaultStreamingOverlay.toString(),guardSource1173=scheduledScreenRefreshWouldDiscardDraft.toString();if(!initSource1173.includes("screen==='vault'&&vaultUnlocked")||!initSource1173.includes('vaultStreamingEmailOpen=true')||!initSource1173.includes("vaultStreamingOpen=false")||!brandSource1173.includes("Open private Vault email addresses")||streamOverlaySource1173.includes('data-streaming-email-unlock')||!streamOverlaySource1173.includes('<h2>TV &amp; MOVIES</h2>')||!renderVaultSource1173.includes('vaultStreamingEmailOpen&&!vaultStreamingOpen')||!guardSource1173.includes('vaultStreamingOpen||vaultStreamingEmailOpen'))issues.push('Regression fixture failed: hidden Vault email storage is not restricted to the unlocked compass trigger, remains exposed inside Streaming, or can be redrawn while editing.');}
+  {const conflicts1150=[['Tbilisi, GA','Georgia'],['Tbilisi Airport, GA','Georgia'],['Cape Town, SA','South Africa'],['Cape Town Cruise Terminal, SA','South Africa'],['Atlanta, GA','United States'],['Adelaide, SA','Australia']];for(const [label,country] of conflicts1150)if(!countryIdentityEquals(journeyCountryForRoutePlace(label,''),country))issues.push(`Regression fixture failed: Journey route ${label} resolves to the wrong country.`);if(journeyCountryForRoutePlace('Perth, WA','')!==''||journeyCountryForRoutePlace('Darwin, NT','')!=='')issues.push('Regression fixture failed: Journey namesake safety over-infers deliberately ambiguous WA/NT abbreviations.');if(vaultStreamingOverlay().includes('data-streaming-email-unlock'))issues.push('Regression fixture failed: Streaming still exposes the retired hidden-email gesture target.');}
   // Batch 1151: "Port of …" is a common cruise-departure form. Resolve the
   // underlying locality consistently across Journey, Reservations and the Home toilet
   // shortcut without turning the real city "Port of Spain" into sovereign Spain.
