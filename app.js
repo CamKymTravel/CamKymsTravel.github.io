@@ -1,9 +1,9 @@
 'use strict';
 
-const STORAGE_KEY = 'travelCommandCentre.v1.simulationBatch1202';
+const STORAGE_KEY = 'travelCommandCentre.v1.batch1221ScreenshotSimulation';
 const LEGACY_STORAGE_KEYS = [];
-const APP_VERSION = '4.5.677-simulation-batch1202-20260828';
-const APP_SHELL_REVISION = '4.5.677-shell-simulation-batch1202-20260828';
+const APP_VERSION = '4.5.677-continuity-batch1221-20260828';
+const APP_SHELL_REVISION = '4.5.677-shell-batch1221-20260828';
 const TCC_BACKUP_FORMAT = 'travel-command-centre-v1-canonical';
 const TCC_BACKUP_SCHEMA = 4;
 const MAX_JOURNEY_YEARS = 30;
@@ -1031,11 +1031,20 @@ function countryCurrencyDetails(country='',fallback='AUD'){
 }
 const clone = value => JSON.parse(JSON.stringify(value));
 const esc = value => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const money = value => new Intl.NumberFormat('en-AU', {style:'currency', currency:'AUD', maximumFractionDigits:0}).format(Number(value || 0));
-const moneyExact = value => new Intl.NumberFormat('en-AU', {style:'currency', currency:'AUD', minimumFractionDigits:2, maximumFractionDigits:4}).format(Number(value || 0));
-const moneyCents = value => new Intl.NumberFormat('en-AU', {style:'currency', currency:'AUD', minimumFractionDigits:2, maximumFractionDigits:2}).format(Number(value || 0));
-const localMoney = (value, symbol='') => `${esc(symbol)}${Number(value || 0).toLocaleString('en-AU', {maximumFractionDigits:2})}`;
-const localNumber = value => Number(value || 0).toLocaleString('en-AU', {maximumFractionDigits:2});
+// NumberFormat construction is comparatively expensive on Safari and these exact formats
+// are used thousands of times across long-history renders/search. Reuse immutable formatters
+// rather than rebuilding Intl.NumberFormat for every amount; output remains byte-for-byte
+// equivalent for the same en-AU options.
+const AUD_MONEY_FORMAT = new Intl.NumberFormat('en-AU', {style:'currency', currency:'AUD', maximumFractionDigits:0});
+const AUD_MONEY_EXACT_FORMAT = new Intl.NumberFormat('en-AU', {style:'currency', currency:'AUD', minimumFractionDigits:2, maximumFractionDigits:4});
+const AUD_MONEY_CENTS_FORMAT = new Intl.NumberFormat('en-AU', {style:'currency', currency:'AUD', minimumFractionDigits:2, maximumFractionDigits:2});
+const LOCAL_NUMBER_FORMAT = new Intl.NumberFormat('en-AU', {maximumFractionDigits:2});
+const LOCAL_NUMBER_CENTS_FORMAT = new Intl.NumberFormat('en-AU', {minimumFractionDigits:2, maximumFractionDigits:2});
+const money = value => AUD_MONEY_FORMAT.format(Number(value || 0));
+const moneyExact = value => AUD_MONEY_EXACT_FORMAT.format(Number(value || 0));
+const moneyCents = value => AUD_MONEY_CENTS_FORMAT.format(Number(value || 0));
+const localMoney = (value, symbol='') => `${esc(symbol)}${LOCAL_NUMBER_FORMAT.format(Number(value || 0))}`;
+const localNumber = value => LOCAL_NUMBER_FORMAT.format(Number(value || 0));
 function budgetCurrencyFigure(value,currency='AUD',symbol='',tone=''){
   const code=currencyCode(currency,'AUD'),details=currencyDetails(code),mark=currencySymbol(symbol||details.symbol,'');
   const amount=localNumber(value),length=amount.length;
@@ -1148,7 +1157,7 @@ function journeyStartFinancialImpactMessage(impact={}){
 }
 const dateFmt = value => { if(!value) return '—'; const d=parseDate(value); return d&&Number.isFinite(d.getTime())?`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`:'—'; };
 const searchDateTerms = (...values) => values.flatMap(value=>validISODate(value)?[String(value),dateFmt(value)]:[]).join(' ');
-const searchNumberTerms = (...values) => values.flatMap(value=>{const number=Number(value);if(!Number.isFinite(number))return [];return [String(number),number.toFixed(2),number.toLocaleString('en-AU',{maximumFractionDigits:2}),money(number),moneyCents(number)];}).join(' ');
+const searchNumberTerms = (...values) => values.flatMap(value=>{const number=Number(value);if(!Number.isFinite(number))return [];return [String(number),number.toFixed(2),LOCAL_NUMBER_FORMAT.format(number),money(number),moneyCents(number)];}).join(' ');
 const days = (start, end) => {const a=isoDayOrdinal(start),b=isoDayOrdinal(end);return Number.isFinite(a)&&Number.isFinite(b)?Math.max(1,b-a+1):0;};
 const calendarDayDelta = (start, end) => {const a=isoDayOrdinal(start),b=isoDayOrdinal(end);return Number.isFinite(a)&&Number.isFinite(b)?b-a:0;};
 const dateOffsetFrom = (date, offset=0) => { const value=parseDate(date)||parseDate(itineraryReferenceDate?.()||'2026-01-14')||parseDate('2026-01-14');value.setDate(value.getDate()+Number(offset||0));return value; };
@@ -1204,9 +1213,9 @@ const defaultState = {
 
 function demoReviewState(){
   const demo=clone(defaultState);
-  const reference='2029-05-10';
+  const reference='2029-07-10';
   demo.version=APP_VERSION;
-  demo.settings={...demo.settings,journeyStart:'2026-01-14',travellers:2,lastDestinationKey:'Marrakesh|Morocco|2029-04-30'};
+  demo.settings={...demo.settings,journeyStart:'2026-01-14',travellers:2,lastDestinationKey:'Istanbul|Turkey|2029-06-30'};
   demo.annualBudget=148000;
   demo.annualBudgets={'2026':90000,'2027':140000,'2028':145000,'2029':148000};
   const stays=[
@@ -1249,7 +1258,7 @@ function demoReviewState(){
     ['dublin29','Dublin','Ireland','2029-12-05','2029-12-30','Standard','EUR','€',1.72,4700,185]
   ];
   const schengenIds=new Set(['barcelona29','lisbon29']);
-  demo.itinerary=stays.map(([id,city,country,arrival,departure,type,currency,symbol,rate,budget,km])=>({id,coverageType:'Destination',city,country,arrival,departure,type,currency,symbol,rate,budget,km,schengenAllowed:true,schengenStart:schengenIds.has(id)?'2029-09-10':'',schengenEnd:schengenIds.has(id)?'2029-10-19':'',notes:id==='morocco29'?'Current Morocco simulation stay.':id==='lisbon29'?'Future Portugal stay.':id==='euroRV29'?'Planned European RV month.':'Completed simulation itinerary data.'}));
+  demo.itinerary=stays.map(([id,city,country,arrival,departure,type,currency,symbol,rate,budget,km])=>({id,coverageType:'Destination',city,country,arrival,departure,type,currency,symbol,rate,budget,km,schengenAllowed:true,schengenStart:schengenIds.has(id)?'2029-09-10':'',schengenEnd:schengenIds.has(id)?'2029-10-19':'',notes:id==='istanbul29'?'Current Istanbul simulation stay.':id==='lisbon29'?'Future Portugal stay.':id==='euroRV29'?'Planned European RV month.':'Completed simulation itinerary data.'}));
   const demoRoutes={
     motorhome27:['Munich','Salzburg','Innsbruck','Bolzano','Vaduz','Lucerne','Zurich','Freiburg','Stuttgart','Munich'],
     cruise28:['Rome','Barcelona','Lisbon','Miami'],
@@ -1270,13 +1279,13 @@ function demoReviewState(){
   const positionDate=(entry,fraction)=>{const span=Math.max(1,days(entry.arrival,entry.departure)-1);return addDaysLocal(entry.arrival,Math.max(0,Math.min(span,Math.floor(span*fraction))));};
   demo.itinerary.forEach(entry=>{
     if(entry.arrival>reference)return;
-    const isCurrent=entry.id==='morocco29';
+    const isCurrent=entry.id==='istanbul29';
     const shares=isCurrent?currentShares:completedShares;
     shares.forEach((share,index)=>{
       const date=positionDate(entry,[.12,.27,.43,.58,.73,.86][index]);
       if(date>reference)return;
       const amount=Math.max(1,Math.round(Number(entry.budget||0)*share));
-      exp.push({id:`sim-exp-${expenseNo++}`,date,category:categories[index],amount,currency:entry.currency,symbol:entry.symbol,rate:entry.rate,notes:isCurrent?['Marrakesh groceries','Moroccan cafés and meals','Taxi and local transport','Gardens and historic sites','Souk purchases and travel supplies','Laundry and small costs'][index]:'Completed journey living expense',verified:true});
+      exp.push({id:`sim-exp-${expenseNo++}`,date,category:categories[index],amount,currency:entry.currency,symbol:entry.symbol,rate:entry.rate,notes:isCurrent?['Istanbul groceries','Turkish cafés and meals','Metro, tram and ferry transport','Museums and historic sites','Markets and travel supplies','Laundry and small costs'][index]:'Completed journey living expense',verified:true});
     });
   });
   demo.expenses=exp;
@@ -1314,10 +1323,11 @@ function demoReviewState(){
   demo.reservations=reservations.map(record=>({...record,time:record.time||({Hotel:'15:00',Airbnb:'15:00',Flight:'09:00',Train:'10:00',Cruise:'16:00',RV:'09:00','Tickets & Attractions':'10:00'}[record.type]||'10:00')}));
 
   demo.events=[
-    {id:'evt-mar-1',title:'Jardin Majorelle & YSL Museum',date:'2029-05-12',time:'10:00',notes:'Garden and museum morning.'},
-    {id:'evt-mar-2',title:'Marrakesh medina & souks',date:'2029-05-15',time:'10:00',notes:'Explore the medina, markets and historic lanes.'},
-    {id:'evt-mar-3',title:'Atlas Mountains day trip',date:'2029-05-20',time:'08:00',notes:'Full-day trip from Marrakesh.'},
-    {id:'evt-mar-4',title:'Prepare for Algiers transfer',date:'2029-05-30',time:'16:00',notes:'Pack, confirm flight and Algiers accommodation.'},
+    {id:'evt-ist-1',title:'Hagia Sophia & Sultanahmet',date:'2029-07-11',time:'09:30',notes:'Historic peninsula morning.'},
+    {id:'evt-ist-2',title:'Grand Bazaar & Spice Market',date:'2029-07-14',time:'10:00',notes:'Markets, lunch and an easy afternoon.'},
+    {id:'evt-ist-3',title:'Bosphorus ferry day',date:'2029-07-18',time:'10:30',notes:'Ferry ride and neighbourhood stops.'},
+    {id:'evt-ist-4',title:'Istanbul garden & palace day',date:'2029-07-22',time:'09:30',notes:'Palace grounds, gardens and museum time.'},
+    {id:'evt-ist-5',title:'Prepare for Cairo transfer',date:'2029-07-30',time:'16:00',notes:'Pack, confirm flight and Cairo accommodation.'},
     {id:'evt-lis-1',title:'Belém and waterfront day',date:'2029-09-26',time:'10:00',notes:'Easy day — monastery, pastries and waterfront.'},
     {id:'evt-lis-2',title:'Lisbon Oceanarium',date:'2029-09-27',time:'11:00',notes:'Tickets already booked.'},
     {id:'evt-lis-3',title:'Alfama and Fado evening',date:'2029-09-29',time:'17:30',notes:'Dinner before the show.'},
@@ -1329,24 +1339,24 @@ function demoReviewState(){
   ];
   demo.checklist=[
     {id:'ck1',list:'Permanent',phase:'Current Stay',task:'Check passports are stored safely',done:true,due:'',required:true,notes:''},
-    {id:'ck2',list:'Permanent',phase:'Before You Leave',task:'Check travel insurance remains current',done:true,due:'2029-05-29',required:true,notes:''},
-    {id:'ck3',list:'Permanent',phase:'Travel Day',task:'Charge iPad and power banks',done:false,due:'2029-05-31',required:true,notes:''},
-    {id:'ck4',list:'Destination',phase:'Before You Leave',task:'Confirm Algiers accommodation details',done:true,due:'2029-05-29',required:true,notes:'Algiers stay confirmed.'},
-    {id:'ck5',list:'Destination',phase:'Before You Leave',task:'Confirm Marrakesh to Algiers flight details',done:false,due:'2029-05-30',required:true,notes:''},
-    {id:'ck6',list:'Destination',phase:'Before You Leave',task:'Save Algiers offline map and key addresses',done:false,due:'2029-05-30',required:false,notes:''},
-    {id:'ck7',list:'Destination',phase:'Travel Day',task:'Check out in Marrakesh and travel to Algiers',done:false,due:'2029-05-31',required:true,notes:''},
-    {id:'ck8',list:'Destination',phase:'Arrival & Settle In',task:'Check in and confirm Algiers local transport',done:false,due:'2029-05-31',required:true,notes:''},
-    {id:'his1',list:'His',phase:'Current Stay',task:'Explore a Marrakesh transport or motoring stop',done:false,due:'',required:false,notes:''},
+    {id:'ck2',list:'Permanent',phase:'Before You Leave',task:'Check travel insurance remains current',done:true,due:'2029-07-29',required:true,notes:''},
+    {id:'ck3',list:'Permanent',phase:'Travel Day',task:'Charge iPad and power banks',done:false,due:'2029-07-31',required:true,notes:''},
+    {id:'ck4',list:'Destination',phase:'Before You Leave',task:'Confirm Cairo accommodation details',done:true,due:'2029-07-29',required:true,notes:'Cairo stay confirmed.'},
+    {id:'ck5',list:'Destination',phase:'Before You Leave',task:'Confirm Istanbul to Cairo flight details',done:false,due:'2029-07-30',required:true,notes:''},
+    {id:'ck6',list:'Destination',phase:'Before You Leave',task:'Save Cairo offline map and key addresses',done:false,due:'2029-07-30',required:false,notes:''},
+    {id:'ck7',list:'Destination',phase:'Travel Day',task:'Check out in Istanbul and travel to Cairo',done:false,due:'2029-07-31',required:true,notes:''},
+    {id:'ck8',list:'Destination',phase:'Arrival & Settle In',task:'Check in and confirm Cairo local transport',done:false,due:'2029-07-31',required:true,notes:''},
+    {id:'his1',list:'His',phase:'Current Stay',task:'Explore an Istanbul transport or motoring stop',done:false,due:'',required:false,notes:''},
     {id:'his2',list:'His',phase:'Current Stay',task:'Check Carlton replay availability',done:true,due:'',required:false,notes:''},
-    {id:'hers1',list:'Hers',phase:'Current Stay',task:'Visit Marrakesh souks and markets',done:false,due:'',required:false,notes:''},
-    {id:'hers2',list:'Hers',phase:'Current Stay',task:'Choose a Moroccan garden or historic site day',done:true,due:'',required:false,notes:''}
+    {id:'hers1',list:'Hers',phase:'Current Stay',task:'Visit Istanbul markets and neighbourhoods',done:false,due:'',required:false,notes:''},
+    {id:'hers2',list:'Hers',phase:'Current Stay',task:'Choose an Istanbul garden or historic site day',done:true,due:'',required:false,notes:''}
   ];
   demo.vault=[
     {id:'v1',name:'Cameron Passport',type:'Passport',owner:'Cameron',country:'Australia',reference:'P••••123',expiry:'2031-04-18',notes:'Australian passport',attachments:[]},
     {id:'v2',name:'Kym Passport',type:'Passport',owner:'Kym',country:'Australia',reference:'P••••456',expiry:'2030-11-02',notes:'Australian passport',attachments:[]},
     {id:'v3',name:'Annual Travel Insurance',type:'Insurance',owner:'Shared',country:'Worldwide',reference:'INS-2029',expiry:'2030-01-13',notes:'Emergency assistance details saved',attachments:[]},
     {id:'v4',name:'USA ESTA',type:'Visa',owner:'Shared',country:'United States',reference:'ESTA-2028',expiry:'2030-07-01',notes:'Both travellers approved',attachments:[]},
-    {id:'v5',name:'Marrakesh Accommodation Details',type:'Accommodation details',owner:'Shared',country:'Morocco',reference:'ACCOM-MOROCCO29',expiry:'',notes:'Current Marrakesh accommodation — fully paid.',attachments:[]},
+    {id:'v5',name:'Istanbul Accommodation Details',type:'Accommodation details',owner:'Shared',country:'Turkey',reference:'ACCOM-TURKEY29',expiry:'',notes:'Current Istanbul accommodation — fully paid.',attachments:[]},
     {id:'v6',name:'European RV Booking',type:'Accommodation details',owner:'Shared',country:'Europe',reference:'RV-EURORV29',expiry:'',notes:'Lisbon pickup to Edinburgh return / finish details.',attachments:[]},
     {id:'v7',name:'Emergency Contact Australia',type:'Emergency contact',owner:'Shared',country:'Australia',reference:'',expiry:'',notes:'Family emergency contact details',attachments:[]}
   ];
@@ -1495,6 +1505,7 @@ let mapPanY = 0;
 let mapPanTouched = false;
 let editContext = null;
 let globalSearchQuery = '';
+let globalSearchIndexCache=null;
 let reservationPage = 1;
 let reservationPageSize = 5;
 function prepareReservationOverdueView(){
@@ -1728,6 +1739,9 @@ function iconMarkup(name, extra=''){
   const prestigeAssets={flight:'prestige-flight.png',train:'prestige-train.png',cruise:'prestige-cruise.png',hotel:'prestige-stay.png',budget:'prestige-budget.png',calendar:'prestige-calendar.png',itinerary:'prestige-itinerary.png',checklist:'prestige-checklist.png',vault:'prestige-vault.png'};
   if(prestigeAssets[key]) return `<span class="ui-icon prestige-soft-glass prestige-${key} ${extra}" aria-hidden="true"><img src="${prestigeAssets[key]}" alt=""></span>`;
   return `<span class="ui-icon prestige-soft-glass vector-prestige prestige-${key} ${extra}" aria-hidden="true">${iconSvg(key)}</span>`;
+}
+function premiumPanelHeading(icon,title,extra=''){
+  return `<span class="premium-panel-heading ${extra}">${iconMarkup(icon,'premium-panel-heading-icon')}<span>${esc(title)}</span></span>`;
 }
 function navIcon(name){
   const rasterMap={home:'home',budget:'budget',reservations:'flight',itinerary:'itinerary',calendar:'calendar',journeys:'journeys',checklist:'checklist',vault:'vault',settings:'settings'};
@@ -2193,9 +2207,9 @@ function normalizeItineraryEntry(entry={},fallback={}){
   const normalizedTitle=intentionalGap?'':(routed&&rawTitle?rawTitle:itineraryTitle({city,country,title:rawTitle,type,routePoints}));
   return {...entry,id:safeRecordId(entry.id),coverageType,type,city,country,title:normalizedTitle,arrival,departure,currency:intentionalGap?'AUD':currency,symbol:intentionalGap?'$':symbol,rate:intentionalGap?1:rate,budget:intentionalGap?0:budget,km,budgetConfigured:intentionalGap?false:budgetConfigured,budgetConfiguredAt:intentionalGap?'':budgetConfiguredAt,schengenAllowed:intentionalGap?true:schengenAllowed,schengenStart:intentionalGap?'':schengenStart,schengenEnd:intentionalGap?'':schengenEnd,mapX,mapY,historyMapX:historyMapPair.mapX,historyMapY:historyMapPair.mapY,historyKm,historyNotes,sourceJourneyId,routePoints,notes:scalarText(entry.notes,''),intentionalLabel:trimmedScalarText(entry.intentionalLabel,rawTitle||'Travel Day / Intentional Gap'),flag:countryVisual(country,type).flag};
 }
-function itineraryFinancialOwnerForDateInRows(date,rows=[]){
+function itineraryFinancialOwnerForDateInRows(date,rows=[],rowsAreNormalized=false){
   const key=String(date||'');if(!validISODate(key))return null;
-  const normalized=rows.map(row=>normalizeItineraryEntry(row));
+  const normalized=rowsAreNormalized?(Array.isArray(rows)?rows:[]):rows.map(row=>normalizeItineraryEntry(row));
   if(normalized.some(row=>row.coverageType==='Intentional Gap'&&between(key,row.arrival,row.departure)))return null;
   return normalized.filter(row=>row.coverageType!=='Intentional Gap'&&between(key,row.arrival,row.departure)).sort((a,b)=>String(b.arrival).localeCompare(String(a.arrival))||String(b.departure).localeCompare(String(a.departure)))[0]||null;
 }
@@ -2212,10 +2226,10 @@ function itineraryReservationFinancialContext(reservation,rows=[]){
   const destinationBudget=owner?preference:'No';
   return {ownerId:String(owner?.id||''),destinationBudget,currency:destinationBudget==='Yes'?currencyCode(owner?.currency,'AUD'):'AUD',rate:destinationBudget==='Yes'?finiteNumber(owner?.rate,1,.000001,1_000_000):1};
 }
-function reservationBoundaryIssueForRows(record={},rows=[],journeyStart=state.settings?.journeyStart){
+function reservationBoundaryIssueForRows(record={},rows=[],journeyStart=state.settings?.journeyStart,rowsAreNormalized=false){
   const type=normalizeReservationType(record?.type,'');
   if(!MULTI_DAY_RESERVATION_TYPES.has(type)||!validISODate(record?.date)||!validISODate(record?.endDate))return '';
-  const normalized=rows.map(row=>normalizeItineraryEntry(row)),occupiedDates=reservationOccupiedDateKeysInRange({...record,type});
+  const normalized=rowsAreNormalized?(Array.isArray(rows)?rows:[]):rows.map(row=>normalizeItineraryEntry(row)),occupiedDates=reservationOccupiedDateKeysInRange({...record,type});
   // A multi-day booking may legitimately sit wholly on dates with no destination owner
   // (for example an airport hotel during a transition), but it must not silently begin in
   // any unowned interval and continue into a destination. Intentional Gaps retain their
@@ -2224,10 +2238,10 @@ function reservationBoundaryIssueForRows(record={},rows=[],journeyStart=state.se
   // Accept Journey Start explicitly so restore validation can evaluate a foreign backup
   // against that backup's own boundary instead of leaking the live app setting.
   const occupiesIntentionalGap=occupiedDates.some(date=>normalized.some(gap=>gap.coverageType==='Intentional Gap'&&between(date,gap.arrival,gap.departure)));
-  const occupiesDestination=occupiedDates.some(date=>Boolean(itineraryFinancialOwnerForDateInRows(date,normalized)));
+  const occupiesDestination=occupiedDates.some(date=>Boolean(itineraryFinancialOwnerForDateInRows(date,normalized,true)));
   if(occupiesIntentionalGap&&occupiesDestination)return 'crosses-intentional-gap';
   const effectiveDate=reservationEffectiveBudgetDateForJourneyStart(record,journeyStart);
-  const owner=itineraryFinancialOwnerForDateInRows(effectiveDate,normalized);
+  const owner=itineraryFinancialOwnerForDateInRows(effectiveDate,normalized,true);
   if(!owner&&occupiesDestination)return 'starts-outside-owner';
   if(!owner)return '';
   if(record.endDate>owner.departure)return 'end-beyond-owner';
@@ -2347,10 +2361,11 @@ function sanitizeItineraryRecovery(rows=[]){
     normalized.signature=itineraryRecoverySignature(normalized);return normalized;
   }).filter(Boolean).slice(-300);
 }
-function replacementItineraryRecoveryMatch(entry,allEntries=[]){
-  const signature=itineraryRecoverySignature(entry),identity=itineraryRecoveryIdentity(entry),rows=sanitizeItineraryRecovery(state.settings?.itineraryRecovery);
-  const liveIds=new Set((Array.isArray(allEntries)?allEntries:[]).map(candidate=>String(candidate.id)));
-  const eligible=[...rows].reverse().filter(row=>String(row.sourceId)!==String(entry.id)&&!liveIds.has(String(row.sourceId)));
+function replacementItineraryRecoveryMatch(entry,allEntries=[],recoveryContext=null){
+  const signature=itineraryRecoverySignature(entry),identity=itineraryRecoveryIdentity(entry);
+  const rows=Array.isArray(recoveryContext?.rows)?recoveryContext.rows:sanitizeItineraryRecovery(state.settings?.itineraryRecovery);
+  const liveIds=recoveryContext?.liveIds instanceof Set?recoveryContext.liveIds:new Set((Array.isArray(allEntries)?allEntries:[]).map(candidate=>String(candidate.id)));
+  const eligible=Array.isArray(recoveryContext?.eligibleRows)?recoveryContext.eligibleRows:[...rows].reverse().filter(row=>String(row.sourceId)!==String(entry.id)&&!liveIds.has(String(row.sourceId)));
   let recovered=eligible.find(row=>row.signature===signature);
   if(!recovered){
     const candidates=eligible.map((row,index)=>({row,index,score:itineraryRecoveryIdentity(row)===identity?itineraryRecoveryDateScore(row,entry):null})).filter(item=>item.score!==null).sort((a,b)=>a.score-b.score||a.index-b.index);
@@ -2726,7 +2741,13 @@ function loadState(){
     return hydrate(null);
   }
 }
-function sortedItinerary(){ return [...state.itinerary].map(x=>normalizeItineraryEntry(x)).sort((a,b)=>String(a.arrival).localeCompare(String(b.arrival))||String(a.departure).localeCompare(String(b.departure))); }
+function sortedItinerary(){
+  const source=Array.isArray(state.itinerary)?state.itinerary:[];
+  if(source===sortedItineraryCacheRef&&source.length===sortedItineraryCacheLength)return sortedItineraryCache;
+  sortedItineraryCacheRef=source;sortedItineraryCacheLength=source.length;
+  sortedItineraryCache=[...source].map(x=>normalizeItineraryEntry(x)).sort((a,b)=>String(a.arrival).localeCompare(String(b.arrival))||String(a.departure).localeCompare(String(b.departure)));
+  return sortedItineraryCache;
+}
 function itineraryEntriesHaveInteriorOverlap(a,b){
   const aStart=String(a?.arrival||''),aEnd=String(a?.departure||''),bStart=String(b?.arrival||''),bEnd=String(b?.departure||'');
   const aGap=(a?.coverageType||'Destination')==='Intentional Gap',bGap=(b?.coverageType||'Destination')==='Intentional Gap';
@@ -2811,11 +2832,21 @@ function itineraryLinkedReservations(entry){
     return Boolean(owner)&&String(owner.id)===String(entry.id)&&reservationDestinationMatchesItinerary(r,entry);
   });
 }
-function itineraryAccommodationCoverage(entry,rangeStart='',rangeEnd=''){
+function itineraryLinkedReservationIndex(rows=state.itinerary,reservations=state.reservations){
+  const index=new Map(),sourceRows=Array.isArray(rows)?rows:[],entryIds=new Set(sourceRows.map(entry=>String(entry?.id||'')).filter(Boolean));
+  const add=(entryId,record)=>{const id=String(entryId||'');if(!id||!entryIds.has(id))return;if(!index.has(id))index.set(id,[]);index.get(id).push(record);};
+  (Array.isArray(reservations)?reservations:[]).forEach(record=>{
+    if(record?.itineraryId){add(record.itineraryId,record);return;}
+    if(reservationIsSimpleReminder(record)&&reservationHasUserDate(record)){const owner=itineraryDestinationForBudgetDate(record.date);if(owner)add(owner.id,record);return;}
+    const owner=reservationDestinationForBudgetRecord(record);if(owner&&reservationDestinationMatchesItinerary(record,owner))add(owner.id,record);
+  });
+  return index;
+}
+function itineraryAccommodationCoverage(entry,rangeStart='',rangeEnd='',ownerMapOverride=null,linkedReservationIndex=null,ownedDateIndexOverride=null){
   if(!entry||entry.coverageType==='Intentional Gap'||entry.type!=='Standard')return {ownedDays:0,confirmedDays:0,confirmed:[],toBook:[],requiredDates:[],uncoveredDates:[],complete:true};
   const scoped=validISODate(rangeStart)||validISODate(rangeEnd),windowStart=validISODate(rangeStart)&&rangeStart>entry.arrival?rangeStart:entry.arrival,windowEnd=validISODate(rangeEnd)&&rangeEnd<entry.departure?rangeEnd:entry.departure;
-  const accommodation=itineraryLinkedReservations(entry).filter(r=>isAccommodationReservation(r.type)),ownerMap=itineraryOwnedDayMap(state.itinerary),ownedDates=[];
-  ownerMap.forEach((owner,date)=>{if(String(owner?.id||'')===String(entry.id||'')&&date>=windowStart&&date<=windowEnd)ownedDates.push(date);});
+  const linked=linkedReservationIndex instanceof Map?(linkedReservationIndex.get(String(entry.id||''))||[]):itineraryLinkedReservations(entry),accommodation=linked.filter(r=>isAccommodationReservation(r.type)),ownerMap=ownerMapOverride instanceof Map?ownerMapOverride:itineraryOwnedDayMap(state.itinerary),entryId=String(entry.id||''),indexedDates=ownedDateIndexOverride instanceof Map?ownedDateIndexOverride.get(entryId):null,ownedDates=Array.isArray(indexedDates)?indexedDates.filter(date=>date>=windowStart&&date<=windowEnd):[];
+  if(!Array.isArray(indexedDates))ownerMap.forEach((owner,date)=>{if(String(owner?.id||'')===entryId&&date>=windowStart&&date<=windowEnd)ownedDates.push(date);});
   // Accommodation end dates are checkout dates (exclusive operational boundaries),
   // while itinerary departure is likewise the day accommodation is no longer needed.
   // Count required nights, not inclusive calendar endpoints, otherwise two bookings with
@@ -2853,20 +2884,20 @@ function contiguousDateSegments(dates=[]){
   });
   if(segment)segments.push(segment);return segments;
 }
-function itineraryAccommodationNeedSegments(entry,rangeStart='',rangeEnd=''){
-  return contiguousDateSegments(itineraryAccommodationCoverage(entry,rangeStart,rangeEnd).uncoveredDates);
+function itineraryAccommodationNeedSegments(entry,rangeStart='',rangeEnd='',ownerMapOverride=null,linkedReservationIndex=null,ownedDateIndexOverride=null){
+  return contiguousDateSegments(itineraryAccommodationCoverage(entry,rangeStart,rangeEnd,ownerMapOverride,linkedReservationIndex,ownedDateIndexOverride).uncoveredDates);
 }
-function itineraryAccommodationStatus(entry,rangeStart='',rangeEnd=''){
+function itineraryAccommodationStatus(entry,rangeStart='',rangeEnd='',ownerMapOverride=null,linkedReservationIndex=null,ownedDateIndexOverride=null){
   if(!entry||entry.coverageType==='Intentional Gap') return {key:'intentional',label:'Intentional gap'};
   if(entry.type!=='Standard') return {key:'planned',label:`${entry.type} planned`};
-  const coverage=itineraryAccommodationCoverage(entry,rangeStart,rangeEnd);
+  const coverage=itineraryAccommodationCoverage(entry,rangeStart,rangeEnd,ownerMapOverride,linkedReservationIndex,ownedDateIndexOverride);
   if(coverage.complete&&coverage.ownedDays===0) return {key:'booked',label:'No overnight accommodation needed'};
   if(coverage.complete) return {key:'booked',label:'Accommodation linked'};
   if(coverage.toBook.length) return {key:'to-book',label:'Accommodation to book'};
   if(coverage.confirmedDays>0) return {key:'missing',label:'Accommodation incomplete'};
   return {key:'missing',label:'Accommodation missing'};
 }
-function itineraryCoverage(startDate=itineraryReferenceDate(),months=itineraryCoverageMonths){
+function itineraryCoverage(startDate=itineraryReferenceDate(),months=itineraryCoverageMonths,ownerMapOverride=null,linkedReservationIndex=null,ownedDateIndexOverride=null){
   const requestedReference=validISODate(startDate)?String(startDate):itineraryReferenceDate(),journeyStart=String(state.settings?.journeyStart||''),reference=validISODate(journeyStart)&&requestedReference<journeyStart?journeyStart:requestedReference,horizonEnd=journeyHorizonEndDate();
   const exclusiveEnd=monthOffsetClampedIso(reference,Math.max(1,Number(months)||1));
   const periodEnd=validISODate(exclusiveEnd)?isoLocal(dateOffsetFrom(exclusiveEnd,-1)):'';
@@ -2875,20 +2906,25 @@ function itineraryCoverage(startDate=itineraryReferenceDate(),months=itineraryCo
   if(reference>endKey)return {start:endKey,end:endKey,totalDays:0,entries:[],segments:[],gaps:[],overlaps:[],missing:[]};
   startDate=reference;
   const entries=sortedItinerary().filter(x=>x.departure>=startDate&&x.arrival<=endKey&&itineraryClassification(x,startDate)!=='completed');
-  const ownedMap=itineraryOwnedDayMap(state.itinerary),overlapRanges=[];
+  const ownedMap=ownerMapOverride instanceof Map?ownerMapOverride:itineraryOwnedDayMap(state.itinerary),overlapRanges=[];
   for(let i=0;i<entries.length;i++)for(let j=i+1;j<entries.length;j++){
     const a=entries[i],b=entries[j];if(!itineraryEntriesHaveInteriorOverlap(a,b))continue;
     const overlapStart=[a.arrival,b.arrival,startDate].sort()[2],overlapEnd=[a.departure,b.departure,endKey].sort()[0];
     if(overlapStart<=overlapEnd)overlapRanges.push({start:overlapStart,end:overlapEnd,entry:b,other:a});
   }
-  const intentional=entries.filter(entry=>entry.coverageType==='Intentional Gap');
+  const intentional=entries.filter(entry=>entry.coverageType==='Intentional Gap'),flightVoidByDate=new Map();
+  (Array.isArray(state.reservations)?state.reservations:[]).forEach(record=>{
+    if(record?.status==='To Book'||normalizeReservationType(record?.type,'')!=='Flight')return;
+    const flightDate=reservationEffectiveBudgetDate(record);if(!validISODate(flightDate)||flightDate<startDate||flightDate>endKey||flightVoidByDate.has(flightDate))return;
+    const flightVoid=itineraryFlightVoidDayForRows(flightDate,state.itinerary,state.reservations);if(flightVoid)flightVoidByDate.set(flightDate,flightVoid);
+  });
   const dayKind=date=>{
     const overlap=overlapRanges.find(range=>between(date,range.start,range.end));if(overlap)return {kind:'overlap',entry:overlap.entry,other:overlap.other};
     const gap=intentional.filter(entry=>between(date,entry.arrival,entry.departure)).sort((a,b)=>String(b.arrival).localeCompare(String(a.arrival))||String(b.departure).localeCompare(String(a.departure)))[0];if(gap)return {kind:'intentional',entry:gap};
-    const owner=ownedMap.get(date);if(owner)return {kind:'entry',entry:normalizeItineraryEntry(owner)};
+    const owner=ownedMap.get(date);if(owner)return {kind:'entry',entry:ownerMapOverride instanceof Map?owner:normalizeItineraryEntry(owner)};
     // A confirmed flight on the single uncovered day directly between two destinations
     // is a valid travel/overnight-flight void day, not an itinerary planning failure.
-    const flightVoid=itineraryFlightVoidDayForRows(date,state.itinerary,state.reservations);if(flightVoid)return {kind:'flight-void',entry:null,flight:flightVoid.flight,next:flightVoid.next};
+    const flightVoid=flightVoidByDate.get(date);if(flightVoid)return {kind:'flight-void',entry:null,flight:flightVoid.flight,next:flightVoid.next};
     return {kind:'gap',entry:null};
   };
   const segments=[];let cursor=startDate,current=null;
@@ -2898,11 +2934,11 @@ function itineraryCoverage(startDate=itineraryReferenceDate(),months=itineraryCo
     cursor=isoLocal(dateOffsetFrom(cursor,1));
   }
   if(current)segments.push({...current.segment,days:days(current.segment.start,current.segment.end)});
-  return {start:startDate,end:endKey,totalDays:days(startDate,endKey),entries,segments,gaps:segments.filter(x=>x.kind==='gap'),flightVoidDays:segments.filter(x=>x.kind==='flight-void'),overlaps:segments.filter(x=>x.kind==='overlap'),missing:entries.filter(x=>itineraryAccommodationStatus(x,startDate,endKey).key==='missing')};
+  return {start:startDate,end:endKey,totalDays:days(startDate,endKey),entries,segments,gaps:segments.filter(x=>x.kind==='gap'),flightVoidDays:segments.filter(x=>x.kind==='flight-void'),overlaps:segments.filter(x=>x.kind==='overlap'),missing:entries.filter(x=>itineraryAccommodationStatus(x,startDate,endKey,ownedMap,linkedReservationIndex,ownedDateIndexOverride).key==='missing')};
 }
 
-function forwardPlanningReadiness(reference=itineraryReferenceDate(),months=18){
-  const coverage=itineraryCoverage(reference,months),accommodationToBook=coverage.entries.filter(entry=>itineraryAccommodationStatus(entry,coverage.start,coverage.end).key==='to-book'),budgetNotSet=coverage.entries.filter(entry=>entry.coverageType==='Destination'&&!itineraryBudgetConfigured(entry));
+function forwardPlanningReadiness(reference=itineraryReferenceDate(),months=18,coverageOverride=null){
+  const coverage=coverageOverride||itineraryCoverage(reference,months),accommodationToBook=coverage.entries.filter(entry=>itineraryAccommodationStatus(entry,coverage.start,coverage.end).key==='to-book'),budgetNotSet=coverage.entries.filter(entry=>entry.coverageType==='Destination'&&!itineraryBudgetConfigured(entry));
   return {coverage,accommodationToBook,budgetNotSet,needsReview:Boolean(coverage.gaps.length||coverage.overlaps.length||coverage.missing.length||accommodationToBook.length||budgetNotSet.length)};
 }
 
@@ -2929,9 +2965,9 @@ function syncItineraryDerivedState(){
   // for an exact replacement or a uniquely matching same-place trip whose corrected dates
   // still strongly overlap. This prevents delete/re-add date corrections from silently
   // resetting a fixed stay rate/budget. Normal same-ID edits are never overwritten here.
-  const currentItinerary=[...state.itinerary];
+  const currentItinerary=[...state.itinerary],recoveryRows=sanitizeItineraryRecovery(state.settings?.itineraryRecovery),recoveryLiveIds=new Set(currentItinerary.map(candidate=>String(candidate.id))),recoveryContext={rows:recoveryRows,liveIds:recoveryLiveIds,eligibleRows:[...recoveryRows].reverse().filter(row=>!recoveryLiveIds.has(String(row.sourceId)))};
   state.itinerary=state.itinerary.map(entry=>{
-    const recovered=replacementItineraryRecoveryMatch(entry,currentItinerary);
+    const recovered=replacementItineraryRecoveryMatch(entry,currentItinerary,recoveryContext);
     const restored=recoverReplacementItineraryContext(entry,currentItinerary,recovered);
     seedRecoveredReplacementChecklistHistory(restored,recovered);
     return restored;
@@ -3059,8 +3095,8 @@ function syncItineraryDerivedState(){
   });
   archiveJourneyHistoryMetadata();
 }
-function reservationDestinationText(record){
-  const linked=state.itinerary?.find(x=>String(x.id)===String(record?.itineraryId||''));
+function reservationDestinationText(record,itineraryById=null){
+  const linked=itineraryById instanceof Map?itineraryById.get(String(record?.itineraryId||'')):state.itinerary?.find(x=>String(x.id)===String(record?.itineraryId||''));
   if(linked)return itineraryTitle(linked);
   // Simple To Book reminders deliberately stay unlinked, but a user-entered date still
   // gives them a real itinerary owner for Reservations filtering/grouping context.
@@ -3073,10 +3109,10 @@ function reservationDestinationText(record){
   if(planned?.coverageType==='Intentional Gap')return planned.intentionalLabel||'Intentional travel day';
   return 'Unassigned';
 }
-function reservationCountryName(record){
-  const linked=state.itinerary?.find(x=>String(x.id)===String(record?.itineraryId||''));
+function reservationCountryName(record,itineraryById=null){
+  const linked=itineraryById instanceof Map?itineraryById.get(String(record?.itineraryId||'')):state.itinerary?.find(x=>String(x.id)===String(record?.itineraryId||''));
   if(String(linked?.country||'').trim()) return canonicalCountryDisplay(linked.country);
-  const destination=String(reservationDestinationText(record)||'').trim();
+  const destination=String(reservationDestinationText(record,itineraryById)||'').trim();
   if(!destination||destination==='Unassigned') return '';
   // A trailing travel-region/mode label is context, not a country. Resolve the actual
   // port/city first so legacy values such as "Nassau, Caribbean" cannot appear under a
@@ -3098,9 +3134,9 @@ function reservationCountryName(record){
   const inferred=journeyCountryForRoutePlace(destination,'');
   return inferred?canonicalCountryDisplay(inferred):location.country;
 }
-function reservationDestinationIdentity(valueOrRecord){
+function reservationDestinationIdentity(valueOrRecord,itineraryById=null){
   const record=valueOrRecord&&typeof valueOrRecord==='object'?valueOrRecord:null;
-  const sourceRaw=trimmedScalarText(record?reservationDestinationText(record):valueOrRecord,'');
+  const sourceRaw=trimmedScalarText(record?reservationDestinationText(record,itineraryById):valueOrRecord,'');
   if(!sourceRaw||sourceRaw==='Unassigned')return {key:'unassigned',label:'Unassigned'};
   // Route-region/mode suffixes are display context rather than destination identity.
   // Strip only a recognised trailing context token, preserving real comma-bearing places.
@@ -3152,8 +3188,8 @@ function reservationDestinationIdentity(valueOrRecord){
   }
   return {key:`text:${canonicalIdentityKey(raw)}`,label:sourceRaw};
 }
-function reservationDestinationIdentityKey(valueOrRecord){return reservationDestinationIdentity(valueOrRecord).key;}
-function reservationDestinationCanonicalLabel(valueOrRecord){return reservationDestinationIdentity(valueOrRecord).label;}
+function reservationDestinationIdentityKey(valueOrRecord,itineraryById=null){return reservationDestinationIdentity(valueOrRecord,itineraryById).key;}
+function reservationDestinationCanonicalLabel(valueOrRecord,itineraryById=null){return reservationDestinationIdentity(valueOrRecord,itineraryById).label;}
 function reservationDestinationMatchesItinerary(record,entry){
   if(!record||!entry)return false;
   const raw=trimmedScalarText(record.destination,'');if(!raw)return false;
@@ -3165,9 +3201,9 @@ function reservationDestinationMatchesItinerary(record,entry){
   if(entryCity&&(locationPlaceIdentityKey(place)===locationPlaceIdentityKey(entryCity)||locationPlaceIdentityKey(placeWithoutRegion)===locationPlaceIdentityKey(entryCity)))return true;
   return false;
 }
-function reservationDestinationGroups(rows=[],valueFor=()=>1){
-  const grouped=new Map();
-  (Array.isArray(rows)?rows:[]).forEach(row=>{const identity=reservationDestinationIdentity(row),value=Number(valueFor(row)||0),prior=grouped.get(identity.key);if(prior)prior[1]+=value;else grouped.set(identity.key,[identity.label,value]);});
+function reservationDestinationGroups(rows=[],valueFor=()=>1,itineraryById=null,identityFor=null){
+  const grouped=new Map(),resolveIdentity=typeof identityFor==='function'?identityFor:(row=>reservationDestinationIdentity(row,itineraryById));
+  (Array.isArray(rows)?rows:[]).forEach(row=>{const identity=resolveIdentity(row),value=Number(valueFor(row)||0),prior=grouped.get(identity.key);if(prior)prior[1]+=value;else grouped.set(identity.key,[identity.label,value]);});
   return [...grouped.values()];
 }
 function reservationCurrentCountryName(){
@@ -3545,11 +3581,13 @@ function reservationNeedsAction(record){
   candidates.sort((a,b)=>(a.level==='red'?0:1)-(b.level==='red'?0:1)||a.days-b.days);
   return candidates[0]||null;
 }
-function travelBandForDate(date){
+function travelBandForDate(date,context=null){
   const itinerary=itineraryEntryForDate(date);
   if(itinerary){
-    const status=itineraryAccommodationStatus(itinerary,date,date);
-    return {label:itinerary.coverageType==='Intentional Gap'?(itinerary.intentionalLabel||'Intentional Travel Day'):itineraryTitle(itinerary),type:itinerary.type,current:itineraryClassification(itinerary)==='current',id:itinerary.id,source:'itinerary',coverageType:itinerary.coverageType,status:status.key,statusLabel:status.label};
+    const ownerMap=context?.ownerMap instanceof Map?context.ownerMap:null,linkedReservationIndex=context?.linkedReservationIndex instanceof Map?context.linkedReservationIndex:null,ownedDateIndex=context?.ownedDateIndex instanceof Map?context.ownedDateIndex:null;
+    const status=itineraryAccommodationStatus(itinerary,date,date,ownerMap,linkedReservationIndex,ownedDateIndex);
+    const current=context&&Object.prototype.hasOwnProperty.call(context,'currentEntry')?String(context.currentEntry?.id||'')===String(itinerary.id||''):itineraryClassification(itinerary)==='current';
+    return {label:itinerary.coverageType==='Intentional Gap'?(itinerary.intentionalLabel||'Intentional Travel Day'):itineraryTitle(itinerary),type:itinerary.type,current,id:itinerary.id,source:'itinerary',coverageType:itinerary.coverageType,status:status.key,statusLabel:status.label};
   }
   const journeyStart=String(state.settings?.journeyStart||''),horizon=journeyHorizonEndDate();
   if(validISODate(date)&&validISODate(journeyStart)&&date<journeyStart)return {label:'Before journey starts',type:'Before journey',current:false,source:'outside-journey',coverageType:'Outside Journey',status:'before-journey',statusLabel:'Journey not started'};
@@ -3562,7 +3600,11 @@ function spendInRangeAud(start,end){
   return expenseTotal+reservationTotal;
 }
 let journeySpendCache=null;
+let journeyDestinationSpendCache=null;
 let journeySpendDirty=true;
+let sortedItineraryCacheRef=null;
+let sortedItineraryCacheLength=-1;
+let sortedItineraryCache=[];
 let itineraryOwnerCacheRef=null;
 let itineraryOwnerCacheLength=-1;
 let itineraryOwnerDestinations=[];
@@ -3570,6 +3612,7 @@ let itineraryOwnerIntentional=[];
 let itineraryOwnerByDate=new Map();
 let itineraryDirectOwnerByDate=new Map();
 function invalidateItineraryOwnerCache(){
+  sortedItineraryCacheRef=null;sortedItineraryCacheLength=-1;sortedItineraryCache=[];
   itineraryOwnerCacheRef=null;itineraryOwnerCacheLength=-1;itineraryOwnerDestinations=[];itineraryOwnerIntentional=[];itineraryOwnerByDate.clear();itineraryDirectOwnerByDate.clear();
 }
 function itineraryOwnerLookupData(){
@@ -3622,17 +3665,32 @@ function journeyOwnerForTransaction(record,kind='expense'){
   return legacyManualJourneyOutsideItineraryEnvelopeForDate(ownershipDate);
 }
 function buildJourneySpendCache(){
-  const totals=new Map(state.journeys.map(journey=>[journey.id,0]));
+  const journeys=Array.isArray(state.journeys)?state.journeys:[],totals=new Map(journeys.map(journey=>[journey.id,0])),destinationTotals=new Map(journeys.map(journey=>[journey.id,0]));
+  // The linked Journey for an itinerary stay is stable throughout this cache build.
+  // Index it once instead of scanning decades of Journey History for every transaction.
+  const sourceJourneyByItinerary=new Map(journeys.map(journey=>[String(journey?.sourceItineraryId||''),journey]).filter(([id])=>id));
+  const ownerFor=(record,kind)=>{
+    const ownershipDate=kind==='reservation'?reservationEffectiveBudgetDate(record):record?.date;
+    const itineraryOwner=kind==='reservation'?reservationDestinationForBudgetRecord(record):itineraryDestinationForBudgetDate(ownershipDate);
+    if(kind==='reservation'&&record?.itineraryId&&itineraryOwner&&String(record.itineraryId)===String(itineraryOwner.id)){const explicit=sourceJourneyByItinerary.get(String(record.itineraryId));if(explicit)return explicit;}
+    if(itineraryOwner){const linked=sourceJourneyByItinerary.get(String(itineraryOwner.id||''));if(linked)return linked;}
+    return legacyManualJourneyOutsideItineraryEnvelopeForDate(ownershipDate);
+  };
   state.expenses.forEach(record=>{
     const value=finiteNumber(record.amount,0,0,1_000_000_000)*finiteNumber(record.rate,1,.000001,1_000_000);
-    const owner=record.date&&Number.isFinite(value)?journeyOwnerForTransaction(record,'expense'):null;
-    if(owner) totals.set(owner.id,(totals.get(owner.id)||0)+value);
+    const owner=record.date&&Number.isFinite(value)?ownerFor(record,'expense'):null;
+    if(owner){totals.set(owner.id,(totals.get(owner.id)||0)+value);destinationTotals.set(owner.id,(destinationTotals.get(owner.id)||0)+value);}
   });
   state.reservations.forEach(record=>{
     const value=reservationAudValue(record);
-    const owner=record.status!=='To Book'&&record.date&&Number.isFinite(value)?journeyOwnerForTransaction(record,'reservation'):null;
-    if(owner) totals.set(owner.id,(totals.get(owner.id)||0)+value);
+    const owner=record.status!=='To Book'&&record.date&&Number.isFinite(value)?ownerFor(record,'reservation'):null;
+    if(owner){totals.set(owner.id,(totals.get(owner.id)||0)+value);if(record.destinationBudget==='Yes')destinationTotals.set(owner.id,(destinationTotals.get(owner.id)||0)+value);}
   });
+  journeyDestinationSpendCache=destinationTotals;
+  // A lazy rebuild is a completed cache rebuild, not merely a calculation helper.
+  // Clear the dirty flag here so multiple Journey spend lookups in the same render cannot
+  // rebuild the entire transaction ownership cache repeatedly after validation/cache invalidation.
+  journeySpendDirty=false;
   return totals;
 }
 function journeySpendAud(journey){
@@ -3641,10 +3699,9 @@ function journeySpendAud(journey){
   return Number(journeySpendCache.get(journey.id)||0);
 }
 function journeyDestinationSpendAud(journey){
-  if(!journey)return 0;const id=String(journey.id||'');let total=0;
-  state.expenses.forEach(record=>{const owner=journeyOwnerForTransaction(record,'expense');if(owner&&String(owner.id||'')===id)total+=finiteNumber(record.amount,0,0,1_000_000_000)*finiteNumber(record.rate,1,.000001,1_000_000);});
-  state.reservations.forEach(record=>{if(record.status==='To Book'||record.destinationBudget!=='Yes')return;const owner=journeyOwnerForTransaction(record,'reservation');if(owner&&String(owner.id||'')===id)total+=reservationAudValue(record);});
-  return total;
+  if(!journey)return 0;
+  if(!journeyDestinationSpendCache||journeySpendDirty)journeySpendCache=buildJourneySpendCache();
+  return Number(journeyDestinationSpendCache.get(journey.id)||0);
 }
 function markJourneySpendDirty(entity='none'){
   // Journey spend depends not only on transaction edits, but also on itinerary ownership
@@ -3805,6 +3862,14 @@ function restoreStateAfterFailedSave(snapshot=null){
   try{syncLinkedState();}catch{}
 }
 function saveState(entity='none',action='save'){
+  // App Health changes only its verification metadata. Once this session already has a
+  // fully verified main-storage baseline (validated at launch or by an ordinary Save),
+  // persist that tiny metadata update from the trusted snapshot instead of re-running
+  // the whole reconciliation + canonical validator a second time at the end of the check.
+  // First-run/legacy sessions without the main storage key deliberately use the normal
+  // full path so App Health can never become the first unvalidated persistence boundary.
+  let verificationMetadataOnly=false;
+  if(entity==='verification'&&action==='app-health'&&lastPersistedSnapshot){try{verificationMetadataOnly=localStorage.getItem(STORAGE_KEY)!==null;}catch{verificationMetadataOnly=false;}}
   if(startupStorageIssueKind&&entity!=='restore'){
     state=clone(lastPersistedSnapshot);journeySpendDirty=true;journeySpendCache=null;
     lastStorageError=startupStorageIssue||'Saved local data needs recovery before changes can be stored.';
@@ -3816,9 +3881,11 @@ function saveState(entity='none',action='save'){
   }
   if(state?.settings&&action!=='app-health'&&entity!=='verification'){state.settings.lastAppHealthAt='';state.settings.lastAppHealthResults={};state.settings.lastAppHealthShellRevision='';lastAppHealthRunIssues=[];}
   try{
-    if(entity==='itinerary'||entity==='restore') invalidateItineraryOwnerCache();
-    markJourneySpendDirty(entity);
-    syncLinkedState();
+    if(!verificationMetadataOnly){
+      if(entity==='itinerary'||entity==='restore') invalidateItineraryOwnerCache();
+      markJourneySpendDirty(entity);
+      syncLinkedState();
+    }
   }catch(error){
     // Linked-state derivation happens before persistence. If malformed transient state or
     // an exceptional runtime error makes reconciliation fail, restore the last verified
@@ -3835,7 +3902,7 @@ function saveState(entity='none',action='save'){
   // Mark only successfully-current live storage; canonical/exported backups strip this.
   if(state?.settings)state.settings.storageShellRevision=APP_SHELL_REVISION;
   try{
-    const integrityErrors=validateBackup(canonicalBackupPayload(itineraryReferenceDate()));
+    const integrityErrors=verificationMetadataOnly?[]:validateBackup(canonicalBackupPayload(itineraryReferenceDate()));
     if(integrityErrors.length){
       restoreStateAfterFailedSave();
       lastStorageError=`The change was not saved because it would make local data fail an integrity check: ${integrityErrors[0]}`;
@@ -3846,7 +3913,12 @@ function saveState(entity='none',action='save'){
     lastStorageError='The change was not saved because its data integrity could not be verified safely.';
     suppressSuccessToastUntil=Date.now()+750;updateDataStatus();showToast(lastStorageError,'error');if(!scheduledScreenRefreshWouldDiscardDraft())queueMicrotask(()=>{try{render();}catch{}});return false;
   }
-  const encoded=JSON.stringify(state),memoryBeforeSave=clone(lastPersistedSnapshot);
+  const persistedPayload=verificationMetadataOnly?(()=>{
+    const payload=clone(lastPersistedSnapshot||state);payload.version=APP_VERSION;
+    if(payload?.settings){payload.settings.lastAppHealthAt=state.settings.lastAppHealthAt;payload.settings.lastAppHealthResults=clone(state.settings.lastAppHealthResults||{});payload.settings.lastAppHealthShellRevision=state.settings.lastAppHealthShellRevision;payload.settings.storageShellRevision=APP_SHELL_REVISION;}
+    return payload;
+  })():state;
+  const encoded=JSON.stringify(persistedPayload),memoryBeforeSave=clone(lastPersistedSnapshot);
   let previousEncoded=null,writeAttempted=false;
   try{
     // Batch 139: capture the exact prior bytes before attempting any write. A failed
@@ -3874,8 +3946,8 @@ function saveState(entity='none',action='save'){
     return false;
   }
   if(entity==='restore'){startupStorageIssueKind='';startupStorageIssue='';startupParsedState=clone(state);}
-  lastPersistedSnapshot=clone(state);
-  persistedStateRevision+=1;
+  lastPersistedSnapshot=clone(persistedPayload);
+  persistedStateRevision+=1;globalSearchIndexCache=null;
   lastStorageError='';
   // Persistence is already committed here. UI/status notification failures must not be
   // misreported as storage failures or roll back a verified successful save.
@@ -3972,7 +4044,7 @@ function launchLocationPresentation(source=state){
   return {country:country||'CURRENT LOCATION',city,flag:flag||'🌐'};
 }
 
-const LAUNCH_ICON_MS=1550,LAUNCH_LOCATION_MS=1850,LAUNCH_FADE_MS=800;
+const LAUNCH_ICON_MS=2150,LAUNCH_LOCATION_MS=2450,LAUNCH_FADE_MS=800;
 let initialLaunchIconReadyAt=0,initialLaunchLocationTimer=null,initialLaunchLocationStarted=false;
 function showInitialLaunchLocationPhase(){
   // The location phase contains itinerary data. Never populate it while the startup PIN
@@ -4182,6 +4254,14 @@ function currentStayActualExpenses(){const entry=activeDestinationItinerary(),re
 function currentStayActualReservations(){const entry=activeDestinationItinerary(),reference=itineraryReferenceDate();return entry?linkedReservations().filter(x=>x.date<=reference&&x.destinationBudget==='Yes'&&recordBelongsToItinerary(x,entry,'reservation')):[];}
 function currentStayActualSpendAud(){const entry=activeDestinationItinerary();if(!entry)return 0;return currentStayActualExpenses().reduce((s,x)=>s+Number(x.amount||0)*Number(x.rate||entry.rate||1),0)+currentStayActualReservations().reduce((s,x)=>s+reservationAudValue(x),0);}
 function currentStayActualSpendLocal(){const entry=activeDestinationItinerary();if(!entry)return 0;return currentStayActualExpenses().reduce((s,x)=>s+Number(x.amount||0),0)+currentStayActualReservations().reduce((s,x)=>s+reservationAudValue(x)/Math.max(Number(entry.rate||1),.000001),0);}
+function currentStaySpendSnapshot(){
+  const entry=activeDestinationItinerary();if(!entry)return {local:0,aud:0,actualLocal:0,actualAud:0};
+  const reference=itineraryReferenceDate(),stayRate=Math.max(Number(state.currentStay.rate||1),.000001),entryRate=Math.max(Number(entry.rate||1),.000001);
+  let livingLocal=0,livingAud=0,actualLivingLocal=0,actualLivingAud=0,reservationAud=0,actualReservationAud=0;
+  state.expenses.forEach(record=>{if(expenseBudgetPreference(record,entry)!=='Yes'||!recordBelongsToItinerary(record,entry,'expense'))return;const amount=Number(record.amount||0),audValue=amount*Number(record.rate||entry.rate||1);livingLocal+=amount;livingAud+=audValue;if(record.date<=reference){actualLivingLocal+=amount;actualLivingAud+=audValue;}});
+  linkedReservations().forEach(record=>{if(record.destinationBudget!=='Yes'||!recordBelongsToItinerary(record,entry,'reservation'))return;const audValue=reservationAudValue(record);reservationAud+=audValue;if(record.date<=reference)actualReservationAud+=audValue;});
+  return {local:livingLocal+reservationAud/stayRate,aud:livingAud+reservationAud,actualLocal:actualLivingLocal+actualReservationAud/entryRate,actualAud:actualLivingAud+actualReservationAud};
+}
 function budgetYearForJourneyStart(startValue=state.settings?.journeyStart,referenceValue=itineraryReferenceDate()){
   const reference=String(referenceValue||''),journeyStart=String(startValue||'');
   if(validISODate(journeyStart)&&(!validISODate(reference)||reference<journeyStart))return Number(journeyStart.slice(0,4));
@@ -4241,7 +4321,7 @@ function reservationSpendAud(){ return linkedReservations().filter(x=>isActualBu
 // record may also appear in its destination/trip subset for pacing and history.
 function annualSpendAud(){ return state.expenses.filter(x=>isActualBudgetDate(x.date)).reduce((s,x)=>s+Number(x.amount||0)*Number(x.rate||1),0)+reservationSpendAud(); }
 function annualFutureCommitmentsAud(){return state.expenses.filter(x=>isFutureBudgetDate(x.date)).reduce((s,x)=>s+Number(x.amount||0)*Number(x.rate||1),0)+linkedReservations().filter(x=>isFutureBudgetDate(reservationEffectiveBudgetDate(x))).reduce((s,x)=>s+reservationAudValue(x),0);}
-function annualCommittedAud(){return annualSpendAud()+annualFutureCommitmentsAud();}
+function annualCommittedAud(actualSpend=annualSpendAud(),futureCommitments=annualFutureCommitmentsAud()){return Number(actualSpend||0)+Number(futureCommitments||0);}
 function currentStayReservations(){ const entry=activeDestinationItinerary();if(!entry)return [];return [...linkedReservations()].filter(x=>recordBelongsToItinerary(x,entry,'reservation')).sort((a,b)=>a.date.localeCompare(b.date)); }
 function budgetReservationChronologicalRows(rows){
   return [...rows].sort((a,b)=>{
@@ -4283,16 +4363,16 @@ function currentStayExpenses(){ const entry=currentItinerarySegment();if(!entry)
 function currentStayDaysElapsed(){
   return currentStayOwnedDayMetrics().elapsed;
 }
-function annualForecast(){
-  const period=annualBudgetPeriodProgress(),elapsed=period.elapsed,total=period.total;
+function annualForecast(actualSpend=annualSpendAud(),futureCommitments=annualFutureCommitmentsAud()){
+  const period=annualBudgetPeriodProgress(),elapsed=period.elapsed,total=period.total,committed=annualCommittedAud(actualSpend,futureCommitments);
   // Before Journey Start there is no elapsed travel time and therefore no run-rate.
   // Confirmed future commitments remain visible as the forecast floor.
-  if(elapsed<=0)return annualCommittedAud();
+  if(elapsed<=0)return committed;
   // In the first (possibly partial) calendar budget year, pace begins on the actual
   // journey start rather than treating pre-travel months as zero-spend elapsed time.
   // Future commitments remain a floor and are not added on top of the run-rate projection.
-  const runRateForecast=annualSpendAud()/elapsed*total;
-  return Math.max(runRateForecast,annualCommittedAud());
+  const runRateForecast=Number(actualSpend||0)/elapsed*total;
+  return Math.max(runRateForecast,committed);
 }
 function currentMonthForecastAud(){
   const reference=parseDate(itineraryReferenceDate());
@@ -4472,9 +4552,9 @@ function rollingSchengenDays(reference=itineraryReferenceDate()){
   });
   return used.size;
 }
-function automaticAlertCandidates(){
+function automaticAlertCandidates(coverageOverride=null,staySpendOverride=null){
   const a=[];
-  const local=staySpendLocal(),activeDestination=activeDestinationItinerary(),destinationBudgetSet=itineraryBudgetConfigured(activeDestination),destinationIdentity=String(activeDestination?.id||checklistDestinationKeyForEntry(activeDestination||{})||`${state.currentStay?.country||''}|${state.currentStay?.start||''}`);
+  const local=staySpendOverride!==null&&staySpendOverride!==undefined&&Number.isFinite(Number(staySpendOverride))?Number(staySpendOverride):staySpendLocal(),activeDestination=activeDestinationItinerary(),destinationBudgetSet=itineraryBudgetConfigured(activeDestination),destinationIdentity=String(activeDestination?.id||checklistDestinationKeyForEntry(activeDestination||{})||`${state.currentStay?.country||''}|${state.currentStay?.start||''}`);
   if(destinationBudgetSet){
     if(local>Number(state.currentStay.budget||0))a.push({level:'red',text:'Destination budget is over the approved amount.',_dismissIdentity:`destination-budget:${destinationIdentity}:over`});
     else if(budgetProgress(local,state.currentStay.budget)>=85)a.push({level:'yellow',text:'Destination budget has reached 85%.',_dismissIdentity:`destination-budget:${destinationIdentity}:85`});
@@ -4493,17 +4573,17 @@ function automaticAlertCandidates(){
   if(backup.due)a.push({level:'yellow',text:backup.review?'Travel Command Centre backup date needs review.':backup.last?`Travel Command Centre backup is ${backup.days} days old.`:'No Travel Command Centre backup has been downloaded yet.',_dismissIdentity:`backup:${backup.review?'review:':''}${backup.last||'none'}`});
   const duplicateExpenseGroups=possibleDuplicateExpenseGroups();
   if(duplicateExpenseGroups.length)a.push({level:'yellow',text:`${duplicateExpenseGroups.length} possible duplicate expense ${duplicateExpenseGroups.length===1?'group needs':'groups need'} review.`,_dismissIdentity:`duplicate-expenses:${alertIdentityFingerprint(duplicateExpenseGroups.flat().map(x=>x.id))}`});
-  const journeyStart=String(state.settings?.journeyStart||''),journeyHorizon=journeyHorizonEndDate(),unassignedExpenses=state.expenses.filter(record=>validISODate(record?.date)&&(!validISODate(journeyStart)||record.date>=journeyStart)&&(!validISODate(journeyHorizon)||record.date<=journeyHorizon)&&itineraryEntryForDate(record.date)?.coverageType!=='Intentional Gap'&&!itineraryDestinationForBudgetDate(record.date));
+  const journeyStart=String(state.settings?.journeyStart||''),journeyHorizon=journeyHorizonEndDate(),intentionalRanges=itineraryOwnerLookupData().intentional,unassignedExpenses=state.expenses.filter(record=>validISODate(record?.date)&&(!validISODate(journeyStart)||record.date>=journeyStart)&&(!validISODate(journeyHorizon)||record.date<=journeyHorizon)&&!intentionalRanges.some(entry=>between(record.date,entry.arrival,entry.departure))&&!itineraryDestinationForBudgetDate(record.date));
   if(unassignedExpenses.length)a.push({level:'yellow',text:`${unassignedExpenses.length} expense ${unassignedExpenses.length===1?'entry is':'entries are'} not assigned to an itinerary stay.`,_dismissIdentity:`unassigned-expenses:${alertIdentityFingerprint(unassignedExpenses.map(x=>x.id))}`});
   state.reservations.map(record=>{const alert=reservationNeedsAction(record);return alert?{...alert,_dismissIdentity:`reservation:${String(record.id||'')}`} : null;}).filter(Boolean).sort((x,y)=>(x.level==='red'?0:1)-(y.level==='red'?0:1)||(Number.isFinite(x.days)?x.days:0)-(Number.isFinite(y.days)?y.days:0)).forEach(alert=>a.push(alert));
-  const coverage=itineraryCoverage(reference,18);
+  const coverage=coverageOverride||itineraryCoverage(reference,18);
   if(coverage.gaps.length)a.push({level:'red',text:`${coverage.gaps.length} unplanned itinerary gap${coverage.gaps.length===1?'':'s'} found in the next 18 months.`,_dismissIdentity:`itinerary-gaps:${alertIdentityFingerprint(coverage.gaps.map(x=>`${x.start}|${x.end}`))}`});
   if(coverage.overlaps.length)a.push({level:'red',text:`${coverage.overlaps.length} itinerary overlap${coverage.overlaps.length===1?'':'s'} require review.`,_dismissIdentity:`itinerary-overlaps:${alertIdentityFingerprint(coverage.overlaps.map(x=>`${x.entry?.id||''}|${x.start}|${x.end}`))}`});
   if(coverage.missing.length)a.push({level:'yellow',text:`${coverage.missing.length} planned destination${coverage.missing.length===1?' has':'s have'} incomplete or missing linked accommodation coverage.`,_dismissIdentity:`itinerary-missing-accommodation:${alertIdentityFingerprint(coverage.missing.map(x=>x.id))}`});
   return a;
 }
-function computedAlerts(){
-  const a=automaticAlertCandidates(),dismissed=reconciledDismissedAlertSet(a);
+function computedAlerts(coverageOverride=null,staySpendOverride=null){
+  const a=automaticAlertCandidates(coverageOverride,staySpendOverride),dismissed=reconciledDismissedAlertSet(a);
   const generated=a.map(x=>({...x,_source:'computed',_dismissKey:alertDismissKey(x)})).filter(x=>!dismissed.has(x._dismissKey));
   const manual=state.alerts.map(x=>({...x,_source:'manual',_manualId:x.id,_dismissKey:alertDismissKey(x)}));
   const priority={red:0,yellow:1,green:2};
@@ -4746,7 +4826,11 @@ function homeUpcomingReservationItem(record={}){
 }
 
 function renderDashboard(){
-  const local=staySpendLocal(), actualLocal=currentStayActualSpendLocal(), annual=annualSpendAud(), alerts=computedAlerts();
+  // Batch 1217: Home Alerts and the expanded forward-readiness panel inspect the same
+  // 18-month itinerary window. Calculate that coverage once so iPad rendering does not
+  // repeat the most expensive planning scan.
+  const homeCoverage=itineraryCoverage(itineraryReferenceDate(),18);
+  const homeSpend=currentStaySpendSnapshot(),local=homeSpend.local,actualLocal=homeSpend.actualLocal,annual=annualSpendAud(),alerts=computedAlerts(homeCoverage,local);
   const activeDestination=activeDestinationItinerary(),destinationBudgetSet=itineraryBudgetConfigured(activeDestination),currentBudgetSegment=currentItinerarySegment(),plannedTravelDay=currentBudgetSegment?.coverageType==='Intentional Gap';
   const annualBudget=annualBudgetForYear(),annualBudgetSet=annualBudgetConfigured();
   const stayPct=destinationBudgetSet?budgetProgress(local,state.currentStay.budget):0, actualStayPct=destinationBudgetSet?budgetProgress(actualLocal,state.currentStay.budget):0, annualPct=annualBudgetSet?budgetProgress(annual,annualBudget):0;
@@ -4773,7 +4857,7 @@ function renderDashboard(){
   const stayProgress=Math.round(stayElapsed/stayTotal*100);
   const dailyBudget=destinationBudgetSet?Number(state.currentStay.budget||0)/stayTotal:0;
   const dailyBudgetAud=dailyBudget*Number(state.currentStay.rate||0);
-  const annualForecastValue=annualForecast(),annualPeriod=annualBudgetPeriodProgress(),journeyStarted=journeyHasStarted();
+  const annualForecastValue=annualForecast(annual),annualPeriod=annualBudgetPeriodProgress(),journeyStarted=journeyHasStarted();
   const yearStart=annualPeriod.start, yearEnd=annualPeriod.end;
   const yearDays=annualPeriod.total;
   const yearDay=annualPeriod.elapsed;
@@ -4835,7 +4919,7 @@ function renderDashboard(){
   // Read it from the underlying 18-month coverage model so dismissing the related Home
   // alert cannot turn a real gap/overlap into a false OK, and keep the displayed horizon
   // aligned with Itinerary, Calendar and automatic planning alerts.
-  const homeReadiness=forwardPlanningReadiness(itineraryReferenceDate(),18),homeCoverage=homeReadiness.coverage,homeCoverageNeedsReview=homeReadiness.needsReview;
+  const homeReadiness=forwardPlanningReadiness(itineraryReferenceDate(),18,homeCoverage),homeCoverageNeedsReview=homeReadiness.needsReview;
   const homeFocusAlertsBody=`<div class="readability-metric-grid">${readabilityMetric('TOTAL ALERTS',String(alerts.length),alerts.length?'items needing attention':'all clear',alerts.length?'warn':'good')}${readabilityMetric('HIGH PRIORITY',String(severeAlerts),'red alerts',severeAlerts?'bad':'good')}${readabilityMetric('WATCH ITEMS',String(warningAlerts),'amber alerts',warningAlerts?'warn':'good')}${readabilityMetric('ITINERARY COVERAGE',homeCoverageNeedsReview?'REVIEW':'OK','next 18 months',homeCoverageNeedsReview?'warn':'good')}</div><div class="readability-list home-focus-alert-list">${alerts.map((x,i)=>`<div class="readability-list-row ${x.level==='red'?'alert-high':'alert-medium'}"><span>${x.level==='red'?'HIGH':'WATCH'}</span><div><b>Alert ${i+1}</b><small>${esc(x.text)}</small></div>${x._source==='manual'?`<button class="home-alert-delete" data-delete="alerts:${esc(x._manualId)}" aria-label="Delete alert ${i+1}">${iconMarkup('delete','action-glyph')}<span>DELETE</span></button>`:`<button class="home-alert-delete" data-home-alert-dismiss="${esc(encodeURIComponent(x._dismissKey||alertDismissKey(x)))}" aria-label="Delete alert ${i+1}">${iconMarkup('delete','action-glyph')}<span>DELETE</span></button>`}</div>`).join('')||`<div class="readability-section"><h4>ALL CLEAR</h4><p>No current alerts. The app will populate this view automatically when something needs attention.</p></div>`}</div>`;
   const schengenUsedPct=graphPercent(schengenDays/90*100),schengenLeftPct=graphPercent(schengenRemaining/90*100);
   const homeFocusSchengenEditor=activeDestination?`<div class="readability-section home-focus-schengen-editor"><div class="home-focus-schengen-editor-head"><div><h4>ENTER SCHENGEN DATES</h4><p>Enter the date you entered the Schengen Area and the date you exit. Save here on the Home screen.</p></div><span class="home-focus-schengen-editor-badge">MANUAL</span></div><div class="home-focus-schengen-date-fields"><label><span>ENTRY DATE</span><input id="home-schengen-entry" type="date" value="${esc(state.currentStay.schengenStart||'')}" aria-label="Schengen entry date"><small>${state.currentStay.schengenStart?dateFmt(state.currentStay.schengenStart):'Not set'}</small></label><label><span>EXIT DATE</span><input id="home-schengen-exit" type="date" value="${esc(state.currentStay.schengenEnd||'')}" aria-label="Schengen exit date"><small>${state.currentStay.schengenEnd?dateFmt(state.currentStay.schengenEnd):'Not set'}</small></label></div><div class="home-focus-schengen-save-row"><span id="home-schengen-feedback" aria-live="polite">${state.currentStay.schengenStart&&state.currentStay.schengenEnd?`Current Schengen stay: ${dateFmt(state.currentStay.schengenStart)} – ${dateFmt(state.currentStay.schengenEnd)}`:'Enter both dates, then save.'}</span><button id="save-home-schengen-dates" class="primary">SAVE SCHENGEN DATES</button></div></div>`:`<div class="readability-section home-focus-schengen-editor unavailable"><h4>ENTER SCHENGEN DATES</h4><p>Add or activate a destination in Itinerary first. Schengen dates are then entered here from Home.</p></div>`;
@@ -5327,7 +5411,7 @@ function accountList(editable=false){
   return `<div class="account-list ${editable?'account-list-editable':'account-list-readonly'}">${state.accounts.map(x=>editable?`<div class="account-row account-row-editable"><button class="account-main" data-edit="accounts:${x.id}">${accountLabel(x.name)}<b class="${Number(x.balance)<0?'danger-text':''}">${money(x.balance)}</b></button><span class="account-actions">${actions('accounts',x.id)}</span></div>`:`<div class="account-row account-row-readonly"><div class="account-main account-main-readonly">${accountLabel(x.name)}<b class="${Number(x.balance)<0?'danger-text':''}">${money(x.balance)}</b></div></div>`).join('')}</div>`;
 }
 function renderBudget(){
-  const local=staySpendLocal(), aud=staySpendAud(), actualLocal=currentStayActualSpendLocal(), actualAud=currentStayActualSpendAud(), annual=annualSpendAud(), futureCommitments=annualFutureCommitmentsAud(), committedAnnual=annualCommittedAud(), forecast=annualForecast();
+  const staySpend=currentStaySpendSnapshot(),local=staySpend.local,aud=staySpend.aud,actualLocal=staySpend.actualLocal,actualAud=staySpend.actualAud,annual=annualSpendAud(),futureCommitments=annualFutureCommitmentsAud(),committedAnnual=annualCommittedAud(annual,futureCommitments),forecast=annualForecast(annual,futureCommitments);
   const defaultCats=['Groceries','Eating Out','Transport','Entertainment','Shopping','Miscellaneous'];
   const cats=[...new Set([...defaultCats,...state.expenses.map(x=>String(x.category||'').trim()).filter(Boolean)])];
   const yearExpenses=state.expenses.filter(x=>isActualBudgetDate(x.date));
@@ -5519,7 +5603,7 @@ function renderBudget(){
     <article class="budget-command-card destination budget-destination-lock destination-budget-itinerary-lock readability-expandable budget-readability-card budget-locked-summary budget-destination-locked-summary" data-budget-focus="destinationSetup" tabindex="0" role="button" aria-label="Open Destination Budget setup in expanded view"><div class="budget-lock-heading"><i class="budget-lock-heading-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6.5-6.3 6.5-12a6.5 6.5 0 1 0-13 0c0 5.7 6.5 12 6.5 12Z"/><circle cx="12" cy="9" r="2.2"/></svg></i><span>DESTINATION BUDGET</span></div>${budgetSetupEntry?`<div class="budget-destination-locked-context"><div><small>CURRENT SELECTION</small><b>${esc(budgetSetupCity)}</b><em>${esc(budgetSetupCountry)} · ${dateFmt(budgetSetupEntry.arrival)} – ${dateFmt(budgetSetupEntry.departure)}</em></div><strong class="${budgetSetupConfigured?'configured':'needs-budget'}">${esc(budgetSetupStatus)}</strong></div><div class="budget-locked-summary-grid destination"><span><small>BUDGET · AUD</small><b>${money(budgetSetupAud)}</b></span><span><small>AVAILABLE · ${esc(budgetCurrency.code)}</small><b>${esc(budgetCurrency.symbol||budgetCurrency.code)}${Number(budgetSetupEntry.budget||0).toLocaleString('en-AU',{maximumFractionDigits:2})}</b></span><span><small>FIXED RATE</small><b>1 ${esc(budgetCurrency.code)} = ${moneyExact(budgetSetupRate)} AUD</b></span></div>`:`<div class="budget-no-itinerary-stays"><b>NO CURRENT OR UPCOMING ITINERARY STAYS</b><p>Add the destination and dates in Itinerary first.</p></div>`}</article>
   </section>
   <div class="budget-workspace gap-top">
-    ${card(`<span class="budget-expenses-title">${expenseSectionTitle}</span><button class="budget-section-add" data-add="expenses">＋ Add Expense</button>`,`<div class="budget-period-tabs">${[['stay',currentItinerarySegment()?'THIS STAY':journeyHasStarted()?'THIS DATE':'THIS STAY'],['week','WEEK'],['month','MONTH'],['3months','3 MONTHS'],['6months','6 MONTHS']].map(([key,label])=>`<button class="period-${key} ${budgetPeriod===key?'active':''}" data-budget-period="${key}">${label}</button>`).join('')}</div><div class="expense-toolbar expense-toolbar-locked"><div class="expense-context-card currency"><i class="expense-context-art currency-art">${iconSvg('coins')}</i><span>${expenseContextLabel}</span><b>${esc(expenseContextValue)}</b><small>${expenseContextNote}</small></div><div class="expense-context-card date"><i class="expense-context-art">${iconSvg('calendar')}</i><span>ENTRY DATE</span><b>${dateFmt(itineraryReferenceDate())}</b><small>Uses the iPad clock</small></div><button id="undo-last-expense" class="expense-tool-card secondary"><i class="expense-context-art">${iconSvg('undo')}</i><b>Undo Last Entry</b><small>New expenses added from Add Expense</small></button></div><div class="expense-period-range"><span>${budgetPeriodLabel()}</span><b>${periodRange.inactive?`NOT ACTIVE · Journey starts ${dateFmt(state.settings?.journeyStart)}`:`${dateFmt(periodRange.start)} – ${dateFmt(periodRange.end)}`}</b><small>${filteredExpenses.length} entr${filteredExpenses.length===1?'y':'ies'}</small></div>${expenseTable(filteredExpenses)}<div class="expense-period-insights"><span class="insight-average">${iconMarkup('bars','expense-insight-icon')}<small>AVERAGE ENTRY</small><b>${filteredAverageLocal===null?'—':localMoney(filteredAverageLocal,filteredAverageSymbol)}</b><em>${money(filteredAverage)} AUD</em></span><span class="insight-largest">${iconMarkup('star','expense-insight-icon')}<small>LARGEST ENTRY</small><b>${largestFiltered?localMoney(Number(largestFiltered.amount||0),largestFiltered.symbol||state.currentStay.symbol):localMoney(0,state.currentStay.symbol)}</b>${largestFiltered?`<em>${esc(largestFiltered.category)} · ${money(largestFilteredAud)} AUD</em>`:''}</span><span class="insight-count">${iconMarkup('list','expense-insight-icon')}<small>ENTRIES</small><b>${filteredExpenses.length}</b><em>${budgetPeriodLabel()}</em></span></div><div class="expense-period-total"><span>${budgetPeriodLabel()} total</span><b>${money(filteredExpenseAud)}</b></div>`,'budget-expenses-card')}
+    ${card(`<span class="budget-expenses-title premium-panel-heading">${iconMarkup('coins','premium-panel-heading-icon')}<span>${expenseSectionTitle}</span></span><button class="budget-section-add" data-add="expenses">＋ Add Expense</button>`,`<div class="budget-period-tabs">${[['stay',currentItinerarySegment()?'THIS STAY':journeyHasStarted()?'THIS DATE':'THIS STAY'],['week','WEEK'],['month','MONTH'],['3months','3 MONTHS'],['6months','6 MONTHS']].map(([key,label])=>`<button class="period-${key} ${budgetPeriod===key?'active':''}" data-budget-period="${key}">${label}</button>`).join('')}</div><div class="expense-toolbar expense-toolbar-locked"><div class="expense-context-card currency"><i class="expense-context-art currency-art">${iconSvg('coins')}</i><span>${expenseContextLabel}</span><b>${esc(expenseContextValue)}</b><small>${expenseContextNote}</small></div><div class="expense-context-card date"><i class="expense-context-art">${iconSvg('calendar')}</i><span>ENTRY DATE</span><b>${dateFmt(itineraryReferenceDate())}</b><small>Uses the iPad clock</small></div><button id="undo-last-expense" class="expense-tool-card secondary"><i class="expense-context-art">${iconSvg('undo')}</i><b>Undo Last Entry</b><small>New expenses added from Add Expense</small></button></div><div class="expense-period-range"><span>${budgetPeriodLabel()}</span><b>${periodRange.inactive?`NOT ACTIVE · Journey starts ${dateFmt(state.settings?.journeyStart)}`:`${dateFmt(periodRange.start)} – ${dateFmt(periodRange.end)}`}</b><small>${filteredExpenses.length} entr${filteredExpenses.length===1?'y':'ies'}</small></div>${expenseTable(filteredExpenses)}<div class="expense-period-insights"><span class="insight-average">${iconMarkup('bars','expense-insight-icon')}<small>AVERAGE ENTRY</small><b>${filteredAverageLocal===null?'—':localMoney(filteredAverageLocal,filteredAverageSymbol)}</b><em>${money(filteredAverage)} AUD</em></span><span class="insight-largest">${iconMarkup('star','expense-insight-icon')}<small>LARGEST ENTRY</small><b>${largestFiltered?localMoney(Number(largestFiltered.amount||0),largestFiltered.symbol||state.currentStay.symbol):localMoney(0,state.currentStay.symbol)}</b>${largestFiltered?`<em>${esc(largestFiltered.category)} · ${money(largestFilteredAud)} AUD</em>`:''}</span><span class="insight-count">${iconMarkup('list','expense-insight-icon')}<small>ENTRIES</small><b>${filteredExpenses.length}</b><em>${budgetPeriodLabel()}</em></span></div><div class="expense-period-total"><span>${budgetPeriodLabel()} total</span><b>${money(filteredExpenseAud)}</b></div>`,'budget-expenses-card')}
     <aside class="budget-side-stack">
       ${readabilityExpandableCard('RESERVATIONS · READ ONLY SUMMARY',`${reservationSummary.length?`<div class="reservation-summary-list">${reservationSummary.map(x=>`<button data-screen-jump="reservations"><span>${esc(x.type)} <small>(${x.count})</small></span><b>${money(x.total)}</b><small class="pill ${x.status==='Paid'?'green':x.status==='Booked'?'yellow':x.status==='Unpaid'?'red':''}">${esc(x.status)}</small></button>`).join('')}</div>`:empty(reservationEmptyText)}<div class="reservation-status-summary"><span class="paid"><b>${reservationStatusCounts.paid}</b> Paid</span><span class="booked"><b>${reservationStatusCounts.booked}</b> Booked</span><span class="unpaid"><b>${reservationStatusCounts.unpaid}</b> Unpaid</span><span class="tobook"><b>${reservationStatusCounts.toBook}</b> To Book</span></div><div class="reservation-allocation"><span>Destination budget <b>${money(destinationAllocated)}</b></span><span>Annual budget <b>${money(annualAllocated)}</b></span><span>Outstanding unpaid <b class="${unpaidReservationTotal?'danger-text':''}">${money(unpaidReservationTotal)}</b></span></div><div class="reservation-total"><span>TOTAL BOOKED (AUD)</span><b>${money(bookedTotal)}</b></div>`,'budget-reservations-card','budget','reservations','Reservations read only summary')}
       ${readabilityExpandableCard(`TRAVEL BETWEEN DESTINATIONS · ${activeBudgetYear()}`,`<div class="budget-travel-cost-list">${annualTravelBreakdown.map(row=>`<div><span><b>${esc(row.label)}</b><small>${row.count} booking${row.count===1?'':'s'}</small></span><strong>${money(row.total)}</strong></div>`).join('')}</div><div class="budget-travel-cost-total"><span>TRAVEL RESERVATION TOTAL</span><b>${money(annualTravelTotal)}</b><small>Reservation travel history · allocation remains with its Annual or Destination/Trip budget</small></div>`,'budget-travel-cost-card','budget','travelCosts','Travel between destinations')}
@@ -5602,7 +5686,7 @@ function reservationDateLabel(x){
   if(x.endDate&&x.endDate!==x.date) return `${start} – ${dateFmt(x.endDate)}`;
   return start;
 }
-function reservationDestination(x){ return reservationDestinationText(x); }
+function reservationDestination(x,itineraryById=null){ return reservationDestinationText(x,itineraryById); }
 function reservationStatusClass(status){
   return ({Paid:'green',Booked:'blue',Unpaid:'red','To Book':'yellow'}[status]||'');
 }
@@ -5671,10 +5755,10 @@ function reservationBudgetOwnerCompatible(record={},owner=null){
   if(type==='RV')return mode==='Motorhome';
   return true;
 }
-function itineraryAdjacentDestinationBridgeForDateInRows(date,rows=state.itinerary){
+function itineraryAdjacentDestinationBridgeForDateInRows(date,rows=state.itinerary,rowsAreNormalized=false){
   const key=String(date||'');if(!validISODate(key))return null;
-  const normalized=(Array.isArray(rows)?rows:[]).map(entry=>normalizeItineraryEntry(entry));
-  if(itineraryFinancialOwnerForDateInRows(key,normalized))return null;
+  const normalized=rowsAreNormalized?(Array.isArray(rows)?rows:[]):(Array.isArray(rows)?rows:[]).map(entry=>normalizeItineraryEntry(entry));
+  if(itineraryFinancialOwnerForDateInRows(key,normalized,true))return null;
   if(normalized.some(entry=>entry.coverageType==='Intentional Gap'&&between(key,entry.arrival,entry.departure)))return null;
   const previous=normalized.filter(entry=>entry.coverageType==='Destination'&&entry.departure<key).sort((a,b)=>String(b.departure).localeCompare(String(a.departure))||String(b.arrival).localeCompare(String(a.arrival)))[0]||null;
   const next=normalized.filter(entry=>entry.coverageType==='Destination'&&entry.arrival>key).sort((a,b)=>String(a.arrival).localeCompare(String(b.arrival))||String(a.departure).localeCompare(String(b.departure)))[0]||null;
@@ -5689,27 +5773,27 @@ function itineraryFlightVoidDayForRows(date,rows=state.itinerary,reservations=st
   const flight=(Array.isArray(reservations)?reservations:[]).find(record=>record?.status!=='To Book'&&normalizeReservationType(record?.type,'')==='Flight'&&reservationEffectiveBudgetDate(record)===String(date||''));
   return flight?{...bridge,flight}:null;
 }
-function reservationDestinationForBudgetRecordInRows(record={},rows=state.itinerary){
+function reservationDestinationForBudgetRecordInRows(record={},rows=state.itinerary,rowsAreNormalized=false){
   const date=reservationEffectiveBudgetDate(record);
   if(!validISODate(date))return null;
-  const normalized=(Array.isArray(rows)?rows:[]).map(entry=>normalizeItineraryEntry(entry));
+  const normalized=rowsAreNormalized?(Array.isArray(rows)?rows:[]):(Array.isArray(rows)?rows:[]).map(entry=>normalizeItineraryEntry(entry));
   const onIntentionalGap=normalized.some(entry=>entry.coverageType==='Intentional Gap'&&between(date,entry.arrival,entry.departure));
   // A booked movement on a deliberate travel/void day belongs to the destination being
   // travelled to. Living expenses keep the gap as no-owner. Cruise/RV fares additionally
   // require a matching Cruise/Motorhome itinerary so they can never inflate a Standard stay.
   let owner=onIntentionalGap&&reservationIsBetweenDestinationTravel(record)
     ?nextDestinationEntryForRows(normalized,date)
-    :itineraryFinancialOwnerForDateInRows(date,normalized);
+    :itineraryFinancialOwnerForDateInRows(date,normalized,true);
   // A one-day uncovered transfer bridge is an accepted travel/overnight-flight void day.
   // Link booked movement to the arriving destination so domestic flights and trains keep
   // their Destination Budget ownership. International flights still remain Annual Budget
   // because their automatic budget preference is No; this owner only preserves history.
-  if(!owner&&reservationIsBetweenDestinationTravel(record))owner=itineraryAdjacentDestinationBridgeForDateInRows(date,normalized)?.next||null;
+  if(!owner&&reservationIsBetweenDestinationTravel(record))owner=itineraryAdjacentDestinationBridgeForDateInRows(date,normalized,true)?.next||null;
   if(owner&&!reservationBudgetOwnerCompatible(record,owner))owner=null;
   return owner||null;
 }
 function reservationDestinationForBudgetRecord(record){
-  return reservationDestinationForBudgetRecordInRows(record,state.itinerary);
+  return reservationDestinationForBudgetRecordInRows(record,sortedItinerary(),true);
 }
 function reservationCompletionTime(record={}){
   const type=normalizeReservationType(record?.type,'');
@@ -5772,21 +5856,22 @@ function reservationHasUserDate(x){
 function reservationUserDate(x){
   return reservationHasUserDate(x)?String(x.date):'';
 }
-function reservationSearchText(x){
+function reservationSearchTextRaw(x,itineraryById=null){
   const travel=ALL_RESERVATION_TRAVEL_DETAIL_FIELDS.map(name=>x?.[name]).filter(value=>value!==''&&value!==null&&value!==undefined);
   const payment=RESERVATION_PAYMENT_DETAIL_FIELDS.map(name=>x?.[name]).filter(value=>value!==''&&value!==null&&value!==undefined);
   const aud=reservationAudValue(x),travellers=Math.max(1,Number(x.travellers||state.settings.travellers||2)),perTraveller=aud/travellers;
   const searchableStartDate=reservationUserDate(x);
-  return canonicalSearchText([x.title,x.type,reservationTypeGroup(x),reservationDashboardCategory(x),reservationTravelCostLabel(x),reservationTravelScope(x),reservationDestination(x),reservationCountryName(x),x.currency,x.status,x.reference,x.notes,x.time,searchDateTerms(searchableStartDate,x.endDate,x.paymentDueDate,x.cancellationDeadline),searchNumberTerms(x.original,aud,perTraveller),x.original!==undefined?`${x.currency||''} ${Number(x.original||0).toLocaleString('en-AU',{maximumFractionDigits:2})}`:'',`${money(aud)} ${moneyCents(perTraveller)} per traveller`,...travel,...payment].filter(value=>value!==''&&value!==null&&value!==undefined).join(' '));
+  return [x.title,x.type,reservationTypeGroup(x),reservationDashboardCategory(x),reservationTravelCostLabel(x),reservationTravelScope(x),reservationDestinationText(x,itineraryById),reservationCountryName(x,itineraryById),x.currency,x.status,x.reference,x.notes,x.time,searchDateTerms(searchableStartDate,x.endDate,x.paymentDueDate,x.cancellationDeadline),searchNumberTerms(x.original,aud,perTraveller),x.original!==undefined?`${x.currency||''} ${Number(x.original||0).toLocaleString('en-AU',{maximumFractionDigits:2})}`:'',`${money(aud)} ${moneyCents(perTraveller)} per traveller`,...travel,...payment].filter(value=>value!==''&&value!==null&&value!==undefined).join(' ');
 }
-function reservationMatchesFilters(x){
+function reservationSearchText(x,itineraryById=null){return canonicalSearchText(reservationSearchTextRaw(x,itineraryById));}
+function reservationMatchesFilters(x,itineraryById=null){
   const typeOk=reservationTab==='Completed'?reservationIsCompleted(x):(reservationTab==='All'||reservationDashboardCategory(x)===reservationTab);
   const statusOk=reservationStatusFilter==='All'||x.status===reservationStatusFilter;
-  const recordCountry=reservationCountryName(x),currentCountry=reservationCurrentCountryName();
+  const recordCountry=reservationCountryName(x,itineraryById),currentCountry=reservationCurrentCountryName();
   const selectedCountryOk=reservationCountryFilter==='All'||countryIdentityEquals(recordCountry,reservationCountryFilter);
   const currentCountryOk=!reservationOnlyCurrent||Boolean(currentCountry)&&countryIdentityEquals(recordCountry,currentCountry);
-  const searchOk=!reservationSearchQuery||reservationSearchText(x).includes(canonicalSearchText(reservationSearchQuery));
-  const destinationOk=reservationDestinationFilter==='All'||reservationDestinationIdentityKey(x)===reservationDestinationIdentityKey(reservationDestinationFilter);
+  const searchOk=!reservationSearchQuery||reservationSearchText(x,itineraryById).includes(canonicalSearchText(reservationSearchQuery));
+  const destinationOk=reservationDestinationFilter==='All'||reservationDestinationIdentityKey(x,itineraryById)===reservationDestinationIdentityKey(reservationDestinationFilter);
   const budgetOk=reservationBudgetFilter==='All'||(reservationBudgetFilter==='Destination'?x.destinationBudget==='Yes':x.destinationBudget!=='Yes');
   const currencyOk=reservationCurrencyFilter==='All'||String(x.currency||'')===reservationCurrencyFilter;
   const referenceOk=reservationReferenceFilter==='All'||(reservationReferenceFilter==='Has reference'?Boolean(String(x.reference||'').trim()):!String(x.reference||'').trim());
@@ -6116,8 +6201,23 @@ function reservationDateOverlap(a,b){
   return false;
 }
 function reservationConflictIds(rows=state.reservations){
-  const ids=new Set();
-  for(let i=0;i<rows.length;i++)for(let j=i+1;j<rows.length;j++)if(reservationDateOverlap(rows[i],rows[j])){ids.add(rows[i].id);ids.add(rows[j].id);}
+  const source=(Array.isArray(rows)?rows:[]).filter(record=>record?.date&&record.status!=='To Book'&&MULTI_DAY_RESERVATION_TYPES.has(normalizeReservationType(record.type,''))),ids=new Set();
+  if(source.length<2)return ids;
+  // Invalid legacy dates are rare but must preserve the exact historical pairwise
+  // behaviour. Normal valid records use a start-date sweep: once the next booking
+  // starts after this booking's end boundary, no later row can overlap it.
+  if(source.some(record=>!validISODate(record.date)||(record.endDate&&!validISODate(record.endDate)))){
+    for(let i=0;i<source.length;i++)for(let j=i+1;j<source.length;j++)if(reservationDateOverlap(source[i],source[j])){ids.add(source[i].id);ids.add(source[j].id);}
+    return ids;
+  }
+  const ordered=[...source].sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.endDate||a.date).localeCompare(String(b.endDate||b.date))||String(a.id||'').localeCompare(String(b.id||'')));
+  for(let i=0;i<ordered.length;i++){
+    const a=ordered[i],aEnd=String(a.endDate||a.date);
+    for(let j=i+1;j<ordered.length;j++){
+      const b=ordered[j];if(String(b.date)>aEnd)break;
+      if(reservationDateOverlap(a,b)){ids.add(a.id);ids.add(b.id);}
+    }
+  }
   return ids;
 }
 function reservationBusiestMonth(rows){
@@ -6156,6 +6256,12 @@ function copyReservationSummary(rows){
 
 function renderReservations(){
   const all=reservationSortRows(state.reservations);
+  // Reservations repeatedly resolve linked itinerary labels/countries while building filters,
+  // summaries and cards. Use one O(1) lookup for this render instead of scanning the full
+  // itinerary for every reservation; this is critical once the archive spans decades.
+  const itineraryById=new Map((state.itinerary||[]).map(entry=>[String(entry.id||''),entry]));
+  const destinationIdentityCache=new WeakMap();
+  const reservationIdentity=value=>{if(value&&typeof value==='object'){const cached=destinationIdentityCache.get(value);if(cached)return cached;const identity=reservationDestinationIdentity(value,itineraryById);destinationIdentityCache.set(value,identity);return identity;}return reservationDestinationIdentity(value);};
   const categoryUpcomingAll=reservationChronologicalRows(all.filter(x=>x.status!=='To Book'&&!reservationIsCompleted(x)));
   const completedAll=reservationCompletedRows(all.filter(reservationIsCompleted));
   // To Book items are planning reminders, not reservations yet, and the yellow reminder
@@ -6164,14 +6270,14 @@ function renderReservations(){
   // a visible confirmed booking. A previously selected stale option is still preserved by
   // the reconciliation code below until the user explicitly clears it.
   const confirmedFilterOptionsRows=all.filter(row=>row.status!=='To Book');
-  const destinations=[...confirmedFilterOptionsRows.reduce((map,row)=>{const identity=reservationDestinationIdentity(row);if(identity.label&&identity.key&&!map.has(identity.key))map.set(identity.key,identity.label);return map;},new Map()).values()];
+  const destinations=[...confirmedFilterOptionsRows.reduce((map,row)=>{const identity=reservationIdentity(row);if(identity.label&&identity.key&&!map.has(identity.key))map.set(identity.key,identity.label);return map;},new Map()).values()];
   // Keep a selected dynamic filter visible even after the last matching record is edited
   // or deleted. Otherwise Safari shows the first “All” option while the stale filter
   // remains active in memory, creating a deceptive empty result set with a control that
   // appears cleared. Preserve the selected zero-result value until the user clears it.
   if(reservationDestinationFilter!=='All'&&!destinations.some(value=>reservationDestinationIdentityKey(value)===reservationDestinationIdentityKey(reservationDestinationFilter)))destinations.push(reservationDestinationFilter);
   destinations.sort((a,b)=>a.localeCompare(b));
-  const countries=[...confirmedFilterOptionsRows.reduce((map,row)=>{const country=reservationCountryName(row),key=slugifyCountry(country);if(country&&key&&!map.has(key))map.set(key,canonicalCountryDisplay(country));return map;},new Map()).values()];
+  const countries=[...confirmedFilterOptionsRows.reduce((map,row)=>{const country=reservationCountryName(row,itineraryById),key=slugifyCountry(country);if(country&&key&&!map.has(key))map.set(key,canonicalCountryDisplay(country));return map;},new Map()).values()];
   if(reservationCountryFilter!=='All'&&!countries.some(value=>countryIdentityEquals(value,reservationCountryFilter)))countries.push(reservationCountryFilter);
   countries.sort((a,b)=>a.localeCompare(b));
   const currencies=[...new Set(confirmedFilterOptionsRows.map(x=>String(x.currency||'').trim()).filter(Boolean))];
@@ -6179,10 +6285,15 @@ function renderReservations(){
   currencies.sort((a,b)=>a.localeCompare(b));
   const categoryTabs=['Flights','Trains','Cruises','RV','Hotels','Airbnb','Tickets & Attractions','Completed'];
   const typeTabs=['Flights','Trains','Cruises','RV','Hotels','Airbnb','Tickets & Attractions'];
-  const filtered=reservationSortRows(all.filter(reservationMatchesFilters));
+  const filtered=reservationSortRows(all.filter(x=>reservationMatchesFilters(x,itineraryById)));
   const actionRows=reservationFilteredActionRows(filtered);
   const future=reservationChronologicalRows(all.filter(x=>x.status==='To Book'),{undatedRemindersLast:true});
   const completed=reservationCompletedRows(filtered.filter(reservationIsCompleted));
+  // Keep decades of completed bookings searchable without injecting thousands of hidden
+  // archive rows into the iPad DOM at once. The newest 50 are enough for browsing; older
+  // records remain available immediately through the existing Reservation search/filters.
+  const completedArchiveRenderLimit=50;
+  const completedArchiveRows=completed.slice(0,completedArchiveRenderLimit);
   const upcomingAll=filtered.filter(x=>x.status!=='To Book'&&!reservationIsCompleted(x));
   const visibleUpcoming=reservationOnlyUpcoming?upcomingAll:filtered.filter(x=>x.status!=='To Book');
   const maxPage=Math.max(1,Math.ceil(visibleUpcoming.length/reservationPageSize));
@@ -6196,8 +6307,8 @@ function renderReservations(){
   const filteredUnpaidValue=liveSummaryPayments.reduce((sum,x)=>sum+reservationOutstandingAud(x),0);
   const averageBookingValue=summarySource.length?filteredBookedValue/summarySource.filter(x=>x.status!=='To Book').length||0:0;
   const referenceCounts=reservationReferenceCounts(all);
-  const conflictIds=reservationConflictIds(all);
-  const conflictCount=conflictIds.size;
+  const operationalTableRows=all.filter(x=>x.status==='To Book'||!reservationWhollyBeforeJourney(x));
+  const reservationTableContext={referenceCounts:reservationReferenceCounts(operationalTableRows),conflictIds:reservationConflictIds(operationalTableRows)};
   const missingReferenceCount=summarySource.filter(x=>x.status!=='To Book'&&!String(x.reference||'').trim()).length;
   const missingNotesCount=summarySource.filter(x=>!String(x.notes||'').trim()).length;
   const longestBooking=[...summarySource].sort((a,b)=>reservationDurationDays(b)-reservationDurationDays(a))[0]||null;
@@ -6219,7 +6330,7 @@ function renderReservations(){
   const travellerTotal=summarySource.reduce((sum,x)=>sum+Math.max(1,Number(x.travellers||2)),0);
   const highValueThreshold=averageBookingValue>0?averageBookingValue*2:0;
   const highValueCount=summarySource.filter(x=>x.status!=='To Book'&&highValueThreshold>0&&reservationAudValue(x)>=highValueThreshold).length;
-  const destinationSpendGroups=reservationDestinationGroups(summarySource.filter(x=>x.status!=='To Book'),reservationAudValue);
+  const destinationSpendGroups=reservationDestinationGroups(summarySource.filter(x=>x.status!=='To Book'),reservationAudValue,itineraryById,reservationIdentity);
   const topDestination=destinationSpendGroups.sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]))[0]||['None',0];
   // Keep in-progress multi-day bookings in the main active list, but future-only
   // surfaces must never describe a past start date as the next/upcoming booking.
@@ -6231,7 +6342,7 @@ function renderReservations(){
   for(let i=1;i<datedUpcoming.length;i++){const previousLast=reservationLastOccupiedDate(datedUpcoming[i-1]);largestGap=Math.max(largestGap,validISODate(previousLast)?Math.max(0,calendarDayDelta(previousLast,datedUpcoming[i].date)-1):0);}
   const confirmationRate=summarySource.length?Math.round((paidCount+bookedCount)/summarySource.length*100):0;
   const currentCountry=reservationCurrentCountryName();
-  const currentCountryCount=currentCountry?all.filter(x=>countryIdentityEquals(reservationCountryName(x),currentCountry)).length:0;
+  const currentCountryCount=currentCountry?all.filter(x=>countryIdentityEquals(reservationCountryName(x,itineraryById),currentCountry)).length:0;
   const confirmed=summarySource.filter(x=>['Paid','Booked'].includes(x.status)).length;
   // Future Bookings / To Book is deliberately a separate, filter-independent planning panel.
   // Keep the side summary aligned with that panel instead of letting confirmed-booking filters
@@ -6266,7 +6377,7 @@ function renderReservations(){
   const farthestUpcoming=[...upcomingAll].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0]||null;
   const earliestToBook=[...future].sort((a,b)=>String(a.date||'').localeCompare(String(b.date||'')))[0]||null;
   const currenciesUsed=new Set(summarySource.map(x=>String(x.currency||'').trim()).filter(Boolean));
-  const destinationsUsed=new Set(summarySource.map(x=>reservationDestinationIdentityKey(x)).filter(key=>key&&key!=='unassigned'));
+  const destinationsUsed=new Set(summarySource.map(x=>reservationIdentity(x).key).filter(key=>key&&key!=='unassigned'));
   const paymentRows=summarySource.filter(x=>x.status!=='To Book');
   const trackedPaidRows=paymentRows.filter(x=>reservationPaidAud(x)>.01);
   const outstandingRows=paymentRows.filter(x=>reservationOutstandingAud(x)>.01);
@@ -6294,7 +6405,7 @@ function renderReservations(){
   const weekendStartCount=summarySource.filter(x=>x.date&&[0,6].includes(parseDate(x.date).getDay())).length;
   const dateFrequency={}; summarySource.filter(x=>x.date).forEach(x=>{dateFrequency[x.date]=(dateFrequency[x.date]||0)+1;});
   const sameDayBookingDays=Object.values(dateFrequency).filter(count=>count>1).length;
-  const destinationCountGroups=reservationDestinationGroups(summarySource,()=>1);
+  const destinationCountGroups=reservationDestinationGroups(summarySource,()=>1,itineraryById,reservationIdentity);
   const peakDestinationByCount=destinationCountGroups.sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]))[0]||['None',0];
   const totalBookedDays=summarySource.filter(x=>x.status!=='To Book').reduce((sum,x)=>sum+reservationDurationDays(x),0);
   const averageDailyBookingCost=totalBookedDays?filteredBookedValue/totalBookedDays:0;
@@ -6306,13 +6417,13 @@ function renderReservations(){
   const unpaidExposurePct=filteredBookedValue?Math.round(filteredUnpaidValue/filteredBookedValue*100):0;
   const confirmedRows=summarySource.filter(x=>x.status!=='To Book');
   const multiDayTypes=summarySource.filter(x=>MULTI_DAY_RESERVATION_TYPES.has(normalizeReservationType(x.type,'')));
-  const completeRecords=summarySource.filter(x=>String(x.title||'').trim()&&x.date&&reservationDestination(x)&&String(x.currency||'').trim()&&Number(x.travellers||0)>0&&['Yes','No'].includes(String(x.destinationBudget??'No'))).length;
+  const completeRecords=summarySource.filter(x=>String(x.title||'').trim()&&x.date&&reservationDestination(x,itineraryById)&&String(x.currency||'').trim()&&Number(x.travellers||0)>0&&['Yes','No'].includes(String(x.destinationBudget??'No'))).length;
   const incompleteRecords=Math.max(0,summarySource.length-completeRecords);
   const confirmedReferencePct=confirmedRows.length?Math.round(confirmedRows.filter(x=>String(x.reference||'').trim()).length/confirmedRows.length*100):0;
   const confirmedNotesPct=confirmedRows.length?Math.round(confirmedRows.filter(x=>String(x.notes||'').trim()).length/confirmedRows.length*100):0;
   const endDateCoveragePct=multiDayTypes.length?Math.round(multiDayTypes.filter(x=>x.endDate).length/multiDayTypes.length*100):100;
   const timeCoveragePct=summarySource.length?Math.round(timedCount/summarySource.length*100):0;
-  const destinationCoveragePct=summarySource.length?Math.round(summarySource.filter(x=>reservationDestination(x)).length/summarySource.length*100):0;
+  const destinationCoveragePct=summarySource.length?Math.round(summarySource.filter(x=>reservationDestination(x,itineraryById)).length/summarySource.length*100):0;
   const currencyCoveragePct=summarySource.length?Math.round(summarySource.filter(x=>String(x.currency||'').trim()).length/summarySource.length*100):0;
   const budgetCoveragePct=summarySource.length?Math.round(summarySource.filter(x=>['Yes','No'].includes(String(x.destinationBudget??'No'))).length/summarySource.length*100):0;
   const travellerCoveragePct=summarySource.length?Math.round(summarySource.filter(x=>Number(x.travellers||0)>0).length/summarySource.length*100):0;
@@ -6324,7 +6435,7 @@ function renderReservations(){
   const next90UnpaidValue=next90Rows.filter(x=>x.status!=='To Book').reduce((sum,x)=>sum+reservationOutstandingAud(x),0);
   const next90BookedValue=next90Rows.filter(x=>x.status==='Booked').reduce((sum,x)=>sum+reservationAudValue(x),0);
   const next90ToBookValue=next90Rows.filter(x=>x.status==='To Book').reduce((sum,x)=>sum+reservationAudValue(x),0);
-  const currentStayLinkedCount=currentCountry?summarySource.filter(x=>countryIdentityEquals(reservationCountryName(x),currentCountry)).length:0;
+  const currentStayLinkedCount=currentCountry?summarySource.filter(x=>countryIdentityEquals(reservationCountryName(x,itineraryById),currentCountry)).length:0;
   const overnightCount=summarySource.filter(x=>x.endDate&&x.date&&x.endDate>x.date).length;
   const todayIso=itineraryReferenceDate();
   const next7Limit=dateOffsetFrom(itineraryReferenceDate(),6);
@@ -6339,7 +6450,7 @@ function renderReservations(){
   const checkingInToday=summarySource.filter(x=>x.status!=='To Book'&&isAccommodationReservation(x.type)&&x.date===todayIso&&reservationActionStillPendingToday(reservationOperationalStartTime(x))).length;
   const endingToday=summarySource.filter(x=>x.status!=='To Book'&&isAccommodationReservation(x.type)&&validISODate(x.endDate)&&x.endDate===todayIso&&reservationActionStillPendingToday(reservationOperationalEndTime(x))).length;
   const nextTimedBooking=reservationChronologicalRows(summarySource.filter(x=>x.date>=todayIso&&String(reservationOperationalStartTime(x)||'').trim()))[0];
-  const nextDestinationBooking=[...summarySource].filter(x=>x.date>=todayIso&&reservationDestination(x)).sort((a,b)=>String(a.date).localeCompare(String(b.date)))[0];
+  const nextDestinationBooking=[...summarySource].filter(x=>x.date>=todayIso&&reservationDestination(x,itineraryById)).sort((a,b)=>String(a.date).localeCompare(String(b.date)))[0];
   const futureDates=[...new Set(summarySource.filter(x=>x.date>=todayIso).map(x=>x.date))].sort();
   let longestFutureGap=0;
   for(let i=1;i<futureDates.length;i++) longestFutureGap=Math.max(longestFutureGap,Math.max(0,calendarDayDelta(futureDates[i-1],futureDates[i])));
@@ -6363,11 +6474,12 @@ function renderReservations(){
   const actionRequiredCount=overdue+unpaidMissingReference+unpaidMissingNotes+confirmedMissingTime+future.filter(x=>x.status==='To Book').length;
   let consecutiveDestinationPairs=0;
   const chronological=[...summarySource].filter(x=>x.date).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-  for(let i=1;i<chronological.length;i++){const currentKey=reservationDestinationIdentityKey(chronological[i]),previousKey=reservationDestinationIdentityKey(chronological[i-1]);if(currentKey&&currentKey!=='unassigned'&&currentKey===previousKey)consecutiveDestinationPairs++;}
+  for(let i=1;i<chronological.length;i++){const currentKey=reservationIdentity(chronological[i]).key,previousKey=reservationIdentity(chronological[i-1]).key;if(currentKey&&currentKey!=='unassigned'&&currentKey===previousKey)consecutiveDestinationPairs++;}
   const focusCompleted=reservationCategoryFocus==='Completed';
   const completedFilterTabs=['All','Flights','Trains','Cruises','RV','Hotels','Airbnb','Tickets & Attractions'];
   const completedFocusRows=focusCompleted&&reservationCompletedTypeFilter!=='All'?completedAll.filter(x=>reservationCompletedTypeMatches(x,reservationCompletedTypeFilter)):completedAll;
   const focusRows=reservationCategoryFocus?(focusCompleted?completedFocusRows:categoryUpcomingAll.filter(x=>reservationDashboardCategory(x)===reservationCategoryFocus)):[];
+  const focusDisplayRows=focusRows.slice(0,completedArchiveRenderLimit);
   const focusValue=focusRows.reduce((sum,x)=>sum+reservationAudValue(x),0);
   const focusUnpaid=focusRows.filter(x=>x.status!=='To Book'&&reservationOutstandingAud(x)>.01).length;
   const focusPaid=focusRows.filter(x=>x.status!=='To Book'&&reservationOutstandingAud(x)<=.01).length;
@@ -6379,7 +6491,7 @@ function renderReservations(){
   const focusActiveCount=focusRows.filter(x=>!reservationStartsUpcoming(x)).length;
   const focusNext=focusFutureRows[0]||null;
   const completedFilterStrip=focusCompleted?`<div class="reservation-completed-filter-strip" role="group" aria-label="Filter completed reservations by type">${completedFilterTabs.map(type=>{const count=type==='All'?completedAll.length:completedAll.filter(x=>reservationCompletedTypeMatches(x,type)).length;const tone=type==='All'?'all':type==='Tickets & Attractions'?'tickets':type.toLowerCase().replaceAll(' ','-').replaceAll('&','and');return `<button class="reservation-completed-filter ${tone} ${reservationCompletedTypeFilter===type?'active':''}" data-res-completed-filter="${esc(type)}"><span>${esc(type)}</span><b>${count}</b></button>`}).join('')}</div>`:'';
-  const reservationFocusBody=reservationCategoryFocus?`<div class="readability-metric-grid">${readabilityMetric(focusCompleted?'COMPLETED':'BOOKED RESERVATIONS',String(focusRows.length),focusCompleted?(reservationCompletedTypeFilter==='All'?'completed bookings':`${esc(reservationCompletedTypeFilter)} completed`):`${focusActiveCount} active · ${focusFutureRows.length} upcoming`)}${readabilityMetric('TOTAL VALUE',money(focusValue),'AUD')}${readabilityMetric(focusCompleted?'PAID':'NEXT BOOKING',focusCompleted?String(focusPaid):(focusNext?dateFmt(focusNext.date):'—'),focusCompleted?'completed + paid':(focusNext?esc(focusNext.title):'No future booking'),focusCompleted||focusNext?'good':'')}${readabilityMetric('UNPAID',String(focusUnpaid),focusUnpaid?'needs payment':'nothing outstanding',focusUnpaid?'bad':'good')}</div>${completedFilterStrip}<div class="reservation-focus-actions"><span>${focusCompleted?`Completed history is shown newest first${reservationCompletedTypeFilter==='All'?'.':` · showing ${esc(reservationCompletedTypeFilter)} only.`}`:'Booked reservations shown here are active or upcoming. To Book reminders and completed records are excluded.'}</span>${!focusCompleted?`<button data-reservation-focus-main="${esc(reservationCategoryFocus)}">SHOW ${esc(reservationCategoryFocus).toUpperCase()} IN MAIN LIST</button>`:''}</div><div class="reservation-focus-list">${focusRows.map(x=>{const travel=reservationTravelFields(x.type).map(name=>String(x[name]||'').trim()).filter(Boolean).slice(0,3).join(' · ');const obligation=x.paymentDueDate&&reservationOutstandingAud(x)>.01?`Balance ${money(reservationOutstandingAud(x))} due ${dateFmt(x.paymentDueDate)}`:'';return `<button class="reservation-focus-row" data-edit="reservations:${x.id}" aria-label="Open ${esc(x.title)}"><span class="reservation-focus-date"><b>${dateFmt(x.date)}</b><small>${x.endDate&&x.endDate!==x.date?`to ${dateFmt(x.endDate)}`:esc(reservationRelativeDate(x))}</small></span><span class="reservation-focus-icon">${iconMarkup(reservationIconName(x.type),'reservation-focus-mark')}</span><span class="reservation-focus-copy"><b>${esc(x.title)}</b><small>${esc(reservationDestination(x)||'No destination')} · ${esc(x.reference||'No reference')}</small>${travel||obligation?`<em>${esc([travel,obligation].filter(Boolean).join(' · '))}</em>`:''}</span><span class="reservation-focus-value"><b>${money(reservationAudValue(x))}</b><small class="${reservationStatusClass(x.status)}">${esc(x.status)}</small><em>${x.destinationBudget==='Yes'?'Destination budget':'Annual budget'}</em></span><i>›</i></button>`}).join('')||empty(focusCompleted?`No completed ${reservationCompletedTypeFilter==='All'?'bookings':reservationCompletedTypeFilter.toLowerCase()} found.`:'No active or upcoming bookings in this category.')}</div>`:'';
+  const reservationFocusBody=reservationCategoryFocus?`<div class="readability-metric-grid">${readabilityMetric(focusCompleted?'COMPLETED':'BOOKED RESERVATIONS',String(focusRows.length),focusCompleted?(reservationCompletedTypeFilter==='All'?'completed bookings':`${esc(reservationCompletedTypeFilter)} completed`):`${focusActiveCount} active · ${focusFutureRows.length} upcoming`)}${readabilityMetric('TOTAL VALUE',money(focusValue),'AUD')}${readabilityMetric(focusCompleted?'PAID':'NEXT BOOKING',focusCompleted?String(focusPaid):(focusNext?dateFmt(focusNext.date):'—'),focusCompleted?'completed + paid':(focusNext?esc(focusNext.title):'No future booking'),focusCompleted||focusNext?'good':'')}${readabilityMetric('UNPAID',String(focusUnpaid),focusUnpaid?'needs payment':'nothing outstanding',focusUnpaid?'bad':'good')}</div>${completedFilterStrip}<div class="reservation-focus-actions"><span>${focusCompleted?`Completed history is shown newest first${reservationCompletedTypeFilter==='All'?'.':` · showing ${esc(reservationCompletedTypeFilter)} only.`}${focusRows.length>completedArchiveRenderLimit?` Showing newest ${completedArchiveRenderLimit}; use Reservation search/filters for older records.`:''}`:'Booked reservations shown here are active or upcoming. To Book reminders and completed records are excluded.'}</span>${!focusCompleted?`<button data-reservation-focus-main="${esc(reservationCategoryFocus)}">SHOW ${esc(reservationCategoryFocus).toUpperCase()} IN MAIN LIST</button>`:''}</div><div class="reservation-focus-list">${focusDisplayRows.map(x=>{const travel=reservationTravelFields(x.type).map(name=>String(x[name]||'').trim()).filter(Boolean).slice(0,3).join(' · ');const obligation=x.paymentDueDate&&reservationOutstandingAud(x)>.01?`Balance ${money(reservationOutstandingAud(x))} due ${dateFmt(x.paymentDueDate)}`:'';return `<button class="reservation-focus-row" data-edit="reservations:${x.id}" aria-label="Open ${esc(x.title)}"><span class="reservation-focus-date"><b>${dateFmt(x.date)}</b><small>${x.endDate&&x.endDate!==x.date?`to ${dateFmt(x.endDate)}`:esc(reservationRelativeDate(x))}</small></span><span class="reservation-focus-icon">${iconMarkup(reservationIconName(x.type),'reservation-focus-mark')}</span><span class="reservation-focus-copy"><b>${esc(x.title)}</b><small>${esc(reservationDestination(x,itineraryById)||'No destination')} · ${esc(x.reference||'No reference')}</small>${travel||obligation?`<em>${esc([travel,obligation].filter(Boolean).join(' · '))}</em>`:''}</span><span class="reservation-focus-value"><b>${money(reservationAudValue(x))}</b><small class="${reservationStatusClass(x.status)}">${esc(x.status)}</small><em>${x.destinationBudget==='Yes'?'Destination budget':'Annual budget'}</em></span><i>›</i></button>`}).join('')||empty(focusCompleted?`No completed ${reservationCompletedTypeFilter==='All'?'bookings':reservationCompletedTypeFilter.toLowerCase()} found.`:'No active or upcoming bookings in this category.')}</div>`:'';
   const reservationFocusTone=reservationFocusToneClass(reservationCategoryFocus);
   const reservationFocusTitle=focusCompleted?`Completed · ${reservationCompletedTypeFilter==='All'?'ALL':reservationCompletedTypeFilter.toUpperCase()}`:`${esc(reservationCategoryFocus)} Booked`;
   const reservationFocusOverlay=reservationCategoryFocus?readabilityFocusOverlay('reservation',reservationFocusTitle,reservationFocusBody,`reservation-category ${reservationFocusTone}`,focusCompleted?'Use the quick filters above to review completed bookings by reservation type.':'Reservation category cards count booked reservations that are active or upcoming.') :'';
@@ -6393,23 +6505,23 @@ function renderReservations(){
   <details id="reservation-tools-panel" class="reservation-tools" ${reservationToolsOpen?'open':''}><summary>More filters and tools</summary><div class="reservation-advanced-filters"><label>Country<select id="reservation-country-filter" aria-label="Filter reservations by country"><option value="All">All Countries</option>${countries.map(country=>`<option value="${esc(country)}" ${reservationCountryFilter!=='All'&&countryIdentityEquals(reservationCountryFilter,country)?'selected':''}>${esc(country)}</option>`).join('')}</select></label><label class="reservation-tool-check"><input id="reservation-current" type="checkbox" ${reservationOnlyCurrent?'checked':''}> Only Current Country</label><label class="reservation-tool-check"><input id="reservation-upcoming" type="checkbox" ${reservationOnlyUpcoming?'checked':''}> Only Active / Upcoming</label><label class="reservation-tool-check"><input id="reservation-completed" type="checkbox" ${reservationShowCompleted?'checked':''}> Show Completed</label><label>Destination<select id="reservation-destination-filter"><option>All</option>${destinations.map(d=>`<option ${reservationDestinationFilter!=='All'&&reservationDestinationIdentityKey(reservationDestinationFilter)===reservationDestinationIdentityKey(d)?'selected':''}>${esc(d)}</option>`).join('')}</select></label><label>Budget<select id="reservation-budget-filter"><option ${reservationBudgetFilter==='All'?'selected':''}>All</option><option ${reservationBudgetFilter==='Annual'?'selected':''}>Annual</option><option ${reservationBudgetFilter==='Destination'?'selected':''}>Destination</option></select></label><label>From<input id="reservation-date-from" aria-label="Reservation start date from" type="date" value="${esc(reservationDateFrom)}"></label><label>To<input id="reservation-date-to" aria-label="Reservation start date to" type="date" value="${esc(reservationDateTo)}"></label><label>Minimum AUD<input id="reservation-min-cost" aria-label="Minimum reservation cost in AUD" type="number" min="0" step="1" value="${esc(reservationMinCost)}" placeholder="0"></label><label>Maximum AUD<input id="reservation-max-cost" aria-label="Maximum reservation cost in AUD" type="number" min="0" step="1" value="${esc(reservationMaxCost)}" placeholder="Any"></label><label>Currency<select id="reservation-currency-filter"><option>All</option>${currencies.map(c=>`<option ${reservationCurrencyFilter===c?'selected':''}>${esc(c)}</option>`).join('')}</select></label><label>Reference<select id="reservation-reference-filter"><option ${reservationReferenceFilter==='All'?'selected':''}>All</option><option ${reservationReferenceFilter==='Has reference'?'selected':''}>Has reference</option><option ${reservationReferenceFilter==='Missing reference'?'selected':''}>Missing reference</option></select></label><label>Quick dates<select id="reservation-quick-window"><option value="All" ${reservationQuickWindow==='All'?'selected':''}>All dates</option><option value="30" ${reservationQuickWindow==='30'?'selected':''}>Next 30 days</option><option value="90" ${reservationQuickWindow==='90'?'selected':''}>Next 90 days</option></select></label><label>Rows<select id="reservation-page-size"><option ${reservationPageSize===5?'selected':''}>5</option><option ${reservationPageSize===8?'selected':''}>8</option><option ${reservationPageSize===12?'selected':''}>12</option><option ${reservationPageSize===20?'selected':''}>20</option></select></label></div><div class="reservation-tool-actions"><button id="reservation-clear-filters" class="secondary" ${activeFilters.length?'':'disabled'}>Clear Filters</button><button id="reservation-copy-summary" aria-label="Copy filtered reservation summary" class="secondary" ${actionRows.length?'':'disabled'}>Copy Summary</button><button id="reservation-overdue-jump" aria-label="Show overdue reservations" class="secondary ${overdue?'warning-button':''}" ${overdue?'':'disabled'}>${reservationOnlyOverdue?'Showing Overdue':'Show Overdue'} (${overdue})</button><button id="reservation-export-filtered" aria-label="Export filtered reservations" class="secondary" ${actionRows.length?'':'disabled'}>Export Results</button></div></details>
   ${activeFilters.length?`<div class="reservation-filter-chips">${activeFilters.map(([key,label,value])=>`<button type="button" data-remove-res-filter="${esc(key)}"><small>${esc(label)}</small><b>${esc(value)}</b><span aria-hidden="true">×</span></button>`).join('')}</div>`:''}
   ${futureBookingsWide}
-  <details id="reservation-upcoming-panel" class="reservation-table-panel reservation-upcoming-block reservation-collapse-block" ${reservationUpcomingOpen?'open':''}><summary class="reservation-section-title"><div><span class="section-heading-icon">${iconMarkup('flight','section-heading-mark')}</span><b>${reservationOnlyOverdue?'OVERDUE RESERVATIONS':reservationOnlyUpcoming?'ACTIVE / UPCOMING RESERVATIONS':'ALL CONFIRMED RESERVATIONS'}</b><small>Sorted by ${esc(reservationSort)}</small></div><em>${visibleUpcoming.length} booking${visibleUpcoming.length===1?'':'s'} · ${money(upcomingValue)}</em></summary><div class="reservation-upcoming-body">${reservationTable(upcoming,reservationOnlyOverdue?'No overdue reservations match these filters.':'No active or upcoming reservations match these filters.')}${pagination}</div></details>
-  <details id="reservation-completed-panel" class="archive reservation-completed-block reservation-collapse-block" ${reservationShowCompleted?'open':''}><summary><span class="section-heading-icon">${iconMarkup('checklist','section-heading-mark')}</span> COMPLETED RESERVATIONS (${completed.length}) <em>${money(completedValue)}</em></summary>${reservationTable(completed,'No completed reservations match these filters.')}</details>
+  <details id="reservation-upcoming-panel" class="reservation-table-panel reservation-upcoming-block reservation-collapse-block" ${reservationUpcomingOpen?'open':''}><summary class="reservation-section-title"><div><span class="section-heading-icon">${iconMarkup('flight','section-heading-mark')}</span><b>${reservationOnlyOverdue?'OVERDUE RESERVATIONS':reservationOnlyUpcoming?'ACTIVE / UPCOMING RESERVATIONS':'ALL CONFIRMED RESERVATIONS'}</b><small>Sorted by ${esc(reservationSort)}</small></div><em>${visibleUpcoming.length} booking${visibleUpcoming.length===1?'':'s'} · ${money(upcomingValue)}</em></summary><div class="reservation-upcoming-body">${reservationTable(upcoming,reservationOnlyOverdue?'No overdue reservations match these filters.':'No active or upcoming reservations match these filters.',reservationTableContext)}${pagination}</div></details>
+  <details id="reservation-completed-panel" class="archive reservation-completed-block reservation-collapse-block" ${reservationShowCompleted?'open':''}><summary><span class="section-heading-icon">${iconMarkup('checklist','section-heading-mark')}</span> COMPLETED RESERVATIONS (${completed.length}) <em>${money(completedValue)}</em></summary>${reservationShowCompleted?`${reservationTable(completedArchiveRows,'No completed reservations match these filters.',reservationTableContext)}${completed.length>completedArchiveRenderLimit?`<div class="reservation-pagination reservation-archive-limit"><span>Showing newest ${completedArchiveRenderLimit} of ${completed.length} completed bookings · use Search or filters to find older records.</span></div>`:''}`:''}</details>
   
   </div><aside class="reservation-side">
-  ${card('RESERVATION SUMMARY',`<div class="summary-list reservation-summary-list"><div><span>Total bookings</span><b>${summarySource.filter(x=>x.status!=='To Book').length}</b></div><div><span>Paid</span><b class="success">${paidCount}</b></div><div><span>Booked</span><b>${bookedCount}</b></div><div><span>To Book</span><b class="warning-text">${pending}</b></div><div><span>Outstanding / Overdue</span><b class="danger-text">${paymentOutstandingCount} / ${overdue}</b></div></div>`)}
-  ${card('TOTAL BOOKED (AUD)',`<div class="total-booked standalone"><b>${money(totalBooked)}</b><small>${Number(state.settings.travellers||2)} people</small><div class="payment-progress"><div><span>Paid coverage</span><b>${paymentPct}%</b></div>${progress(paymentPct)}<small>${money(paidValue)} paid · ${money(unpaidValue)} unpaid</small></div></div>`)}
-  ${card(`${iconMarkup('calendar','section-heading-mark')}<span>NEXT 5 UPCOMING</span>`,`${datedUpcoming.slice(0,5).map(x=>`<button class="side-booking reservation-next3-row" data-edit="reservations:${x.id}"><span><b>${new Date(`${x.date}T12:00:00`).toLocaleDateString('en-AU',{day:'2-digit'})}</b><small>${new Date(`${x.date}T12:00:00`).toLocaleDateString('en-AU',{month:'short'}).toUpperCase()}</small></span><div><b>${esc(x.title)}</b><small>${esc(reservationDestination(x))}</small></div><i>›</i></button>`).join('')||empty('No upcoming bookings.')}`,'reservation-next3-card')}
+  ${card(premiumPanelHeading('flight','RESERVATION SUMMARY'),`<div class="summary-list reservation-summary-list"><div><span>Total bookings</span><b>${summarySource.filter(x=>x.status!=='To Book').length}</b></div><div><span>Paid</span><b class="success">${paidCount}</b></div><div><span>Booked</span><b>${bookedCount}</b></div><div><span>To Book</span><b class="warning-text">${pending}</b></div><div><span>Outstanding / Overdue</span><b class="danger-text">${paymentOutstandingCount} / ${overdue}</b></div></div>`,'reservation-summary-card premium-panel-card')}
+  ${card(premiumPanelHeading('budget','TOTAL BOOKED (AUD)'),`<div class="total-booked standalone"><b>${money(totalBooked)}</b><small>${Number(state.settings.travellers||2)} people</small><div class="payment-progress"><div><span>Paid coverage</span><b>${paymentPct}%</b></div>${progress(paymentPct)}<small>${money(paidValue)} paid · ${money(unpaidValue)} unpaid</small></div></div>`,'reservation-total-booked-card premium-panel-card')}
+  ${card(`${iconMarkup('calendar','section-heading-mark')}<span>NEXT 5 UPCOMING</span>`,`${datedUpcoming.slice(0,5).map(x=>`<button class="side-booking reservation-next3-row" data-edit="reservations:${x.id}"><span><b>${new Date(`${x.date}T12:00:00`).toLocaleDateString('en-AU',{day:'2-digit'})}</b><small>${new Date(`${x.date}T12:00:00`).toLocaleDateString('en-AU',{month:'short'}).toUpperCase()}</small></span><div><b>${esc(x.title)}</b><small>${esc(reservationDestination(x,itineraryById))}</small></div><i>›</i></button>`).join('')||empty('No upcoming bookings.')}`,'reservation-next3-card')}
   </aside></div>${reservationFocusOverlay}`;
 }
 
-function reservationTable(list,emptyMessage='No reservations in this section.'){
-  const operationalRows=state.reservations.filter(x=>x.status==='To Book'||!reservationWhollyBeforeJourney(x));
-  const referenceCounts=reservationReferenceCounts(operationalRows);
+function reservationTable(list,emptyMessage='No reservations in this section.',context=null){
+  const operationalRows=context?null:state.reservations.filter(x=>x.status==='To Book'||!reservationWhollyBeforeJourney(x));
+  const referenceCounts=context?.referenceCounts||reservationReferenceCounts(operationalRows);
   // Wholly pre-Journey-Start confirmed bookings are preserved archive data. Keep
   // historical duplicate/conflict treatments out of the live Reservations UI,
   // matching Reservation Check while retaining badges for operational bookings.
-  const conflictIds=reservationConflictIds(operationalRows);
+  const conflictIds=context?.conflictIds||reservationConflictIds(operationalRows);
   if(!list.length) return `<div class="reservation-record-list">${empty(emptyMessage)}</div>`;
   return `<div class="reservation-record-list">${list.map(x=>{
     const overdue=reservationIsOverdue(x), overdueDays=reservationOverdueDays(x), timing=reservationDaysUntil(x), refKey=canonicalIdentityKey(x.reference);
@@ -6424,28 +6536,28 @@ function reservationTable(list,emptyMessage='No reservations in this section.'){
   }).join('')}</div>`;
 }
 
-function itineraryStatusSearchTerms(entry){
-  const classification=itineraryClassification(entry),accommodation=itineraryAccommodationStatus(entry),duration=itineraryDisplayDayCount(entry);
+function itineraryStatusSearchTerms(entry,ownerMapOverride=null,linkedReservationIndex=null,ownedDateIndexOverride=null){
+  const classification=itineraryClassification(entry),accommodation=itineraryAccommodationStatus(entry,'','',ownerMapOverride,linkedReservationIndex,ownedDateIndexOverride),duration=itineraryDisplayDayCount(entry,state.itinerary,ownerMapOverride,ownedDateIndexOverride);
   if(entry.coverageType==='Intentional Gap') return `INTENTIONAL Intentional gap ${duration} day${duration===1?'':'s'}`;
   const classLabel=classification==='current'?'CURRENT':classification==='completed'?'COMPLETED':classification==='future'?'FUTURE':'PLANNED';
   const schengen=entry.schengenStart&&entry.schengenEnd?'Schengen':'';
   const budgetState=entry.coverageType==='Destination'?(itineraryBudgetConfigured(entry)?'Destination Budget configured budget set':'Destination Budget NOT SET set on Budget for this stay'):'';
   return `${duration} day${duration===1?'':'s'} ${classLabel} ${accommodation.label} ${schengen} ${budgetState}`;
 }
-function itinerarySearchText(entry){
+function itinerarySearchText(entry,ownerMapOverride=null,linkedReservationIndex=null,ownedDateIndexOverride=null){
   const routePoints=normalizeDetailedRoutePoints(entry.routePoints),route=routePoints.map(point=>point.label).join(' '),routeCountries=itineraryIsRouted(entry)?uniqueIdentityValues(routePoints.map(point=>journeyCountryForRoutePlace(point.label,entry.country||''))).join(' '):'',departure=itineraryIsRouted(entry)?routedDepartureIdentity(entry):{city:'',country:''},budgetAud=Number(entry.budget||0)*Number(entry.rate||1);
-  return `${routedJourneyTitle(entry)} ${itineraryTitle(entry)} ${entry.city||''} ${entry.country||''} ${departure.city} ${departure.country} ${routeCountries} ${entry.type||''} ${searchDateTerms(entry.arrival,entry.departure,entry.schengenStart,entry.schengenEnd)} ${entry.currency||''} ${entry.symbol||''} ${entry.notes||''} ${entry.intentionalLabel||''} ${route} ${searchNumberTerms(entry.budget,budgetAud,entry.km)} ${entry.symbol||''}${localNumber(entry.budget||0)} ${money(budgetAud)} ${Number(entry.km||0).toLocaleString('en-AU')} km ${itineraryStatusSearchTerms(entry)}`;
+  return `${routedJourneyTitle(entry)} ${itineraryTitle(entry)} ${entry.city||''} ${entry.country||''} ${departure.city} ${departure.country} ${routeCountries} ${entry.type||''} ${searchDateTerms(entry.arrival,entry.departure,entry.schengenStart,entry.schengenEnd)} ${entry.currency||''} ${entry.symbol||''} ${entry.notes||''} ${entry.intentionalLabel||''} ${route} ${searchNumberTerms(entry.budget,budgetAud,entry.km)} ${entry.symbol||''}${localNumber(entry.budget||0)} ${money(budgetAud)} ${Number(entry.km||0).toLocaleString('en-AU')} km ${itineraryStatusSearchTerms(entry,ownerMapOverride,linkedReservationIndex,ownedDateIndexOverride)}`;
 }
-function itineraryStatusBadge(entry){
-  const classification=itineraryClassification(entry),accommodation=itineraryAccommodationStatus(entry);
+function itineraryStatusBadge(entry,ownerMapOverride=null,linkedReservationIndex=null,ownedDateIndexOverride=null){
+  const classification=itineraryClassification(entry),accommodation=itineraryAccommodationStatus(entry,'','',ownerMapOverride,linkedReservationIndex,ownedDateIndexOverride);
   if(entry.coverageType==='Intentional Gap')return `<span class="itinerary-status intentional">INTENTIONAL</span>`;
   const classLabel=classification==='current'?'CURRENT':classification==='completed'?'COMPLETED':classification==='future'?'FUTURE':'PLANNED';
   return `<span class="itinerary-status ${classification}">${classLabel}</span><span class="itinerary-status ${accommodation.key}">${esc(accommodation.label.toUpperCase())}</span>`;
 }
-function itineraryCard(entry){
-  const duration=itineraryDisplayDayCount(entry),visual=countryVisual(entry.country,entry.type),schengen=entry.schengenStart&&entry.schengenEnd?`${dateFmt(entry.schengenStart)}–${dateFmt(entry.schengenEnd)}`:'';
+function itineraryCard(entry,ownerMapOverride=null,linkedReservationIndex=null,ownedDateIndexOverride=null){
+  const duration=itineraryDisplayDayCount(entry,state.itinerary,ownerMapOverride,ownedDateIndexOverride),visual=countryVisual(entry.country,entry.type),schengen=entry.schengenStart&&entry.schengenEnd?`${dateFmt(entry.schengenStart)}–${dateFmt(entry.schengenEnd)}`:'';
   const budgetSet=itineraryBudgetConfigured(entry),budgetAud=Number(entry.budget||0)*Number(entry.rate||1);
-  return `<article class="itinerary-card ${entry.coverageType==='Intentional Gap'?'intentional-gap':''}" data-edit-row="itinerary:${entry.id}" tabindex="0" role="button" aria-label="Edit itinerary entry ${esc(entry.coverageType==='Intentional Gap'?(entry.intentionalLabel||'Intentional Travel Day'):itineraryTitle(entry))}"><div class="itinerary-card-date"><b>${dateFmt(entry.arrival)}</b><span>TO</span><b>${dateFmt(entry.departure)}</b><small>${duration} day${duration===1?'':'s'}</small></div><div class="itinerary-card-main"><div class="itinerary-card-title"><span class="flag">${entry.coverageType==='Intentional Gap'?'↔':esc(visual.flag)}</span><div><h3>${esc(entry.coverageType==='Intentional Gap'?(entry.intentionalLabel||'Intentional Travel Day'):itineraryTitle(entry))}</h3><p>${entry.coverageType==='Intentional Gap'?'Deliberate transition / uncovered date range':`${esc(entry.type)}${schengen?` · Schengen ${esc(schengen)}`:''}`}</p></div></div>${entry.coverageType==='Destination'?`<div class="itinerary-plan-detail"><span>TRAVEL PLAN</span><b>${esc(entry.type)}</b><small>${dateFmt(entry.arrival)} → ${dateFmt(entry.departure)}</small></div><div class="itinerary-budget-detail ${budgetSet?'configured':'not-set'}"><span>DESTINATION BUDGET</span>${budgetSet?`<b>${localMoney(Number(entry.budget||0),entry.symbol||currencyDetails(entry.currency).symbol)}</b><small>≈ ${money(budgetAud)} AUD</small>`:`<b>NOT SET</b><small>Set on Budget for this stay</small>`}</div>`:''}<div class="itinerary-badges">${itineraryStatusBadge(entry)}</div></div><div class="itinerary-card-actions">${actions('itinerary',entry.id)}</div></article>`;
+  return `<article class="itinerary-card ${entry.coverageType==='Intentional Gap'?'intentional-gap':''}" data-edit-row="itinerary:${entry.id}" tabindex="0" role="button" aria-label="Edit itinerary entry ${esc(entry.coverageType==='Intentional Gap'?(entry.intentionalLabel||'Intentional Travel Day'):itineraryTitle(entry))}"><div class="itinerary-card-date"><b>${dateFmt(entry.arrival)}</b><span>TO</span><b>${dateFmt(entry.departure)}</b><small>${duration} day${duration===1?'':'s'}</small></div><div class="itinerary-card-main"><div class="itinerary-card-title"><span class="flag">${entry.coverageType==='Intentional Gap'?'↔':esc(visual.flag)}</span><div><h3>${esc(entry.coverageType==='Intentional Gap'?(entry.intentionalLabel||'Intentional Travel Day'):itineraryTitle(entry))}</h3><p>${entry.coverageType==='Intentional Gap'?'Deliberate transition / uncovered date range':`${esc(entry.type)}${schengen?` · Schengen ${esc(schengen)}`:''}`}</p></div></div>${entry.coverageType==='Destination'?`<div class="itinerary-plan-detail"><span>TRAVEL PLAN</span><b>${esc(entry.type)}</b><small>${dateFmt(entry.arrival)} → ${dateFmt(entry.departure)}</small></div><div class="itinerary-budget-detail ${budgetSet?'configured':'not-set'}"><span>DESTINATION BUDGET</span>${budgetSet?`<b>${localMoney(Number(entry.budget||0),entry.symbol||currencyDetails(entry.currency).symbol)}</b><small>≈ ${money(budgetAud)} AUD</small>`:`<b>NOT SET</b><small>Set on Budget for this stay</small>`}</div>`:''}<div class="itinerary-badges">${itineraryStatusBadge(entry,ownerMapOverride,linkedReservationIndex,ownedDateIndexOverride)}</div></div><div class="itinerary-card-actions">${actions('itinerary',entry.id)}</div></article>`;
 }
 function itineraryOwnedDayMap(rows=state.itinerary){
   const source=Array.isArray(rows)?rows:[],map=new Map();
@@ -6465,7 +6577,13 @@ function itineraryOwnedDayMap(rows=state.itinerary){
   });
   return map;
 }
-function itineraryOwnedDayCountForEntry(entry,rows=state.itinerary,rangeStart='',rangeEnd=''){
+function itineraryOwnedDateIndex(ownerMap){
+  const index=new Map();
+  if(!(ownerMap instanceof Map))return index;
+  ownerMap.forEach((owner,date)=>{const id=String(owner?.id||'');if(!id)return;if(!index.has(id))index.set(id,[]);index.get(id).push(date);});
+  return index;
+}
+function itineraryOwnedDayCountForEntry(entry,rows=state.itinerary,rangeStart='',rangeEnd='',ownerMapOverride=null,ownedDateIndexOverride=null){
   if(!entry)return 0;
   const id=String(entry.id||''),start=String(rangeStart||''),end=String(rangeEnd||'');
   if(!id||entry.coverageType==='Intentional Gap'){
@@ -6473,15 +6591,18 @@ function itineraryOwnedDayCountForEntry(entry,rows=state.itinerary,rangeStart=''
     const clippedStart=start&&start>rawStart?start:rawStart,clippedEnd=end&&end<rawEnd?end:rawEnd;
     return validISODate(clippedStart)&&validISODate(clippedEnd)&&clippedEnd>=clippedStart?days(clippedStart,clippedEnd):0;
   }
+  const ownedDates=ownedDateIndexOverride instanceof Map?ownedDateIndexOverride.get(id):null;
+  if(Array.isArray(ownedDates))return ownedDates.filter(date=>(!start||date>=start)&&(!end||date<=end)).length;
   let count=0;
-  itineraryOwnedDayMap(rows).forEach((owner,date)=>{if(String(owner?.id||'')===id&&(!start||date>=start)&&(!end||date<=end))count+=1;});
+  const ownerMap=ownerMapOverride instanceof Map?ownerMapOverride:itineraryOwnedDayMap(rows);
+  ownerMap.forEach((owner,date)=>{if(String(owner?.id||'')===id&&(!start||date>=start)&&(!end||date<=end))count+=1;});
   return count;
 }
-function itineraryDisplayDayCount(entry,rows=state.itinerary){
+function itineraryDisplayDayCount(entry,rows=state.itinerary,ownerMapOverride=null,ownedDateIndexOverride=null){
   if(!entry)return 0;
   const start=String(entry.start||entry.arrival||''),end=String(entry.end||entry.departure||'');
   if(entry.coverageType==='Intentional Gap'||!String(entry.id||''))return days(start,end);
-  return itineraryOwnedDayCountForEntry(entry,rows,start,end);
+  return itineraryOwnedDayCountForEntry(entry,rows,start,end,ownerMapOverride,ownedDateIndexOverride);
 }
 function currentStayOwnedDayMetrics(reference=itineraryReferenceDate()){
   const entry=activeDestinationItinerary();
@@ -6524,9 +6645,10 @@ function itineraryCountriesForEntry(entry={}){
   if(!countries.length&&!routed)add(entry.country||'Unspecified');
   return countries;
 }
-function itineraryCountryPlanningGroups(destinations=[],rows=state.itinerary){
+function itineraryCountryPlanningGroups(destinations=[],rows=state.itinerary,ownerMapOverride=null){
   const ownedCounts=new Map();
-  itineraryOwnedDayMap(rows).forEach(owner=>{const id=String(owner?.id||'');if(id)ownedCounts.set(id,(ownedCounts.get(id)||0)+1);});
+  const ownerMap=ownerMapOverride instanceof Map?ownerMapOverride:itineraryOwnedDayMap(rows);
+  ownerMap.forEach(owner=>{const id=String(owner?.id||'');if(id)ownedCounts.set(id,(ownedCounts.get(id)||0)+1);});
   const groups=new Map();
   (Array.isArray(destinations)?destinations:[]).forEach(entry=>{
     const countries=itineraryCountriesForEntry(entry),routed=['Motorhome','Cruise'].includes(itineraryMode(entry.type)),multiCountryRoute=routed&&countries.length>1;
@@ -6544,37 +6666,37 @@ function itineraryCountryPlanningGroups(destinations=[],rows=state.itinerary){
 
 function renderItinerary(){
   if(itineraryMapExpanded)return `<section class="itinerary-expanded-map-page"><header><div><span>FULL-PAGE ITINERARY MAP</span><h2>Forward Journey Plan</h2><p>Current destination, future stops, planned travel modes and route gaps.</p></div><button data-itinerary-map-expand class="primary">CLOSE / RETURN TO ITINERARY</button></header>${renderItineraryPlanningMap({large:true,fullPage:true})}</section>`;
-  const entries=sortedItinerary(),years=[...new Set(entries.flatMap(x=>journeyYearsTouched(x.arrival,x.departure)))];
+  const entries=sortedItinerary(),ownedMap=itineraryOwnedDayMap(entries),ownedDateIndex=itineraryOwnedDateIndex(ownedMap),linkedReservationIndex=itineraryLinkedReservationIndex(entries,state.reservations),years=[...new Set(entries.flatMap(x=>journeyYearsTouched(x.arrival,x.departure)))];
   const selectedItineraryYear=Number(itineraryYearFilter);if(itineraryYearFilter!=='All'&&Number.isInteger(selectedItineraryYear)&&selectedItineraryYear>=1&&selectedItineraryYear<=MAX_JOURNEY_YEARS&&!years.includes(selectedItineraryYear))years.push(selectedItineraryYear);
   years.sort((a,b)=>a-b);
   const itineraryQuery=canonicalIdentityKey(itinerarySearchQuery);
   const filtered=entries.filter(x=>{
-    const hay=canonicalSearchText(itinerarySearchText(x));
+    const hay=canonicalSearchText(itinerarySearchText(x,ownedMap,linkedReservationIndex,ownedDateIndex));
     return (itineraryYearFilter==='All'||rangeOverlapsJourneyYear(x.arrival,x.departure,itineraryYearFilter))&&(!itineraryQuery||hay.includes(itineraryQuery));
   });
-  const coverage=itineraryCoverage(itineraryReferenceDate(),itineraryCoverageMonths),planningHorizonEnded=journeyPlanningHorizonPassed();
+  const coverage=itineraryCoverage(itineraryReferenceDate(),itineraryCoverageMonths,ownedMap,linkedReservationIndex,ownedDateIndex),planningHorizonEnded=journeyPlanningHorizonPassed();
   const coverageDays=planningHorizonEnded?0:(coverage.totalDays||days(coverage.start,coverage.end)),plannedDays=planningHorizonEnded?0:Math.max(0,coverageDays-coverage.gaps.reduce((sum,x)=>sum+x.days,0));
   const destinations=entries.filter(x=>x.coverageType==='Destination');
   const routeTrips=destinations.filter(x=>['Motorhome','Cruise'].includes(x.type));
-  const countryGroups=itineraryCountryPlanningGroups(destinations,entries),countries=countryGroups.length;
+  const countryGroups=itineraryCountryPlanningGroups(destinations,entries,ownedMap),countries=countryGroups.length;
   const upcoming=filtered.filter(x=>itineraryClassification(x)!=='completed');
   const completed=filtered.filter(x=>x.coverageType==='Destination'&&itineraryClassification(x)==='completed').sort((a,b)=>String(b.departure||'').localeCompare(String(a.departure||''))||String(b.arrival||'').localeCompare(String(a.arrival||''))||String(b.id||'').localeCompare(String(a.id||'')));
   const itineraryFocusBodies={
     countries:`<div class="readability-metric-grid">${readabilityMetric('COUNTRIES PLANNED',String(countries),`${destinations.length} destination stop${destinations.length===1?'':'s'}`)}</div><div class="readability-section"><h4>PLANNED COUNTRIES</h4><div class="readability-list itinerary-focus-list">${countryGroups.length?countryGroups.map((group,i)=>{const visitLabel=`${group.items.length} stop${group.items.length===1?'':'s'}`,dayLabel=group.days?`${group.days} planned day${group.days===1?'':'s'}`:'',routeLabel=group.routeVisits?`${group.routeVisits} multi-country route visit${group.routeVisits===1?'':'s'}${group.routeStops?` · ${group.routeStops} route stop${group.routeStops===1?'':'s'}`:''}`:'';return `<div class="readability-list-row itinerary-focus-row"><span>#${i+1}</span><div><b>${esc(group.country)}</b><small>${[visitLabel,dayLabel,routeLabel].filter(Boolean).join(' · ')}</small></div><strong>${esc(journeyFlagForCountry(group.country))}</strong></div>`;}).join(''):empty('No countries planned yet.')}</div></div>`,
-    routes:`<div class="readability-metric-grid">${readabilityMetric('ROUTE TRIPS',String(routeTrips.length),'Motorhome / Cruise')}</div><div class="readability-section"><h4>ROUTE TRIPS</h4><div class="readability-list itinerary-focus-list">${routeTrips.length?routeTrips.map((x,i)=>`<button class="readability-list-row itinerary-focus-row itinerary-focus-action" data-edit="itinerary:${x.id}"><span>#${i+1}</span><div><b>${esc(itineraryTitle(x))}</b><small>${esc(x.type)} · ${dateFmt(x.arrival)} – ${dateFmt(x.departure)} · ${itineraryDisplayDayCount(x)} days</small></div><strong>EDIT ›</strong></button>`).join(''):empty('No Motorhome or Cruise route trips planned.')}</div></div>`,
+    routes:`<div class="readability-metric-grid">${readabilityMetric('ROUTE TRIPS',String(routeTrips.length),'Motorhome / Cruise')}</div><div class="readability-section"><h4>ROUTE TRIPS</h4><div class="readability-list itinerary-focus-list">${routeTrips.length?routeTrips.map((x,i)=>`<button class="readability-list-row itinerary-focus-row itinerary-focus-action" data-edit="itinerary:${x.id}"><span>#${i+1}</span><div><b>${esc(itineraryTitle(x))}</b><small>${esc(x.type)} · ${dateFmt(x.arrival)} – ${dateFmt(x.departure)} · ${itineraryDisplayDayCount(x,entries,ownedMap,ownedDateIndex)} days</small></div><strong>EDIT ›</strong></button>`).join(''):empty('No Motorhome or Cruise route trips planned.')}</div></div>`,
     stops:`<div class="readability-metric-grid">${readabilityMetric('PLANNED STOPS',String(destinations.length),`${countries} countries`)}</div><div class="readability-section"><h4>DESTINATION STOPS</h4><div class="readability-list itinerary-focus-list">${destinations.length?destinations.map((x,i)=>`<button class="readability-list-row itinerary-focus-row itinerary-focus-action" data-edit="itinerary:${x.id}"><span>#${i+1}</span><div><b>${esc(itineraryTitle(x))}</b><small>${dateFmt(x.arrival)} – ${dateFmt(x.departure)} · ${esc(x.type)}</small></div><strong>EDIT ›</strong></button>`).join(''):empty('No destination stops planned yet.')}</div></div>`,
     gaps:`<div class="readability-metric-grid">${readabilityMetric('UNPLANNED GAPS',String(coverage.gaps.length),coverage.gaps.length?'Planning required':'No gaps',coverage.gaps.length?'bad':'good')}</div><div class="readability-section"><h4>GAPS IN FORWARD COVERAGE</h4><div class="readability-list itinerary-focus-list">${coverage.gaps.length?coverage.gaps.map((gap,i)=>`<button class="readability-list-row itinerary-focus-row itinerary-focus-action" data-plan-itinerary-date="${gap.start}" data-plan-itinerary-end="${gap.end}"><span>#${i+1}</span><div><b>${dateFmt(gap.start)} – ${dateFmt(gap.end)}</b><small>${gap.days} unplanned day${gap.days===1?'':'s'}</small></div><strong>PLAN ›</strong></button>`).join(''):empty('No unplanned gaps in this coverage window.')}</div></div>`,
-    missing:`<div class="readability-metric-grid">${readabilityMetric('MISSING ACCOMMODATION',String(coverage.missing.length),coverage.missing.length?'Link or book stays':'All linked',coverage.missing.length?'warn':'good')}</div><div class="readability-section"><h4>STAYS NEEDING ACCOMMODATION</h4><div class="readability-list itinerary-focus-list">${coverage.missing.length?coverage.missing.map((x,i)=>{const needSegments=itineraryAccommodationNeedSegments(x,coverage.start,coverage.end),needNights=needSegments.reduce((sum,segment)=>sum+segment.days,0),needLabel=needSegments.map(segment=>`${dateFmt(segment.start)} – ${dateFmt(segment.end)} · ${segment.days} night${segment.days===1?'':'s'}`).join(' · ');return `<button class="readability-list-row itinerary-focus-row itinerary-focus-action" data-edit="itinerary:${x.id}"><span>#${i+1}</span><div><b>${esc(itineraryTitle(x))}</b><small>${needLabel||'No uncovered nights in this coverage window'}${needNights?` · ${needNights} total`:''}</small></div><strong>OPEN ›</strong></button>`;}).join(''):empty('All Standard stays have linked accommodation.')}</div></div>`,
+    missing:`<div class="readability-metric-grid">${readabilityMetric('MISSING ACCOMMODATION',String(coverage.missing.length),coverage.missing.length?'Link or book stays':'All linked',coverage.missing.length?'warn':'good')}</div><div class="readability-section"><h4>STAYS NEEDING ACCOMMODATION</h4><div class="readability-list itinerary-focus-list">${coverage.missing.length?coverage.missing.map((x,i)=>{const needSegments=itineraryAccommodationNeedSegments(x,coverage.start,coverage.end,ownedMap,linkedReservationIndex,ownedDateIndex),needNights=needSegments.reduce((sum,segment)=>sum+segment.days,0),needLabel=needSegments.map(segment=>`${dateFmt(segment.start)} – ${dateFmt(segment.end)} · ${segment.days} night${segment.days===1?'':'s'}`).join(' · ');return `<button class="readability-list-row itinerary-focus-row itinerary-focus-action" data-edit="itinerary:${x.id}"><span>#${i+1}</span><div><b>${esc(itineraryTitle(x))}</b><small>${needLabel||'No uncovered nights in this coverage window'}${needNights?` · ${needNights} total`:''}</small></div><strong>OPEN ›</strong></button>`;}).join(''):empty('All Standard stays have linked accommodation.')}</div></div>`,
     overlaps:`<div class="readability-metric-grid">${readabilityMetric('DATE OVERLAPS',String(coverage.overlaps.length),coverage.overlaps.length?'Review dates':'No conflicts',coverage.overlaps.length?'bad':'good')}</div><div class="readability-section"><h4>OVERLAPPING ITINERARY DATES</h4><div class="readability-list itinerary-focus-list">${coverage.overlaps.length?coverage.overlaps.map((x,i)=>`<button class="readability-list-row itinerary-focus-row itinerary-focus-action" data-edit="itinerary:${x.entry.id}"><span>#${i+1}</span><div><b>${esc(itineraryTitle(x.entry))}</b><small>${dateFmt(x.start)} – ${dateFmt(x.end)} · ${x.days} day${x.days===1?'':'s'}</small></div><strong>REVIEW ›</strong></button>`).join(''):empty('No date overlaps in this coverage window.')}</div></div>`
   };
   const itineraryFocusMeta={countries:['COUNTRIES PLANNED','itinerary-countries'],routes:['ROUTE TRIPS','itinerary-routes'],stops:['PLANNED STOPS','itinerary-stops'],gaps:['UNPLANNED GAPS','itinerary-gaps'],missing:['MISSING ACCOMMODATION','itinerary-missing'],overlaps:['DATE OVERLAPS','itinerary-overlaps']}[itineraryFocusMetric]||null;
   const itineraryFocusOverlay=itineraryFocusMeta?readabilityFocusOverlay('itinerary',itineraryFocusMeta[0],itineraryFocusBodies[itineraryFocusMetric],itineraryFocusMeta[1],'Itinerary summary cards are read-only until expanded. Use the controls in this view to open or plan matching itinerary records.') : '';
   return `${cinematicHero('itinerary')}${renderItineraryPlanningMap()}
-  ${planningHorizonEnded?`<section class="itinerary-coverage-card itinerary-horizon-ended"><header><div><h2>FORWARD COVERAGE</h2><p>Planning horizon ended ${dateFmt(journeyHorizonEndDate())} · no forward planning days remain</p></div></header><div class="itinerary-coverage-ended"><b>PLANNING HORIZON ENDED</b><p>Past itinerary records remain available below. New destinations and gaps cannot be added beyond the configured ${MAX_JOURNEY_YEARS}-year planning horizon.</p></div></section>`:`<section class="itinerary-coverage-card"><header><div><h2>FORWARD COVERAGE</h2><p>${dateFmt(coverage.start)} – ${dateFmt(coverage.end)} · ${plannedDays} of ${coverageDays} days covered</p></div><label>Coverage<select id="itinerary-coverage-months"><option value="6" ${itineraryCoverageMonths===6?'selected':''}>6 months</option><option value="12" ${itineraryCoverageMonths===12?'selected':''}>12 months</option><option value="18" ${itineraryCoverageMonths===18?'selected':''}>18 months</option></select></label></header><div class="itinerary-coverage-track">${coverage.segments.map(segment=>{const entry=segment.entry,status=entry?itineraryAccommodationStatus(entry,segment.start,segment.end):null;const label=segment.kind==='gap'?'UNPLANNED':segment.kind==='overlap'?'OVERLAP':segment.kind==='intentional'?'INTENTIONAL':segment.kind==='flight-void'?'FLIGHT DAY':itineraryTitle(entry);const action=entry?`data-edit="itinerary:${entry.id}"`:segment.kind==='flight-void'&&segment.flight?`data-edit="reservations:${segment.flight.id}"`:`data-plan-itinerary-date="${segment.start}" data-plan-itinerary-end="${segment.end}"`;return `<button class="coverage-segment ${segment.kind} ${status?.key||''}" style="flex:${Math.max(1,segment.days)}" ${action} title="${esc(label)} · ${dateFmt(segment.start)}–${dateFmt(segment.end)}"><b>${esc(label)}</b><small>${segment.days}d</small></button>`;}).join('')}</div><div class="itinerary-coverage-legend"><span><i class="booked"></i>Accommodation linked</span><span><i class="to-book"></i>Accommodation to book</span><span><i class="missing"></i>Missing accommodation</span><span><i class="flight-void"></i>Flight travel day</span><span><i class="gap"></i>Unplanned</span><span><i class="intentional"></i>Intentional gap</span><span><i class="overlap"></i>Overlap</span></div></section>`}
+  ${planningHorizonEnded?`<section class="itinerary-coverage-card itinerary-horizon-ended"><header><div><h2 class="premium-inline-heading">${iconMarkup('itinerary','premium-inline-heading-icon')}<span>FORWARD COVERAGE</span></h2><p>Planning horizon ended ${dateFmt(journeyHorizonEndDate())} · no forward planning days remain</p></div></header><div class="itinerary-coverage-ended"><b>PLANNING HORIZON ENDED</b><p>Past itinerary records remain available below. New destinations and gaps cannot be added beyond the configured ${MAX_JOURNEY_YEARS}-year planning horizon.</p></div></section>`:`<section class="itinerary-coverage-card"><header><div><h2 class="premium-inline-heading">${iconMarkup('itinerary','premium-inline-heading-icon')}<span>FORWARD COVERAGE</span></h2><p>${dateFmt(coverage.start)} – ${dateFmt(coverage.end)} · ${plannedDays} of ${coverageDays} days covered</p></div><label>Coverage<select id="itinerary-coverage-months"><option value="6" ${itineraryCoverageMonths===6?'selected':''}>6 months</option><option value="12" ${itineraryCoverageMonths===12?'selected':''}>12 months</option><option value="18" ${itineraryCoverageMonths===18?'selected':''}>18 months</option></select></label></header><div class="itinerary-coverage-track">${coverage.segments.map(segment=>{const entry=segment.entry,status=entry?itineraryAccommodationStatus(entry,segment.start,segment.end,ownedMap,linkedReservationIndex,ownedDateIndex):null;const label=segment.kind==='gap'?'UNPLANNED':segment.kind==='overlap'?'OVERLAP':segment.kind==='intentional'?'INTENTIONAL':segment.kind==='flight-void'?'FLIGHT DAY':itineraryTitle(entry);const action=entry?`data-edit="itinerary:${entry.id}"`:segment.kind==='flight-void'&&segment.flight?`data-edit="reservations:${segment.flight.id}"`:`data-plan-itinerary-date="${segment.start}" data-plan-itinerary-end="${segment.end}"`;return `<button class="coverage-segment ${segment.kind} ${status?.key||''}" style="flex:${Math.max(1,segment.days)}" ${action} title="${esc(label)} · ${dateFmt(segment.start)}–${dateFmt(segment.end)}"><b>${esc(label)}</b><small>${segment.days}d</small></button>`;}).join('')}</div><div class="itinerary-coverage-legend"><span><i class="booked"></i>Accommodation linked</span><span><i class="to-book"></i>Accommodation to book</span><span><i class="missing"></i>Missing accommodation</span><span><i class="flight-void"></i>Flight travel day</span><span><i class="gap"></i>Unplanned</span><span><i class="intentional"></i>Intentional gap</span><span><i class="overlap"></i>Overlap</span></div></section>`}
   <section class="itinerary-locked-metrics" aria-label="Forward planning summary"><button type="button" class="itinerary-metric" data-itinerary-focus="countries" aria-label="Expand Countries Planned"><i class="itinerary-metric-line-icon">${iconSvg('globe')}</i><b>${countries}</b><span>Countries Planned</span></button><button type="button" class="itinerary-metric" data-itinerary-focus="routes" aria-label="Expand Route Trips"><i class="itinerary-metric-line-icon">${iconSvg('motorhome')}</i><b>${routeTrips.length}</b><span>Route Trips</span><small>RV / Cruise</small></button><button type="button" class="itinerary-metric" data-itinerary-focus="stops" aria-label="Expand Planned Stops"><i class="itinerary-metric-line-icon">${iconSvg('pin')}</i><b>${destinations.length}</b><span>Planned Stops</span></button><button type="button" class="itinerary-metric" data-itinerary-focus="gaps" aria-label="Expand Unplanned Gaps"><i class="itinerary-gap-symbol" aria-hidden="true"></i><b>${coverage.gaps.length}</b><span>Unplanned Gaps</span><small>${coverage.gaps.length?'Planning required':'No gaps'}</small></button><button type="button" class="itinerary-metric" data-itinerary-focus="missing" aria-label="Expand Missing Accommodation"><i class="itinerary-metric-line-icon">${iconSvg('accommodation')}</i><b>${coverage.missing.length}</b><span>Missing Accommodation</span><small>${coverage.missing.length?'Link or book stays':'All linked'}</small></button><button type="button" class="itinerary-metric" data-itinerary-focus="overlaps" aria-label="Expand Date Overlaps"><i class="itinerary-metric-line-icon">${iconSvg('calendar')}</i><b>${coverage.overlaps.length}</b><span>Date Overlaps</span><small>${coverage.overlaps.length?'Review dates':'No conflicts'}</small></button></section>
   <div class="itinerary-toolbar itinerary-locked-toolbar"><div class="approved-search-field itinerary-search-field">${iconMarkup('search','search-field-icon')}<input id="itinerary-search" class="search" aria-label="Search itinerary" placeholder="Search city, country or notes" value="${esc(itinerarySearchQuery)}"></div><select id="itinerary-year-filter" aria-label="Filter itinerary by travel year"><option value="All">All Years</option>${years.map(year=>`<option value="${year}" ${itineraryYearFilter===String(year)?'selected':''}>Year ${year} · ${journeyYearShortLabel(year)}</option>`).join('')}</select>${planningHorizonEnded?`<span class="itinerary-horizon-toolbar-note">Planning horizon ended ${dateFmt(journeyHorizonEndDate())}</span>`:`<button data-add="itinerary" class="primary">＋ ADD DESTINATION</button><button data-add-intentional-gap class="secondary compact-gap">GAP</button>`}</div>
-  <section class="itinerary-list itinerary-upcoming-list"><h2>UPCOMING ITINERARY</h2>${upcoming.length?upcoming.map(itineraryCard).join(''):empty('No upcoming itinerary entries match this view.')}</section>
-  <details class="archive itinerary-completed"><summary>COMPLETED ITINERARY <b>${completed.length}</b></summary><div class="itinerary-list">${completed.length?completed.map(itineraryCard).join(''):empty('No completed itinerary entries yet.')}</div></details>${itineraryFocusOverlay}`;
+  <section class="itinerary-list itinerary-upcoming-list"><h2>UPCOMING ITINERARY</h2>${upcoming.length?upcoming.map(x=>itineraryCard(x,ownedMap,linkedReservationIndex,ownedDateIndex)).join(''):empty('No upcoming itinerary entries match this view.')}</section>
+  <details class="archive itinerary-completed"><summary>COMPLETED ITINERARY <b>${completed.length}</b></summary><div class="itinerary-list">${completed.length?completed.map(x=>itineraryCard(x,ownedMap,linkedReservationIndex,ownedDateIndex)).join(''):empty('No completed itinerary entries yet.')}</div></details>${itineraryFocusOverlay}`;
 }
 
 function calendarDestinationColour(label=''){
@@ -6728,6 +6850,12 @@ function renderCalendarDayView(date){
 function renderCalendar(){
   if(calendarDayViewDate)return renderCalendarDayView(calendarDayViewDate);
   const y=calendarCursor.getFullYear(),m=calendarCursor.getMonth(),first=new Date(y,m,1),last=new Date(y,m+1,0),mondayOffset=(first.getDay()+6)%7,start=new Date(y,m,1-mondayOffset),items=calendarAllItems(),typeItems=calendarAllItems({ignoreType:true}),today=itineraryReferenceDate(),monthTitle=first.toLocaleDateString('en-AU',{month:'long',year:'numeric'}),rangeTitle=`${first.toLocaleDateString('en-AU',{day:'2-digit',month:'short'})} – ${last.toLocaleDateString('en-AU',{day:'2-digit',month:'short',year:'numeric'})}`;
+  // Calendar month rendering asks the same ownership/accommodation questions for 42
+  // cells. Build those indexes once so a decades-long history does not rebuild the
+  // full itinerary day map and reservation ownership for every visible date.
+  const itineraryRows=sortedItinerary(),ownerMap=itineraryOwnedDayMap(itineraryRows),ownedDateIndex=itineraryOwnedDateIndex(ownerMap),linkedReservationIndex=itineraryLinkedReservationIndex(itineraryRows,state.reservations),calendarContext={ownerMap,ownedDateIndex,linkedReservationIndex,currentEntry:itineraryEntryForDate(today)},segmentStartKeys=new Set(),itemsByDate=new Map();
+  ownedDateIndex.forEach((sourceDates,entryId)=>{let previousOrdinal=null;[...sourceDates].sort().forEach(date=>{const ordinal=isoDayOrdinal(date);if(!Number.isFinite(ordinal))return;if(previousOrdinal===null||ordinal!==previousOrdinal+1)segmentStartKeys.add(`${entryId}|${date}`);previousOrdinal=ordinal;});});
+  items.forEach(item=>{const key=String(item?.date||'');if(!key)return;if(!itemsByDate.has(key))itemsByDate.set(key,[]);itemsByDate.get(key).push(item);});
   const monthItems=items.filter(x=>{const d=parseDate(x.date);return d&&d.getFullYear()===y&&d.getMonth()===m;});
   const agendaItems=calendarSelectedDate?calendarSelectedItems(items):monthItems;
   const selectedAgendaPanel=calendarView==='agenda'&&calendarSelectedDate?`<div class="calendar-selected-panel"><div><span>AGENDA DAY</span><b>${esc(parseDate(calendarSelectedDate)?.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'})||dateFmt(calendarSelectedDate))}</b><small>Showing only this selected date.</small></div><div class="calendar-selected-actions"><button id="clear-selected-date">SHOW WHOLE MONTH</button></div></div>`:'';
@@ -6738,7 +6866,7 @@ function renderCalendar(){
   const destinationLegendHtml=`${destinationLegend.map(x=>`<span><i style="background:${calendarDestinationColour(itineraryTitle(x))}"></i>${esc(itineraryTitle(x))}</span>`).join('')}${monthHasTransition?'<span><i class="travel"></i>Transit / Travel</span>':''}`;
   let cells='';
   for(let i=0;i<42;i++){
-    const d=new Date(start);d.setDate(start.getDate()+i);const key=isoLocal(d),dayItems=items.filter(x=>x.date===key),transition=calendarTransitionForDate(key),band=travelBandForDate(key),entry=transition?.arriving||itineraryEntryForDate(key),showStayLabel=Boolean(entry&&(entry.arrival===key||(entry.coverageType==='Destination'&&itineraryOwnedSegmentsForEntry(entry,state.itinerary).some(segment=>segment.start===key)))),colour=entry?calendarDestinationColour(itineraryTitle(entry)):'';
+    const d=new Date(start);d.setDate(start.getDate()+i);const key=isoLocal(d),dayItems=itemsByDate.get(key)||[],transition=calendarTransitionForDate(key),band=travelBandForDate(key,calendarContext),entry=transition?.arriving||itineraryEntryForDate(key),showStayLabel=Boolean(entry&&(entry.arrival===key||(entry.coverageType==='Destination'&&segmentStartKeys.has(`${entry.id}|${key}`)))),colour=entry?calendarDestinationColour(itineraryTitle(entry)):'';
     const transitionStyle=transition?`--departing-colour:${calendarDestinationColour(itineraryTitle(transition.departing))};--arriving-colour:${calendarDestinationColour(itineraryTitle(transition.arriving))};`:'';
     const shading=transition?'<div class="day-shading transition-shading"><i class="departing"></i><i class="arriving"></i></div>':'<div class="day-shading"></div>';
     const stayLabel=transition?`<div class="destination-stay-label transition-label"><b><span>${esc(transition.departing.city||itineraryTitle(transition.departing))}</span><i>→</i><span>${esc(transition.arriving.city||itineraryTitle(transition.arriving))}</span></b><small>DEPART / ARRIVE</small></div>`:showStayLabel?`<div class="destination-stay-label"><b>${esc(entry.coverageType==='Intentional Gap'?(entry.intentionalLabel||'Intentional gap'):itineraryTitle(entry))}</b><small>${esc(band.statusLabel)}</small></div>`:'';
@@ -6750,7 +6878,7 @@ function renderCalendar(){
     cells+=`<button class="day ${d.getMonth()===m?'':'outside'} ${key===today?'today':''} ${band.status} ${entry?.coverageType==='Intentional Gap'?'intentional-gap':''} ${transition?'transition-day':''} ${majorDay?'calendar-major-day':''} calendar-density-${Math.min(6,dayItems.length+(stayLabel?1:0))}" data-date="${key}" style="--destination-colour:${colour};${transitionStyle}" aria-label="Open ${d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'})}${transition?` transition from ${esc(itineraryTitle(transition.departing))} to ${esc(itineraryTitle(transition.arriving))}`:''} day view">${shading}<div class="day-num">${d.getDate()}${key===today?'<em>TODAY</em>':''}</div>${stayLabel}${!entry&&band.status==='unplanned'?'<div class="unplanned-label">UNPLANNED</div>':''}${dayItems.slice(0,visibleEventLimit).map(x=>{const meta=calendarEventMeta(x);return `<span class="event calendar-${meta.className} calendar-status-${calendarStatusClass(x)}">${x.time?`<small>${esc(x.time)}</small>`:''}<b>${esc(x.title)}</b></span>`}).join('')}${dayItems.length>visibleEventLimit?`<span class="more-events">+${dayItems.length-visibleEventLimit} more on this day</span>`:''}</button>`;
   }
   const agendaRows=agendaItems.length?agendaItems.map(x=>{
-    const meta=calendarEventMeta(x),transition=calendarTransitionForDate(x.date),entry=transition?.arriving||itineraryEntryForDate(x.date),band=travelBandForDate(x.date);
+    const meta=calendarEventMeta(x),transition=calendarTransitionForDate(x.date),entry=transition?.arriving||itineraryEntryForDate(x.date),band=travelBandForDate(x.date,calendarContext);
     const agendaPrimary=transition?calendarDestinationColour(itineraryTitle(transition.departing)):entry?calendarDestinationColour(itineraryTitle(entry)):band.status==='unplanned'?'#85384a':band.status==='intentional-gap'?'#4f91b9':'#2f7cff';
     const agendaSecondary=transition?calendarDestinationColour(itineraryTitle(transition.arriving)):agendaPrimary;
     const agendaTone=transition?'agenda-transition':entry?.coverageType==='Intentional Gap'?'agenda-intentional':band.status==='unplanned'?'agenda-unplanned':'agenda-destination';
@@ -6761,7 +6889,7 @@ function renderCalendar(){
   // reservation/event is edited or deleted. Otherwise Safari visually selects the
   // first All option while calendarTypeFilter still filters to the vanished type.
   if(calendarTypeFilter!=='All'&&!types.includes(calendarTypeFilter))types.push(calendarTypeFilter);
-  return `${calendarLockHero()}<div class="calendar-approved-header calendar-wide-header"><div><h2>CALENDAR</h2><small>${rangeTitle}</small></div><div class="calendar-nav"><button id="today-month">Today</button><button id="prev-month">‹</button><b>${monthTitle}</b><button id="next-month">›</button></div><div class="calendar-view-switch"><button data-calendar-view="month" class="${calendarView==='month'?'active':''}">Month</button><button data-calendar-view="agenda" class="${calendarView==='agenda'?'active':''}">Agenda</button><button id="calendar-filter-toggle" class="${calendarFiltersOpen?'active':''}">⌁ Filters</button></div></div>${calendarFiltersOpen?`<div class="calendar-filter-panel"><label>Source<select id="calendar-source-filter"><option value="All">All</option><option value="reservations" ${calendarSourceFilter==='reservations'?'selected':''}>Reservations</option><option value="events" ${calendarSourceFilter==='events'?'selected':''}>Notes & reminders</option><option value="checklist" ${calendarSourceFilter==='checklist'?'selected':''}>Checklist</option></select></label><label>Type<select id="calendar-type-filter">${types.map(t=>`<option ${calendarTypeFilter===t?'selected':''}>${esc(t)}</option>`).join('')}</select></label><button id="calendar-clear-filters">Clear filters</button><div class="calendar-filter-actions"><button class="primary" data-add="events">＋ ADD NOTE / REMINDER</button></div></div>`:''}<section class="calendar-full-width">${calendarView==='month'?`<div class="calendar calendar-large"><div class="day-head">Mon</div><div class="day-head">Tue</div><div class="day-head">Wed</div><div class="day-head">Thu</div><div class="day-head">Fri</div><div class="day-head">Sat</div><div class="day-head">Sun</div>${cells}</div>`:`${selectedAgendaPanel}<div class="calendar-agenda calendar-agenda-full">${agendaRows}</div>`}<div class="calendar-bottom-bar"><div class="calendar-destination-legend">${destinationLegendHtml}</div></div></section>`;
+  return `${calendarLockHero()}<div class="calendar-approved-header calendar-wide-header"><div><h2 class="premium-inline-heading">${iconMarkup('calendar','premium-inline-heading-icon')}<span>CALENDAR</span></h2><small>${rangeTitle}</small></div><div class="calendar-nav"><button id="today-month">Today</button><button id="prev-month">‹</button><b>${monthTitle}</b><button id="next-month">›</button></div><div class="calendar-view-switch"><button data-calendar-view="month" class="${calendarView==='month'?'active':''}">Month</button><button data-calendar-view="agenda" class="${calendarView==='agenda'?'active':''}">Agenda</button><button id="calendar-filter-toggle" class="${calendarFiltersOpen?'active':''}">⌁ Filters</button></div></div>${calendarFiltersOpen?`<div class="calendar-filter-panel"><label>Source<select id="calendar-source-filter"><option value="All">All</option><option value="reservations" ${calendarSourceFilter==='reservations'?'selected':''}>Reservations</option><option value="events" ${calendarSourceFilter==='events'?'selected':''}>Notes & reminders</option><option value="checklist" ${calendarSourceFilter==='checklist'?'selected':''}>Checklist</option></select></label><label>Type<select id="calendar-type-filter">${types.map(t=>`<option ${calendarTypeFilter===t?'selected':''}>${esc(t)}</option>`).join('')}</select></label><button id="calendar-clear-filters">Clear filters</button><div class="calendar-filter-actions"><button class="primary" data-add="events">＋ ADD NOTE / REMINDER</button></div></div>`:''}<section class="calendar-full-width">${calendarView==='month'?`<div class="calendar calendar-large"><div class="day-head">Mon</div><div class="day-head">Tue</div><div class="day-head">Wed</div><div class="day-head">Thu</div><div class="day-head">Fri</div><div class="day-head">Sat</div><div class="day-head">Sun</div>${cells}</div>`:`${selectedAgendaPanel}<div class="calendar-agenda calendar-agenda-full">${agendaRows}</div>`}<div class="calendar-bottom-bar"><div class="calendar-destination-legend">${destinationLegendHtml}</div></div></section>`;
 }
 
 function yearOfJourney(j){ return journeyYearIndexForDate(j?.start)||''; }
@@ -6920,27 +7048,55 @@ function journeyOwnedDayCountForRows(rows,allRows=completedJourneys(),ownedCount
   return [...ids].reduce((sum,id)=>sum+Number(counts.get(id)||0),0);
 }
 function selectedJourneyYears(){ return journeyYearFilters.has('All')?[]:[...journeyYearFilters]; }
-function journeySearchText(journey,ownedDayCounts=null){
+function journeyReservationIndex(itineraryReservationIndexOverride=null){
+  const index=new Map(),journeys=Array.isArray(state.journeys)?state.journeys:[],itineraryRows=Array.isArray(state.itinerary)?state.itinerary:[];
+  const sourceJourneyByItinerary=new Map(journeys.map(journey=>[String(journey?.sourceItineraryId||''),journey]).filter(([id])=>id));
+  const itineraryIndex=itineraryReservationIndexOverride instanceof Map?itineraryReservationIndexOverride:itineraryLinkedReservationIndex(itineraryRows,state.reservations);
+  const assignedReservationIds=new Set();
+  itineraryIndex.forEach((records,itineraryId)=>{
+    const journey=sourceJourneyByItinerary.get(String(itineraryId||''));if(!journey)return;
+    const key=String(journey.id||'');if(!key)return;
+    const confirmed=(Array.isArray(records)?records:[]).filter(record=>record?.status!=='To Book');
+    if(!confirmed.length)return;
+    index.set(key,confirmed);confirmed.forEach(record=>assignedReservationIds.add(String(record?.id||'')));
+  });
+  // Manual legacy Journey rows can own transactions only when they sit wholly outside
+  // the itinerary envelope. Precompute that tiny eligible set instead of asking every
+  // historical booking to rescan every Journey and itinerary range.
+  const itineraryRanges=itineraryRows.filter(entry=>validISODate(entry?.arrival)&&validISODate(entry?.departure)&&entry.departure>=entry.arrival);
+  let earliest='',latest='';itineraryRanges.forEach(entry=>{if(!earliest||entry.arrival<earliest)earliest=entry.arrival;if(!latest||entry.departure>latest)latest=entry.departure;});
+  const manualOutside=journeys.filter(journey=>!String(journey?.sourceItineraryId||'')&&validISODate(journey?.start)&&validISODate(journey?.end)&&journey.end>=journey.start&&(!itineraryRanges.length||journey.end<earliest||journey.start>latest)).sort((a,b)=>String(b.start).localeCompare(String(a.start))||String(b.end).localeCompare(String(a.end)));
+  if(manualOutside.length){
+    state.reservations.forEach(record=>{
+      if(record?.status==='To Book'||assignedReservationIds.has(String(record?.id||'')))return;
+      const ownershipDate=reservationEffectiveBudgetDate(record);if(!validISODate(ownershipDate))return;
+      const owner=manualOutside.find(journey=>between(ownershipDate,journey.start,journey.end));if(!owner)return;
+      const key=String(owner.id||'');if(!key)return;if(!index.has(key))index.set(key,[]);index.get(key).push(record);
+    });
+  }
+  return index;
+}
+function journeySearchText(journey,ownedDayCounts=null,reservationIndex=null){
   const counts=ownedDayCounts||journeyOwnedDayCounts(),route=normalizeDetailedRoutePoints(journey.routePoints).map(point=>point.label).join(' '),countries=journeyCountriesForRecord(journey).join(' '),spend=journeyDestinationSpendAud(journey),duration=Number(counts.get(String(journey.id||''))||0),avg=spend/Math.max(1,duration);
-  const linked=state.reservations.filter(r=>r.status!=='To Book'&&journeyOwnerForTransaction(r,'reservation')?.id===journey.id),linkedValue=linked.reduce((sum,r)=>sum+reservationAudValue(r),0),bookingWord=linked.length===1?'booking':'bookings';
+  const linked=reservationIndex?(reservationIndex.get(String(journey.id||''))||[]):state.reservations.filter(r=>r.status!=='To Book'&&journeyOwnerForTransaction(r,'reservation')?.id===journey.id),linkedValue=linked.reduce((sum,r)=>sum+reservationAudValue(r),0),bookingWord=linked.length===1?'booking':'bookings';
   return `${journey.title} ${journey.city||''} ${journeyCountry(journey)} ${countries} ${journey.notes||''} ${journey.type||''} ${searchDateTerms(journey.start,journey.end)} ${route} ${searchNumberTerms(journey.km,spend,avg,linked.length,linkedValue)} ${Number(journey.km||0).toLocaleString('en-AU')} km ${money(spend)} ${moneyCents(avg)} ${duration} day${duration===1?'':'s'} ${linked.length} ${bookingWord} linked bookings reservation value ${money(linkedValue)}`;
 }
-function journeyFilteredRows(){
+function journeyFilteredRows(reservationIndex=null){
   const q=canonicalIdentityKey(journeySearchQuery);
-  const selected=selectedJourneyYears(),rows=completedJourneys(),ownedDayCounts=journeyOwnedDayCounts(rows);
+  const selected=selectedJourneyYears(),rows=completedJourneys(),ownedDayCounts=q?journeyOwnedDayCounts(rows):null;
   return rows.filter(j=>{
     const yearOk=!selected.length||selected.some(year=>rangeOverlapsJourneyYear(j.start,j.end,year));
     const typeOk=journeyTypeFilter==='All'||j.type===journeyTypeFilter;
-    const searchOk=!q||canonicalSearchText(journeySearchText(j,ownedDayCounts)).includes(q);
+    const searchOk=!q||canonicalSearchText(journeySearchText(j,ownedDayCounts,reservationIndex)).includes(q);
     return yearOk&&typeOk&&searchOk;
   }).sort((a,b)=>String(b.end||b.start).localeCompare(String(a.end||a.start))||String(b.start||'').localeCompare(String(a.start||''))||String(b.id||'').localeCompare(String(a.id||'')));
 }
 function journeyDestinationGroups(rows=completedJourneys()){
-  const groups=Object.create(null),all=completedJourneys();
+  const groups=Object.create(null),all=completedJourneys(),ownedCounts=journeyOwnedDayCounts(all);
   rows.forEach(j=>{const k=journeyDestinationKey(j)||j.id;(groups[k]??=[]).push(j);});
   return Object.values(groups).map(items=>({
     key:journeyDestinationKey(items[0]), title:journeyDestinationDisplayTitle(items[0]), country:journeyCountry(items[0]), stays:items.length,
-    days:journeyOwnedDayCountForRows(items,all), spend:items.reduce((s,x)=>s+journeyDestinationSpendAud(x),0),
+    days:journeyOwnedDayCountForRows(items,all,ownedCounts), spend:items.reduce((s,x)=>s+journeyDestinationSpendAud(x),0),
     km:items.reduce((s,x)=>s+Number(x.km||0),0), latest:[...items].sort((a,b)=>String(b.end).localeCompare(String(a.end)))[0]
   })).sort((a,b)=>b.spend-a.spend);
 }
@@ -6985,9 +7141,12 @@ function renderJourneys(){
   if(mapExpanded)return `<section class="journey-expanded-map-page"><header><div><span>FULL-PAGE JOURNEY MAP</span><h2>Journey History Routes</h2><p>All approved year and travel-type filters remain available.</p></div><button data-map-expand class="primary">CLOSE / RETURN TO JOURNEY HISTORY</button></header>${renderRouteStrip({readOnly:false,large:true,fullPage:true})}</section>`;
   const completed=completedJourneys();
   const years=[...new Set(completed.map(yearOfJourney).filter(Boolean))].sort();
-  const filtered=journeyFilteredRows();
+  // Batch 1217: resolve reservation ownership once for Journey History instead of
+  // re-scanning every reservation for every visible table/search row.
+  const journeyReservations=journeyReservationIndex();
+  const filtered=journeyFilteredRows(journeyReservations);
   const lifetimeSpend=completed.reduce((s,x)=>s+journeySpendAud(x),0);
-  const lifetimeDays=uniqueJourneyDays(completed);
+  const ownedJourneyDays=journeyOwnedDayMap(completed),lifetimeDays=ownedJourneyDays.size;
   const totalKm=completed.reduce((s,x)=>s+Number(x.km||0),0);
   const approximateRouteKm=completed.slice(1).reduce((sum,x,index)=>sum+(routeKilometres(completed[index],x)||0),0);
   const displayedJourneyKm=totalKm||approximateRouteKm;
@@ -7001,11 +7160,13 @@ function renderJourneys(){
   const filteredApproximateRouteKm=filteredChronological.slice(1).reduce((sum,row,index)=>sum+(routeKilometres(filteredChronological[index],row)||0),0);
   const filteredDisplayedKm=filteredTotalKm||filteredApproximateRouteKm;
   const groups=journeyDestinationGroups();
+  const destinationFiltersActive=Boolean(canonicalIdentityKey(journeySearchQuery)||journeyTypeFilter!=='All'||selectedJourneyYears().length);
+  const filteredGroups=destinationFiltersActive?journeyDestinationGroups(filtered):groups;
   const destinations=groups.length;
   const countries=new Set(completed.flatMap(journeyCountriesForRecord).filter(Boolean).map(x=>slugifyCountry(x))).size;
   const lifetimeDestinationSpend=completed.reduce((sum,row)=>sum+journeyDestinationSpendAud(row),0);
   const avgDay=lifetimeDestinationSpend/Math.max(1,lifetimeDays);
-  const ownedJourneyDays=journeyOwnedDayMap(completed),ownedJourneyDayCounts=journeyOwnedDayCounts(completed,ownedJourneyDays);
+  const ownedJourneyDayCounts=journeyOwnedDayCounts(completed,ownedJourneyDays);
   const ownedDays=row=>Number(ownedJourneyDayCounts.get(String(row?.id||''))||0);
   const ranked=groups.filter(x=>x.days>0);
   const cheapest=[...ranked].sort((a,b)=>a.spend/a.days-b.spend/b.days)[0];
@@ -7040,11 +7201,7 @@ function renderJourneys(){
   const journeySpendBody=`<div class="journey-lifetime-total">${moneyCents(lifetimeSpend)}</div><small>All completed journey spending</small><div class="journey-spend-chart journey-spend-horizontal-chart" role="img" aria-label="Lifetime travel spend horizontal bar graph by category">${journeyCatRows.map(([label,value],i)=>{const share=journeyCatTotal?value/journeyCatTotal*100:0;const relative=Number(value||0)/maxJourneyCategorySpend*100;return `<div class="journey-spend-bar-row"><div class="journey-spend-bar-label"><i style="background:var(--chart-${(i%6)+1})"></i><b>${esc(label==='Travel Between Destinations'?'Travel between destinations':label)}</b></div><div class="journey-spend-bar-track"><span style="width:${Math.max(4,relative).toFixed(1)}%;background:var(--chart-${(i%6)+1})"></span></div><strong>${money(value)}</strong><small>${share.toFixed(1)}%</small></div>`}).join('')||empty('No journey spending yet.')}</div>`;
   const journeySpendFocusBody=`<div class="journey-lifetime-total">${moneyCents(lifetimeSpend)}</div><small>All completed journey spending</small><div class="journey-spend-column-chart" role="img" aria-label="Lifetime travel spend vertical column graph by category">${journeyCatRows.map(([label,value],i)=>{const share=journeyCatTotal?value/journeyCatTotal*100:0;const relative=Number(value||0)/maxJourneyCategorySpend*100;return `<div class="journey-spend-column-item"><strong>${money(value)}</strong><small>${share.toFixed(1)}%</small><div class="journey-spend-column-track"><span style="height:${Math.max(5,relative).toFixed(1)}%;background:linear-gradient(180deg,color-mix(in srgb,var(--chart-${(i%6)+1}) 86%,white 14%),var(--chart-${(i%6)+1}))"></span></div><b>${esc(label==='Travel Between Destinations'?'Travel between destinations':label)}</b></div>`}).join('')||empty('No journey spending yet.')}</div><div class="journey-spend-expanded-key">${journeyCatRows.map(([label,value],i)=>{const share=journeyCatTotal?value/journeyCatTotal*100:0;return `<span><i style="background:var(--chart-${(i%6)+1})"></i><b>${esc(label)}</b><strong>${money(value)}</strong><small>${share.toFixed(1)}%</small></span>`}).join('')}</div>`;
   const completedJourneyIds=new Set(completed.map(journey=>String(journey.id||'')));
-  const completedTravelReservations=linkedReservations().filter(r=>{
-    if(!reservationIsBetweenDestinationTravel(r)||!validISODate(r.date)||r.date>itineraryReferenceDate())return false;
-    const owner=journeyOwnerForTransaction(r,'reservation');
-    return Boolean(owner&&completedJourneyIds.has(String(owner.id||'')));
-  });
+  const completedTravelReservations=[...completedJourneyIds].flatMap(id=>journeyReservations.get(id)||[]).filter(r=>reservationIsBetweenDestinationTravel(r)&&validISODate(r.date)&&r.date<=itineraryReferenceDate());
   const completedTravelBreakdown=reservationTravelCostBreakdown(completedTravelReservations),completedTravelTotal=completedTravelBreakdown.reduce((sum,row)=>sum+row.total,0);
   const journeyStatsBody=`<div class="journey-snapshot">
     <section class="journey-snapshot-highlights" aria-label="Journey cost and time highlights">
@@ -7084,7 +7241,7 @@ function renderJourneys(){
     <div class="journey-kpi tone-teal journey-kpi-expandable" data-journey-focus="kpiSpend" tabindex="0" role="button" aria-label="Open Lifetime Travel Spend in expanded view"><span>${journeyKpiSvg('spend')}</span><b>${money(lifetimeSpend)}</b><small>Lifetime travel<br>spend</small></div>
   </div>
   <div class="journey-overview-grid journey-overview-locked">
-    ${card('JOURNEY MAP',renderRouteStrip({readOnly:false,compact:true,large:true}),'journey-history-map journey-map-lock')}
+    ${card(premiumPanelHeading('itinerary','JOURNEY MAP'),renderRouteStrip({readOnly:false,compact:true,large:true}),'journey-history-map journey-map-lock premium-panel-card')}
     <aside class="journey-overview-side journey-overview-side-locked">
       ${journeyExpandableCard('LIFETIME TRAVEL SPEND · AUD',journeySpendBody,'journey-side-spend journey-side-spend-locked','spend')}
       ${journeyExpandableCard('JOURNEY SNAPSHOT',journeyStatsBody,'journey-side-stats journey-side-stats-locked','stats')}
@@ -7097,16 +7254,16 @@ function renderJourneys(){
   </div>
   <div class="journey-history-lower-grid journey-history-lower-grid-full">
     <main class="journey-history-lower-main journey-history-lower-main-full">
-      <div class="journey-filter-panel journey-filter-locked"><div class="journey-controls"><div class="approved-search-field journey-search-field">${iconMarkup('search','search-field-icon')}<input id="journey-search" class="search" aria-label="Search journey history" placeholder="Search destination, country or notes" value="${esc(journeySearchQuery)}"></div><select id="journey-type" aria-label="Filter journey history by travel type"><option value="All">All travel types</option><option ${journeyTypeFilter==='Standard stay'?'selected':''}>Standard stay</option><option ${journeyTypeFilter==='Motorhome'?'selected':''}>Motorhome</option><option ${journeyTypeFilter==='Cruise'?'selected':''}>Cruise</option></select><select id="journey-page-size" aria-label="Journey history rows per page"><option ${journeyPageSize===10?'selected':''}>10</option><option ${journeyPageSize===20?'selected':''}>20</option><option ${journeyPageSize===50?'selected':''}>50</option></select><button id="journey-clear-filters">Clear</button></div>${renderJourneyYearButtons(years)}<div class="journey-filter-summary"><span><i class="journey-filter-line-icon">${journeyKpiSvg('days')}</i> ${filtered.length} completed stay${filtered.length===1?'':'s'}</span><span><i class="journey-filter-line-icon">${journeyKpiSvg('destinations')}</i> ${journeyDestinationGroups(filtered).length} destination${journeyDestinationGroups(filtered).length===1?'':'s'}</span><span><b class="journey-dollar">$</b> ${money(filtered.reduce((s,x)=>s+journeyDestinationSpendAud(x),0))} filtered spend</span></div></div>
-      <article class="card journey-records-card journey-records-locked journey-records-card-full">${journeyTable(pageRows,(journeyPage-1)*journeyPageSize,ownedJourneyDayCounts)}<div class="journey-table-km"><span>${filteredTotalKm?'Kilometres travelled':'Approx. kilometres travelled'}</span><b>${filteredDisplayedKm.toLocaleString()} km</b></div></article>
+      <div class="journey-filter-panel journey-filter-locked"><div class="journey-controls"><div class="approved-search-field journey-search-field">${iconMarkup('search','search-field-icon')}<input id="journey-search" class="search" aria-label="Search journey history" placeholder="Search destination, country or notes" value="${esc(journeySearchQuery)}"></div><select id="journey-type" aria-label="Filter journey history by travel type"><option value="All">All travel types</option><option ${journeyTypeFilter==='Standard stay'?'selected':''}>Standard stay</option><option ${journeyTypeFilter==='Motorhome'?'selected':''}>Motorhome</option><option ${journeyTypeFilter==='Cruise'?'selected':''}>Cruise</option></select><select id="journey-page-size" aria-label="Journey history rows per page"><option ${journeyPageSize===10?'selected':''}>10</option><option ${journeyPageSize===20?'selected':''}>20</option><option ${journeyPageSize===50?'selected':''}>50</option></select><button id="journey-clear-filters">Clear</button></div>${renderJourneyYearButtons(years)}<div class="journey-filter-summary"><span><i class="journey-filter-line-icon">${journeyKpiSvg('days')}</i> ${filtered.length} completed stay${filtered.length===1?'':'s'}</span><span><i class="journey-filter-line-icon">${journeyKpiSvg('destinations')}</i> ${filteredGroups.length} destination${filteredGroups.length===1?'':'s'}</span><span><b class="journey-dollar">$</b> ${money(filtered.reduce((s,x)=>s+journeyDestinationSpendAud(x),0))} filtered spend</span></div></div>
+      <article class="card journey-records-card journey-records-locked journey-records-card-full">${journeyTable(pageRows,(journeyPage-1)*journeyPageSize,ownedJourneyDayCounts,journeyReservations)}<div class="journey-table-km"><span>${filteredTotalKm?'Kilometres travelled':'Approx. kilometres travelled'}</span><b>${filteredDisplayedKm.toLocaleString()} km</b></div></article>
       <div class="journey-pagination"><span>Showing ${filtered.length?((journeyPage-1)*journeyPageSize)+1:0}–${Math.min(journeyPage*journeyPageSize,filtered.length)} of ${filtered.length}</span><div><button data-journey-page="${journeyPage-1}" ${journeyPage===1?'disabled':''}>‹</button>${Array.from({length:pageCount},(_,i)=>i+1).slice(Math.max(0,journeyPage-3),Math.min(pageCount,journeyPage+2)).map(p=>`<button data-journey-page="${p}" class="${p===journeyPage?'active':''}">${p}</button>`).join('')}<button data-journey-page="${journeyPage+1}" ${journeyPage===pageCount?'disabled':''}>›</button></div></div>
     </main>
   </div>
   <p class="journey-auto-note">ⓘ Journey records update automatically when a destination is completed.</p>${focusMeta?journeyFocusOverlay(focusMeta.title,focusMeta.content,focusMeta.tone):''}`;
 }
-function journeyTable(list,offset=0,ownedDayCounts=null){
-  const counts=ownedDayCounts||journeyOwnedDayCounts();
-  return `<div class="table-wrap"><table class="data-table journey-table journey-table-locked"><thead><tr><th>#</th><th>Type</th><th>Destination</th><th>Arrive</th><th>Depart</th><th>Days</th><th>Avg / Day</th><th>Destination Cost</th><th>Notes</th></tr></thead><tbody>${list.length?list.map((x,i)=>{const expanded=journeyExpandedId===x.id,duration=Number(counts.get(String(x.id||''))||0);const linkedReservations=state.reservations.filter(r=>r.status!=='To Book'&&journeyOwnerForTransaction(r,'reservation')?.id===x.id),destinationReservations=linkedReservations.filter(r=>r.destinationBudget==='Yes'),travelReservations=linkedReservations.filter(reservationIsBetweenDestinationTravel),destinationSpend=journeyDestinationSpendAud(x),travelBetweenSpend=travelReservations.reduce((sum,r)=>sum+reservationAudValue(r),0);return `<tr class="journey-main-row ${expanded?'expanded':''}" data-journey-toggle="${x.id}" tabindex="0" aria-expanded="${expanded}"><td data-label="#">${offset+i+1}</td><td data-label="Type" class="journey-type-cell"><span class="journey-type-only" title="${esc(x.type)}" aria-label="${esc(x.type)}">${journeyTypeIcon(x.type)}</span></td><td data-label="Destination"><div class="journey-destination-with-flag">${journeyFlagMarkup(x)}<b>${esc(x.title)}</b></div></td><td data-label="Arrival">${dateFmt(x.start)}</td><td data-label="Departure">${dateFmt(x.end)}</td><td data-label="Days">${duration}</td><td data-label="Average / day">${moneyCents(destinationSpend/Math.max(1,duration))}</td><td data-label="Total spend">${money(destinationSpend)}</td><td data-label="Notes"><span class="journey-note-icon" title="${esc(x.notes||'Open journey details')}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></span></td></tr>${expanded?`<tr class="journey-detail-row"><td colspan="9"><div class="journey-row-details"><section><span>NOTES</span><p>${esc(x.notes||'No notes saved.')}</p></section><section><span>DESTINATION / TRIP BOOKINGS</span><div><b>Allocated bookings</b><strong>${destinationReservations.length}</strong></div><div><b>Allocated booking value</b><strong>${money(destinationReservations.reduce((s,r)=>s+reservationAudValue(r),0))}</strong></div></section><section><span>DESTINATION COST</span><div><b>Living & staying</b><strong>${money(destinationSpend)}</strong></div><div><b>Average per day</b><strong>${moneyCents(destinationSpend/Math.max(1,duration))}</strong></div><div><b>Travel reservations (history)</b><strong>${money(travelBetweenSpend)}</strong></div></section><section><span>ROUTE DETAILS</span><div><b>Travel type</b><strong>${esc(x.type)}</strong></div><div><b>Kilometres</b><strong>${Number(x.km||0).toLocaleString()} km</strong></div></section></div></td></tr>`:''}`}).join(''):`<tr><td colspan="9">${empty('No completed journeys match these filters.')}</td></tr>`}</tbody></table></div>`;
+function journeyTable(list,offset=0,ownedDayCounts=null,reservationIndex=null){
+  const counts=ownedDayCounts||journeyOwnedDayCounts(),reservationsByJourney=reservationIndex||journeyReservationIndex();
+  return `<div class="table-wrap"><table class="data-table journey-table journey-table-locked"><thead><tr><th>#</th><th>Type</th><th>Destination</th><th>Arrive</th><th>Depart</th><th>Days</th><th>Avg / Day</th><th>Destination Cost</th><th>Notes</th></tr></thead><tbody>${list.length?list.map((x,i)=>{const expanded=journeyExpandedId===x.id,duration=Number(counts.get(String(x.id||''))||0);const linkedReservations=reservationsByJourney.get(String(x.id||''))||[],destinationReservations=linkedReservations.filter(r=>r.destinationBudget==='Yes'),travelReservations=linkedReservations.filter(reservationIsBetweenDestinationTravel),destinationSpend=journeyDestinationSpendAud(x),travelBetweenSpend=travelReservations.reduce((sum,r)=>sum+reservationAudValue(r),0);return `<tr class="journey-main-row ${expanded?'expanded':''}" data-journey-toggle="${x.id}" tabindex="0" aria-expanded="${expanded}"><td data-label="#">${offset+i+1}</td><td data-label="Type" class="journey-type-cell"><span class="journey-type-only" title="${esc(x.type)}" aria-label="${esc(x.type)}">${journeyTypeIcon(x.type)}</span></td><td data-label="Destination"><div class="journey-destination-with-flag">${journeyFlagMarkup(x)}<b>${esc(x.title)}</b></div></td><td data-label="Arrival">${dateFmt(x.start)}</td><td data-label="Departure">${dateFmt(x.end)}</td><td data-label="Days">${duration}</td><td data-label="Average / day">${moneyCents(destinationSpend/Math.max(1,duration))}</td><td data-label="Total spend">${money(destinationSpend)}</td><td data-label="Notes"><span class="journey-note-icon" title="${esc(x.notes||'Open journey details')}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></span></td></tr>${expanded?`<tr class="journey-detail-row"><td colspan="9"><div class="journey-row-details"><section><span>NOTES</span><p>${esc(x.notes||'No notes saved.')}</p></section><section><span>DESTINATION / TRIP BOOKINGS</span><div><b>Allocated bookings</b><strong>${destinationReservations.length}</strong></div><div><b>Allocated booking value</b><strong>${money(destinationReservations.reduce((s,r)=>s+reservationAudValue(r),0))}</strong></div></section><section><span>DESTINATION COST</span><div><b>Living & staying</b><strong>${money(destinationSpend)}</strong></div><div><b>Average per day</b><strong>${moneyCents(destinationSpend/Math.max(1,duration))}</strong></div><div><b>Travel reservations (history)</b><strong>${money(travelBetweenSpend)}</strong></div></section><section><span>ROUTE DETAILS</span><div><b>Travel type</b><strong>${esc(x.type)}</strong></div><div><b>Kilometres</b><strong>${Number(x.km||0).toLocaleString()} km</strong></div></section></div></td></tr>`:''}`}).join(''):`<tr><td colspan="9">${empty('No completed journeys match these filters.')}</td></tr>`}</tbody></table></div>`;
 }
 function checklistProgress(list='Destination'){
   const items=state.checklist.filter(x=>x.list===list);
@@ -7252,7 +7409,7 @@ function renderChecklist(){
     <div class="checklist-lists">${checklistListPanel('Permanent')}${checklistListPanel('Destination')}</div>
   </main><aside class="checklist-side">
     <article class="card checklist-overview-card checklist-expandable-card" data-check-focus="Overview" tabindex="0" role="button" aria-label="Open Checklist Overview in expanded view"><h3>CHECKLIST OVERVIEW</h3><div class="checklist-overview-premium"><div class="checklist-orbit" style="--complete:${graphPercent(overview.pct)}"><div><span>TRAVEL READINESS</span><b>${overview.pct}%</b><small>${overview.completed} of ${overview.total} complete</small></div></div><div class="checklist-overview-stats"><span class="done"><i></i><small>COMPLETED</small><b>${overview.completed}</b></span><span class="pending"><i></i><small>PENDING</small><b>${overview.pending}</b></span><span class="overdue"><i></i><small>OVERDUE</small><b>${overview.overdue}</b></span></div></div></article>
-    ${card('NEXT DESTINATION',next?`<div class="checklist-next-card destination-visual" style="--next-image:url('${nextVisual.image}');--next-accent:${nextVisual.accent}"><b>${esc(next.title)}</b><span>${namedTextIcon('calendar',`${dateFmt(next.start)} – ${dateFmt(next.end)}`,'checklist-next-icon')}</span><span>${namedTextIcon('flight',`Travel day: ${dateFmt(next.start)}`,'checklist-next-icon')}</span><span>${namedTextIcon('hotel',`Stay duration: ${itineraryDisplayDayCount(next)} days`,'checklist-next-icon')}</span><button data-edit="itinerary:${next.id}">VIEW DESTINATION →</button></div>`:planningEnded?`<div class="checklist-next-card planning-ended"><b>Planning horizon ended</b><span>No further destination is required inside the configured journey horizon.</span></div>`:`<div class="checklist-next-card"><b>Not planned</b><span>No future destination found.</span><button data-screen-jump="itinerary">SET NEXT DESTINATION →</button></div>`,'checklist-next-destination')}
+    ${card(premiumPanelHeading('itinerary','NEXT DESTINATION'),next?`<div class="checklist-next-card destination-visual" style="--next-image:url('${nextVisual.image}');--next-accent:${nextVisual.accent}"><b>${esc(next.title)}</b><span>${namedTextIcon('calendar',`${dateFmt(next.start)} – ${dateFmt(next.end)}`,'checklist-next-icon')}</span><span>${namedTextIcon('flight',`Travel day: ${dateFmt(next.start)}`,'checklist-next-icon')}</span><span>${namedTextIcon('hotel',`Stay duration: ${itineraryDisplayDayCount(next)} days`,'checklist-next-icon')}</span><button data-edit="itinerary:${next.id}">VIEW DESTINATION →</button></div>`:planningEnded?`<div class="checklist-next-card planning-ended"><b>Planning horizon ended</b><span>No further destination is required inside the configured journey horizon.</span></div>`:`<div class="checklist-next-card"><b>Not planned</b><span>No future destination found.</span><button data-screen-jump="itinerary">SET NEXT DESTINATION →</button></div>`,'checklist-next-destination premium-panel-card')}
     <div class="checklist-reset-note">ⓘ Destination task state is saved per next destination and switches automatically when the next destination changes.</div>
   </aside></div>${checklistFocusList?checklistFocusPanel(checklistFocusList):''}`;
 }
@@ -7514,13 +7671,13 @@ function renderSettings(){
   const offlineStatus=serviceWorkerStatusSummary(),offlineLabel=offlineStatus.label,offlineTone=offlineStatus.tone==='success'?'success':offlineStatus.tone==='danger'||offlineStatus.tone==='warning'?'attention':'',storageIssue=appHealthStorageIssue(),privacyStatus=offlineStatus.tone==='success'&&!storageIssue?'Offline-ready · stored locally on this iPad.':'Offline/local storage readiness needs attention — see App Health.';
   return `${cinematicHero('settings')}${appHealthWidget()}<div class="settings-card-dashboard settings-masonry settings-health-layout">
     <div class="settings-column settings-column-left">
-      ${card('BACKUP & RESTORE',`<div class="settings-backup-status ${backupStatus.due?'is-due':'is-current'}"><span>${backupStatus.due?'BACKUP REMINDER':'BACKUP CURRENT'}</span><b>${esc(backupStatus.label)}</b><small>${backupStatus.last?`Last backup: ${dateFmt(backupStatus.last)}`:'Download your first backup to protect all local travel data.'}</small></div><div class="simple-data-actions"><button id="backup" class="primary"><b>Download Backup</b><small>One JSON file containing all app information.</small></button><button id="restore"><b>Restore Backup</b><small>Replace current data only after confirmation.</small></button></div><div class="settings-privacy-note">${iconMarkup('vault','settings-privacy-icon')}<span>${esc(privacyStatus)}</span></div>`,'settings-panel settings-backup-panel')}
-      ${card('TRAVEL APPLICATION DEFAULTS',`<div class="simple-preference-grid"><label><span>Journey start date</span><span class="expense-date-control settings-date-control" tabindex="0"><b id="journey-start-simple-display">${dateFmt(settings.journeyStart)}</b><input id="journey-start-simple" type="date" value="${esc(settings.journeyStart)}" aria-label="Journey start date, shown as ${dateFmt(settings.journeyStart)}"></span></label><label><span>Default travellers</span><input id="default-travellers-simple" type="number" inputmode="numeric" min="1" max="20" value="${Number(settings.travellers||2)}"></label><label><span>Date format</span><input value="DD/MM/YYYY" readonly></label><label><span>Default currency</span><input value="AUD" readonly></label></div><button id="save-travel-preferences" class="wide-button primary">SAVE DEFAULTS</button>`,'settings-panel settings-defaults-panel')}
+      ${card(premiumPanelHeading('vault','BACKUP & RESTORE'),`<div class="settings-backup-status ${backupStatus.due?'is-due':'is-current'}"><span>${backupStatus.due?'BACKUP REMINDER':'BACKUP CURRENT'}</span><b>${esc(backupStatus.label)}</b><small>${backupStatus.last?`Last backup: ${dateFmt(backupStatus.last)}`:'Download your first backup to protect all local travel data.'}</small></div><div class="simple-data-actions"><button id="backup" class="primary"><b>Download Backup</b><small>One JSON file containing all app information.</small></button><button id="restore"><b>Restore Backup</b><small>Replace current data only after confirmation.</small></button></div><div class="settings-privacy-note">${iconMarkup('vault','settings-privacy-icon')}<span>${esc(privacyStatus)}</span></div>`,'settings-panel settings-backup-panel premium-panel-card')}
+      ${card(premiumPanelHeading('settings','TRAVEL APPLICATION DEFAULTS'),`<div class="simple-preference-grid"><label><span>Journey start date</span><span class="expense-date-control settings-date-control" tabindex="0"><b id="journey-start-simple-display">${dateFmt(settings.journeyStart)}</b><input id="journey-start-simple" type="date" value="${esc(settings.journeyStart)}" aria-label="Journey start date, shown as ${dateFmt(settings.journeyStart)}"></span></label><label><span>Default travellers</span><input id="default-travellers-simple" type="number" inputmode="numeric" min="1" max="20" value="${Number(settings.travellers||2)}"></label><label><span>Date format</span><input value="DD/MM/YYYY" readonly></label><label><span>Default currency</span><input value="AUD" readonly></label></div><button id="save-travel-preferences" class="wide-button primary">SAVE DEFAULTS</button>`,'settings-panel settings-defaults-panel premium-panel-card')}
     </div>
     <div class="settings-column settings-column-right">
-      ${card('APP STATUS',`<div class="status-list"><div><span>Date & time source</span><b class="success">iPad device clock</b></div><div><span>Offline support</span><b id="settings-offline-status" class="${offlineTone}">${offlineLabel}</b></div><div><span>Itinerary entries</span><b>${state.itinerary.length}</b></div><div><span>Local records</span><b>${totalRecords}</b></div><div><span>App data size</span><b>${formatStorageSize(stateStorageBytes())}</b></div><div class="settings-build-row"><span>Build</span><b>${esc(buildNumber)}<small>${esc(buildName)}</small></b></div></div>`,'settings-panel settings-status-panel')}
-      ${card('OPTIONAL PIN',`<div class="settings-pin-head"><div><b>App PIN</b><small>Optional four-digit protection. Off by default.</small></div><label class="settings-switch"><input id="pin-enabled" type="checkbox" ${pinOn?'checked':''}><span></span></label></div><div class="settings-pin-fields ${pinOn?'':'disabled'}"><label>Four-digit PIN<input id="app-pin" type="password" inputmode="numeric" maxlength="4" value="${pinOn?esc(settings.pin):''}" ${pinOn?'':'disabled'}></label><button id="save-pin" ${pinOn?'':'disabled'}>Save PIN</button><button id="lock-now" ${pinOn?'':'disabled'}>Lock App Now</button></div>`,'settings-panel settings-pin-panel')}
-      ${card('RESET ALL DATA',`<p class="danger-text">Permanently deletes all local app data.</p><button id="reset" class="wide-button danger">DELETE EVERYTHING</button>`,'settings-panel danger-card settings-reset-panel')}
+      ${card(premiumPanelHeading('gauge','APP STATUS'),`<div class="status-list"><div><span>Date & time source</span><b class="success">iPad device clock</b></div><div><span>Offline support</span><b id="settings-offline-status" class="${offlineTone}">${offlineLabel}</b></div><div><span>Itinerary entries</span><b>${state.itinerary.length}</b></div><div><span>Local records</span><b>${totalRecords}</b></div><div><span>App data size</span><b>${formatStorageSize(stateStorageBytes())}</b></div><div class="settings-build-row"><span>Build</span><b>${esc(buildNumber)}<small>${esc(buildName)}</small></b></div></div>`,'settings-panel settings-status-panel premium-panel-card')}
+      ${card(premiumPanelHeading('shield','OPTIONAL PIN'),`<div class="settings-pin-head"><div><b>App PIN</b><small>Optional four-digit protection. Off by default.</small></div><label class="settings-switch"><input id="pin-enabled" type="checkbox" ${pinOn?'checked':''}><span></span></label></div><div class="settings-pin-fields ${pinOn?'':'disabled'}"><label>Four-digit PIN<input id="app-pin" type="password" inputmode="numeric" maxlength="4" value="${pinOn?esc(settings.pin):''}" ${pinOn?'':'disabled'}></label><button id="save-pin" ${pinOn?'':'disabled'}>Save PIN</button><button id="lock-now" ${pinOn?'':'disabled'}>Lock App Now</button></div>`,'settings-panel settings-pin-panel premium-panel-card')}
+      ${card(premiumPanelHeading('delete','RESET ALL DATA'),`<p class="danger-text">Permanently deletes all local app data.</p><button id="reset" class="wide-button danger">DELETE EVERYTHING</button>`,'settings-panel danger-card settings-reset-panel premium-panel-card')}
     </div>
   </div>`;
 }
@@ -8589,17 +8746,13 @@ function bindScreen(){
       streamingOpen.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();openVaultStreamingPanel();}};
     }
     const streamingEmailUnlock=document.querySelector('[data-streaming-email-unlock]');if(streamingEmailUnlock){
-      let streamingEmailPhysicalAt=0;
-      const registerStreamingEmailTap=(e,physical=false)=>{
-        if(e?.cancelable)e.preventDefault();e?.stopPropagation?.();
-        if(vaultStreamingService||vaultStreamingEditing)return;
+      let emailHoldTimer=0,emailHoldOpened=false,emailPointerStart=null,emailPointerMoved=false;
+      const clearEmailHold=()=>{if(emailHoldTimer){clearTimeout(emailHoldTimer);emailHoldTimer=0;}};
+      const registerStreamingEmailTap=e=>{
+        e?.preventDefault?.();e?.stopPropagation?.();
+        if(vaultStreamingService||vaultStreamingEditing||emailHoldOpened)return;
         const now=Date.now();
-        // iPad Safari can emit pointer/touch plus a delayed synthetic click for the same
-        // physical tap. The actual heading is now a button so text selection/zoom cannot
-        // steal the gesture; physical taps count once and click remains a fallback.
-        if(!physical&&streamingEmailPhysicalAt&&now-streamingEmailPhysicalAt<900)return;
-        if(physical)streamingEmailPhysicalAt=now;
-        if(!vaultStreamingEmailLastTap||now-vaultStreamingEmailLastTap>3400)vaultStreamingEmailTapCount=0;
+        if(!vaultStreamingEmailLastTap||now-vaultStreamingEmailLastTap>2600)vaultStreamingEmailTapCount=0;
         vaultStreamingEmailLastTap=now;
         vaultStreamingEmailTapCount+=1;
         if(vaultStreamingEmailTapCount>=3){
@@ -8607,16 +8760,45 @@ function bindScreen(){
           openVaultStreamingEmailStore(true);
         }
       };
-      if(typeof window!=='undefined'&&'PointerEvent' in window){
-        streamingEmailUnlock.onpointerdown=e=>{if(e.button!==undefined&&e.button!==0)return;registerStreamingEmailTap(e,true);};
+      const startStreamingEmailHold=e=>{
+        if(e?.button!==undefined&&e.button!==0)return;
+        emailHoldOpened=false;emailPointerMoved=false;clearEmailHold();
+        emailPointerStart=(Number.isFinite(e?.clientX)&&Number.isFinite(e?.clientY))?{x:e.clientX,y:e.clientY,id:e.pointerId}:null;
+        if(e?.pointerId!==undefined&&e?.currentTarget?.setPointerCapture){try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}}
+        emailHoldTimer=setTimeout(()=>{emailHoldTimer=0;emailHoldOpened=true;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;openVaultStreamingEmailStore(true);},1350);
+      };
+      const moveStreamingEmailHold=e=>{
+        if(!emailPointerStart||!Number.isFinite(e?.clientX)||!Number.isFinite(e?.clientY))return;
+        if(Math.hypot(e.clientX-emailPointerStart.x,e.clientY-emailPointerStart.y)>24){emailPointerMoved=true;clearEmailHold();}
+      };
+      const cancelStreamingEmailHold=e=>{clearEmailHold();emailPointerStart=null;emailPointerMoved=false;if(e?.pointerId!==undefined&&e?.currentTarget?.releasePointerCapture){try{if(e.currentTarget.hasPointerCapture?.(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId);}catch(_){}}};
+      const finishStreamingEmailTap=e=>{
+        clearEmailHold();
+        if(e?.pointerId!==undefined&&e?.currentTarget?.releasePointerCapture){try{if(e.currentTarget.hasPointerCapture?.(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId);}catch(_){}}
+        emailPointerStart=null;
+        if(emailPointerMoved){emailPointerMoved=false;e?.preventDefault?.();e?.stopPropagation?.();return;}
+        if(emailHoldOpened){emailHoldOpened=false;e?.preventDefault?.();e?.stopPropagation?.();return;}
+        registerStreamingEmailTap(e);
+      };
+      const pointerEventsAvailable=typeof window!=='undefined'&&'PointerEvent' in window;
+      if(pointerEventsAvailable){
+        // Physical iPad path: count finger/stylus pointer-up directly. Safari's delayed
+        // synthetic click is suppressed rather than being trusted as the gesture source.
+        streamingEmailUnlock.onpointerdown=startStreamingEmailHold;
+        streamingEmailUnlock.onpointermove=moveStreamingEmailHold;
+        streamingEmailUnlock.onpointerup=finishStreamingEmailTap;
+        streamingEmailUnlock.onpointercancel=cancelStreamingEmailHold;
+        streamingEmailUnlock.onpointerleave=null;
+        streamingEmailUnlock.onclick=e=>{e?.preventDefault?.();e?.stopPropagation?.();};
       }else{
-        streamingEmailUnlock.ontouchstart=e=>registerStreamingEmailTap(e,true);
+        // Legacy/browser fallback: ordinary click counting, plus touch hold support.
+        streamingEmailUnlock.onclick=registerStreamingEmailTap;
+        streamingEmailUnlock.ontouchstart=startStreamingEmailHold;
+        streamingEmailUnlock.ontouchend=finishStreamingEmailTap;
+        streamingEmailUnlock.ontouchcancel=clearEmailHold;
       }
-      streamingEmailUnlock.onclick=e=>registerStreamingEmailTap(e,false);
       streamingEmailUnlock.ondblclick=e=>{if(e.cancelable)e.preventDefault();e.stopPropagation();};
-      // Button keyboard activation naturally produces one click. Ignore held-key repeats
-      // without adding a second keyboard tap counter.
-      streamingEmailUnlock.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' '))return;if(e.repeat&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();}};
+      streamingEmailUnlock.onkeydown=e=>{if(!e.repeat&&(e.key==='Enter'||e.key===' ')){registerStreamingEmailTap(e);}else if(e.repeat&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();}};
     }
     const closeVaultStreamingEmail=()=>{const returnToStreaming=vaultStreamingOpen;vaultStreamingEmailOpen=false;vaultStreamingEmailTapCount=0;vaultStreamingEmailLastTap=0;vaultStreamingGestureGuardUntil=0;render();requestAnimationFrame(()=>document.querySelector(returnToStreaming?'[data-streaming-email-unlock]':'[data-vault-streaming-open]')?.focus());};
     document.querySelectorAll('[data-streaming-email-close]').forEach(button=>button.onclick=e=>{e.stopPropagation();closeVaultStreamingEmail();});
@@ -8757,47 +8939,53 @@ document.addEventListener('pointerup',finishExpandedPointerPan);
 document.addEventListener('pointercancel',finishExpandedPointerPan);
 document.addEventListener('lostpointercapture',finishExpandedPointerPan);
 
-function globalSearchMatches(query=globalSearchQuery){
-  const q=canonicalIdentityKey(query);
-  if(!q) return [];
-  const found=[];
+function globalSearchIndexSnapshot(){
+  const referenceDate=itineraryReferenceDate(),refs={
+    state,reservations:state.reservations,itinerary:state.itinerary,journeys:state.journeys,events:state.events,expenses:state.expenses,checklist:state.checklist,accounts:state.accounts,vault:state.vault,
+    reservationLength:Array.isArray(state.reservations)?state.reservations.length:0,itineraryLength:Array.isArray(state.itinerary)?state.itinerary.length:0,journeyLength:Array.isArray(state.journeys)?state.journeys.length:0,eventLength:Array.isArray(state.events)?state.events.length:0,expenseLength:Array.isArray(state.expenses)?state.expenses.length:0,checklistLength:Array.isArray(state.checklist)?state.checklist.length:0,accountLength:Array.isArray(state.accounts)?state.accounts.length:0,vaultLength:Array.isArray(state.vault)?state.vault.length:0,
+    revision:persistedStateRevision,referenceDate,vaultUnlocked:Boolean(vaultUnlocked)
+  };
+  const cached=globalSearchIndexCache;
+  if(cached&&Object.keys(refs).every(key=>cached.refs[key]===refs[key]))return cached.rows;
+  const rows=[];
   const add=(label,searchText,target,edit='',displaySub='')=>{
     const labelText=String(label||''),indexText=String(searchText||''),subText=String(displaySub||indexText),labelLower=canonicalSearchText(labelText),text=canonicalSearchText(`${labelText} ${indexText}`);
-    if(!text.includes(q))return;
-    const words=text.split(/\s+/).filter(Boolean),labelParts=labelLower.split(/[,·|/–—-]/).map(part=>part.trim()).filter(Boolean),score=labelLower===q?0:labelParts.includes(q)?.5:labelLower.startsWith(q)?1:words.some(word=>word===q)?2:2+Math.min(4,Math.max(0,text.indexOf(q))/10000);
-    found.push({label:labelText,sub:subText,target,edit,score});
+    rows.push({label:labelText,sub:subText,target,edit,labelLower,text});
   };
+  // Global Search spans several screens. Build ownership/linkage indexes once per data
+  // revision/date and reuse the completed text index across successive keystrokes.
+  const itineraryRows=Array.isArray(state.itinerary)?state.itinerary:[],itineraryById=new Map(itineraryRows.map(entry=>[String(entry?.id||''),entry]).filter(([id])=>id));
+  const itineraryOwnerMap=itineraryOwnedDayMap(itineraryRows),itineraryOwnedDates=itineraryOwnedDateIndex(itineraryOwnerMap),itineraryReservationIndex=itineraryLinkedReservationIndex(itineraryRows,state.reservations);
+  const journeyRows=completedJourneys(),journeyOwnedCounts=journeyOwnedDayCounts(journeyRows),journeyReservations=journeyReservationIndex(itineraryReservationIndex);
   state.reservations.forEach(x=>{
-    const operational=ALL_RESERVATION_TRAVEL_DETAIL_FIELDS.map(name=>x?.[name]).filter(Boolean).join(' ');
-    const payment=[x.paymentDueDate,x.cancellationDeadline,x.refundPolicy].filter(Boolean).join(' ');
-    const searchableStartDate=reservationUserDate(x);
-    const displayDate=searchableStartDate?dateFmt(searchableStartDate):'No target date';
-    add(x.title,`${reservationSearchText(x)} ${operational} ${payment} ${searchDateTerms(searchableStartDate,x.endDate,x.paymentDueDate,x.cancellationDeadline)}`,'reservations',`reservations:${x.id}`,`${reservationDashboardCategory(x)} · ${reservationDestination(x)} · ${displayDate} · ${x.status}`);
+    const searchableStartDate=reservationUserDate(x),displayDate=searchableStartDate?dateFmt(searchableStartDate):'No target date';
+    add(x.title,reservationSearchTextRaw(x,itineraryById),'reservations',`reservations:${x.id}`,`${reservationDashboardCategory(x)} · ${reservationDestinationText(x,itineraryById)} · ${displayDate} · ${x.status}`);
   });
-  state.itinerary.forEach(x=>add(itineraryTitle(x),itinerarySearchText(x),'itinerary',`itinerary:${x.id}`,`${x.coverageType==='Intentional Gap'?'Intentional gap':(x.type||'Standard')} · ${dateFmt(x.arrival)} – ${dateFmt(x.departure)}`));
-  completedJourneys().forEach(x=>add(x.title,journeySearchText(x),'journeys',`journeys:${x.id}`,`${journeyCountry(x)||'Country not set'} · ${dateFmt(x.start)} – ${dateFmt(x.end)} · ${x.type||'Journey'}`));
+  itineraryRows.forEach(x=>add(itineraryTitle(x),itinerarySearchText(x,itineraryOwnerMap,itineraryReservationIndex,itineraryOwnedDates),'itinerary',`itinerary:${x.id}`,`${x.coverageType==='Intentional Gap'?'Intentional gap':(x.type||'Standard')} · ${dateFmt(x.arrival)} – ${dateFmt(x.departure)}`));
+  journeyRows.forEach(x=>add(x.title,journeySearchText(x,journeyOwnedCounts,journeyReservations),'journeys',`journeys:${x.id}`,`${journeyCountry(x)||'Country not set'} · ${dateFmt(x.start)} – ${dateFmt(x.end)} · ${x.type||'Journey'}`));
   if(vaultUnlocked)state.vault.forEach(x=>add(x.name,vaultSearchText(x),'vault',`vault:${x.id}`,`${vaultTypeLabel(x.type)} · ${x.owner||'Shared'}${x.country?` · ${x.country}`:''}`));
   state.events.forEach(x=>add(x.title,`${searchDateTerms(x.date)} ${x.time||''} ${x.notes||''}`,'calendar',`events:${x.id}`,`${dateFmt(x.date)} · ${x.time||'All day'} · Personal`));
-  state.expenses.forEach(x=>{const local=Number(x.amount||0),aud=local*Number(x.rate||1);add(x.category,`${searchDateTerms(x.date)} ${local} ${Number.isFinite(local)?local.toFixed(2):''} ${aud} ${Number.isFinite(aud)?aud.toFixed(2):''} ${x.currency||''} ${x.symbol||''} ${x.notes||''}`,'budget',`expenses:${x.id}`,`${dateFmt(x.date)} · ${x.currency||'AUD'} ${Number.isFinite(local)?local.toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2}):'0.00'} · ${moneyCents(aud)} AUD`);});
+  state.expenses.forEach(x=>{const local=Number(x.amount||0),aud=local*Number(x.rate||1);add(x.category,`${searchDateTerms(x.date)} ${local} ${Number.isFinite(local)?local.toFixed(2):''} ${aud} ${Number.isFinite(aud)?aud.toFixed(2):''} ${x.currency||''} ${x.symbol||''} ${x.notes||''}`,'budget',`expenses:${x.id}`,`${dateFmt(x.date)} · ${x.currency||'AUD'} ${Number.isFinite(local)?LOCAL_NUMBER_CENTS_FORMAT.format(local):'0.00'} · ${moneyCents(aud)} AUD`);});
   state.checklist.filter(x=>x.list!=='Destination'||destinationChecklistIsActive()).forEach(x=>add(x.task,`${x.list||''} ${x.phase||''} ${searchDateTerms(x.due)} ${x.notes||''}`,'checklist',`checklist:${x.id}`,`${x.list||'Checklist'} · ${x.due?dateFmt(x.due):'No due date'} · ${x.done?'Done':'Pending'}`));
-  state.accounts.forEach(x=>add(x.name,`${Number(x.balance||0)} ${Number(x.balance||0).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2})} AUD account balance`,'budget',`accounts:${x.id}`,`AUD balance · ${moneyCents(Number(x.balance||0))}`));
-  // Current Stay is a derived mirror of the authoritative itinerary. Do not index the
-  // same active Destination/Intentional Gap twice. When there is no active itinerary
-  // segment, expose only a neutral journey-planning status row (never a fake AUD
-  // "current destination"). The shared Current Stay router will browse/add only when legal.
+  state.accounts.forEach(x=>add(x.name,`${Number(x.balance||0)} ${LOCAL_NUMBER_CENTS_FORMAT.format(Number(x.balance||0))} AUD account balance`,'budget',`accounts:${x.id}`,`AUD balance · ${moneyCents(Number(x.balance||0))}`));
   if(!currentItinerarySegment()){
     const reference=itineraryReferenceDate(),band=travelBandForDate(reference);
     if(band.status==='before-journey') add('Journey not started',`Journey starts ${dateFmt(state.settings.journeyStart)} · planning status`,'itinerary','stay');
     else if(band.status==='after-journey') add('Planning horizon ended',`${band.statusLabel} · journey status`,'itinerary','stay');
     else add('Unplanned itinerary gap',`${dateFmt(reference)} · planning required · current itinerary status`,'itinerary','stay');
   }
-  // The Vault intentionally auto-locks when leaving its screen, so Home must not
-  // expose protected record names while locked. Reserve one Global Search result for
-  // a safe hand-off into The Vault instead: the query is carried across, the records
-  // panel is opened, and the actual matches appear only after the user unlocks Vault.
-  const protectedVaultHandoff=!vaultUnlocked&&Array.isArray(state.vault)&&state.vault.length>0;
-  const resultLimit=protectedVaultHandoff?7:8;
-  const rows=found.sort((a,b)=>a.score-b.score||a.label.localeCompare(b.label)).slice(0,resultLimit).map(({score,...row})=>row);
+  globalSearchIndexCache={refs,rows};return rows;
+}
+function globalSearchMatches(query=globalSearchQuery){
+  const q=canonicalIdentityKey(query);if(!q)return [];
+  const found=[];
+  globalSearchIndexSnapshot().forEach(row=>{
+    if(!row.text.includes(q))return;
+    const words=row.text.split(/\s+/).filter(Boolean),labelParts=row.labelLower.split(/[,·|/–—-]/).map(part=>part.trim()).filter(Boolean),score=row.labelLower===q?0:labelParts.includes(q)?.5:row.labelLower.startsWith(q)?1:words.some(word=>word===q)?2:2+Math.min(4,Math.max(0,row.text.indexOf(q))/10000);
+    found.push({...row,score});
+  });
+  const protectedVaultHandoff=!vaultUnlocked&&Array.isArray(state.vault)&&state.vault.length>0,resultLimit=protectedVaultHandoff?7:8;
+  const rows=found.sort((a,b)=>a.score-b.score||a.label.localeCompare(b.label)).slice(0,resultLimit).map(({score,labelLower,text,...row})=>row);
   if(protectedVaultHandoff)rows.push({label:'Search The Vault',sub:'Unlock The Vault to search protected local records.',target:'vault',edit:'vault-search'});
   return rows;
 }
@@ -8899,7 +9087,7 @@ function bindReservations(){
   bindReservationControl('#reservation-completed','onchange',e=>{setReservationShowCompleted(e.target.checked);render();});
   const toolsPanel=$('#reservation-tools-panel'); if(toolsPanel) toolsPanel.ontoggle=()=>{reservationToolsOpen=toolsPanel.open;};
   const upcomingPanel=$('#reservation-upcoming-panel'); if(upcomingPanel) upcomingPanel.ontoggle=()=>{reservationUpcomingOpen=upcomingPanel.open;};
-  const completedPanel=$('#reservation-completed-panel'); if(completedPanel) completedPanel.ontoggle=()=>{const wasAllConfirmed=!reservationOnlyUpcoming&&completedPanel.open;setReservationShowCompleted(completedPanel.open);const checkbox=$('#reservation-completed');if(checkbox)checkbox.checked=reservationShowCompleted;if(wasAllConfirmed){reservationPage=1;render();}};
+  const completedPanel=$('#reservation-completed-panel'); if(completedPanel) completedPanel.ontoggle=()=>{const opening=completedPanel.open;const wasAllConfirmed=!reservationOnlyUpcoming&&opening;setReservationShowCompleted(opening);const checkbox=$('#reservation-completed');if(checkbox)checkbox.checked=reservationShowCompleted;if(opening||wasAllConfirmed){reservationPage=1;render();}};
   const viewSwitch=$('#reservation-view-switch'); if(viewSwitch) viewSwitch.onclick=()=>{setReservationShowCompleted(!reservationShowCompleted);render();requestAnimationFrame(()=>document.querySelector('.reservation-table-panel')?.scrollIntoView({behavior:'smooth',block:'start'}));};
   const clearFilters=$('#reservation-clear-filters');
   if(clearFilters) clearFilters.onclick=()=>{
@@ -8998,8 +9186,8 @@ function budgetVerificationAdvisories(){
   return advisories;
 }
 
-function budgetVerificationIssues(){
-  syncLinkedState();
+function budgetVerificationIssues(options={}){
+  if(!options?.skipSync)syncLinkedState();
   const issues=[],annualBudget=annualBudgetForYear(),annualBudgetSet=annualBudgetConfigured(),activeDestination=activeDestinationItinerary(),destinationBudgetSet=itineraryBudgetConfigured(activeDestination);
   if(!Number.isFinite(staySpendLocal())||!Number.isFinite(annualSpendAud()))issues.push('Linked totals could not be calculated.');
   if(Number(state.currentStay.rate)<=0)issues.push('Exchange rate must be above zero.');
@@ -9172,7 +9360,7 @@ function checklistHealthIssues(){
   if(requiredOpen.length&&!overdue.length)issues.push(`${requiredOpen.length} required checklist task${requiredOpen.length===1?' is':'s are'} still incomplete for the next move.`);
   return issues;
 }
-function calendarHealthIssues(){
+function calendarHealthIssues(context=null){
   const issues=[];
   state.events.forEach((event,index)=>{
     if(!String(event.title||'').trim())issues.push(`Calendar note ${index+1} is missing its title.`);
@@ -9186,12 +9374,12 @@ function calendarHealthIssues(){
   // Calendar month views render future itinerary gaps as red UNPLANNED days. Check the
   // same supported 18-month planning window so those visible red days cannot be hidden
   // behind a green Calendar health row simply because today itself is covered.
-  const futureGaps=itineraryCoverage(reference,18).gaps.filter(gap=>gap.start>reference);
+  const futureCoverage=context?.coverage18?context.coverage18():itineraryCoverage(reference,18),futureGaps=futureCoverage.gaps.filter(gap=>gap.start>reference);
   if(futureGaps.length)issues.push(`${futureGaps.length} future unplanned Calendar gap${futureGaps.length===1?'':'s'} found in the next 18 months.`);
   try{calendarAllItems();}catch(error){issues.push(`Calendar could not build its event list: ${error.message}.`);}
   return issues;
 }
-function itineraryHealthIssues(){
+function itineraryHealthIssues(context=null){
   const issues=[];
   state.itinerary.forEach((entry,index)=>{
     if(!validISODate(entry.arrival)||!validISODate(entry.departure)||entry.departure<entry.arrival)issues.push(`Itinerary ${index+1} has invalid dates.`);
@@ -9204,7 +9392,7 @@ function itineraryHealthIssues(){
   // Forward Coverage can be expanded to 18 months. Central App Health must cover that
   // full supported planning window so amber/red destination cards do not become invisible
   // simply because they sit beyond the old 12-month checker boundary.
-  const coverage=itineraryCoverage(itineraryReferenceDate(),18);
+  const coverage=context?.coverage18?context.coverage18():itineraryCoverage(itineraryReferenceDate(),18);
   if(coverage.gaps.length)issues.push(`${coverage.gaps.length} unplanned itinerary gap${coverage.gaps.length===1?'':'s'} found in the next 18 months.`);
   if(coverage.missing.length)issues.push(`${coverage.missing.length} planned destination${coverage.missing.length===1?' has':'s have'} no linked accommodation.`);
   const accommodationToBook=coverage.entries.filter(entry=>itineraryAccommodationStatus(entry,coverage.start,coverage.end).key==='to-book');
@@ -9215,8 +9403,8 @@ function itineraryHealthIssues(){
   if(budgetNotSet.length)issues.push(`${budgetNotSet.length} planned destination${budgetNotSet.length===1?' has':'s have'} no Destination Budget set.`);
   return issues;
 }
-function homeHealthIssues(){
-  const issues=[],annualBudget=annualBudgetForYear(),annualBudgetSet=annualBudgetConfigured(),activeDestination=activeDestinationItinerary();
+function homeHealthIssues(context=null){
+  const issues=[],annualBudget=annualBudgetForYear(),annualBudgetSet=annualBudgetConfigured(),activeDestination=activeDestinationItinerary(),coverage18=context?.coverage18?context.coverage18():null;
   if(!Number.isFinite(staySpendAud())||!Number.isFinite(annualSpendAud()))issues.push('Home budget totals could not be calculated.');
   // Home has prominent budget cards with explicit NOT SET / OVER states. These are visible
   // action states even when the dismissible Alerts panel happens to be empty, so mirror
@@ -9245,9 +9433,9 @@ function homeHealthIssues(){
   // The Home hero continues to show NO ACTIVE DESTINATION / PLANNING REQUIRED after a gap
   // alert is dismissed. Health follows the underlying planning state, not alert visibility.
   if(currentPlanningGapNeedsAction())issues.push(`Home has no active destination for ${dateFmt(itineraryReferenceDate())}.`);
-  const forwardReadiness=forwardPlanningReadiness(itineraryReferenceDate(),18);
+  const forwardReadiness=forwardPlanningReadiness(itineraryReferenceDate(),18,coverage18);
   if(forwardReadiness.needsReview)issues.push('Forward itinerary readiness needs attention on Home.');
-  try{const attention=computedAlerts().filter(alert=>alert&&['red','yellow'].includes(alert.level));if(attention.length)issues.push(`${attention.length} visible Home alert${attention.length===1?' needs':'s need'} attention.`);}catch(error){issues.push(`Home alerts could not be calculated: ${error.message}.`);}
+  try{const attention=computedAlerts(coverage18).filter(alert=>alert&&['red','yellow'].includes(alert.level));if(attention.length)issues.push(`${attention.length} visible Home alert${attention.length===1?' needs':'s need'} attention.`);}catch(error){issues.push(`Home alerts could not be calculated: ${error.message}.`);}
   return issues;
 }
 const APP_HEALTH_SECTION_META=[
@@ -9261,17 +9449,40 @@ const APP_HEALTH_SECTION_META=[
   {key:'vault',label:'The Vault',screen:'vault'},
   {key:'settings',label:'App & Data',screen:'settings'}
 ];
-function screenHealthIssuesForKey(key){
-  if(key==='dashboard')return homeHealthIssues();
-  if(key==='budget')return [...budgetVerificationIssues(),...budgetVerificationAdvisories()];
+function createAppHealthContext(){
+  let cachedCoverage18=null;
+  return {
+    preSynced:true,
+    userFacing:true,
+    coverage18(){if(!cachedCoverage18)cachedCoverage18=itineraryCoverage(itineraryReferenceDate(),18);return cachedCoverage18;}
+  };
+}
+function appHealthLightDataIntegrityIssues(){
+  // The startup gate and every ordinary Save/Restore/Backup perform the exhaustive
+  // canonical/semantic validation. The user-facing App Health pass only needs a fast
+  // structural guard here because the individual screen checks already cover live
+  // routing, totals, reservation, itinerary, history, checklist and Vault behaviour.
+  const issues=[];
+  if(startupStorageIssueKind)issues.push(startupStorageIssue||'Saved local data needs recovery.');
+  if(!validISODate(state.settings?.journeyStart))issues.push('Journey start date is invalid.');
+  const collections=['expenses','reservations','events','journeys','itinerary','checklist','vault','streamingCodes','alerts','accounts'],ids=new Set();
+  for(const key of collections){
+    const rows=state[key];if(!Array.isArray(rows)){issues.push(`${key} data collection is invalid.`);continue;}
+    for(const record of rows){const id=String(record?.id||'');if(!id)continue;if(ids.has(id))issues.push('Collections contain a duplicate record identifier.');ids.add(id);}
+  }
+  return [...new Set(issues)];
+}
+function screenHealthIssuesForKey(key,context=null){
+  if(key==='dashboard')return homeHealthIssues(context);
+  if(key==='budget')return [...budgetVerificationIssues({skipSync:Boolean(context?.preSynced)}),...budgetVerificationAdvisories()];
   if(key==='reservations')return reservationHealthIssues();
-  if(key==='itinerary')return itineraryHealthIssues();
-  if(key==='calendar')return calendarHealthIssues();
+  if(key==='itinerary')return itineraryHealthIssues(context);
+  if(key==='calendar')return calendarHealthIssues(context);
   if(key==='journeys')return journeyCheckResults().filter(check=>!check.ok).map(check=>check.detail||check.label);
   if(key==='checklist')return checklistHealthIssues();
   if(key==='vault')return vaultIssueList();
   if(key==='settings'){
-    const issues=[...semanticIntegrityIssues()],backup=backupReminderStatus();
+    const issues=context?.userFacing?[...appHealthLightDataIntegrityIssues()]:[...semanticIntegrityIssues()],backup=backupReminderStatus();
     // BACKUP & RESTORE is a prominent Settings readiness surface. Missing, overdue or
     // future-dated backup state must reach App Health rather than showing BACKUP REMINDER
     // beside a green App & Data result.
@@ -9317,7 +9528,8 @@ function appHealthWidget(){
     const summary=!checked?'Waiting for the App Health check.':issues.length?`${issues.length} item${issues.length===1?'':'s'} need attention.`:'No problems found.';
     const detailHeading=!checked?'NOT CHECKED':issues.length?'WHAT NEEDS ATTENTION':'CHECK RESULT';
     const detailBody=!checked?'<p>Run <b>CHECK THE WHOLE APP</b> to populate this section.</p>':issues.length?`<ul>${issues.map(issue=>`<li>${esc(issue)}</li>`).join('')}</ul>`:`<p>${esc(section.label)} passed the last App Health check. No problems were found.</p>`;
-    return `<details class="app-health-row ${tone}" data-health-section="${section.key}"><summary><span class="app-health-row-icon">${!checked?'○':issues.length?'!':'✓'}</span><span class="app-health-row-copy"><b>${esc(section.label)}</b><small>${esc(summary)}</small></span><strong>${label}</strong><i aria-hidden="true">⌄</i></summary><div class="app-health-row-details"><b>${detailHeading}</b>${detailBody}</div></details>`;
+    const healthIcon={dashboard:'home',budget:'budget',reservations:'flight',itinerary:'pin',calendar:'calendar',journeys:'journeys',checklist:'checklist',vault:'vault',settings:'settings'}[section.key]||'settings';
+    return `<details class="app-health-row ${tone}" data-health-section="${section.key}"><summary><span class="app-health-row-icon" aria-hidden="true">${iconSvg(healthIcon)}</span><span class="app-health-row-copy"><b>${esc(section.label)}</b><small>${esc(summary)}</small></span><strong>${label}</strong><i aria-hidden="true">⌄</i></summary><div class="app-health-row-details"><b>${detailHeading}</b>${detailBody}</div></details>`;
   }).join('');
   return `<section class="app-health-widget ${allGood?'is-ok':checked&&attentionAreas?'has-attention':'is-unchecked'}" aria-label="App Health"><header class="app-health-head"><div class="app-health-ambulance" aria-hidden="true">🚑</div><div><small>ONE SIMPLE CHECK FOR THE WHOLE APP</small><h2>APP HEALTH</h2><p>${esc(subline)}</p></div><div class="app-health-overall"><span>${allGood?'✓':checked&&attentionAreas?'!':'○'}</span><b>${esc(headline)}</b><small>${checked?`Last checked ${esc(state.settings.lastAppHealthAt)}`:'Not checked yet'}</small></div></header><div class="app-health-how"><span><b>1</b> Tap the button</span><span><b>2</b> Green = all good</span><span><b>3</b> Amber = expand for details</span></div><button id="verify" class="app-health-run primary" type="button">CHECK THE WHOLE APP</button><div id="app-health-result" class="app-health-result" aria-live="polite"></div><div class="app-health-screen-list">${rows}</div></section>`;
 }
@@ -9342,6 +9554,11 @@ async function runAppHealth(){
   appHealthRunActive=true;
   const trigger=$('#verify');if(trigger){trigger.disabled=true;trigger.setAttribute('aria-busy','true');}
   let originalState=null,originalScreen=screen,liveSections=[],deepIssues=[];
+  // Batch 1216: the Settings screen has already rendered through syncLinkedState(). Reuse
+  // one 18-month coverage snapshot across Home/Itinerary/Calendar and avoid re-running the
+  // same reconciliation inside Budget. This keeps the physical iPad responsive while the
+  // user-facing checker walks the same live data.
+  const healthContext=createAppHealthContext();
   const healthStateRevision=persistedStateRevision,healthDataGeneration=dataReplacementGeneration;
   const appHealthSourceChanged=()=>persistedStateRevision!==healthStateRevision||dataReplacementGeneration!==healthDataGeneration;
   try{
@@ -9355,7 +9572,7 @@ async function runAppHealth(){
         await appHealthYield();
         if(appHealthSourceChanged())return lastAppHealthRunIssues;
         let issues=[];
-        try{issues=screenHealthIssuesForKey(section.key);}catch(error){issues=[`${section.label} check could not run: ${error.message||'unknown error'}.`];}
+        try{issues=screenHealthIssuesForKey(section.key,healthContext);}catch(error){issues=[`${section.label} check could not run: ${error.message||'unknown error'}.`];}
         liveSections.push({...section,issues:[...new Set(issues)]});
       }
       setAppHealthProgress('Checking local storage and offline readiness…');
@@ -9364,19 +9581,23 @@ async function runAppHealth(){
       try{localStorage.setItem('__tcc_health_test','1');if(localStorage.getItem('__tcc_health_test')!=='1')deepIssues.push('Local storage did not preserve a test value.');}catch{deepIssues.push('Local storage is unavailable.');}finally{try{localStorage.removeItem('__tcc_health_test');}catch{}}
       {const offlineIssue=serviceWorkerStatusSummary().issue;if(offlineIssue)deepIssues.push(offlineIssue);}
 
-      const renderIssues=[];
-      for(const label of ['Home','Budget','Reservations','Itinerary','Calendar','Journey History','Checklist','The Vault','Settings']){
-        setAppHealthProgress(`Checking ${label} screen…`);
-        await appHealthYield();
-        if(appHealthSourceChanged())return lastAppHealthRunIssues;
-        try{renderIssues.push(...screenRenderIntegrityIssues(label));}catch(error){renderIssues.push(`${label} screen rendering failed: ${error.message}.`);}
-      }
-      try{const renderMerge=mergeScreenRenderHealthIssues(liveSections,renderIssues);liveSections=renderMerge.sections;deepIssues.push(...renderMerge.unmatched);}catch(error){deepIssues.push(`A screen could not be checked: ${error.message}.`);}
+      // User-facing App Health intentionally stops at live screen/data checks.
+      // The exhaustive hidden/expanded/editor render audit remains in the developer
+      // validation suite; running it here made the physical iPad appear frozen.
 
       setAppHealthProgress('Checking backup and data integrity…');
       await appHealthYield();
       if(appHealthSourceChanged())return lastAppHealthRunIssues;
-      try{const backupIssues=validateBackup(canonicalBackupPayload(itineraryReferenceDate()));if(backupIssues.length)deepIssues.push('Backup & restore data needs attention.');}catch{deepIssues.push('Backup & restore data could not be checked.');}
+      try{
+        // Every launch and successful Save already runs the full canonical validator, and
+        // the actual Backup action validates again before a file is created. Repeating that
+        // expensive whole-dataset validator here caused another visible iPad stall. App
+        // Health only needs to prove that the currently verified state can still form the
+        // canonical portable payload; Backup remains the authoritative full export check.
+        const payload=canonicalBackupPayload(itineraryReferenceDate()),unknownIssue=canonicalBackupUnknownFieldIssue(payload);
+        if(unknownIssue||payload?._tccBackupFormat!==TCC_BACKUP_FORMAT||payload?._tccBackupSchema!==TCC_BACKUP_SCHEMA||payload?.settings?._tccBackupSchema!==TCC_BACKUP_SCHEMA)deepIssues.push('Backup & restore data needs attention.');
+        else JSON.stringify(payload);
+      }catch{deepIssues.push('Backup & restore data could not be checked.');}
       {const backupIssue=backupReminderHealthIssue();if(backupIssue)deepIssues.push(backupIssue);}
 
       setAppHealthProgress('Checking app files…');
@@ -9621,7 +9842,8 @@ function canonicalBackupRoundTripIssue(data){
   if(typeof data.version!=='string'||!data.version.trim()||data.version!==data.version.trim())return 'Backup build identity is invalid.';
   const unknownIssue=canonicalBackupUnknownFieldIssue(data);if(unknownIssue)return unknownIssue;
   const source=clone(data);delete source._tccBackupFormat;delete source._tccBackupSchema;if(source.settings)delete source.settings._tccBackupSchema;
-  const currentState=state,currentTestClockEnabled=internalTestClockEnabled,currentTestClock=testDeviceDateTimeOverride;
+  const currentState=state,currentTestClockEnabled=internalTestClockEnabled,currentTestClock=testDeviceDateTimeOverride,
+    currentJourneySpendCache=journeySpendCache,currentJourneyDestinationSpendCache=journeyDestinationSpendCache,currentJourneySpendDirty=journeySpendDirty;
   try{
     // Canonicality belongs to the moment the backup was created, not the later day it is
     // restored. Replaying a saved snapshot against today's device date can legitimately
@@ -9637,7 +9859,16 @@ function canonicalBackupRoundTripIssue(data){
     const comparableSource=alignCanonicalRecoveryTimestamps(legacyRecoveryMigrationComparable(source,restored),restored);
     if(stableCanonicalJson(comparableSource)!==stableCanonicalJson(restored))return 'Current-format backup is not canonical and would change data during restore.';
   }catch{return 'Current-format backup could not be verified without changing data.';}
-  finally{state=currentState;internalTestClockEnabled=currentTestClockEnabled;testDeviceDateTimeOverride=currentTestClock;invalidateItineraryOwnerCache();journeySpendDirty=true;journeySpendCache=null;}
+  finally{
+    state=currentState;internalTestClockEnabled=currentTestClockEnabled;testDeviceDateTimeOverride=currentTestClock;
+    invalidateItineraryOwnerCache();
+    // Canonical round-trip verification temporarily swaps the whole app state. Restore the
+    // caller's already-verified Journey caches instead of poisoning the live state as dirty.
+    // If the caller was dirty before validation, retain that state exactly.
+    journeySpendCache=currentJourneySpendCache;
+    journeyDestinationSpendCache=currentJourneyDestinationSpendCache;
+    journeySpendDirty=currentJourneySpendDirty;
+  }
   return '';
 }
 function validateBackup(data){
@@ -9877,7 +10108,7 @@ function validateBackup(data){
   (Array.isArray(data.expenses)?data.expenses:[]).forEach((x,i)=>{if(typeof x.date!=='string'||!validISODate(x.date))errors.push(`Expense ${i+1} date is invalid.`);if(typeof x.category!=='string'||!x.category.trim())errors.push(`Expense ${i+1} category is missing or invalid.`);if(x.notes!==undefined&&typeof x.notes!=='string')errors.push(`Expense ${i+1} notes are invalid.`);if(!validBackupNumericScalar(x.amount)||!Number.isFinite(Number(x.amount))||Number(x.amount)<=0||Number(x.amount)>1_000_000_000)errors.push(`Expense ${i+1} amount is invalid.`);if(!validBackupNumericScalar(x.rate)||!Number.isFinite(Number(x.rate))||Number(x.rate)<=0||Number(x.rate)>1_000_000)errors.push(`Expense ${i+1} rate is invalid.`);if(x.currency!==undefined&&(typeof x.currency!=='string'||!/^[A-Za-z]{3}$/.test(x.currency)))errors.push(`Expense ${i+1} currency is invalid.`);if(x.symbol!==undefined&&(typeof x.symbol!=='string'||x.symbol.length>8))errors.push(`Expense ${i+1} currency symbol is invalid.`);if(x.verified!==undefined&&!validBackupBool(x.verified))errors.push(`Expense ${i+1} verified setting is invalid.`);const owner=backupDestinationForDate(x.date),legacyOwner=!owner?backupLegacyJourneyForDate(x.date):null;if(owner&&Number.isFinite(Number(x.rate))&&Math.abs(Number(x.rate)-Number(owner.rate))>.000000001)errors.push(`Expense ${i+1} exchange rate does not match its itinerary stay.`);if(owner&&x.currency!==undefined&&/^[A-Za-z]{3}$/.test(String(x.currency||''))&&currencyCode(x.currency,'AUD')!==currencyCode(owner.currency,'AUD'))errors.push(`Expense ${i+1} currency does not match its itinerary stay.`);if(owner&&Object.prototype.hasOwnProperty.call(x,'symbol')&&typeof x.symbol==='string'&&currencySymbol(x.symbol,'')!==currencySymbol(owner.symbol,currencyDetails(currencyCode(owner.currency,'AUD')).symbol||''))errors.push(`Expense ${i+1} currency symbol does not match its itinerary stay.`);if(!owner&&!legacyOwner&&Number.isFinite(Number(x.rate))&&Math.abs(Number(x.rate)-1)>.000000001)errors.push(`Expense ${i+1} on a non-destination date must use AUD at rate 1.`);if(!owner&&!legacyOwner&&x.currency!==undefined&&/^[A-Za-z]{3}$/.test(String(x.currency||''))&&currencyCode(x.currency,'AUD')!=='AUD')errors.push(`Expense ${i+1} on a non-destination date must use AUD.`);if(!owner&&!legacyOwner&&Object.prototype.hasOwnProperty.call(x,'symbol')&&typeof x.symbol==='string'&&currencySymbol(x.symbol,'')!=='$')errors.push(`Expense ${i+1} on a non-destination date must use the AUD currency symbol.`);});
   const backupReservationRefs=new Set();
   const backupReservationLogicalKeys=new Set();
-  (Array.isArray(data.reservations)?data.reservations:[]).forEach((x,i)=>{const referenceKey=canonicalIdentityKey(x?.reference);if(referenceKey){if(backupReservationRefs.has(referenceKey))errors.push('The backup contains duplicate reservation booking references.');backupReservationRefs.add(referenceKey);}if(typeof x.date!=='string'||!validISODate(x.date))errors.push(`Reservation ${i+1} date is invalid.`);if(typeof x.title!=='string'||!x.title.trim())errors.push(`Reservation ${i+1} title is missing or invalid.`);for(const [field,label] of [['destination','destination'],['notes','notes'],['operator','operator'],['serviceNumber','service number'],['reference','booking reference'],['departureLocation','departure location'],['arrivalLocation','arrival location'],['terminal','terminal'],['seat','seat'],['baggage','baggage'],['carriage','carriage'],['shipName','ship name'],['cabin','cabin'],['pickupLocation','pickup location'],['returnLocation','return location'],['propertyAddress','property address'],['propertyContact','property contact'],['venue','venue']])if(x[field]!==undefined&&typeof x[field]!=='string')errors.push(`Reservation ${i+1} ${label} is invalid.`);if(x.type!==undefined&&typeof x.type!=='string')errors.push(`Reservation ${i+1} type is invalid.`);const normalizedReservationType=typeof x.type==='string'?normalizeReservationType(x.type,''):'';if(typeof x.title==='string'&&x.title.trim()&&typeof x.date==='string'&&validISODate(x.date)&&normalizedReservationType){const logicalKey=reservationLogicalDuplicateKey({...x,type:normalizedReservationType},data.itinerary);if(backupReservationLogicalKeys.has(logicalKey))errors.push('The backup contains duplicate reservations with the same title, type, date, start time and destination.');backupReservationLogicalKeys.add(logicalKey);}if(x.endDate!==undefined&&x.endDate!==''&&(typeof x.endDate!=='string'||!validISODate(x.endDate)||x.endDate<x.date))errors.push(`Reservation ${i+1} end date is invalid.`);if(normalizedReservationType&&!MULTI_DAY_RESERVATION_TYPES.has(normalizedReservationType)&&String(x.endDate||''))errors.push(`Reservation ${i+1} has an end date for a single-day booking type.`);if(x.time!==undefined&&(typeof x.time!=='string'||!validClockTime(x.time.trim())))errors.push(`Reservation ${i+1} time is invalid.`);if(x.pickupTime!==undefined&&(typeof x.pickupTime!=='string'||!validClockTime(x.pickupTime.trim())))errors.push(`Reservation ${i+1} pickup time is invalid.`);if(x.returnTime!==undefined&&(typeof x.returnTime!=='string'||!validClockTime(x.returnTime.trim())))errors.push(`Reservation ${i+1} return time is invalid.`);if(x.checkInTime!==undefined&&(typeof x.checkInTime!=='string'||!validClockTime(x.checkInTime.trim())))errors.push(`Reservation ${i+1} check-in time is invalid.`);if(x.checkOutTime!==undefined&&(typeof x.checkOutTime!=='string'||!validClockTime(x.checkOutTime.trim())))errors.push(`Reservation ${i+1} check-out time is invalid.`);if(x.entryTime!==undefined&&(typeof x.entryTime!=='string'||!validClockTime(x.entryTime.trim())))errors.push(`Reservation ${i+1} entry time is invalid.`);if(normalizedReservationType&&reservationSameDayTimingIssue({...x,type:normalizedReservationType}))errors.push(`Reservation ${i+1} same-day end time must be after its start time.`);if(normalizedReservationType){const activeTravelFields=new Set(reservationTravelFields(normalizedReservationType));for(const field of ALL_RESERVATION_TRAVEL_DETAIL_FIELDS)if(!activeTravelFields.has(field)&&String(x[field]??'').trim())errors.push(`Reservation ${i+1} contains ${field} data that does not belong to its booking type.`);}if(x.itineraryId!==undefined&&typeof x.itineraryId!=='string')errors.push(`Reservation ${i+1} itinerary link is invalid.`);if(typeof x.itineraryId==='string'&&x.itineraryId.trim()&&Array.isArray(data.itinerary)&&!data.itinerary.some(entry=>String(entry?.id||'')===x.itineraryId))errors.push(`Reservation ${i+1} links to a missing itinerary entry.`);const reservationOwner=backupDestinationForDate(backupReservationEffectiveBudgetDate(x)),expectedReservationItineraryId=String(reservationOwner?.id||''),expectedReservationDestination=String(reservationOwner?.city||reservationOwner?.country||'');if(normalizedReservationType&&MULTI_DAY_RESERVATION_TYPES.has(normalizedReservationType)&&typeof x.endDate==='string'&&validISODate(x.endDate)){const boundaryIssue=reservationBoundaryIssueForRows({...x,type:normalizedReservationType},backupItineraryRows,backupJourneyStart);if(boundaryIssue==='crosses-intentional-gap')errors.push(`Reservation ${i+1} crosses an Intentional Gap before its end date.`);else if(boundaryIssue==='starts-outside-owner')errors.push(`Reservation ${i+1} starts outside an itinerary destination but continues into one before its end date.`);else if(boundaryIssue==='end-beyond-owner')errors.push(`Reservation ${i+1} end date extends beyond the itinerary destination that owns its start date.`);}const simpleReservationReminder=reservationIsSimpleReminder(x),savedReservationDestination=typeof x.destination==='string'?x.destination:'',savedReservationDestinationIdentity=reservationDestinationIdentity(savedReservationDestination),reservationDestinationCompatible=canonicalIdentityKey(savedReservationDestination)===canonicalIdentityKey(expectedReservationDestination)||(Boolean(reservationOwner)&&(countryIdentityEquals(savedReservationDestination,reservationOwner.country)||savedReservationDestinationIdentity.key===reservationDestinationIdentityKey(itineraryTitle(reservationOwner)))),savedReservationLocation=locationLabelParts(savedReservationDestination),savedReservationRegionalCountry=locationRegionCountryFromLabel(savedReservationDestination),legacyDestinationShape=knownCountryIdentity(savedReservationDestination)||savedReservationLocation.countryKnown||Boolean(savedReservationRegionalCountry),legacyUnlinkedReservation=Boolean(reservationOwner)&&!String(x.itineraryId||'').trim()&&legacyDestinationShape&&reservationDestinationCompatible;if(!simpleReservationReminder&&Object.prototype.hasOwnProperty.call(x,'itineraryId')&&typeof x.itineraryId==='string'&&String(x.itineraryId)!==expectedReservationItineraryId&&!legacyUnlinkedReservation)errors.push(`Reservation ${i+1} itinerary link does not match the destination that owns its date.`);if(!simpleReservationReminder&&Object.prototype.hasOwnProperty.call(x,'destination')&&typeof x.destination==='string'&&!reservationDestinationCompatible){if(!reservationOwner)errors.push(`Reservation ${i+1} destination is saved without a destination owner.`);else errors.push(`Reservation ${i+1} destination does not match its itinerary link.`);}if(!validBackupNumericScalar(x.original)||!Number.isFinite(Number(x.original))||Number(x.original)<0||Number(x.original)>1_000_000_000||!validBackupNumericScalar(x.rate)||!Number.isFinite(Number(x.rate))||Number(x.rate)<=0||Number(x.rate)>1_000_000)errors.push(`Reservation ${i+1} cost or rate is invalid.`);if(x.currency!==undefined&&(typeof x.currency!=='string'||!/^[A-Za-z]{3}$/.test(x.currency)))errors.push(`Reservation ${i+1} currency is invalid.`);if(currencyCode(x.currency,'AUD')==='AUD'&&Number.isFinite(Number(x.rate))&&Math.abs(Number(x.rate)-1)>.000000001)errors.push(`Reservation ${i+1} AUD exchange rate must be 1.`);if(!['Paid','Unpaid','Booked','To Book'].includes(x.status))errors.push(`Reservation ${i+1} status is invalid.`);if(x.status==='Unpaid'&&Number(x.original||0)*Number(x.rate||1)<=.01)errors.push(`Reservation ${i+1} is marked Unpaid but has zero booking cost.`);if(x.status==='To Book'&&!reservationIsSimpleReminder(x))errors.push(`Reservation ${i+1} To Book entry contains confirmed-booking data.`);if(!normalizedReservationType)errors.push(`Reservation ${i+1} type is invalid.`);if(x.typeRecoveryOriginal!==undefined&&(typeof x.typeRecoveryOriginal!=='string'||String(x.typeRecoveryOriginal).length>80||String(x.typeRecoveryOriginal)!==String(x.typeRecoveryOriginal).trim()))errors.push(`Reservation ${i+1} recovered type marker is invalid.`);const savedTypeRecovery=typeof x.typeRecoveryOriginal==='string'?x.typeRecoveryOriginal.trim():'';if(savedTypeRecovery&&normalizedReservationType!=='Tickets & Attractions')errors.push(`Reservation ${i+1} recovered type marker is attached to a non-quarantined booking type.`);if(savedTypeRecovery&&normalizeReservationType(savedTypeRecovery,''))errors.push(`Reservation ${i+1} recovered type marker contains a supported booking type.`);if(savedTypeRecovery&&((x.destinationBudget!==undefined&&String(x.destinationBudget)!=='No')||(x.destinationBudgetPreference!==undefined&&String(x.destinationBudgetPreference)!=='No')))errors.push(`Reservation ${i+1} recovered type marker must remain on Annual Budget until reviewed.`);if(x.referenceRecoveryOriginal!==undefined&&(typeof x.referenceRecoveryOriginal!=='string'||String(x.referenceRecoveryOriginal).length>128||String(x.referenceRecoveryOriginal)!==String(x.referenceRecoveryOriginal).trim()))errors.push(`Reservation ${i+1} recovered reference marker is invalid.`);if(typeof x.referenceRecoveryOriginal==='string'&&x.referenceRecoveryOriginal.trim()&&typeof x.reference==='string'&&x.reference.trim())errors.push(`Reservation ${i+1} cannot contain both an active and recovered booking reference.`);if(x.destinationBudget!==undefined&&(typeof x.destinationBudget!=='string'||!['Yes','No'].includes(x.destinationBudget)))errors.push(`Reservation ${i+1} budget allocation is invalid.`);if(x.destinationBudgetPreference!==undefined&&(typeof x.destinationBudgetPreference!=='string'||!['Yes','No'].includes(x.destinationBudgetPreference)))errors.push(`Reservation ${i+1} budget preference is invalid.`);if(normalizedReservationType){const restoredPreference=reservationAutomaticBudget(normalizedReservationType,x.destinationBudgetPreference??x.destinationBudget,{...x,type:normalizedReservationType}),expectedAllocation=simpleReservationReminder?'No':(reservationOwner?restoredPreference:'No');if(x.destinationBudget!==undefined&&['Yes','No'].includes(String(x.destinationBudget))&&String(x.destinationBudget)!==expectedAllocation)errors.push(`Reservation ${i+1} budget allocation does not match its destination ownership or saved preference.`);}if(x.travellers!==undefined&&(!validBackupNumericScalar(x.travellers)||!Number.isInteger(Number(x.travellers))||Number(x.travellers)<1||Number(x.travellers)>20))errors.push(`Reservation ${i+1} traveller count is invalid.`);if(x.paymentDueDate!==undefined&&x.paymentDueDate!==''&&(typeof x.paymentDueDate!=='string'||!validISODate(x.paymentDueDate)))errors.push(`Reservation ${i+1} payment due date is invalid.`);if(validISODate(x.paymentDueDate)&&reservationPaymentDueDateIssue({...x,type:normalizedReservationType}))errors.push(`Reservation ${i+1} payment due date is after the reservation ends.`);if(x.cancellationDeadline!==undefined&&x.cancellationDeadline!==''&&(typeof x.cancellationDeadline!=='string'||!validISODate(x.cancellationDeadline)))errors.push(`Reservation ${i+1} cancellation deadline is invalid.`);if(validISODate(x.cancellationDeadline)&&reservationCancellationDeadlineIssue({...x,type:normalizedReservationType}))errors.push(`Reservation ${i+1} cancellation deadline is after the reservation ends.`);if(x.refundPolicy!==undefined&&(typeof x.refundPolicy!=='string'||!RESERVATION_REFUND_POLICIES.includes(x.refundPolicy)))errors.push(`Reservation ${i+1} refund policy is invalid.`);if(x.reminderDateSet!==undefined&&!validBackupBool(x.reminderDateSet))errors.push(`Reservation ${i+1} reminder date setting is invalid.`);if(x.verified!==undefined&&!validBackupBool(x.verified))errors.push(`Reservation ${i+1} verified setting is invalid.`);if(x.aud!==undefined&&(!validBackupNumericScalar(x.aud)||!Number.isFinite(Number(x.aud))||Number(x.aud)<0||Number(x.aud)>1_000_000_000))errors.push(`Reservation ${i+1} AUD total is invalid.`);const calculatedAud=Number(x.original||0)*Number(x.rate||1);if(x.aud!==undefined&&Number.isFinite(Number(x.aud))&&Number.isFinite(calculatedAud)&&Math.abs(Number(x.aud)-calculatedAud)>.01)errors.push(`Reservation ${i+1} AUD total does not match its original cost and exchange rate.`);const total=calculatedAud,deposit=x.depositPaidAud===''||x.depositPaidAud===null||x.depositPaidAud===undefined?0:Number(x.depositPaidAud),balance=x.balanceDueAud===''||x.balanceDueAud===null||x.balanceDueAud===undefined?0:Number(x.balanceDueAud);const hasDeposit=x.depositPaidAud!==''&&x.depositPaidAud!==null&&x.depositPaidAud!==undefined,hasBalance=x.balanceDueAud!==''&&x.balanceDueAud!==null&&x.balanceDueAud!==undefined;if((hasDeposit&&!validBackupNumericScalar(x.depositPaidAud))||(hasBalance&&!validBackupNumericScalar(x.balanceDueAud))||!Number.isFinite(deposit)||deposit<0||!Number.isFinite(balance)||balance<0||deposit>total+.01||balance>total+.01||(hasDeposit&&hasBalance&&Math.abs(deposit+balance-total)>.01))errors.push(`Reservation ${i+1} payment tracking is invalid.`);const trackedOutstanding=reservationTrackedOutstandingFromFields(x);if(x.status==='Paid'&&trackedOutstanding!==null&&trackedOutstanding>.01)errors.push(`Reservation ${i+1} is marked Paid but still has a balance due.`);if((x.status==='Unpaid'||x.status==='Booked')&&trackedOutstanding!==null&&trackedOutstanding<=.01)errors.push(`Reservation ${i+1} is marked ${x.status} but has no balance due.`);});
+  (Array.isArray(data.reservations)?data.reservations:[]).forEach((x,i)=>{const referenceKey=canonicalIdentityKey(x?.reference);if(referenceKey){if(backupReservationRefs.has(referenceKey))errors.push('The backup contains duplicate reservation booking references.');backupReservationRefs.add(referenceKey);}if(typeof x.date!=='string'||!validISODate(x.date))errors.push(`Reservation ${i+1} date is invalid.`);if(typeof x.title!=='string'||!x.title.trim())errors.push(`Reservation ${i+1} title is missing or invalid.`);for(const [field,label] of [['destination','destination'],['notes','notes'],['operator','operator'],['serviceNumber','service number'],['reference','booking reference'],['departureLocation','departure location'],['arrivalLocation','arrival location'],['terminal','terminal'],['seat','seat'],['baggage','baggage'],['carriage','carriage'],['shipName','ship name'],['cabin','cabin'],['pickupLocation','pickup location'],['returnLocation','return location'],['propertyAddress','property address'],['propertyContact','property contact'],['venue','venue']])if(x[field]!==undefined&&typeof x[field]!=='string')errors.push(`Reservation ${i+1} ${label} is invalid.`);if(x.type!==undefined&&typeof x.type!=='string')errors.push(`Reservation ${i+1} type is invalid.`);const normalizedReservationType=typeof x.type==='string'?normalizeReservationType(x.type,''):'';if(typeof x.title==='string'&&x.title.trim()&&typeof x.date==='string'&&validISODate(x.date)&&normalizedReservationType){const logicalKey=reservationLogicalDuplicateKey({...x,type:normalizedReservationType},data.itinerary);if(backupReservationLogicalKeys.has(logicalKey))errors.push('The backup contains duplicate reservations with the same title, type, date, start time and destination.');backupReservationLogicalKeys.add(logicalKey);}if(x.endDate!==undefined&&x.endDate!==''&&(typeof x.endDate!=='string'||!validISODate(x.endDate)||x.endDate<x.date))errors.push(`Reservation ${i+1} end date is invalid.`);if(normalizedReservationType&&!MULTI_DAY_RESERVATION_TYPES.has(normalizedReservationType)&&String(x.endDate||''))errors.push(`Reservation ${i+1} has an end date for a single-day booking type.`);if(x.time!==undefined&&(typeof x.time!=='string'||!validClockTime(x.time.trim())))errors.push(`Reservation ${i+1} time is invalid.`);if(x.pickupTime!==undefined&&(typeof x.pickupTime!=='string'||!validClockTime(x.pickupTime.trim())))errors.push(`Reservation ${i+1} pickup time is invalid.`);if(x.returnTime!==undefined&&(typeof x.returnTime!=='string'||!validClockTime(x.returnTime.trim())))errors.push(`Reservation ${i+1} return time is invalid.`);if(x.checkInTime!==undefined&&(typeof x.checkInTime!=='string'||!validClockTime(x.checkInTime.trim())))errors.push(`Reservation ${i+1} check-in time is invalid.`);if(x.checkOutTime!==undefined&&(typeof x.checkOutTime!=='string'||!validClockTime(x.checkOutTime.trim())))errors.push(`Reservation ${i+1} check-out time is invalid.`);if(x.entryTime!==undefined&&(typeof x.entryTime!=='string'||!validClockTime(x.entryTime.trim())))errors.push(`Reservation ${i+1} entry time is invalid.`);if(normalizedReservationType&&reservationSameDayTimingIssue({...x,type:normalizedReservationType}))errors.push(`Reservation ${i+1} same-day end time must be after its start time.`);if(normalizedReservationType){const activeTravelFields=new Set(reservationTravelFields(normalizedReservationType));for(const field of ALL_RESERVATION_TRAVEL_DETAIL_FIELDS)if(!activeTravelFields.has(field)&&String(x[field]??'').trim())errors.push(`Reservation ${i+1} contains ${field} data that does not belong to its booking type.`);}if(x.itineraryId!==undefined&&typeof x.itineraryId!=='string')errors.push(`Reservation ${i+1} itinerary link is invalid.`);if(typeof x.itineraryId==='string'&&x.itineraryId.trim()&&Array.isArray(data.itinerary)&&!data.itinerary.some(entry=>String(entry?.id||'')===x.itineraryId))errors.push(`Reservation ${i+1} links to a missing itinerary entry.`);const reservationOwner=backupDestinationForDate(backupReservationEffectiveBudgetDate(x)),expectedReservationItineraryId=String(reservationOwner?.id||''),expectedReservationDestination=String(reservationOwner?.city||reservationOwner?.country||'');if(normalizedReservationType&&MULTI_DAY_RESERVATION_TYPES.has(normalizedReservationType)&&typeof x.endDate==='string'&&validISODate(x.endDate)){const boundaryIssue=reservationBoundaryIssueForRows({...x,type:normalizedReservationType},backupItineraryRows,backupJourneyStart,true);if(boundaryIssue==='crosses-intentional-gap')errors.push(`Reservation ${i+1} crosses an Intentional Gap before its end date.`);else if(boundaryIssue==='starts-outside-owner')errors.push(`Reservation ${i+1} starts outside an itinerary destination but continues into one before its end date.`);else if(boundaryIssue==='end-beyond-owner')errors.push(`Reservation ${i+1} end date extends beyond the itinerary destination that owns its start date.`);}const simpleReservationReminder=reservationIsSimpleReminder(x),savedReservationDestination=typeof x.destination==='string'?x.destination:'',savedReservationDestinationIdentity=reservationDestinationIdentity(savedReservationDestination),reservationDestinationCompatible=canonicalIdentityKey(savedReservationDestination)===canonicalIdentityKey(expectedReservationDestination)||(Boolean(reservationOwner)&&(countryIdentityEquals(savedReservationDestination,reservationOwner.country)||savedReservationDestinationIdentity.key===reservationDestinationIdentityKey(itineraryTitle(reservationOwner)))),savedReservationLocation=locationLabelParts(savedReservationDestination),savedReservationRegionalCountry=locationRegionCountryFromLabel(savedReservationDestination),legacyDestinationShape=knownCountryIdentity(savedReservationDestination)||savedReservationLocation.countryKnown||Boolean(savedReservationRegionalCountry),legacyUnlinkedReservation=Boolean(reservationOwner)&&!String(x.itineraryId||'').trim()&&legacyDestinationShape&&reservationDestinationCompatible;if(!simpleReservationReminder&&Object.prototype.hasOwnProperty.call(x,'itineraryId')&&typeof x.itineraryId==='string'&&String(x.itineraryId)!==expectedReservationItineraryId&&!legacyUnlinkedReservation)errors.push(`Reservation ${i+1} itinerary link does not match the destination that owns its date.`);if(!simpleReservationReminder&&Object.prototype.hasOwnProperty.call(x,'destination')&&typeof x.destination==='string'&&!reservationDestinationCompatible){if(!reservationOwner)errors.push(`Reservation ${i+1} destination is saved without a destination owner.`);else errors.push(`Reservation ${i+1} destination does not match its itinerary link.`);}if(!validBackupNumericScalar(x.original)||!Number.isFinite(Number(x.original))||Number(x.original)<0||Number(x.original)>1_000_000_000||!validBackupNumericScalar(x.rate)||!Number.isFinite(Number(x.rate))||Number(x.rate)<=0||Number(x.rate)>1_000_000)errors.push(`Reservation ${i+1} cost or rate is invalid.`);if(x.currency!==undefined&&(typeof x.currency!=='string'||!/^[A-Za-z]{3}$/.test(x.currency)))errors.push(`Reservation ${i+1} currency is invalid.`);if(currencyCode(x.currency,'AUD')==='AUD'&&Number.isFinite(Number(x.rate))&&Math.abs(Number(x.rate)-1)>.000000001)errors.push(`Reservation ${i+1} AUD exchange rate must be 1.`);if(!['Paid','Unpaid','Booked','To Book'].includes(x.status))errors.push(`Reservation ${i+1} status is invalid.`);if(x.status==='Unpaid'&&Number(x.original||0)*Number(x.rate||1)<=.01)errors.push(`Reservation ${i+1} is marked Unpaid but has zero booking cost.`);if(x.status==='To Book'&&!reservationIsSimpleReminder(x))errors.push(`Reservation ${i+1} To Book entry contains confirmed-booking data.`);if(!normalizedReservationType)errors.push(`Reservation ${i+1} type is invalid.`);if(x.typeRecoveryOriginal!==undefined&&(typeof x.typeRecoveryOriginal!=='string'||String(x.typeRecoveryOriginal).length>80||String(x.typeRecoveryOriginal)!==String(x.typeRecoveryOriginal).trim()))errors.push(`Reservation ${i+1} recovered type marker is invalid.`);const savedTypeRecovery=typeof x.typeRecoveryOriginal==='string'?x.typeRecoveryOriginal.trim():'';if(savedTypeRecovery&&normalizedReservationType!=='Tickets & Attractions')errors.push(`Reservation ${i+1} recovered type marker is attached to a non-quarantined booking type.`);if(savedTypeRecovery&&normalizeReservationType(savedTypeRecovery,''))errors.push(`Reservation ${i+1} recovered type marker contains a supported booking type.`);if(savedTypeRecovery&&((x.destinationBudget!==undefined&&String(x.destinationBudget)!=='No')||(x.destinationBudgetPreference!==undefined&&String(x.destinationBudgetPreference)!=='No')))errors.push(`Reservation ${i+1} recovered type marker must remain on Annual Budget until reviewed.`);if(x.referenceRecoveryOriginal!==undefined&&(typeof x.referenceRecoveryOriginal!=='string'||String(x.referenceRecoveryOriginal).length>128||String(x.referenceRecoveryOriginal)!==String(x.referenceRecoveryOriginal).trim()))errors.push(`Reservation ${i+1} recovered reference marker is invalid.`);if(typeof x.referenceRecoveryOriginal==='string'&&x.referenceRecoveryOriginal.trim()&&typeof x.reference==='string'&&x.reference.trim())errors.push(`Reservation ${i+1} cannot contain both an active and recovered booking reference.`);if(x.destinationBudget!==undefined&&(typeof x.destinationBudget!=='string'||!['Yes','No'].includes(x.destinationBudget)))errors.push(`Reservation ${i+1} budget allocation is invalid.`);if(x.destinationBudgetPreference!==undefined&&(typeof x.destinationBudgetPreference!=='string'||!['Yes','No'].includes(x.destinationBudgetPreference)))errors.push(`Reservation ${i+1} budget preference is invalid.`);if(normalizedReservationType){const restoredPreference=reservationAutomaticBudget(normalizedReservationType,x.destinationBudgetPreference??x.destinationBudget,{...x,type:normalizedReservationType}),expectedAllocation=simpleReservationReminder?'No':(reservationOwner?restoredPreference:'No');if(x.destinationBudget!==undefined&&['Yes','No'].includes(String(x.destinationBudget))&&String(x.destinationBudget)!==expectedAllocation)errors.push(`Reservation ${i+1} budget allocation does not match its destination ownership or saved preference.`);}if(x.travellers!==undefined&&(!validBackupNumericScalar(x.travellers)||!Number.isInteger(Number(x.travellers))||Number(x.travellers)<1||Number(x.travellers)>20))errors.push(`Reservation ${i+1} traveller count is invalid.`);if(x.paymentDueDate!==undefined&&x.paymentDueDate!==''&&(typeof x.paymentDueDate!=='string'||!validISODate(x.paymentDueDate)))errors.push(`Reservation ${i+1} payment due date is invalid.`);if(validISODate(x.paymentDueDate)&&reservationPaymentDueDateIssue({...x,type:normalizedReservationType}))errors.push(`Reservation ${i+1} payment due date is after the reservation ends.`);if(x.cancellationDeadline!==undefined&&x.cancellationDeadline!==''&&(typeof x.cancellationDeadline!=='string'||!validISODate(x.cancellationDeadline)))errors.push(`Reservation ${i+1} cancellation deadline is invalid.`);if(validISODate(x.cancellationDeadline)&&reservationCancellationDeadlineIssue({...x,type:normalizedReservationType}))errors.push(`Reservation ${i+1} cancellation deadline is after the reservation ends.`);if(x.refundPolicy!==undefined&&(typeof x.refundPolicy!=='string'||!RESERVATION_REFUND_POLICIES.includes(x.refundPolicy)))errors.push(`Reservation ${i+1} refund policy is invalid.`);if(x.reminderDateSet!==undefined&&!validBackupBool(x.reminderDateSet))errors.push(`Reservation ${i+1} reminder date setting is invalid.`);if(x.verified!==undefined&&!validBackupBool(x.verified))errors.push(`Reservation ${i+1} verified setting is invalid.`);if(x.aud!==undefined&&(!validBackupNumericScalar(x.aud)||!Number.isFinite(Number(x.aud))||Number(x.aud)<0||Number(x.aud)>1_000_000_000))errors.push(`Reservation ${i+1} AUD total is invalid.`);const calculatedAud=Number(x.original||0)*Number(x.rate||1);if(x.aud!==undefined&&Number.isFinite(Number(x.aud))&&Number.isFinite(calculatedAud)&&Math.abs(Number(x.aud)-calculatedAud)>.01)errors.push(`Reservation ${i+1} AUD total does not match its original cost and exchange rate.`);const total=calculatedAud,deposit=x.depositPaidAud===''||x.depositPaidAud===null||x.depositPaidAud===undefined?0:Number(x.depositPaidAud),balance=x.balanceDueAud===''||x.balanceDueAud===null||x.balanceDueAud===undefined?0:Number(x.balanceDueAud);const hasDeposit=x.depositPaidAud!==''&&x.depositPaidAud!==null&&x.depositPaidAud!==undefined,hasBalance=x.balanceDueAud!==''&&x.balanceDueAud!==null&&x.balanceDueAud!==undefined;if((hasDeposit&&!validBackupNumericScalar(x.depositPaidAud))||(hasBalance&&!validBackupNumericScalar(x.balanceDueAud))||!Number.isFinite(deposit)||deposit<0||!Number.isFinite(balance)||balance<0||deposit>total+.01||balance>total+.01||(hasDeposit&&hasBalance&&Math.abs(deposit+balance-total)>.01))errors.push(`Reservation ${i+1} payment tracking is invalid.`);const trackedOutstanding=reservationTrackedOutstandingFromFields(x);if(x.status==='Paid'&&trackedOutstanding!==null&&trackedOutstanding>.01)errors.push(`Reservation ${i+1} is marked Paid but still has a balance due.`);if((x.status==='Unpaid'||x.status==='Booked')&&trackedOutstanding!==null&&trackedOutstanding<=.01)errors.push(`Reservation ${i+1} is marked ${x.status} but has no balance due.`);});
   (Array.isArray(data.events)?data.events:[]).forEach((x,i)=>{if(typeof x.date!=='string'||!validISODate(x.date))errors.push(`Calendar event ${i+1} date is invalid.`);if(typeof x.title!=='string'||!x.title.trim())errors.push(`Calendar event ${i+1} title is missing or invalid.`);if(x.notes!==undefined&&typeof x.notes!=='string')errors.push(`Calendar event ${i+1} notes are invalid.`);if(x.time!==undefined&&(typeof x.time!=='string'||(x.time&&!validClockTime(x.time))))errors.push(`Calendar event ${i+1} time is invalid.`);});
   (Array.isArray(data.itinerary)?data.itinerary:[]).forEach((x,i)=>{if(typeof x.arrival!=='string'||typeof x.departure!=='string'||!validISODate(x.arrival)||!validISODate(x.departure)||x.departure<x.arrival)errors.push(`Itinerary entry ${i+1} dates are invalid.`);if(validISODate(x.arrival)&&validISODate(x.departure)&&(x.arrival<backupJourneyStart||x.departure>backupHorizonEnd))errors.push(`Itinerary entry ${i+1} falls outside the saved journey horizon.`);if(x.coverageType!==undefined&&(typeof x.coverageType!=='string'||!['Destination','Intentional Gap'].includes(x.coverageType)))errors.push(`Itinerary entry ${i+1} coverage type is invalid.`);const rawMode=typeof x.type==='string'?x.type.trim():(x.type===undefined?'Standard':'');if(x.type!==undefined&&typeof x.type!=='string'||rawMode&&!['Standard','Standard stay','Motorhome','Cruise'].includes(rawMode))errors.push(`Itinerary entry ${i+1} travel type is invalid.`);if(x.city!==undefined&&typeof x.city!=='string')errors.push(`Itinerary entry ${i+1} city is invalid.`);if(x.country!==undefined&&typeof x.country!=='string')errors.push(`Itinerary entry ${i+1} country is invalid.`);if(x.notes!==undefined&&typeof x.notes!=='string')errors.push(`Itinerary entry ${i+1} notes are invalid.`);if(x.intentionalLabel!==undefined&&typeof x.intentionalLabel!=='string')errors.push(`Itinerary entry ${i+1} intentional-gap label is invalid.`);if(x.title!==undefined&&typeof x.title!=='string')errors.push(`Itinerary entry ${i+1} title is invalid.`);if(x.flag!==undefined&&typeof x.flag!=='string')errors.push(`Itinerary entry ${i+1} flag is invalid.`);if((x.coverageType||'Destination')==='Destination'&&Object.prototype.hasOwnProperty.call(x,'flag')&&typeof x.flag==='string'&&x.flag!==countryVisual(x.country,x.type).flag)errors.push(`Itinerary entry ${i+1} flag does not match its destination or travel type.`);if((x.coverageType||'Destination')==='Destination'&&Object.prototype.hasOwnProperty.call(x,'title')&&typeof x.title==='string'&&!canonicalIdentityEquals(x.title,normalizeItineraryEntry(x).title))errors.push(`Itinerary entry ${i+1} title does not match its destination or route.`);if(x.budgetConfiguredAt!==undefined&&(typeof x.budgetConfiguredAt!=='string'||(x.budgetConfiguredAt.trim()&&!validAppDateTimeLabel(x.budgetConfiguredAt.trim()))))errors.push(`Itinerary entry ${i+1} budget-configured time is invalid.`);if((x.coverageType||'Destination')==='Destination'&&itineraryMode(x.type)==='Standard'&&(!String(x.city||'').trim()||!String(x.country||'').trim()))errors.push(`Itinerary entry ${i+1} destination is incomplete.`);if(x.currency!==undefined&&(typeof x.currency!=='string'||!/^[A-Za-z]{3}$/.test(x.currency)))errors.push(`Itinerary entry ${i+1} currency is invalid.`);const itineraryCountryCurrency=ownMapValue(COUNTRY_CURRENCY_CODES,slugifyCountry(x.country||''),'');if((x.coverageType||'Destination')==='Destination'&&itineraryCountryCurrency&&x.currency!==undefined&&/^[A-Za-z]{3}$/.test(String(x.currency||''))&&currencyCode(x.currency,'AUD')!==itineraryCountryCurrency)errors.push(`Itinerary entry ${i+1} currency does not match its country.`);if(x.symbol!==undefined&&(typeof x.symbol!=='string'||x.symbol.length>8))errors.push(`Itinerary entry ${i+1} currency symbol is invalid.`);const itineraryCurrencyCode=currencyCode(x.currency,itineraryCountryCurrency||'AUD'),expectedItinerarySymbol=currencyDetails(itineraryCurrencyCode).symbol||'',savedItinerarySymbol=currencySymbol(x.symbol,'');if((x.coverageType||'Destination')==='Destination'&&expectedItinerarySymbol&&Object.prototype.hasOwnProperty.call(x,'symbol')&&typeof x.symbol==='string'&&savedItinerarySymbol!==expectedItinerarySymbol)errors.push(`Itinerary entry ${i+1} currency symbol does not match its currency.`);if(!validBackupNumericScalar(x.rate)||!Number.isFinite(Number(x.rate))||Number(x.rate)<=0||Number(x.rate)>1_000_000||!validBackupNumericScalar(x.budget)||!Number.isFinite(Number(x.budget))||Number(x.budget)<0||Number(x.budget)>1_000_000_000)errors.push(`Itinerary entry ${i+1} budget or rate is invalid.`);if((x.coverageType||'Destination')==='Destination'&&currencyCode(x.currency,itineraryCountryCurrency||'AUD')==='AUD'&&Number.isFinite(Number(x.rate))&&Math.abs(Number(x.rate)-1)>.000000001)errors.push(`Itinerary entry ${i+1} AUD exchange rate must be 1.`);if(x.km!==undefined&&(!validBackupNumericScalar(x.km)||!Number.isFinite(Number(x.km))||Number(x.km)<0||Number(x.km)>100_000_000))errors.push(`Itinerary entry ${i+1} kilometres are invalid.`);validateBackupMapPair(x.mapX,x.mapY,`Itinerary entry ${i+1}`);if(x.historyKm!==undefined&&x.historyKm!==null&&x.historyKm!==''&&(!validBackupNumericScalar(x.historyKm)||!Number.isFinite(Number(x.historyKm))||Number(x.historyKm)<0||Number(x.historyKm)>100_000_000))errors.push(`Itinerary entry ${i+1} Journey History kilometres are invalid.`);if(x.historyNotes!==undefined&&x.historyNotes!==null&&typeof x.historyNotes!=='string')errors.push(`Itinerary entry ${i+1} Journey History notes are invalid.`);validateBackupMapPair(x.historyMapX,x.historyMapY,`Itinerary entry ${i+1} Journey History`);if((x.schengenStart!==undefined&&typeof x.schengenStart!=='string')||(x.schengenEnd!==undefined&&typeof x.schengenEnd!=='string')||(x.schengenStart&&!x.schengenEnd)||(!x.schengenStart&&x.schengenEnd)||(x.schengenStart&&x.schengenEnd&&(!validISODate(x.schengenStart)||!validISODate(x.schengenEnd)||x.schengenEnd<x.schengenStart)))errors.push(`Itinerary entry ${i+1} Schengen dates are invalid.`);if(x.budgetConfigured!==undefined&&!validBackupBool(x.budgetConfigured))errors.push(`Itinerary entry ${i+1} budget configured setting is invalid.`);const effectiveBudgetConfigured=(x.coverageType||'Destination')==='Destination'&&(boolValue(x.budgetConfigured,false)||Number(x.budget||0)>0);if(x.budgetConfigured!==undefined&&boolValue(x.budgetConfigured,false)!==(Number(x.budget||0)>0))errors.push(`Itinerary entry ${i+1} budget configured setting does not match its saved budget.`);if(typeof x.budgetConfiguredAt==='string'&&x.budgetConfiguredAt.trim()&&!effectiveBudgetConfigured)errors.push(`Itinerary entry ${i+1} budget-configured time is saved without a configured destination budget.`);if(x.schengenAllowed!==undefined&&!validBackupBool(x.schengenAllowed))errors.push(`Itinerary entry ${i+1} Schengen setting is invalid.`);if((x.coverageType||'Destination')==='Intentional Gap'){
     const gapHasValue=value=>value!==undefined&&value!==null&&value!=='';
@@ -9909,7 +10140,8 @@ function validateBackup(data){
     if(ownershipConflicts.some(conflict=>conflict.kind==='no-owned-days'))errors.push('The backup contains a destination with no owned travel days because it is fully covered by an Intentional Gap.');
   }
   const backupItineraryRowsAll=Array.isArray(data.itinerary)?data.itinerary:[];
-  const backupItineraryIds=new Set(backupItineraryRowsAll.map(x=>String(x?.id||'')).filter(Boolean));
+  const backupItineraryById=new Map(backupItineraryRowsAll.map(x=>[String(x?.id||''),x]).filter(([id])=>id));
+  const backupItineraryIds=new Set(backupItineraryById.keys());
   const backupJourneySourceIds=new Set();
   const backupReferenceDate=validISODate(data.settings?.lastBackup)?String(data.settings.lastBackup):(validISODate(itineraryReferenceDate())?itineraryReferenceDate():backupJourneyStart);
   const backupReferenceMatches=[...backupItineraryRowsAll].filter(x=>validISODate(x?.arrival)&&validISODate(x?.departure)&&x.arrival<=backupReferenceDate&&x.departure>=backupReferenceDate);
@@ -9924,9 +10156,14 @@ function validateBackup(data){
     if(!backupOwnerAtReference||String(backupOwnerAtReference.id)===String(source.id))return false;
     return !itineraryFirstOwnedDateAfter(normalizeItineraryEntry(source),backupItineraryRowsAll,backupReferenceDate);
   };
-  const backupSpendForItineraryId=sourceId=>{let total=0;(Array.isArray(data.expenses)?data.expenses:[]).forEach(record=>{const owner=backupDestinationForDate(record?.date),value=Number(record?.amount||0)*Number(record?.rate||1);if(owner&&String(owner.id)===String(sourceId)&&Number.isFinite(value))total+=value;});(Array.isArray(data.reservations)?data.reservations:[]).forEach(record=>{if(record?.status==='To Book')return;const owner=backupDestinationForDate(backupReservationEffectiveBudgetDate(record)),value=Number(record?.original||0)*Number(record?.rate||1);if(owner&&String(owner.id)===String(sourceId)&&Number.isFinite(value))total+=value;});return total;};
+  // Full backup validation remains authoritative, but transaction ownership is indexed
+  // once so decades of Journey History do not rescan every expense and booking per stay.
+  const backupSpendByItineraryId=new Map(),backupAddOwnedSpend=(owner,value)=>{const id=String(owner?.id||'');if(!id||!Number.isFinite(value))return;backupSpendByItineraryId.set(id,Number(backupSpendByItineraryId.get(id)||0)+value);};
+  (Array.isArray(data.expenses)?data.expenses:[]).forEach(record=>backupAddOwnedSpend(backupDestinationForDate(record?.date),Number(record?.amount||0)*Number(record?.rate||1)));
+  (Array.isArray(data.reservations)?data.reservations:[]).forEach(record=>{if(record?.status==='To Book')return;backupAddOwnedSpend(backupDestinationForDate(backupReservationEffectiveBudgetDate(record)),Number(record?.original||0)*Number(record?.rate||1));});
+  const backupSpendForItineraryId=sourceId=>Number(backupSpendByItineraryId.get(String(sourceId))||0);
   const backupSpendForLegacyJourney=journey=>{let total=0;(Array.isArray(data.expenses)?data.expenses:[]).forEach(record=>{const owner=backupLegacyJourneyForDate(record?.date),value=Number(record?.amount||0)*Number(record?.rate||1);if(owner&&String(owner.id||'')===String(journey?.id||'')&&Number.isFinite(value))total+=value;});(Array.isArray(data.reservations)?data.reservations:[]).forEach(record=>{if(record?.status==='To Book')return;const owner=backupLegacyJourneyForDate(backupReservationEffectiveBudgetDate(record)),value=Number(record?.original||0)*Number(record?.rate||1);if(owner&&String(owner.id||'')===String(journey?.id||'')&&Number.isFinite(value))total+=value;});return total;};
-  (Array.isArray(data.journeys)?data.journeys:[]).forEach((x,i)=>{if(typeof x.start!=='string'||typeof x.end!=='string'||!validISODate(x.start)||!validISODate(x.end)||x.end<x.start)errors.push(`Journey ${i+1} dates are invalid.`);if((x.spend!==undefined&&!validBackupNumericScalar(x.spend))||!Number.isFinite(Number(x.spend||0))||Number(x.spend||0)<0||(x.km!==undefined&&!validBackupNumericScalar(x.km))||!Number.isFinite(Number(x.km||0))||Number(x.km||0)<0||Number(x.km||0)>100_000_000)errors.push(`Journey ${i+1} totals are invalid.`);if(!['Standard stay','Motorhome','Cruise'].includes(x.type||'Standard stay'))errors.push(`Journey ${i+1} travel type is invalid.`);for(const [field,label] of [['title','title'],['city','city'],['country','country'],['flag','flag'],['notes','notes']])if(x[field]!==undefined&&typeof x[field]!=='string')errors.push(`Journey ${i+1} ${label} is invalid.`);if(x.currency!==undefined&&(typeof x.currency!=='string'||!/^[A-Za-z]{3}$/.test(x.currency)))errors.push(`Journey ${i+1} legacy currency is invalid.`);if(x.symbol!==undefined&&(typeof x.symbol!=='string'||x.symbol.length>8))errors.push(`Journey ${i+1} legacy currency symbol is invalid.`);if(x.rate!==undefined&&(!validBackupNumericScalar(x.rate)||!Number.isFinite(Number(x.rate))||Number(x.rate)<=0||Number(x.rate)>1_000_000))errors.push(`Journey ${i+1} legacy exchange rate is invalid.`);if(x.budget!==undefined&&(!validBackupNumericScalar(x.budget)||!Number.isFinite(Number(x.budget))||Number(x.budget)<0||Number(x.budget)>1_000_000_000))errors.push(`Journey ${i+1} legacy budget is invalid.`);const journeyCountryCurrency=ownMapValue(COUNTRY_CURRENCY_CODES,slugifyCountry(x.country||''),''),journeyCurrency=currencyCode(x.currency,journeyCountryCurrency||'AUD');if(journeyCountryCurrency&&x.currency!==undefined&&/^[A-Za-z]{3}$/.test(String(x.currency||''))&&journeyCurrency!==journeyCountryCurrency)errors.push(`Journey ${i+1} legacy currency does not match its country.`);const expectedJourneySymbol=currencyDetails(journeyCurrency).symbol||'',savedJourneySymbol=currencySymbol(x.symbol,'');if(expectedJourneySymbol&&x.symbol!==undefined&&savedJourneySymbol&&savedJourneySymbol!==expectedJourneySymbol)errors.push(`Journey ${i+1} legacy currency symbol does not match its currency.`);if(journeyCurrency==='AUD'&&x.rate!==undefined&&Number.isFinite(Number(x.rate))&&Math.abs(Number(x.rate)-1)>.000000001)errors.push(`Journey ${i+1} legacy AUD exchange rate must be 1.`);validateBackupMapPair(x.mapX,x.mapY,`Journey ${i+1}`);if(x.sourceItineraryId!==undefined&&typeof x.sourceItineraryId!=='string')errors.push(`Journey ${i+1} itinerary link is invalid.`);if(data.itinerary!==undefined&&typeof x.sourceItineraryId==='string'&&x.sourceItineraryId){const sourceId=x.sourceItineraryId,linked=backupItineraryRowsAll.find(entry=>String(entry?.id||'')===sourceId);if(backupJourneySourceIds.has(sourceId))errors.push(`Journey ${i+1} duplicates another itinerary-linked completed stay.`);backupJourneySourceIds.add(sourceId);if(!backupItineraryIds.has(sourceId))errors.push(`Journey ${i+1} links to a missing itinerary entry.`);else if(!backupJourneySourceCompleted(linked))errors.push(`Journey ${i+1} links to an itinerary entry that is not completed.`);else{const normalizedLinked=normalizeItineraryEntry(linked),expectedJourneyType=itineraryMode(normalizedLinked.type)==='Standard'?'Standard stay':itineraryMode(normalizedLinked.type),expectedJourneyTitle=itineraryTitle(normalizedLinked),expectedJourneyFlag=countryVisual(normalizedLinked.country,normalizedLinked.type).flag,expectedLinkedSpend=backupSpendForItineraryId(sourceId);if(x.spend!==undefined&&Number.isFinite(Number(x.spend))&&Math.abs(Number(x.spend)-expectedLinkedSpend)>.01)errors.push(`Journey ${i+1} spend does not match the transactions owned by its itinerary stay.`);if(Object.prototype.hasOwnProperty.call(linked,'historyKm')&&(linked.historyKm===null||linked.historyKm===''||!Number.isFinite(Number(linked.historyKm))||Math.abs(Number(linked.historyKm)-Number(x.km||0))>.01))errors.push(`Journey ${i+1} kilometres do not match the itinerary Journey History mirror.`);if(linked.historyNotes!==undefined&&linked.historyNotes!==null&&String(linked.historyNotes)!==String(x.notes||''))errors.push(`Journey ${i+1} notes do not match the itinerary Journey History mirror.`);const historyMapSaved=Object.prototype.hasOwnProperty.call(linked,'historyMapX')||Object.prototype.hasOwnProperty.call(linked,'historyMapY'),historyMapPresent=backupMapCoordinatePresent(linked.historyMapX)||backupMapCoordinatePresent(linked.historyMapY),journeyMapPresent=backupMapCoordinatePresent(x.mapX)||backupMapCoordinatePresent(x.mapY);if(historyMapSaved&&(historyMapPresent!==journeyMapPresent||(historyMapPresent&&journeyMapPresent&&(Number(linked.historyMapX)!==Number(x.mapX)||Number(linked.historyMapY)!==Number(x.mapY)))))errors.push(`Journey ${i+1} map position does not match the itinerary Journey History mirror.`);if(x.start!==normalizedLinked.arrival||x.end!==normalizedLinked.departure)errors.push(`Journey ${i+1} dates do not match its itinerary entry.`);if((x.type||'Standard stay')!==expectedJourneyType)errors.push(`Journey ${i+1} travel type does not match its itinerary entry.`);if(x.title!==undefined&&!canonicalIdentityEquals(x.title,expectedJourneyTitle))errors.push(`Journey ${i+1} title does not match its itinerary entry.`);if(x.city!==undefined&&!canonicalIdentityEquals(x.city,normalizedLinked.city))errors.push(`Journey ${i+1} city does not match its itinerary entry.`);if(x.country!==undefined&&!canonicalIdentityEquals(x.country,normalizedLinked.country))errors.push(`Journey ${i+1} country does not match its itinerary entry.`);if(x.flag!==undefined&&String(x.flag)!==String(expectedJourneyFlag))errors.push(`Journey ${i+1} flag does not match its itinerary entry.`);if(Object.prototype.hasOwnProperty.call(x,'routePoints')&&Array.isArray(x.routePoints)&&canonicalRouteMirrorJson(x.routePoints)!==canonicalRouteMirrorJson(normalizedLinked.routePoints))errors.push(`Journey ${i+1} route points do not match its itinerary entry.`);}}validateBackupRoute(x.routePoints,`Journey ${i+1}`,x.type==='Standard stay'?'Standard':x.type);});
+  (Array.isArray(data.journeys)?data.journeys:[]).forEach((x,i)=>{if(typeof x.start!=='string'||typeof x.end!=='string'||!validISODate(x.start)||!validISODate(x.end)||x.end<x.start)errors.push(`Journey ${i+1} dates are invalid.`);if((x.spend!==undefined&&!validBackupNumericScalar(x.spend))||!Number.isFinite(Number(x.spend||0))||Number(x.spend||0)<0||(x.km!==undefined&&!validBackupNumericScalar(x.km))||!Number.isFinite(Number(x.km||0))||Number(x.km||0)<0||Number(x.km||0)>100_000_000)errors.push(`Journey ${i+1} totals are invalid.`);if(!['Standard stay','Motorhome','Cruise'].includes(x.type||'Standard stay'))errors.push(`Journey ${i+1} travel type is invalid.`);for(const [field,label] of [['title','title'],['city','city'],['country','country'],['flag','flag'],['notes','notes']])if(x[field]!==undefined&&typeof x[field]!=='string')errors.push(`Journey ${i+1} ${label} is invalid.`);if(x.currency!==undefined&&(typeof x.currency!=='string'||!/^[A-Za-z]{3}$/.test(x.currency)))errors.push(`Journey ${i+1} legacy currency is invalid.`);if(x.symbol!==undefined&&(typeof x.symbol!=='string'||x.symbol.length>8))errors.push(`Journey ${i+1} legacy currency symbol is invalid.`);if(x.rate!==undefined&&(!validBackupNumericScalar(x.rate)||!Number.isFinite(Number(x.rate))||Number(x.rate)<=0||Number(x.rate)>1_000_000))errors.push(`Journey ${i+1} legacy exchange rate is invalid.`);if(x.budget!==undefined&&(!validBackupNumericScalar(x.budget)||!Number.isFinite(Number(x.budget))||Number(x.budget)<0||Number(x.budget)>1_000_000_000))errors.push(`Journey ${i+1} legacy budget is invalid.`);const journeyCountryCurrency=ownMapValue(COUNTRY_CURRENCY_CODES,slugifyCountry(x.country||''),''),journeyCurrency=currencyCode(x.currency,journeyCountryCurrency||'AUD');if(journeyCountryCurrency&&x.currency!==undefined&&/^[A-Za-z]{3}$/.test(String(x.currency||''))&&journeyCurrency!==journeyCountryCurrency)errors.push(`Journey ${i+1} legacy currency does not match its country.`);const expectedJourneySymbol=currencyDetails(journeyCurrency).symbol||'',savedJourneySymbol=currencySymbol(x.symbol,'');if(expectedJourneySymbol&&x.symbol!==undefined&&savedJourneySymbol&&savedJourneySymbol!==expectedJourneySymbol)errors.push(`Journey ${i+1} legacy currency symbol does not match its currency.`);if(journeyCurrency==='AUD'&&x.rate!==undefined&&Number.isFinite(Number(x.rate))&&Math.abs(Number(x.rate)-1)>.000000001)errors.push(`Journey ${i+1} legacy AUD exchange rate must be 1.`);validateBackupMapPair(x.mapX,x.mapY,`Journey ${i+1}`);if(x.sourceItineraryId!==undefined&&typeof x.sourceItineraryId!=='string')errors.push(`Journey ${i+1} itinerary link is invalid.`);if(data.itinerary!==undefined&&typeof x.sourceItineraryId==='string'&&x.sourceItineraryId){const sourceId=x.sourceItineraryId,linked=backupItineraryById.get(sourceId)||null;if(backupJourneySourceIds.has(sourceId))errors.push(`Journey ${i+1} duplicates another itinerary-linked completed stay.`);backupJourneySourceIds.add(sourceId);if(!backupItineraryIds.has(sourceId))errors.push(`Journey ${i+1} links to a missing itinerary entry.`);else if(!backupJourneySourceCompleted(linked))errors.push(`Journey ${i+1} links to an itinerary entry that is not completed.`);else{const normalizedLinked=normalizeItineraryEntry(linked),expectedJourneyType=itineraryMode(normalizedLinked.type)==='Standard'?'Standard stay':itineraryMode(normalizedLinked.type),expectedJourneyTitle=itineraryTitle(normalizedLinked),expectedJourneyFlag=countryVisual(normalizedLinked.country,normalizedLinked.type).flag,expectedLinkedSpend=backupSpendForItineraryId(sourceId);if(x.spend!==undefined&&Number.isFinite(Number(x.spend))&&Math.abs(Number(x.spend)-expectedLinkedSpend)>.01)errors.push(`Journey ${i+1} spend does not match the transactions owned by its itinerary stay.`);if(Object.prototype.hasOwnProperty.call(linked,'historyKm')&&(linked.historyKm===null||linked.historyKm===''||!Number.isFinite(Number(linked.historyKm))||Math.abs(Number(linked.historyKm)-Number(x.km||0))>.01))errors.push(`Journey ${i+1} kilometres do not match the itinerary Journey History mirror.`);if(linked.historyNotes!==undefined&&linked.historyNotes!==null&&String(linked.historyNotes)!==String(x.notes||''))errors.push(`Journey ${i+1} notes do not match the itinerary Journey History mirror.`);const historyMapSaved=Object.prototype.hasOwnProperty.call(linked,'historyMapX')||Object.prototype.hasOwnProperty.call(linked,'historyMapY'),historyMapPresent=backupMapCoordinatePresent(linked.historyMapX)||backupMapCoordinatePresent(linked.historyMapY),journeyMapPresent=backupMapCoordinatePresent(x.mapX)||backupMapCoordinatePresent(x.mapY);if(historyMapSaved&&(historyMapPresent!==journeyMapPresent||(historyMapPresent&&journeyMapPresent&&(Number(linked.historyMapX)!==Number(x.mapX)||Number(linked.historyMapY)!==Number(x.mapY)))))errors.push(`Journey ${i+1} map position does not match the itinerary Journey History mirror.`);if(x.start!==normalizedLinked.arrival||x.end!==normalizedLinked.departure)errors.push(`Journey ${i+1} dates do not match its itinerary entry.`);if((x.type||'Standard stay')!==expectedJourneyType)errors.push(`Journey ${i+1} travel type does not match its itinerary entry.`);if(x.title!==undefined&&!canonicalIdentityEquals(x.title,expectedJourneyTitle))errors.push(`Journey ${i+1} title does not match its itinerary entry.`);if(x.city!==undefined&&!canonicalIdentityEquals(x.city,normalizedLinked.city))errors.push(`Journey ${i+1} city does not match its itinerary entry.`);if(x.country!==undefined&&!canonicalIdentityEquals(x.country,normalizedLinked.country))errors.push(`Journey ${i+1} country does not match its itinerary entry.`);if(x.flag!==undefined&&String(x.flag)!==String(expectedJourneyFlag))errors.push(`Journey ${i+1} flag does not match its itinerary entry.`);if(Object.prototype.hasOwnProperty.call(x,'routePoints')&&Array.isArray(x.routePoints)&&canonicalRouteMirrorJson(x.routePoints)!==canonicalRouteMirrorJson(normalizedLinked.routePoints))errors.push(`Journey ${i+1} route points do not match its itinerary entry.`);}}validateBackupRoute(x.routePoints,`Journey ${i+1}`,x.type==='Standard stay'?'Standard':x.type);});
   const transitionalJourneyRows=Array.isArray(data.journeys)?data.journeys:[];
   if(data.itinerary!==undefined){
     const legacyMatchCounts=new Map();
@@ -12045,7 +12282,7 @@ function coreRegressionFixtureIssues(){
   // and Reservations must not force sovereign Georgia/South Africa localities into the
   // conflicting US/Australian GA/SA region meanings.
   {const transportCases1149=[['Frankfurt Airport','Germany'],['Hamburg Cruise Terminal','Germany'],['Dresden Station','Germany'],['Nuremberg Train Station','Germany'],['Heidelberg Railway Station','Germany'],['Cologne Central Station','Germany'],['Vienna International Airport','Austria'],['Zurich Airport','Switzerland'],['Venice Cruise Terminal','Italy']];for(const [label,country] of transportCases1149){if(!countryIdentityEquals(journeyCountryForRoutePlace(label,''),country)||!countryIdentityEquals(toiletPhraseDepartureCountry(label,'Motorhome'),country))issues.push(`Regression fixture failed: transport-context route label ${label} loses ${country} country identity.`);}const ambiguousTransport1149=[['Cape Town Cruise Terminal, SA','South Africa'],['Seattle Cruise Terminal, WA','United States'],['Perth Airport, WA','Australia'],['Tbilisi Airport, GA','Georgia'],['Atlanta Airport, GA','United States']];for(const [label,country] of ambiguousTransport1149)if(!countryIdentityEquals(toiletPhraseDepartureCountry(label,'Motorhome'),country))issues.push(`Regression fixture failed: ambiguous transport departure ${label} loses ${country} toilet-language identity.`);const reservationConflicts1149=[['Tbilisi, GA','Georgia'],['Tbilisi Airport, GA','Georgia'],['Atlanta, GA','United States'],['Cape Town, SA','South Africa'],['Cape Town Cruise Terminal, SA','South Africa'],['Adelaide, SA','Australia']];for(const [label,country] of reservationConflicts1149)if(!countryIdentityEquals(reservationCountryName({destination:label}),country))issues.push(`Regression fixture failed: Reservation destination ${label} resolves to the wrong country.`);if(reservationCountryName({destination:'Perth, WA'})!==''||reservationCountryName({destination:'Darwin, NT'})!=='')issues.push('Regression fixture failed: Reservation namesake safety over-infers deliberately ambiguous WA/NT abbreviations.');}
-  {const bindSource1173=bindScreen.toString(),renderVaultSource1173=renderVault.toString(),streamOverlaySource1173=vaultStreamingOverlay.toString(),guardSource1173=scheduledScreenRefreshWouldDiscardDraft.toString();if(bindSource1173.includes('openVaultStreamingEmailStore(false)')||!bindSource1173.includes('openVaultStreamingEmailStore(true)')||!bindSource1173.includes('streamingOpen.onclick')||!bindSource1173.includes('streamingEmailUnlock.onpointerdown')||!bindSource1173.includes('streamingEmailPhysicalAt')||!streamOverlaySource1173.includes('vault-streaming-email-unlock')||!streamOverlaySource1173.includes('data-streaming-email-unlock')||!streamOverlaySource1173.includes('<span>TV &amp; MOVIES</span>')||!renderVaultSource1173.includes('vaultStreamingEmailOpen&&!vaultStreamingOpen')||!guardSource1173.includes('vaultStreamingOpen||vaultStreamingEmailOpen'))issues.push('Regression fixture failed: hidden Vault TV & Movies email triple-tap is not isolated to the actual heading, can double-count Safari synthetic clicks, or can be redrawn while editing.');}
+  {const bindSource1173=bindScreen.toString(),renderVaultSource1173=renderVault.toString(),streamOverlaySource1173=vaultStreamingOverlay.toString(),guardSource1173=scheduledScreenRefreshWouldDiscardDraft.toString();if(bindSource1173.includes('openVaultStreamingEmailStore(false)')||!bindSource1173.includes('openVaultStreamingEmailStore(true)')||!bindSource1173.includes('streamingOpen.onclick')||!bindSource1173.includes('streamingEmailUnlock.onclick=registerStreamingEmailTap')||!bindSource1173.includes('now-vaultStreamingEmailLastTap>2600')||!bindSource1173.includes('1350')||!streamOverlaySource1173.includes('vault-streaming-email-unlock')||!streamOverlaySource1173.includes('data-streaming-email-unlock')||!streamOverlaySource1173.includes('<span>TV &amp; MOVIES</span>')||!renderVaultSource1173.includes('vaultStreamingEmailOpen&&!vaultStreamingOpen')||!guardSource1173.includes('vaultStreamingOpen||vaultStreamingEmailOpen'))issues.push('Regression fixture failed: hidden Vault TV & Movies email store is not isolated to the actual heading, lacks the proven click-count triple tap / hold fallback, or can be redrawn while editing.');}
   {const conflicts1150=[['Tbilisi, GA','Georgia'],['Tbilisi Airport, GA','Georgia'],['Cape Town, SA','South Africa'],['Cape Town Cruise Terminal, SA','South Africa'],['Atlanta, GA','United States'],['Adelaide, SA','Australia']];for(const [label,country] of conflicts1150)if(!countryIdentityEquals(journeyCountryForRoutePlace(label,''),country))issues.push(`Regression fixture failed: Journey route ${label} resolves to the wrong country.`);if(journeyCountryForRoutePlace('Perth, WA','')!==''||journeyCountryForRoutePlace('Darwin, NT','')!=='')issues.push('Regression fixture failed: Journey namesake safety over-infers deliberately ambiguous WA/NT abbreviations.');const savedService1150=vaultStreamingService,savedEditing1150=vaultStreamingEditing;try{vaultStreamingService='';vaultStreamingEditing=false;const root1150=vaultStreamingOverlay();vaultStreamingService=STREAMING_APP_CATALOG[0]?.service||'Netflix';vaultStreamingEditing=true;const editor1150=vaultStreamingOverlay();if(!root1150.includes('data-streaming-email-unlock')||editor1150.includes('data-streaming-email-unlock'))issues.push('Regression fixture failed: hidden Streaming email unlock can redraw and discard an active password editor draft.');}finally{vaultStreamingService=savedService1150;vaultStreamingEditing=savedEditing1150;}}
   // Batch 1151: "Port of …" is a common cruise-departure form. Resolve the
   // underlying locality consistently across Journey, Reservations and the Home toilet
