@@ -1,0 +1,122 @@
+TRAVEL COMMAND CENTRE — RELEASE VALIDATION · BATCH 1247
+Date: 29/08/2026
+Version: V1 4.5.696
+Purpose: cross-screen recent-change implementation audit + refreshed Lisbon screenshot simulation
+
+104 PASS / 0 FAIL (104 checks)
+
+PASS — MASTER: app.js syntax
+PASS — MASTER: sw.js syntax
+PASS — MASTER: manifest JSON
+PASS — MASTER: CSS parser has no top-level errors
+PASS — MASTER: CSS braces balanced
+PASS — MASTER: app version bumped
+PASS — MASTER: shell revision bumped
+PASS — MASTER: service-worker assets all resolve
+PASS — MASTER: recent visual batches 1241-1246 all physically present
+PASS — MASTER: recent CSS authority order is preserved
+PASS — MASTER: Home-material styling covers budget
+PASS — MASTER: Home-material styling covers reservations
+PASS — MASTER: Home-material styling covers itinerary
+PASS — MASTER: Home-material styling covers calendar
+PASS — MASTER: Home-material styling covers journeys
+PASS — MASTER: Home-material styling covers checklist
+PASS — MASTER: Home-material styling covers vault
+PASS — MASTER: Home-material styling covers settings
+PASS — MASTER: Home screen excluded from broad material authority
+PASS — MASTER: shared destination colour function exists
+PASS — MASTER: Itinerary card uses shared destination colour
+PASS — MASTER: Calendar uses same destination colour source
+PASS — MASTER: transition days expose two destination colours
+PASS — MASTER: Calendar final surface is dark, colour is a strip
+PASS — MASTER: Itinerary colour is restrained rail
+PASS — MASTER: Checklist/Journey header double border fix present
+PASS — MASTER: Add Reservation intro simplified
+PASS — MASTER: reservation type remains primary colour row
+PASS — MASTER: flight/train scope compact segmented control
+PASS — MASTER: basic details reduced to information band
+PASS — MASTER: unified Cost & Budget card exists
+PASS — MASTER: duplicate budget/rate prose hidden
+PASS — MASTER: optional panels are slim accordions
+PASS — MASTER: unsaved changes reduced to status cue
+PASS — MASTER: reservation footer slimmed
+PASS — MASTER: Forward Coverage defaults to 6 months
+PASS — MASTER: Forward Coverage 3/6/12 controls
+PASS — MASTER: Forward Coverage summary is present
+PASS — MASTER: Forward Coverage reuses destination colours
+PASS — MASTER: Forward Coverage shell is dark neutral
+PASS — MASTER: Forward Coverage destination colour is narrow rail
+PASS — MASTER: Forward Coverage accommodation status is secondary strip
+PASS — MASTER: Unplanned remains warning hatch
+PASS — MASTER: old visible 18-month option removed
+PASS — MASTER: hidden-email compass gate requires Vault + unlocked + Streaming
+PASS — MASTER: Streaming shortcut itself opens normal Streaming only
+PASS — MASTER: leaving Vault clears hidden email state
+PASS — SCREENSHOT_SIMULATION: app.js syntax
+PASS — SCREENSHOT_SIMULATION: sw.js syntax
+PASS — SCREENSHOT_SIMULATION: manifest JSON
+PASS — SCREENSHOT_SIMULATION: CSS parser has no top-level errors
+PASS — SCREENSHOT_SIMULATION: CSS braces balanced
+PASS — SCREENSHOT_SIMULATION: app version bumped
+PASS — SCREENSHOT_SIMULATION: shell revision bumped
+PASS — SCREENSHOT_SIMULATION: service-worker assets all resolve
+PASS — SCREENSHOT_SIMULATION: recent visual batches 1241-1246 all physically present
+PASS — SCREENSHOT_SIMULATION: recent CSS authority order is preserved
+PASS — SCREENSHOT_SIMULATION: Home-material styling covers budget
+PASS — SCREENSHOT_SIMULATION: Home-material styling covers reservations
+PASS — SCREENSHOT_SIMULATION: Home-material styling covers itinerary
+PASS — SCREENSHOT_SIMULATION: Home-material styling covers calendar
+PASS — SCREENSHOT_SIMULATION: Home-material styling covers journeys
+PASS — SCREENSHOT_SIMULATION: Home-material styling covers checklist
+PASS — SCREENSHOT_SIMULATION: Home-material styling covers vault
+PASS — SCREENSHOT_SIMULATION: Home-material styling covers settings
+PASS — SCREENSHOT_SIMULATION: Home screen excluded from broad material authority
+PASS — SCREENSHOT_SIMULATION: shared destination colour function exists
+PASS — SCREENSHOT_SIMULATION: Itinerary card uses shared destination colour
+PASS — SCREENSHOT_SIMULATION: Calendar uses same destination colour source
+PASS — SCREENSHOT_SIMULATION: transition days expose two destination colours
+PASS — SCREENSHOT_SIMULATION: Calendar final surface is dark, colour is a strip
+PASS — SCREENSHOT_SIMULATION: Itinerary colour is restrained rail
+PASS — SCREENSHOT_SIMULATION: Checklist/Journey header double border fix present
+PASS — SCREENSHOT_SIMULATION: Add Reservation intro simplified
+PASS — SCREENSHOT_SIMULATION: reservation type remains primary colour row
+PASS — SCREENSHOT_SIMULATION: flight/train scope compact segmented control
+PASS — SCREENSHOT_SIMULATION: basic details reduced to information band
+PASS — SCREENSHOT_SIMULATION: unified Cost & Budget card exists
+PASS — SCREENSHOT_SIMULATION: duplicate budget/rate prose hidden
+PASS — SCREENSHOT_SIMULATION: optional panels are slim accordions
+PASS — SCREENSHOT_SIMULATION: unsaved changes reduced to status cue
+PASS — SCREENSHOT_SIMULATION: reservation footer slimmed
+PASS — SCREENSHOT_SIMULATION: Forward Coverage defaults to 6 months
+PASS — SCREENSHOT_SIMULATION: Forward Coverage 3/6/12 controls
+PASS — SCREENSHOT_SIMULATION: Forward Coverage summary is present
+PASS — SCREENSHOT_SIMULATION: Forward Coverage reuses destination colours
+PASS — SCREENSHOT_SIMULATION: Forward Coverage shell is dark neutral
+PASS — SCREENSHOT_SIMULATION: Forward Coverage destination colour is narrow rail
+PASS — SCREENSHOT_SIMULATION: Forward Coverage accommodation status is secondary strip
+PASS — SCREENSHOT_SIMULATION: Unplanned remains warning hatch
+PASS — SCREENSHOT_SIMULATION: old visible 18-month option removed
+PASS — SCREENSHOT_SIMULATION: hidden-email compass gate requires Vault + unlocked + Streaming
+PASS — SCREENSHOT_SIMULATION: Streaming shortcut itself opens normal Streaming only
+PASS — SCREENSHOT_SIMULATION: leaving Vault clears hidden email state
+PASS — Master/Simulation stylesheets are byte-identical
+PASS — Master/Simulation index shells are byte-identical
+PASS — Master/Simulation manifests are byte-identical
+PASS — Batch 1247 does not alter visual CSS from audited Batch 1246
+PASS — MASTER_RUNTIME: functional app code unchanged from Batch 1246
+PASS — SCREENSHOT_SIMULATION_RUNTIME: functional app code unchanged from Batch 1246
+PASS — Simulation build flag is ON
+PASS — Simulation uses Lisbon 20/09/2029 checkpoint
+PASS — Simulation uses a fresh Batch 1247 storage key
+PASS — Simulation runtime stays below 100 upload files
+
+REVIEWED RECENT CHANGE SET
+- Batch 1241/1242: Home-grade material language across all non-Home screens.
+- Batch 1243: restrained shared destination colours across Itinerary and Calendar.
+- Batch 1244: single-edge Checklist and Journey History headers.
+- Batch 1245: simplified Add Reservation visual hierarchy without removing fields or routing.
+- Batch 1246: redesigned Forward Coverage with neutral shell, 3/6/12 ranges and planning summary.
+- Hidden email gate preserved: unlock Vault -> open Streaming -> tap compass/logo.
+
+VISUAL ACCEPTANCE NOTE
+Static/runtime-file implementation is verified here. The physical iPad screenshots remain the authority for final visual acceptance.

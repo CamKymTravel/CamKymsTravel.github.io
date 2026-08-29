@@ -1,6 +1,6 @@
-TRAVEL COMMAND CENTRE — PORTUGAL SCREENSHOT SIMULATION · BATCH 1239
+TRAVEL COMMAND CENTRE — LISBON / PORTUGAL KYM REVIEW SIMULATION · BATCH 1248
 
-Code baseline: V1 4.5.689 / Batch 1238 · Simulation seed Batch 1239
+Code baseline: V1 4.5.697 / Batch 1248 · audited Lisbon simulation seed
 Simulation date: 20/09/2029
 Current stay: Lisbon, Portugal
 Storage: isolated simulation key (never shares Master user data)
@@ -49,3 +49,13 @@ PORTUGAL SIMULATION SEED
 - A future Home in Australia period is seeded for 01/01/2030–28/02/2030 with a fixed AUD 9,000 Annual Budget cost and no Destination Budget/daily expense tracking.
 - Vault Streaming contains three concealed saved email accounts, with multiple services sharing an account to exercise the new assignment model.
 - Calendar visuals are unchanged from the Batch 1238 baseline.
+
+
+BATCH 1248 VISUAL-CONSISTENCY AUDIT
+- No visual redesign was added in Batch 1248. The purpose of this refresh is to freeze the recently approved visual work for Kym review.
+- Home remains the design authority. All other screens retain the Home-family material treatment while preserving their own layouts.
+- Destination colour remains a restrained locator shared by Itinerary, Calendar and Forward Coverage.
+- Add Reservation retains the simplified hierarchy from Batch 1245.
+- Checklist/Journey History single-edge header correction remains locked.
+- Forward Coverage retains the dark shell and 3/6/12-month planning view from Batch 1246.
+- Fresh Batch 1248 simulation storage/cache namespaces prevent an older iPad simulation state from masking the current review build.
