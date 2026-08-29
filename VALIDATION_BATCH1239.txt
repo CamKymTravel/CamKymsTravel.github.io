@@ -1,0 +1,39 @@
+TRAVEL COMMAND CENTRE — PORTUGAL SIMULATION VALIDATION
+Simulation seed: Batch 1239
+Code baseline: V1 4.5.689 / Continuity Batch 1238
+Date: 29/08/2026
+Simulation clock: 20/09/2029 12:00
+Current stay: Lisbon, Portugal
+
+PRE-BUILD BASELINE REGRESSION — CURRENT BATCH 1238
+- Itinerary / Return Home Australia / map carry-forward: 21/21 PASS
+- Journey History collapse + visual parity: 18/18 PASS
+- Checklist structure + expanded colour parity: 14/14 PASS
+- Vault concealed multi-email manager + migration: 28/28 PASS
+- Reservation exact repeated-stay allocation: 16/16 PASS
+- Budget colour surfaces + App Health heartbeat/clean state: 9/9 PASS
+- Browser load, semantic integrity, all-screen/expanded render integrity: PASS
+- JavaScript / Service Worker syntax: PASS
+- Manifest parse: PASS
+- Simulation Service Worker asset coverage: PASS
+
+PORTUGAL SIMULATION PACKAGE VALIDATION
+- Seed-specific Lisbon / Destination Budget / advance Entertainment / Home Australia / Vault / screen integrity / backup validation: 26/26 PASS
+- Exact repeated-destination reservation workflow rerun against Portugal package: 16/16 PASS
+- Budget + App Health workflow rerun against Portugal package: 9/9 PASS
+- JavaScript syntax: PASS
+- Service Worker syntax: PASS
+- Manifest parse: PASS
+- Service Worker assets present: PASS
+- Calendar current Month / Agenda / Filters structure: unchanged and PASS
+
+SEEDED REVIEW SCENARIO
+- Current Lisbon stay: 10/09/2029–10/10/2029
+- Fixed Destination Budget: EUR 6,000 at 1 EUR = 1.72 AUD
+- Advance Lisbon Tickets & Events are allocated to the Destination Budget and map to Entertainment.
+- Next itinerary block: Lisbon-to-Edinburgh European RV period.
+- Future Home in Australia: 01/01/2030–28/02/2030, AUD 9,000 fixed Annual Budget cost, no Destination Budget or daily living expenses.
+- Concealed Vault email manager has 3 saved email accounts; Apple/iCloud is shared by multiple streaming services.
+
+RESULT
+No known regression was found in the recently locked changes or in the Portugal simulation package during the executed validation suite.

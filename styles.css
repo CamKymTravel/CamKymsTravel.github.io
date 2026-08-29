@@ -26215,3 +26215,1042 @@ body[data-screen="vault"].vault-streaming-email-open .vault-streaming-email-pane
   border-top:1px solid rgba(86,190,230,.28)!important;background:linear-gradient(90deg,#08263b,#0a3048)!important;
   box-shadow:0 -8px 16px rgba(0,0,0,.16)!important;
 }
+
+/* ========================================================================== */
+/* BATCH 1230 — LOCKED BUDGET COLOUR OWNERSHIP + APP HEALTH REFERENCE STATE   */
+/* 29 AUG 2026 — Home is the visual authority. Geometry/data are unchanged.   */
+/* ========================================================================== */
+
+/* BUDGET — every major widget owns its feature colour across the full surface.
+   Internal sections use translucent tonal variations of that parent instead of
+   reverting to the original navy/black app-card treatment. */
+body[data-screen="budget"] #screen .budget-destination-option3-card{
+  --readability-accent:#55d9e7!important;
+  background-color:#07515d!important;
+  background-image:radial-gradient(ellipse at 13% -10%,rgba(81,225,235,.30),transparent 44%),linear-gradient(145deg,#0c7780 0%,#075761 52%,#052b3d 100%)!important;
+  border-color:#42bdca!important;border-top-color:#70e8ef!important;
+  box-shadow:inset 0 2px 0 rgba(145,244,248,.24),inset 0 -28px 42px rgba(0,0,0,.14),0 0 24px rgba(58,205,220,.13),0 12px 30px rgba(0,0,0,.28)!important;
+}
+body[data-screen="budget"] #screen .budget-destination-option3-card>h3{color:#b8f4f7!important}
+body[data-screen="budget"] #screen .budget-status-card{
+  --readability-accent:#83a8ff!important;
+  background-color:#102e68!important;
+  background-image:radial-gradient(ellipse at 83% -12%,rgba(78,129,255,.31),transparent 46%),linear-gradient(145deg,#17499b 0%,#123876 50%,#0a224e 100%)!important;
+  border-color:#4d82e5!important;border-top-color:#72a4ff!important;
+  box-shadow:inset 0 2px 0 rgba(129,173,255,.20),inset 0 -28px 42px rgba(0,0,0,.15),0 0 24px rgba(58,111,226,.12),0 12px 30px rgba(0,0,0,.29)!important;
+}
+body[data-screen="budget"] #screen .budget-status-card>h3{color:#b8d0ff!important}
+body[data-screen="budget"] #screen .budget-approved-category{
+  --readability-accent:#f1bd57!important;
+  background-color:#563b10!important;
+  background-image:radial-gradient(ellipse at 12% -12%,rgba(255,204,83,.24),transparent 46%),linear-gradient(145deg,#715018 0%,#4e3915 52%,#2c2312 100%)!important;
+  border-color:#c69a3e!important;border-top-color:#e4bd68!important;
+  box-shadow:inset 0 2px 0 rgba(255,221,139,.15),inset 0 -26px 38px rgba(0,0,0,.14),0 0 22px rgba(210,159,56,.10),0 11px 28px rgba(0,0,0,.28)!important;
+}
+body[data-screen="budget"] #screen .budget-approved-category>h3{color:#ffd67d!important}
+body[data-screen="budget"] #screen .budget-approved-forecast{
+  --readability-accent:#64d0ff!important;
+  background-color:#0b4969!important;
+  background-image:radial-gradient(ellipse at 88% -12%,rgba(76,197,255,.25),transparent 46%),linear-gradient(145deg,#0e6687 0%,#0b4969 52%,#082b49 100%)!important;
+  border-color:#419bc3!important;border-top-color:#65c7e9!important;
+  box-shadow:inset 0 2px 0 rgba(122,217,248,.16),inset 0 -26px 38px rgba(0,0,0,.14),0 0 22px rgba(48,164,210,.10),0 11px 28px rgba(0,0,0,.28)!important;
+}
+body[data-screen="budget"] #screen .budget-approved-forecast>h3{color:#aee8ff!important}
+body[data-screen="budget"] #screen #budget-finance-command .budget-command-card.budget-annual-lock{
+  --readability-accent:#ff6aaa!important;
+  background-color:#571631!important;
+  background-image:radial-gradient(ellipse at 14% -10%,rgba(255,81,151,.25),transparent 46%),linear-gradient(145deg,#771f45 0%,#551632 54%,#2d1023 100%)!important;
+  border-color:#cc4a82!important;border-top-color:#ef6fa4!important;
+  box-shadow:inset 0 2px 0 rgba(255,150,191,.17),inset 0 -26px 38px rgba(0,0,0,.14),0 0 23px rgba(223,55,126,.12),0 11px 28px rgba(0,0,0,.29)!important;
+}
+body[data-screen="budget"] #screen #budget-finance-command .budget-command-card.budget-destination-lock{
+  --readability-accent:#64df91!important;
+  background-color:#0b4a2d!important;
+  background-image:radial-gradient(ellipse at 87% -10%,rgba(64,218,123,.23),transparent 46%),linear-gradient(145deg,#11643b 0%,#0c482e 54%,#08291f 100%)!important;
+  border-color:#45a765!important;border-top-color:#68d888!important;
+  box-shadow:inset 0 2px 0 rgba(123,231,155,.16),inset 0 -26px 38px rgba(0,0,0,.14),0 0 23px rgba(53,190,99,.11),0 11px 28px rgba(0,0,0,.29)!important;
+}
+body[data-screen="budget"] #screen .budget-expenses-card{
+  --readability-accent:#b789ff!important;
+  background-color:#34235f!important;
+  background-image:radial-gradient(ellipse at 11% -10%,rgba(168,109,255,.26),transparent 46%),linear-gradient(145deg,#4b317b 0%,#34245f 52%,#181d45 100%)!important;
+  border-color:#8262c0!important;border-top-color:#a987e4!important;
+  box-shadow:inset 0 2px 0 rgba(196,157,255,.15),inset 0 -30px 42px rgba(0,0,0,.15),0 0 24px rgba(127,88,206,.10),0 12px 30px rgba(0,0,0,.29)!important;
+}
+body[data-screen="budget"] #screen .budget-expenses-card>h3,
+body[data-screen="budget"] #screen .budget-expenses-card .budget-expenses-title{color:#d3baff!important}
+body[data-screen="budget"] #screen .budget-reservations-merged-card{
+  --readability-accent:#ff62ad!important;
+  background-color:#631842!important;
+  background-image:radial-gradient(ellipse at 12% -10%,rgba(255,91,167,.25),transparent 46%),linear-gradient(145deg,#861f55 0%,#641842 54%,#321329 100%)!important;
+  border-color:#d14a8a!important;border-top-color:#f06aa6!important;
+  box-shadow:inset 0 2px 0 rgba(255,153,202,.15),inset 0 -26px 38px rgba(0,0,0,.14),0 0 23px rgba(232,65,141,.11),0 11px 28px rgba(0,0,0,.29)!important;
+}
+body[data-screen="budget"] #screen .budget-accounts-paired-card{
+  --readability-accent:#6fa9ff!important;
+  background-color:#153d8c!important;
+  background-image:radial-gradient(ellipse at 88% -10%,rgba(70,131,255,.26),transparent 46%),linear-gradient(145deg,#1f55ad 0%,#153d8b 54%,#0b275e 100%)!important;
+  border-color:#4d83d8!important;border-top-color:#76a7ed!important;
+  box-shadow:inset 0 2px 0 rgba(139,181,255,.15),inset 0 -26px 38px rgba(0,0,0,.14),0 0 23px rgba(55,111,218,.10),0 11px 28px rgba(0,0,0,.29)!important;
+}
+body[data-screen="budget"] #screen .budget-monthly-wide>.card{
+  --readability-accent:#d58cff!important;
+  background-color:#40255d!important;
+  background-image:radial-gradient(ellipse at 14% -12%,rgba(202,111,255,.24),transparent 46%),linear-gradient(145deg,#5b3278 0%,#40275d 54%,#211b3b 100%)!important;
+  border-color:#9362b6!important;border-top-color:#b47bd3!important;
+  box-shadow:inset 0 2px 0 rgba(220,164,255,.14),inset 0 -28px 40px rgba(0,0,0,.14),0 0 23px rgba(157,90,203,.10),0 11px 29px rgba(0,0,0,.29)!important;
+}
+body[data-screen="budget"] #screen .budget-monthly-wide>.card>h3{color:#dbadf4!important}
+
+/* Integrated tonal internals — destination aqua. */
+body[data-screen="budget"] #screen .budget-destination-option3-card .budget-destination-total{
+  background:linear-gradient(145deg,rgba(61,203,210,.27),rgba(11,97,107,.30))!important;border-color:rgba(134,236,240,.35)!important;
+}
+body[data-screen="budget"] #screen .budget-destination-option3-card .budget-destination-context.option3>span,
+body[data-screen="budget"] #screen .budget-destination-option3-card .budget-period{
+  background:linear-gradient(145deg,rgba(70,191,203,.15),rgba(11,78,91,.20))!important;border-color:rgba(129,224,231,.24)!important;
+}
+body[data-screen="budget"] #screen .budget-destination-option3-card .budget-destination-secondary>.spent{background:linear-gradient(145deg,rgba(165,37,91,.52),rgba(91,24,62,.39))!important}
+body[data-screen="budget"] #screen .budget-destination-option3-card .budget-destination-secondary>.remaining{background:linear-gradient(145deg,rgba(29,143,80,.48),rgba(12,87,56,.34))!important}
+
+/* Integrated tonal internals — deep-blue pace. Functional green/amber/red pace
+   indicators remain intact; only their container surfaces inherit the blue card. */
+body[data-screen="budget"] #screen .budget-status-card .budget-pace-ring-core{background:linear-gradient(145deg,rgba(11,43,91,.96),rgba(7,29,68,.96))!important}
+body[data-screen="budget"] #screen .budget-status-card .budget-pace-bars>span,
+body[data-screen="budget"] #screen .budget-status-card .budget-pace-bottom-locked>span{
+  background:linear-gradient(145deg,rgba(72,116,210,.17),rgba(18,53,114,.24))!important;border-color:rgba(124,162,236,.28)!important;
+}
+body[data-screen="budget"] #screen .budget-status-card .budget-pace-bars em{background:rgba(6,28,67,.52)!important;border-color:rgba(121,161,230,.25)!important}
+body[data-screen="budget"] #screen .budget-status-card .budget-pace-note{background:rgba(18,63,119,.20)!important;border-color:rgba(105,156,234,.20)!important}
+
+/* Integrated tonal internals — gold category. */
+body[data-screen="budget"] #screen .budget-approved-category .budget-category-lock-head,
+body[data-screen="budget"] #screen .budget-approved-category .budget-category-hero,
+body[data-screen="budget"] #screen .budget-approved-category .budget-category-caption{background:transparent!important}
+body[data-screen="budget"] #screen .budget-approved-category .approved-category-bars>div.budget-category-row{
+  background:linear-gradient(145deg,rgba(255,207,91,.075),rgba(129,91,24,.055))!important;border-radius:8px!important;
+}
+body[data-screen="budget"] #screen .budget-approved-category .category-donut:before{background:#352914!important}
+body[data-screen="budget"] #screen .budget-approved-category .budget-category-switch button{background:rgba(74,54,20,.42)!important;border-color:rgba(231,185,75,.30)!important}
+body[data-screen="budget"] #screen .budget-approved-category .budget-category-switch button.active{background:linear-gradient(145deg,#9b6c19,#6f4b13)!important;border-color:#e2b855!important}
+
+/* Integrated tonal internals — cyan forecast. */
+body[data-screen="budget"] #screen .budget-approved-forecast .budget-forecast-lock-grid>span{
+  background:linear-gradient(145deg,rgba(43,143,184,.18),rgba(11,74,108,.22))!important;border-color:rgba(91,181,220,.28)!important;
+}
+body[data-screen="budget"] #screen .budget-approved-forecast .budget-forecast-lock-grid>span>i{background:rgba(46,147,187,.13)!important;border-color:rgba(111,204,238,.30)!important}
+body[data-screen="budget"] #screen .budget-approved-forecast .budget-forecast-lock-note{background:rgba(25,117,151,.16)!important;border-color:rgba(94,188,218,.24)!important}
+
+/* Integrated tonal internals — annual magenta and destination green setup. */
+body[data-screen="budget"] #screen #budget-finance-command .budget-command-card.budget-annual-lock .budget-locked-hero-value,
+body[data-screen="budget"] #screen #budget-finance-command .budget-command-card.budget-annual-lock .budget-locked-summary-grid>span{
+  background:linear-gradient(145deg,rgba(178,48,103,.20),rgba(95,25,65,.20))!important;border-color:rgba(232,103,159,.28)!important;
+}
+body[data-screen="budget"] #screen #budget-finance-command .budget-command-card.budget-destination-lock .budget-destination-locked-context,
+body[data-screen="budget"] #screen #budget-finance-command .budget-command-card.budget-destination-lock .budget-locked-summary-grid.destination>span{
+  background:linear-gradient(145deg,rgba(46,154,88,.18),rgba(14,88,56,.20))!important;border-color:rgba(93,196,126,.27)!important;
+}
+
+/* Integrated tonal internals — expenses violet. Keep the deliberately coloured
+   toolbar/insight accents, while the range/table shell now belongs to the parent. */
+body[data-screen="budget"] #screen .budget-expenses-card .expense-period-range,
+body[data-screen="budget"] #screen .budget-expenses-card .expense-table-wrap,
+body[data-screen="budget"] #screen .budget-expenses-card .expense-period-total{
+  background:linear-gradient(145deg,rgba(127,87,191,.13),rgba(55,45,117,.18))!important;border-color:rgba(170,132,226,.25)!important;
+}
+body[data-screen="budget"] #screen .budget-expenses-card .expense-table th{background:rgba(89,64,154,.24)!important;border-color:rgba(169,130,222,.22)!important}
+body[data-screen="budget"] #screen .budget-expenses-card .expense-table td{background:rgba(41,34,91,.16)!important;border-color:rgba(137,107,193,.18)!important}
+body[data-screen="budget"] #screen .budget-expenses-card .expense-table tbody tr:nth-child(even) td{background:rgba(79,56,136,.15)!important}
+body[data-screen="budget"] #screen .budget-expenses-card .expense-period-insights>span{box-shadow:inset 0 1px rgba(255,255,255,.055)!important}
+
+/* Reservations and Accounts retain their approved feature colours but their inner
+   rows no longer read as pasted-on navy boxes. */
+body[data-screen="budget"] #screen .budget-reservations-merged-card .budget-reservation-category-list>button{
+  background:linear-gradient(145deg,rgba(174,43,105,.20),rgba(102,25,73,.20))!important;border-color:rgba(255,137,194,.24)!important;
+}
+body[data-screen="budget"] #screen .budget-reservations-merged-card .reservation-status-summary>span,
+body[data-screen="budget"] #screen .budget-reservations-merged-card .budget-reservation-merged-footer{background:rgba(186,50,112,.14)!important;border-color:rgba(246,122,180,.22)!important}
+body[data-screen="budget"] #screen .budget-accounts-paired-card .account-row{
+  background:linear-gradient(145deg,rgba(57,113,208,.16),rgba(17,60,137,.18))!important;border-color:rgba(107,157,232,.20)!important;
+}
+body[data-screen="budget"] #screen .budget-accounts-paired-card .account-readonly-note{background:rgba(42,93,181,.14)!important;border-color:rgba(109,159,229,.24)!important}
+
+/* Monthly history is deliberately violet, not another green Budget card. */
+body[data-screen="budget"] #screen .budget-monthly-wide .budget-history-standard-meta>span,
+body[data-screen="budget"] #screen .budget-monthly-wide .budget-history-summary>span{
+  background:linear-gradient(145deg,rgba(151,86,190,.15),rgba(75,47,116,.17))!important;border-color:rgba(191,126,222,.23)!important;
+}
+body[data-screen="budget"] #screen .budget-monthly-wide .budget-history-standard-meta small{color:#d6b0ec!important}
+body[data-screen="budget"] #screen .budget-monthly-wide .budget-history-standard-chart{
+  background:linear-gradient(145deg,rgba(102,65,148,.12),rgba(46,35,81,.16))!important;border-color:rgba(177,119,211,.20)!important;
+}
+body[data-screen="budget"] #screen .budget-monthly-wide .month-col>div{background:rgba(28,31,70,.48)!important;border-color:rgba(176,124,212,.18)!important}
+
+/* APP HEALTH — approved first-screen visual authority. Unchecked/stale is red and
+   heartbeat-pulsing. A successful full check is green and static. Genuine faults
+   remain amber and expandable. */
+@keyframes tcc-app-health-heartbeat{
+  0%,100%{transform:scale(1);box-shadow:inset 0 2px 0 rgba(255,255,255,.22),inset 0 -14px 20px rgba(80,0,9,.14),0 0 18px rgba(218,41,53,.16),0 9px 22px rgba(0,0,0,.28)}
+  7%{transform:scale(1.012);box-shadow:inset 0 2px 0 rgba(255,255,255,.26),inset 0 -14px 20px rgba(80,0,9,.12),0 0 28px rgba(244,49,62,.30),0 9px 22px rgba(0,0,0,.28)}
+  13%{transform:scale(.998)}
+  20%{transform:scale(1.018);box-shadow:inset 0 2px 0 rgba(255,255,255,.28),inset 0 -14px 20px rgba(80,0,9,.12),0 0 34px rgba(244,49,62,.36),0 9px 22px rgba(0,0,0,.28)}
+  29%,78%{transform:scale(1)}
+}
+body[data-screen="settings"] #screen .app-health-widget.is-unchecked .app-health-overall>span{
+  border:4px solid #ef2e36!important;background:#fff!important;color:transparent!important;
+  box-shadow:0 0 0 7px rgba(239,46,54,.08),inset 0 0 0 7px rgba(239,46,54,.10)!important;
+}
+body[data-screen="settings"] #screen .app-health-widget.is-unchecked .app-health-overall>span::after{display:block!important;background:#ef2e36!important}
+body[data-screen="settings"] #screen .app-health-widget.is-unchecked .app-health-overall>b{color:#168b72!important}
+body[data-screen="settings"] #screen .app-health-widget.is-unchecked .app-health-how b{
+  border-color:#ef4e55!important;background:#c9222b!important;box-shadow:0 0 10px rgba(220,43,51,.22)!important;
+}
+body[data-screen="settings"] #screen .app-health-widget.is-unchecked .app-health-run{
+  border-color:#ff8186!important;border-top-color:#ff9aa0!important;
+  background:linear-gradient(180deg,#d82f3a,#ad1725)!important;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.22),inset 0 -14px 20px rgba(80,0,9,.14),0 0 18px rgba(218,41,53,.16),0 9px 22px rgba(0,0,0,.28)!important;
+  animation:tcc-app-health-heartbeat 1.65s ease-in-out infinite!important;transform-origin:center!important;
+}
+body[data-screen="settings"] #screen .app-health-widget.is-unchecked .app-health-run::after{color:#e6535c!important}
+body[data-screen="settings"] #screen .app-health-widget.is-unchecked .app-health-row{
+  border-color:#38b7cd!important;border-top-color:#5fe0ef!important;background:radial-gradient(circle at 12% -12%,rgba(66,204,226,.17),transparent 42%),linear-gradient(145deg,#084056,#06283a 70%)!important;
+}
+body[data-screen="settings"] #screen .app-health-widget.is-unchecked .app-health-row>summary::before{content:"○"!important;color:#d9f7ff!important}
+body[data-screen="settings"] #screen .app-health-widget.is-unchecked .app-health-row strong{color:#85e4ee!important}
+body[data-screen="settings"] #screen .app-health-widget.is-ok .app-health-run{
+  border-color:#55e29d!important;border-top-color:#83efb6!important;background:linear-gradient(180deg,#1cc27d,#0c985f 58%,#087b4d)!important;
+  box-shadow:inset 0 2px rgba(255,255,255,.22),0 0 22px rgba(47,201,126,.16),0 9px 22px rgba(0,0,0,.28)!important;animation:none!important;transform:none!important;
+}
+body[data-screen="settings"] #screen .app-health-widget.is-ok .app-health-run::after{color:#77e7ad!important}
+body[data-screen="settings"] #screen .app-health-widget.has-attention .app-health-run{
+  border-color:#ffd166!important;border-top-color:#ffe39a!important;background:linear-gradient(180deg,#b77d17,#946010 58%,#754a0a)!important;
+  box-shadow:inset 0 2px rgba(255,255,255,.18),0 0 20px rgba(209,158,45,.14),0 9px 22px rgba(0,0,0,.28)!important;animation:none!important;transform:none!important;
+}
+body[data-screen="settings"] #screen .app-health-run:disabled{animation:none!important;transform:none!important}
+@media (prefers-reduced-motion:reduce){body[data-screen="settings"] #screen .app-health-widget.is-unchecked .app-health-run{animation:none!important}}
+
+/* Batch 1230 final App Health geometry lock — the user's approved first-screen
+   reference is a compact 3 x 3 grid on the 1180px iPad-landscape viewport.
+   This deliberately supersedes the short-lived 2-column 1180px fallback. */
+@media(max-width:1180px) and (orientation:landscape){
+  body[data-screen="settings"] #screen .app-health-screen-list{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;padding:0 20px 20px!important;
+  }
+  body[data-screen="settings"] #screen .app-health-row>summary{
+    min-height:70px!important;padding:10px 9px!important;
+    grid-template-columns:12px 36px minmax(0,1fr) auto 14px!important;gap:7px!important;
+  }
+  body[data-screen="settings"] #screen .app-health-row-icon{width:36px!important;height:36px!important}
+  body[data-screen="settings"] #screen .app-health-row-icon svg{width:22px!important;height:22px!important}
+  body[data-screen="settings"] #screen .app-health-row-copy b{font-size:14px!important}
+  body[data-screen="settings"] #screen .app-health-row-copy small{font-size:10px!important}
+  body[data-screen="settings"] #screen .app-health-row strong{max-width:76px!important;font-size:8.8px!important;line-height:1.08!important}
+  body[data-screen="settings"] #screen .app-health-overall>b{font-size:20px!important;line-height:1.02!important}
+}
+@media(max-width:900px) and (orientation:landscape){
+  body[data-screen="settings"] #screen .app-health-screen-list{grid-template-columns:1fr!important}
+}
+
+/* ========================================================================== */
+/* BATCH 1231 — EXPANDED WIDGET COLOUR PARITY LOCK — 29 AUG 2026             */
+/* Collapsed widget colour is the authority. Expanded/readability views must   */
+/* open in the same hue, gradient family, border and glow identity as the      */
+/* widget that launched them. Internal expanded sections use tonal variants of */
+/* that same parent colour; stale legacy navy/green/amber mappings are blocked.*/
+/* Appearance only — no layout, data, calculations, routing or workflow change.*/
+/* ========================================================================== */
+
+/* BUDGET — exact parity with the locked Batch 1230 Home-grade source cards. */
+.readability-focus-panel.budget-destination-summary{
+  --focus-accent:#55d9e7!important;--focus-rgb:12,119,128!important;--focus-deep-rgb:5,43,61!important;
+  border-color:#42bdca!important;border-top-color:#70e8ef!important;
+  background:radial-gradient(ellipse at 13% -10%,rgba(81,225,235,.30),transparent 44%),linear-gradient(145deg,#0c7780 0%,#075761 52%,#052b3d 100%)!important;
+}
+.readability-focus-panel.budget-pace{
+  --focus-accent:#83a8ff!important;--focus-rgb:23,73,155!important;--focus-deep-rgb:10,34,78!important;
+  border-color:#4d82e5!important;border-top-color:#72a4ff!important;
+  background:radial-gradient(ellipse at 83% -12%,rgba(78,129,255,.31),transparent 46%),linear-gradient(145deg,#17499b 0%,#123876 50%,#0a224e 100%)!important;
+}
+.readability-focus-panel.budget-annual-setup{
+  --focus-accent:#ff6aaa!important;--focus-rgb:119,31,69!important;--focus-deep-rgb:45,16,35!important;
+  border-color:#cc4a82!important;border-top-color:#ef6fa4!important;
+  background:radial-gradient(ellipse at 14% -10%,rgba(255,81,151,.25),transparent 46%),linear-gradient(145deg,#771f45 0%,#551632 54%,#2d1023 100%)!important;
+}
+.readability-focus-panel.budget-destination-setup{
+  --focus-accent:#64df91!important;--focus-rgb:17,100,59!important;--focus-deep-rgb:8,41,31!important;
+  border-color:#45a765!important;border-top-color:#68d888!important;
+  background:radial-gradient(ellipse at 87% -10%,rgba(64,218,123,.23),transparent 46%),linear-gradient(145deg,#11643b 0%,#0c482e 54%,#08291f 100%)!important;
+}
+.readability-focus-panel.budget-category{
+  --focus-accent:#f1bd57!important;--focus-rgb:113,80,24!important;--focus-deep-rgb:44,35,18!important;
+  border-color:#c69a3e!important;border-top-color:#e4bd68!important;
+  background:radial-gradient(ellipse at 12% -12%,rgba(255,204,83,.24),transparent 46%),linear-gradient(145deg,#715018 0%,#4e3915 52%,#2c2312 100%)!important;
+}
+.readability-focus-panel.budget-forecast{
+  --focus-accent:#64d0ff!important;--focus-rgb:14,102,135!important;--focus-deep-rgb:8,43,73!important;
+  border-color:#419bc3!important;border-top-color:#65c7e9!important;
+  background:radial-gradient(ellipse at 88% -12%,rgba(76,197,255,.25),transparent 46%),linear-gradient(145deg,#0e6687 0%,#0b4969 52%,#082b49 100%)!important;
+}
+.readability-focus-panel.budget-reservations{
+  --focus-accent:#ff62ad!important;--focus-rgb:134,31,85!important;--focus-deep-rgb:50,19,41!important;
+  border-color:#d14a8a!important;border-top-color:#f06aa6!important;
+  background:radial-gradient(ellipse at 12% -10%,rgba(255,91,167,.25),transparent 46%),linear-gradient(145deg,#861f55 0%,#641842 54%,#321329 100%)!important;
+}
+.readability-focus-panel.budget-accounts{
+  --focus-accent:#6fa9ff!important;--focus-rgb:31,85,173!important;--focus-deep-rgb:11,39,94!important;
+  border-color:#4d83d8!important;border-top-color:#76a7ed!important;
+  background:radial-gradient(ellipse at 88% -10%,rgba(70,131,255,.26),transparent 46%),linear-gradient(145deg,#1f55ad 0%,#153d8b 54%,#0b275e 100%)!important;
+}
+.readability-focus-panel.budget-monthly{
+  --focus-accent:#d58cff!important;--focus-rgb:91,50,120!important;--focus-deep-rgb:33,27,59!important;
+  border-color:#9362b6!important;border-top-color:#b47bd3!important;
+  background:radial-gradient(ellipse at 14% -12%,rgba(202,111,255,.24),transparent 46%),linear-gradient(145deg,#5b3278 0%,#40275d 54%,#211b3b 100%)!important;
+}
+
+/* RESERVATIONS — current eight-card palette and expanded category must agree. */
+.readability-focus-panel.reservation-focus-flight{--focus-accent:#3399ff!important;--focus-rgb:18,74,130!important;--focus-deep-rgb:7,28,49!important;border-color:#66b2ff!important;background:linear-gradient(145deg,#124a82 0%,#0a3158 55%,#071c31 100%)!important}
+.readability-focus-panel.reservation-focus-train{--focus-accent:#39d37f!important;--focus-rgb:18,96,61!important;--focus-deep-rgb:7,31,27!important;border-color:#63e59b!important;background:linear-gradient(145deg,#12603d 0%,#0b402c 55%,#071f1b 100%)!important}
+.readability-focus-panel.reservation-focus-cruise{--focus-accent:#23c6dc!important;--focus-rgb:13,96,112!important;--focus-deep-rgb:6,31,41!important;border-color:#62ddec!important;background:linear-gradient(145deg,#0d6070 0%,#0a414f 55%,#061f29 100%)!important}
+.readability-focus-panel.reservation-focus-rv{--focus-accent:#ff7b39!important;--focus-rgb:113,56,15!important;--focus-deep-rgb:38,24,13!important;border-color:#ffab78!important;background:linear-gradient(145deg,#71380f 0%,#4e2b14 55%,#26180d 100%)!important}
+.readability-focus-panel.reservation-focus-hotel{--focus-accent:#e6bd3c!important;--focus-rgb:115,88,14!important;--focus-deep-rgb:40,34,12!important;border-color:#f1d66a!important;background:linear-gradient(145deg,#73580e 0%,#503f10 55%,#28220c 100%)!important}
+.readability-focus-panel.reservation-focus-airbnb{--focus-accent:#f14ba4!important;--focus-rgb:123,40,85!important;--focus-deep-rgb:42,19,37!important;border-color:#ff7fc5!important;background:linear-gradient(145deg,#7b2855 0%,#56203f 55%,#2a1325 100%)!important}
+.readability-focus-panel.reservation-focus-tickets{--focus-accent:#9a6bff!important;--focus-rgb:81,52,135!important;--focus-deep-rgb:23,22,47!important;border-color:#b79cff!important;background:linear-gradient(145deg,#513487 0%,#34245f 55%,#17162f 100%)!important}
+.readability-focus-panel.reservation-focus-completed{--focus-accent:#9aa8b8!important;--focus-rgb:59,70,85!important;--focus-deep-rgb:23,30,40!important;border-color:#b9c4d1!important;background:linear-gradient(145deg,#3b4655 0%,#2b3543 55%,#171e28 100%)!important}
+
+/* ITINERARY — reassert the six approved source-card identities as expansion authority. */
+.readability-focus-panel.itinerary-countries{--focus-accent:#67dca9!important;--focus-rgb:18,92,65!important;--focus-deep-rgb:6,34,29!important;border-color:#3ca77a!important;background:linear-gradient(145deg,#0f4937,#0a2d2c 58%,#07141f)!important}
+.readability-focus-panel.itinerary-routes{--focus-accent:#75b8ff!important;--focus-rgb:21,67,116!important;--focus-deep-rgb:7,26,48!important;border-color:#477fc0!important;background:linear-gradient(145deg,#123e6a,#0a2944 58%,#07141f)!important}
+.readability-focus-panel.itinerary-stops{--focus-accent:#c4a2f2!important;--focus-rgb:78,46,113!important;--focus-deep-rgb:25,17,45!important;border-color:#8665bd!important;background:linear-gradient(145deg,#3b2857,#211b3d 58%,#07141f)!important}
+.readability-focus-panel.itinerary-gaps{--focus-accent:#ff8197!important;--focus-rgb:108,34,49!important;--focus-deep-rgb:42,14,23!important;border-color:#c95d72!important;background:linear-gradient(145deg,#53202d,#321622 58%,#07141f)!important}
+.readability-focus-panel.itinerary-missing{--focus-accent:#ffd36a!important;--focus-rgb:122,82,18!important;--focus-deep-rgb:45,30,7!important;border-color:#c9932b!important;background:linear-gradient(145deg,#563b12,#322509 58%,#07141f)!important}
+.readability-focus-panel.itinerary-overlaps{--focus-accent:#81d9f4!important;--focus-rgb:18,67,84!important;--focus-deep-rgb:6,27,39!important;border-color:#408aa9!important;background:linear-gradient(145deg,#123d4e,#0a2935 58%,#07141f)!important}
+
+/* JOURNEY HISTORY — source widgets were recoloured after the old expansion map. */
+body[data-screen="journeys"] .journey-focus-panel.kpi-countries{--focus-accent:#d9b8ff!important;--focus-rgb:72,41,111!important;--focus-deep-rgb:11,19,35!important;border-color:#9b6bd4!important;background:linear-gradient(145deg,#48296f,#241843 62%,#0b1323)!important}
+body[data-screen="journeys"] .journey-focus-panel.kpi-destinations{--focus-accent:#8fb7ff!important;--focus-rgb:18,62,145!important;--focus-deep-rgb:9,23,44!important;border-color:#4d86ef!important;background:linear-gradient(145deg,#123e91,#0d285f 60%,#09172c)!important}
+body[data-screen="journeys"] .journey-focus-panel.kpi-days{--focus-accent:#ffb15f!important;--focus-rgb:138,72,19!important;--focus-deep-rgb:41,23,11!important;border-color:#df873b!important;background:linear-gradient(145deg,#8a4813,#5b2c0c 60%,#29170b)!important}
+body[data-screen="journeys"] .journey-focus-panel.kpi-road{--focus-accent:#ff85a2!important;--focus-rgb:120,29,53!important;--focus-deep-rgb:35,17,29!important;border-color:#d95678!important;background:linear-gradient(145deg,#781d35,#481527 60%,#23111d)!important}
+body[data-screen="journeys"] .journey-focus-panel.kpi-spend{--focus-accent:#64e3ef!important;--focus-rgb:9,109,128!important;--focus-deep-rgb:8,36,45!important;border-color:#32c4d8!important;background:linear-gradient(145deg,#096d80,#064654 60%,#08242d)!important}
+body[data-screen="journeys"] .journey-focus-panel.spend{--focus-accent:#8eabff!important;--focus-rgb:21,43,98!important;--focus-deep-rgb:10,20,44!important;border-color:#526fd0!important;background:linear-gradient(145deg,#152b62,#101d47 60%,#0a142c)!important}
+body[data-screen="journeys"] .journey-focus-panel.stats{--focus-accent:#e7a765!important;--focus-rgb:109,53,18!important;--focus-deep-rgb:34,23,12!important;border-color:#c77a35!important;background:linear-gradient(145deg,#6d3512,#3d240d 62%,#22170c)!important}
+body[data-screen="journeys"] .journey-focus-panel.milestones{--focus-accent:#74d6ff!important;--focus-rgb:7,63,87!important;--focus-deep-rgb:7,28,45!important;border-color:#3aa7cd!important;background:linear-gradient(145deg,#073f57,#082e43 62%,#071c2d)!important}
+body[data-screen="journeys"] .journey-focus-panel.totals{--focus-accent:#f0cb65!important;--focus-rgb:105,81,13!important;--focus-deep-rgb:33,28,13!important;border-color:#c8a239!important;background:linear-gradient(145deg,#69510d,#3f310c 62%,#211c0d)!important}
+body[data-screen="journeys"] .journey-focus-panel.mix{--focus-accent:#d9a0f3!important;--focus-rgb:76,39,95!important;--focus-deep-rgb:25,19,41!important;border-color:#9766bb!important;background:linear-gradient(145deg,#4c275f,#2f1c43 62%,#191329)!important}
+
+/* CHECKLIST — overview plus all four lists now keep their current collapsed hue. */
+body[data-screen="checklist"] .checklist-focus-panel.overview{--focus-accent:#91e6ff!important;--focus-rgb:19,55,77!important;--focus-deep-rgb:7,22,35!important;border-color:#3d718f!important;background:linear-gradient(145deg,rgba(19,55,77,.96),rgba(7,22,35,.99))!important}
+body[data-screen="checklist"] .checklist-focus-panel.his{--focus-accent:#61b7ff!important;--focus-rgb:26,104,187!important;--focus-deep-rgb:8,39,76!important;border-color:#61b7ff!important;background:linear-gradient(135deg,rgba(26,104,187,.97),rgba(8,39,76,.99))!important}
+body[data-screen="checklist"] .checklist-focus-panel.hers{--focus-accent:#ff9fc6!important;--focus-rgb:170,47,105!important;--focus-deep-rgb:78,18,56!important;border-color:#ff9fc6!important;background:linear-gradient(135deg,rgba(170,47,105,.97),rgba(78,18,56,.99))!important}
+body[data-screen="checklist"] .checklist-focus-panel.permanent{--focus-accent:#92e9d1!important;--focus-rgb:18,79,62!important;--focus-deep-rgb:6,24,32!important;border-color:#448a75!important;background:linear-gradient(145deg,rgba(18,79,62,.96),rgba(6,24,32,.99))!important}
+body[data-screen="checklist"] .checklist-focus-panel.destination{--focus-accent:#9bdfff!important;--focus-rgb:15,67,88!important;--focus-deep-rgb:6,23,35!important;border-color:#467f9b!important;background:linear-gradient(145deg,rgba(15,67,88,.96),rgba(6,23,35,.99))!important}
+
+/* VAULT — five category expansion shells mirror the five collapsed category cards. */
+.readability-focus-panel.vault-focus-passport{--focus-accent:#54adf0!important;--focus-rgb:17,65,102!important;--focus-deep-rgb:7,24,39!important;border-color:#3f78a9!important;background:linear-gradient(145deg,rgba(17,65,102,.96),rgba(7,24,39,.99))!important}
+.readability-focus-panel.vault-focus-visa{--focus-accent:#50d0d5!important;--focus-rgb:13,75,82!important;--focus-deep-rgb:6,27,34!important;border-color:#348c97!important;background:linear-gradient(145deg,rgba(13,75,82,.96),rgba(6,27,34,.99))!important}
+.readability-focus-panel.vault-focus-insurance{--focus-accent:#62cf9a!important;--focus-rgb:20,78,59!important;--focus-deep-rgb:7,29,28!important;border-color:#3c8369!important;background:linear-gradient(145deg,rgba(20,78,59,.96),rgba(7,29,28,.99))!important}
+.readability-focus-panel.vault-focus-accommodation{--focus-accent:#edbd63!important;--focus-rgb:83,63,27!important;--focus-deep-rgb:29,24,12!important;border-color:#9b763b!important;background:linear-gradient(145deg,rgba(83,63,27,.96),rgba(29,24,12,.99))!important}
+.readability-focus-panel.vault-focus-emergency{--focus-accent:#ff6678!important;--focus-rgb:104,28,42!important;--focus-deep-rgb:40,10,20!important;border-color:#d95464!important;background:linear-gradient(145deg,rgba(104,28,42,.98),rgba(40,10,20,.99))!important}
+
+/* APP HEALTH detail expansion remains in the same state colour as its collapsed row. */
+body[data-screen="settings"] #screen .app-health-row[open]{background:radial-gradient(circle at 12% -12%,rgba(66,204,226,.17),transparent 42%),linear-gradient(145deg,#084056,#06283a 70%)!important;border-color:#38b7cd!important;border-top-color:#5fe0ef!important}
+body[data-screen="settings"] #screen .app-health-row.attention[open]{background:radial-gradient(circle at 12% -12%,rgba(255,193,82,.16),transparent 42%),linear-gradient(145deg,#5a3c10,#2c2512 70%)!important;border-color:#d09a37!important;border-top-color:#e4bd68!important}
+body[data-screen="settings"] #screen .app-health-row.ok[open],
+body[data-screen="settings"] #screen .app-health-row.ready[open]{background:radial-gradient(circle at 12% -12%,rgba(66,204,226,.17),transparent 42%),linear-gradient(145deg,#084056,#06283a 70%)!important;border-color:#38b7cd!important;border-top-color:#5fe0ef!important}
+
+
+/* ========================================================================== */
+/* BATCH 1232 — RESERVATIONS HOME-VISUAL PARITY + SIDE-RAIL ORDER LOCK       */
+/* Cameron/Kym visual authority: Home. Colour belongs to each whole widget,   */
+/* not to its position. Next 5 is top-right; Summary is bottom-right.          */
+/* ========================================================================== */
+
+/* Side rail order is authored in app.js, but colour is class-based so moving a
+   widget can never silently inherit an old nth-child colour again. */
+body[data-screen="reservations"] #screen .reservation-side>.reservation-next3-card{
+  --reservation-feature:#ff7187!important;
+  background:
+    radial-gradient(circle at 12% -8%,rgba(255,142,158,.24),transparent 38%),
+    linear-gradient(145deg,rgba(128,36,52,.95),rgba(80,27,43,.98) 58%,rgba(35,18,31,.99))!important;
+  border:1.5px solid rgba(224,82,107,.86)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.11),0 0 23px rgba(223,71,99,.13),0 11px 27px rgba(0,0,0,.29)!important;
+}
+body[data-screen="reservations"] #screen .reservation-next3-card>h3{
+  color:#ffb0bd!important;border-bottom:1px solid rgba(255,143,160,.28)!important;padding-bottom:10px!important;
+}
+body[data-screen="reservations"] #screen .reservation-next3-card>h3 span{color:#ffb0bd!important}
+body[data-screen="reservations"] #screen .reservation-next3-card .reservation-next3-row{
+  margin:5px 0!important;padding:8px 7px!important;border:1px solid rgba(255,132,151,.24)!important;border-radius:9px!important;
+  background:linear-gradient(145deg,rgba(188,59,83,.20),rgba(94,31,53,.18))!important;
+}
+body[data-screen="reservations"] #screen .reservation-next3-card .reservation-next3-row>span{
+  border-color:rgba(255,145,162,.42)!important;background:linear-gradient(145deg,rgba(119,39,57,.78),rgba(65,24,41,.86))!important;
+}
+body[data-screen="reservations"] #screen .reservation-next3-card .reservation-next3-row>div>small{color:#edc1c9!important}
+body[data-screen="reservations"] #screen .reservation-next3-card .reservation-next3-row>i{color:#ffb4c0!important}
+
+/* Total Booked keeps its violet identity but now owns the complete surface. */
+body[data-screen="reservations"] #screen .reservation-side>.reservation-total-booked-card{
+  --reservation-feature:#b590ff!important;
+  background:
+    radial-gradient(circle at 12% -8%,rgba(178,145,255,.22),transparent 38%),
+    linear-gradient(145deg,rgba(70,43,119,.95),rgba(48,31,87,.98) 58%,rgba(26,19,52,.99))!important;
+  border:1.5px solid rgba(140,102,211,.82)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 23px rgba(134,93,214,.12),0 11px 27px rgba(0,0,0,.29)!important;
+}
+body[data-screen="reservations"] #screen .reservation-total-booked-card>h3{color:#c8b2ff!important;border-bottom-color:rgba(182,151,244,.27)!important}
+body[data-screen="reservations"] #screen .reservation-total-booked-card .payment-progress{
+  background:linear-gradient(145deg,rgba(119,81,185,.18),rgba(57,38,103,.20))!important;
+  border:1px solid rgba(173,139,232,.25)!important;
+}
+body[data-screen="reservations"] #screen .reservation-total-booked-card .payment-progress .progress{background:rgba(36,29,72,.54)!important;border-color:rgba(170,141,229,.22)!important}
+
+/* Reservation Summary must match the Budget-page Reservations Summary colour.
+   Use the same magenta shell values and tonal internals. */
+body[data-screen="reservations"] #screen .reservation-side>.reservation-summary-card{
+  --reservation-feature:#ff62ad!important;
+  background-color:#631842!important;
+  background-image:radial-gradient(ellipse at 12% -10%,rgba(255,91,167,.25),transparent 46%),linear-gradient(145deg,#861f55 0%,#641842 54%,#321329 100%)!important;
+  border:1.5px solid #d14a8a!important;border-top-color:#f06aa6!important;
+  box-shadow:inset 0 2px 0 rgba(255,153,202,.15),inset 0 -26px 38px rgba(0,0,0,.14),0 0 23px rgba(232,65,141,.11),0 11px 28px rgba(0,0,0,.29)!important;
+}
+body[data-screen="reservations"] #screen .reservation-summary-card>h3{color:#ff9bcb!important;border-bottom-color:rgba(255,137,193,.28)!important}
+body[data-screen="reservations"] #screen .reservation-summary-card .premium-panel-heading-icon{
+  border-color:rgba(255,126,183,.43)!important;background:linear-gradient(145deg,rgba(163,41,96,.46),rgba(79,18,55,.76))!important;
+  box-shadow:inset 0 2px rgba(255,255,255,.14),0 0 13px rgba(255,78,157,.16),0 5px 13px rgba(0,0,0,.33)!important;
+}
+body[data-screen="reservations"] #screen .reservation-summary-card .reservation-summary-list>div{
+  margin:4px 0!important;padding:9px 9px!important;border:1px solid rgba(246,122,180,.20)!important;border-radius:8px!important;
+  background:linear-gradient(145deg,rgba(186,50,112,.15),rgba(100,25,76,.16))!important;
+}
+body[data-screen="reservations"] #screen .reservation-summary-card .reservation-summary-list>div span{color:#f0cfdf!important}
+
+/* Main Reservations widgets use the Home language: full-surface feature wash,
+   softened edge light and tonal internals instead of generic navy inserts. */
+body[data-screen="reservations"] #screen .reservation-tools{
+  background:
+    radial-gradient(circle at 8% -20%,rgba(74,205,234,.13),transparent 42%),
+    linear-gradient(145deg,rgba(9,57,76,.82),rgba(6,31,48,.94))!important;
+  border-color:rgba(71,173,204,.38)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.055),0 7px 20px rgba(0,0,0,.18)!important;
+}
+body[data-screen="reservations"] #screen .reservation-tools[open] .reservation-advanced-filters,
+body[data-screen="reservations"] #screen .reservation-tools[open] .reservation-tool-actions{
+  background:linear-gradient(145deg,rgba(28,106,132,.10),rgba(8,47,70,.13))!important;
+}
+body[data-screen="reservations"] #screen .reservation-future-wide.booking-reminders{
+  background:
+    radial-gradient(circle at 10% -8%,rgba(255,211,101,.22),transparent 40%),
+    linear-gradient(145deg,rgba(115,77,10,.94),rgba(70,47,9,.97) 58%,rgba(35,27,11,.99))!important;
+  border:1.5px solid rgba(221,168,50,.82)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.09),0 0 23px rgba(221,168,50,.11),0 10px 25px rgba(0,0,0,.26)!important;
+}
+body[data-screen="reservations"] #screen .reservation-future-wide .booking-reminders-actions,
+body[data-screen="reservations"] #screen .reservation-future-wide .booking-reminders-collapsed-copy{
+  background:linear-gradient(145deg,rgba(153,103,21,.14),rgba(72,52,17,.16))!important;
+}
+body[data-screen="reservations"] #screen .reservation-future-wide .booking-reminder-row{
+  background:linear-gradient(145deg,rgba(207,151,45,.12),rgba(91,65,18,.16))!important;
+}
+body[data-screen="reservations"] #screen .reservation-upcoming-block{
+  background:
+    radial-gradient(circle at 9% -9%,rgba(87,198,235,.17),transparent 39%),
+    linear-gradient(145deg,rgba(10,66,91,.91),rgba(7,39,62,.97) 58%,rgba(5,24,42,.99))!important;
+  border:1.5px solid rgba(67,154,199,.62)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.07),0 8px 22px rgba(0,0,0,.22)!important;
+}
+body[data-screen="reservations"] #screen .reservation-upcoming-block>summary{background:linear-gradient(145deg,rgba(35,127,165,.15),rgba(9,60,89,.13))!important}
+body[data-screen="reservations"] #screen .reservation-upcoming-block .reservation-upcoming-body{background:rgba(5,30,49,.18)!important}
+body[data-screen="reservations"] #screen .reservation-upcoming-block .reservation-record{
+  background:linear-gradient(145deg,rgba(29,102,139,.12),rgba(7,46,73,.16))!important;
+  border-color:rgba(75,155,196,.22)!important;
+}
+body[data-screen="reservations"] #screen .reservation-completed-block{
+  background:
+    radial-gradient(circle at 9% -9%,rgba(189,202,218,.11),transparent 40%),
+    linear-gradient(145deg,rgba(47,58,74,.88),rgba(31,42,57,.96) 58%,rgba(18,27,39,.99))!important;
+  border:1.5px solid rgba(132,151,172,.45)!important;
+}
+body[data-screen="reservations"] #screen .reservation-completed-block>summary{background:linear-gradient(145deg,rgba(126,145,165,.10),rgba(47,61,80,.13))!important}
+
+/* Category colours remain the approved eight-card palette. Add the same premium
+   surface light as Home without changing those hues. */
+body[data-screen="reservations"] #screen .reservation-category-card{
+  position:relative!important;overflow:hidden!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.10),0 8px 20px rgba(0,0,0,.23),0 0 17px color-mix(in srgb,var(--res) 12%,transparent)!important;
+}
+body[data-screen="reservations"] #screen .reservation-category-card:after{
+  content:""!important;position:absolute!important;pointer-events:none!important;inset:0!important;
+  background:radial-gradient(circle at 14% -8%,rgba(255,255,255,.12),transparent 35%)!important;
+}
+body[data-screen="reservations"] #screen .reservation-category-card>*{position:relative!important;z-index:1!important}
+
+/* At iPad landscape widths preserve the side-rail stack order; do not let an old
+   responsive two-column rule visually reorder the three authority cards. */
+@media(max-width:1250px) and (orientation:landscape){
+  body[data-screen="reservations"] #screen .reservation-side{grid-template-columns:1fr!important;display:grid!important;gap:10px!important;align-content:start!important}
+  body[data-screen="reservations"] #screen .reservation-side>.reservation-next3-card{order:1!important}
+  body[data-screen="reservations"] #screen .reservation-side>.reservation-total-booked-card{order:2!important}
+  body[data-screen="reservations"] #screen .reservation-side>.reservation-summary-card{order:3!important}
+}
+
+
+/* BATCH 1232 — STRICT EXPANDED SOURCE PARITY CORRECTIONS
+   Physical/current collapsed widget is the literal colour authority. These
+   selectors close the last cases where a focus panel used a brighter/darker
+   legacy version of the same hue instead of the current source surface. */
+.readability-focus-panel.budget-destination-summary{
+  --focus-accent:#55d9e7!important;--focus-rgb:5,93,95!important;--focus-deep-rgb:3,31,44!important;
+  border-color:rgba(69,221,219,.78)!important;
+  background:radial-gradient(circle at 15% 0%,rgba(62,232,225,.145),transparent 34%),linear-gradient(145deg,rgba(5,93,95,.965),rgba(3,51,61,.985) 56%,rgba(3,31,44,.995))!important;
+}
+.readability-focus-panel.budget-pace{
+  --focus-accent:#83a8ff!important;--focus-rgb:14,57,111!important;--focus-deep-rgb:5,23,50!important;
+  border-color:rgba(83,145,255,.76)!important;
+  background:radial-gradient(circle at 16% 0%,rgba(74,133,255,.145),transparent 34%),linear-gradient(145deg,rgba(14,57,111,.965),rgba(8,35,77,.985) 57%,rgba(5,23,50,.995))!important;
+}
+.readability-focus-panel.itinerary-countries{background:linear-gradient(145deg,rgba(18,92,65,.72),rgba(6,34,29,.98))!important;border-color:#3ca77a!important}
+.readability-focus-panel.itinerary-routes{background:linear-gradient(145deg,rgba(21,67,116,.72),rgba(7,26,48,.98))!important;border-color:#477fc0!important}
+.readability-focus-panel.itinerary-stops{background:linear-gradient(145deg,rgba(78,46,113,.74),rgba(25,17,45,.98))!important;border-color:#8665bd!important}
+.readability-focus-panel.itinerary-gaps{background:linear-gradient(145deg,rgba(108,34,49,.74),rgba(42,14,23,.98))!important;border-color:#c95d72!important}
+.readability-focus-panel.itinerary-missing{background:linear-gradient(145deg,rgba(122,82,18,.74),rgba(45,30,7,.98))!important;border-color:#c9932b!important}
+.readability-focus-panel.itinerary-overlaps{background:linear-gradient(145deg,rgba(18,67,84,.75),rgba(6,27,39,.98))!important;border-color:#408aa9!important}
+
+
+/* ============================================================================
+   BATCH 1232 — STRICT CHECKLIST + VAULT EXPANDED SOURCE PARITY LOCK
+   29 Aug 2026
+   Collapsed widget remains the literal surface-colour authority. Expanded views
+   may use a larger modal shadow for separation, but their surface gradient and
+   border must match the source widget exactly.
+   ========================================================================== */
+body[data-screen="checklist"] .checklist-focus-panel.overview{
+  background:
+    radial-gradient(circle at 0 0,color-mix(in srgb,var(--screen-tint,#52b9dd) 14%,transparent),transparent 42%),
+    linear-gradient(145deg,rgba(11,32,46,.96),rgba(4,16,27,.99))!important;
+  border-color:color-mix(in srgb,var(--screen-tint,#52b9dd) 46%,#24445b)!important;
+}
+body[data-screen="checklist"] .checklist-focus-panel.his{
+  background:linear-gradient(135deg,#1768bb 0%,#114f97 50%,#082d5d 100%)!important;
+  border-color:#69baff!important;
+}
+body[data-screen="checklist"] .checklist-focus-panel.hers{
+  background:linear-gradient(135deg,#a82f69 0%,#8b275a 50%,#481631 100%)!important;
+  border-color:#ff9dc5!important;
+}
+body[data-screen="checklist"] .checklist-focus-panel.permanent{
+  background:linear-gradient(145deg,rgba(18,79,62,.58),rgba(6,24,32,.984))!important;
+  border-color:#448a75!important;
+}
+body[data-screen="checklist"] .checklist-focus-panel.destination{
+  background:linear-gradient(145deg,rgba(15,67,88,.62),rgba(6,23,35,.984))!important;
+  border-color:#467f9b!important;
+}
+.readability-focus-panel.vault-focus-passport{
+  background:linear-gradient(145deg,rgba(17,65,102,.88),rgba(7,24,39,.99))!important;
+  border-color:#3f78a9!important;
+}
+.readability-focus-panel.vault-focus-visa{
+  background:linear-gradient(145deg,rgba(13,75,82,.84),rgba(6,27,34,.99))!important;
+  border-color:#348c97!important;
+}
+.readability-focus-panel.vault-focus-insurance{
+  background:linear-gradient(145deg,rgba(20,78,59,.84),rgba(7,29,28,.99))!important;
+  border-color:#3c8369!important;
+}
+.readability-focus-panel.vault-focus-accommodation{
+  background:linear-gradient(145deg,rgba(83,63,27,.84),rgba(29,24,12,.99))!important;
+  border-color:#9b763b!important;
+}
+.readability-focus-panel.vault-focus-emergency{
+  background:linear-gradient(145deg,rgba(104,28,42,.96),rgba(40,10,20,.99))!important;
+  border-color:#d95464!important;
+}
+
+
+/* ========================================================================== */
+/* BATCH 1233 — ITINERARY HOME-VISUAL PARITY + AUSTRALIA HOME-VISIT LOCK     */
+/* 29 AUG 2026 — Home remains the visual authority. Itinerary structure is    */
+/* preserved; colour now flows through complete widget surfaces. Returning     */
+/* home is a first-class annual-budget-only itinerary period.                  */
+/* ========================================================================== */
+body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page){
+  background:
+    radial-gradient(circle at 12% 0%,rgba(47,188,234,.18),transparent 34%),
+    linear-gradient(145deg,rgba(6,55,82,.985),rgba(5,34,58,.99) 55%,rgba(3,22,39,.995))!important;
+  border-color:rgba(65,182,228,.66)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 28px rgba(43,166,217,.10),0 12px 30px rgba(0,0,0,.31)!important;
+}
+body[data-screen="itinerary"] #screen .itinerary-coverage-card{
+  background:
+    radial-gradient(circle at 12% 0%,rgba(58,215,163,.14),transparent 34%),
+    linear-gradient(145deg,rgba(8,68,61,.97),rgba(4,46,48,.985) 58%,rgba(3,29,39,.995))!important;
+  border-color:rgba(58,187,151,.55)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.09),0 0 25px rgba(49,195,151,.08),0 10px 26px rgba(0,0,0,.28)!important;
+}
+body[data-screen="itinerary"] #screen .itinerary-locked-metrics{background:transparent!important;box-shadow:none!important}
+body[data-screen="itinerary"] #screen .itinerary-locked-metrics>.itinerary-metric{overflow:hidden!important;border-width:1px!important}
+body[data-screen="itinerary"] #screen .itinerary-locked-metrics>.itinerary-metric:nth-child(1){background:radial-gradient(circle at 15% 0%,rgba(55,229,163,.18),transparent 42%),linear-gradient(145deg,rgba(5,80,58,.96),rgba(4,49,45,.99))!important;border-color:rgba(67,205,151,.55)!important}
+body[data-screen="itinerary"] #screen .itinerary-locked-metrics>.itinerary-metric:nth-child(2){background:radial-gradient(circle at 15% 0%,rgba(71,155,255,.19),transparent 42%),linear-gradient(145deg,rgba(9,63,120,.96),rgba(5,39,76,.99))!important;border-color:rgba(81,150,239,.58)!important}
+body[data-screen="itinerary"] #screen .itinerary-locked-metrics>.itinerary-metric:nth-child(3){background:radial-gradient(circle at 15% 0%,rgba(180,96,255,.18),transparent 42%),linear-gradient(145deg,rgba(73,35,111,.96),rgba(43,27,76,.99))!important;border-color:rgba(160,97,222,.58)!important}
+body[data-screen="itinerary"] #screen .itinerary-locked-metrics>.itinerary-metric:nth-child(4){background:radial-gradient(circle at 15% 0%,rgba(255,83,113,.18),transparent 42%),linear-gradient(145deg,rgba(104,27,48,.96),rgba(62,22,39,.99))!important;border-color:rgba(224,77,105,.58)!important}
+body[data-screen="itinerary"] #screen .itinerary-locked-metrics>.itinerary-metric:nth-child(5){background:radial-gradient(circle at 15% 0%,rgba(255,188,52,.18),transparent 42%),linear-gradient(145deg,rgba(105,70,14,.96),rgba(61,45,13,.99))!important;border-color:rgba(224,166,50,.58)!important}
+body[data-screen="itinerary"] #screen .itinerary-locked-metrics>.itinerary-metric:nth-child(6){background:radial-gradient(circle at 15% 0%,rgba(64,209,230,.17),transparent 42%),linear-gradient(145deg,rgba(7,70,88,.96),rgba(5,43,59,.99))!important;border-color:rgba(62,187,210,.55)!important}
+body[data-screen="itinerary"] #screen .itinerary-add-action-row{display:grid!important;grid-template-columns:minmax(0,1fr) 112px!important;gap:10px!important;margin:10px 0 9px!important}
+body[data-screen="itinerary"] #screen .itinerary-add-action-row button{min-height:62px!important;border-radius:13px!important;font-weight:900!important;letter-spacing:.045em!important;box-shadow:inset 0 1px rgba(255,255,255,.24),0 9px 21px rgba(0,0,0,.25)!important}
+body[data-screen="itinerary"] #screen .itinerary-add-destination-wide{font-size:19px!important;background:radial-gradient(circle at 20% 0%,rgba(91,210,255,.28),transparent 33%),linear-gradient(180deg,#1aaaf3,#087ecf)!important;border-color:#61d6ff!important;color:#fff!important}
+body[data-screen="itinerary"] #screen .itinerary-home-action{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;background:radial-gradient(circle at 35% 0%,rgba(209,127,255,.28),transparent 40%),linear-gradient(160deg,#65369d,#40236e)!important;border-color:#a26edf!important;color:#fff!important;font-size:11px!important}
+body[data-screen="itinerary"] #screen .itinerary-home-action .home-action-icon{font-size:26px!important;line-height:1!important}
+body[data-screen="itinerary"] #screen .itinerary-home-action b{font-size:11px!important;letter-spacing:.12em!important}
+body[data-screen="itinerary"] #screen .itinerary-locked-toolbar{grid-template-columns:minmax(0,1fr) 180px!important;background:radial-gradient(circle at 8% 0%,rgba(54,174,223,.11),transparent 35%),linear-gradient(145deg,rgba(8,42,62,.95),rgba(5,29,47,.98))!important;border-color:rgba(57,139,177,.46)!important}
+body[data-screen="itinerary"] #screen .itinerary-card{position:relative!important;overflow:hidden!important;background:radial-gradient(circle at 18% 0%,rgba(60,182,229,.11),transparent 35%),linear-gradient(145deg,rgba(7,48,70,.96),rgba(5,34,54,.985))!important;border-color:rgba(55,132,171,.50)!important;box-shadow:inset 0 1px rgba(255,255,255,.085),0 9px 23px rgba(0,0,0,.24)!important}
+body[data-screen="itinerary"] #screen .itinerary-card.travel-motorhome{background:radial-gradient(circle at 18% 0%,rgba(90,224,119,.15),transparent 36%),linear-gradient(145deg,rgba(8,70,50,.97),rgba(5,43,42,.99))!important;border-color:rgba(82,190,111,.52)!important}
+body[data-screen="itinerary"] #screen .itinerary-card.travel-cruise{background:radial-gradient(circle at 18% 0%,rgba(255,177,49,.15),transparent 36%),linear-gradient(145deg,rgba(91,58,11,.97),rgba(52,38,16,.99))!important;border-color:rgba(222,157,48,.52)!important}
+body[data-screen="itinerary"] #screen .itinerary-card.home-visit{background:radial-gradient(circle at 18% 0%,rgba(205,103,255,.18),transparent 36%),linear-gradient(145deg,rgba(78,35,103,.97),rgba(43,25,70,.99))!important;border-color:rgba(174,99,219,.62)!important}
+body[data-screen="itinerary"] #screen .itinerary-card .itinerary-card-date,
+body[data-screen="itinerary"] #screen .itinerary-card .itinerary-plan-detail,
+body[data-screen="itinerary"] #screen .itinerary-card .itinerary-budget-detail,
+body[data-screen="itinerary"] #screen .itinerary-card .itinerary-home-budget-detail{background:rgba(2,18,30,.34)!important;border-color:rgba(141,217,244,.20)!important;box-shadow:inset 0 1px rgba(255,255,255,.035)!important}
+body[data-screen="itinerary"] #screen .itinerary-card.home-visit .itinerary-home-budget-detail{border-color:rgba(201,136,237,.34)!important;background:rgba(48,21,70,.38)!important}
+body[data-screen="itinerary"] #screen .itinerary-home-budget-detail{min-width:200px!important;padding:10px 13px!important;border:1px solid!important;border-radius:11px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;gap:3px!important}
+body[data-screen="itinerary"] #screen .itinerary-home-budget-detail span{font-size:10px!important;font-weight:900!important;letter-spacing:.13em!important;color:#d7a9f3!important}
+body[data-screen="itinerary"] #screen .itinerary-home-budget-detail b{font-size:21px!important;color:#fff!important}
+body[data-screen="itinerary"] #screen .itinerary-home-budget-detail small{font-size:11px!important;color:#d8c3e8!important}
+body[data-screen="itinerary"] #screen .itinerary-home-visit-form{background:radial-gradient(circle at 12% 0%,rgba(198,105,255,.13),transparent 34%),linear-gradient(145deg,rgba(43,25,66,.96),rgba(17,24,42,.99))!important}
+body[data-screen="itinerary"] #screen .home-visit-intro{border-color:rgba(174,99,219,.44)!important;background:rgba(83,39,111,.32)!important}
+body[data-screen="itinerary"] #screen .home-visit-budget-note{margin-top:12px!important;padding:13px 15px!important;border:1px solid rgba(176,105,220,.42)!important;border-radius:12px!important;background:linear-gradient(145deg,rgba(78,35,103,.46),rgba(31,24,55,.58))!important;display:grid!important;gap:5px!important}
+body[data-screen="itinerary"] #screen .home-visit-budget-note b{color:#d9a9f4!important;font-size:11px!important;letter-spacing:.14em!important}
+body[data-screen="itinerary"] #screen .home-visit-budget-note span{color:#e9e0f2!important;font-size:12px!important;line-height:1.38!important}
+body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page)>.journey-map-shell,
+body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page) .journey-map-viewport,
+body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page) .world-grid{height:420px!important;min-height:420px!important}
+body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page) .itinerary-planning-pin.current-route.label-visible>b{transform:translate(23px,-27px)!important}
+body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page) .itinerary-planning-pin.current-route.label-visible>small{transform:translate(23px,-20px)!important}
+body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page) .itinerary-planning-pin.next-route.label-visible>b{transform:translate(-108%,-2px)!important;text-align:right!important}
+body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page) .itinerary-planning-pin.next-route.label-visible>small{transform:translate(-108%,5px)!important;text-align:right!important}
+@media(max-width:1180px) and (orientation:landscape){
+  body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page)>.journey-map-shell,
+  body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page) .journey-map-viewport,
+  body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page) .world-grid{height:405px!important;min-height:405px!important}
+  body[data-screen="itinerary"] #screen .itinerary-add-action-row{grid-template-columns:minmax(0,1fr) 104px!important}
+}
+
+
+/* ========================================================================== */
+/* BATCH 1234 — JOURNEY HISTORY COLLAPSE + HOME-VISUAL POLISH LOCK           */
+/* 29 AUG 2026 — Completed journeys are compact rows by default. Extra detail */
+/* is revealed only after the user taps/activates that journey. Home remains   */
+/* the visual authority: feature colour flows through the whole widget surface */
+/* with tonal internal sections rather than generic navy inset boxes.          */
+/* Calendar is deliberately untouched in this batch.                           */
+/* ========================================================================== */
+
+/* Regression lock: older iPad table CSS forced hidden detail <tr> elements to
+   display. The HTML hidden state is authoritative until a journey is opened. */
+body[data-screen="journeys"] #screen .journey-table .journey-detail-row[hidden]{display:none!important}
+body[data-screen="journeys"] #screen .journey-table .journey-detail-row:not([hidden]){display:table-row!important}
+
+/* Completed history is a clean, tappable list first; detail is secondary. */
+body[data-screen="journeys"] #screen .journey-table-locked .journey-main-row>td{
+  height:88px!important;min-height:88px!important;padding-top:12px!important;padding-bottom:12px!important;
+  background:linear-gradient(90deg,rgba(15,54,79,.68),rgba(7,31,50,.76))!important;
+  border-bottom-color:rgba(71,132,168,.36)!important;
+}
+body[data-screen="journeys"] #screen .journey-table-locked .journey-main-row:nth-of-type(4n+3)>td{
+  background:linear-gradient(90deg,rgba(18,63,91,.72),rgba(8,35,55,.80))!important;
+}
+body[data-screen="journeys"] #screen .journey-table-locked .journey-main-row:hover>td,
+body[data-screen="journeys"] #screen .journey-table-locked .journey-main-row:focus-visible>td,
+body[data-screen="journeys"] #screen .journey-table-locked .journey-main-row.expanded>td{
+  background:radial-gradient(circle at 18% 0%,rgba(70,196,238,.16),transparent 42%),linear-gradient(90deg,rgba(20,76,108,.82),rgba(8,39,61,.88))!important;
+}
+body[data-screen="journeys"] #screen .journey-table-locked .journey-main-row{outline:none!important}
+body[data-screen="journeys"] #screen .journey-table-locked .journey-main-row:focus-visible{box-shadow:inset 0 0 0 2px rgba(104,218,255,.62)!important}
+body[data-screen="journeys"] #screen .journey-detail-row>td{
+  background:linear-gradient(145deg,rgba(12,55,78,.94),rgba(6,29,47,.98))!important;
+}
+body[data-screen="journeys"] #screen .journey-row-details{
+  border-top-color:rgba(90,182,220,.38)!important;border-bottom-color:rgba(90,182,220,.38)!important;
+  background:radial-gradient(circle at 12% 0%,rgba(70,190,226,.10),transparent 40%)!important;
+}
+body[data-screen="journeys"] #screen .journey-row-details section{border-right-color:rgba(94,164,197,.26)!important}
+
+/* Remove the external blank area between Lifetime Spend and Journey Snapshot:
+   both cards share the row height, and Lifetime Spend uses that height rather
+   than ending early. */
+body[data-screen="journeys"] #screen .journey-overview-side-locked{
+  display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:12px!important;align-items:stretch!important;
+}
+body[data-screen="journeys"] #screen .journey-overview-side-locked>.card{
+  min-height:0!important;height:100%!important;align-self:stretch!important;margin:0!important;
+}
+body[data-screen="journeys"] #screen .journey-side-spend-locked{display:flex!important;flex-direction:column!important}
+body[data-screen="journeys"] #screen .journey-side-spend-locked .journey-spend-chart{
+  flex:1 1 auto!important;display:grid!important;grid-template-rows:repeat(7,minmax(40px,1fr))!important;
+  align-content:stretch!important;gap:7px!important;margin-top:10px!important;
+}
+body[data-screen="journeys"] #screen .journey-side-spend-locked .journey-spend-bar-row{min-height:40px!important;padding:5px 7px!important}
+body[data-screen="journeys"] #screen .journey-history-support-row{align-items:stretch!important}
+body[data-screen="journeys"] #screen .journey-history-support-row>.card{height:100%!important;align-self:stretch!important;margin:0!important}
+
+/* HOME-style feature-surface treatment. Palette identities stay the same; only
+   the way colour is carried through each card is upgraded. */
+body[data-screen="journeys"] #screen .journey-kpis-locked .journey-kpi.tone-purple{
+  background:radial-gradient(circle at 12% -8%,rgba(207,145,255,.29),transparent 44%),linear-gradient(145deg,#4a2874 0%,#2d1b50 58%,#10172b 100%)!important;
+  border-color:#a06dde!important;box-shadow:inset 0 1px rgba(255,255,255,.13),0 0 24px rgba(158,97,223,.15),0 11px 27px rgba(0,0,0,.29)!important;
+}
+body[data-screen="journeys"] #screen .journey-kpis-locked .journey-kpi.tone-green{
+  background:radial-gradient(circle at 88% -10%,rgba(92,157,255,.27),transparent 44%),linear-gradient(145deg,#15469d 0%,#0d2d68 58%,#09182f 100%)!important;
+  border-color:#558df3!important;box-shadow:inset 0 1px rgba(255,255,255,.13),0 0 24px rgba(69,128,241,.14),0 11px 27px rgba(0,0,0,.29)!important;
+}
+body[data-screen="journeys"] #screen .journey-kpis-locked .journey-kpi.tone-blue{
+  background:radial-gradient(circle at 12% -10%,rgba(255,172,78,.28),transparent 44%),linear-gradient(145deg,#914c16 0%,#60300e 58%,#2d190c 100%)!important;
+  border-color:#e18a3e!important;box-shadow:inset 0 1px rgba(255,255,255,.13),0 0 24px rgba(230,128,46,.13),0 11px 27px rgba(0,0,0,.29)!important;
+}
+body[data-screen="journeys"] #screen .journey-kpis-locked .journey-kpi.tone-gold{
+  background:radial-gradient(circle at 87% -10%,rgba(255,105,143,.26),transparent 44%),linear-gradient(145deg,#7d2039 0%,#4f182c 58%,#26121f 100%)!important;
+  border-color:#dd5b7e!important;box-shadow:inset 0 1px rgba(255,255,255,.13),0 0 24px rgba(224,76,112,.13),0 11px 27px rgba(0,0,0,.29)!important;
+}
+body[data-screen="journeys"] #screen .journey-kpis-locked .journey-kpi.tone-teal{
+  background:radial-gradient(circle at 12% -10%,rgba(68,229,242,.25),transparent 44%),linear-gradient(145deg,#087486 0%,#07505e 58%,#082631 100%)!important;
+  border-color:#36c9dc!important;box-shadow:inset 0 1px rgba(255,255,255,.13),0 0 24px rgba(49,205,223,.13),0 11px 27px rgba(0,0,0,.29)!important;
+}
+
+body[data-screen="journeys"] #screen .journey-history-map{
+  background:radial-gradient(circle at 12% 0%,rgba(57,185,230,.15),transparent 35%),linear-gradient(145deg,rgba(8,55,80,.98),rgba(5,34,56,.99) 58%,rgba(4,23,39,.995))!important;
+  border-color:rgba(67,166,205,.58)!important;box-shadow:inset 0 1px rgba(255,255,255,.08),0 0 25px rgba(47,159,204,.08),0 10px 27px rgba(0,0,0,.27)!important;
+}
+body[data-screen="journeys"] #screen .journey-side-spend-locked{
+  background:radial-gradient(circle at 12% -8%,rgba(101,129,255,.25),transparent 44%),linear-gradient(145deg,#1a3471 0%,#111f4d 58%,#0a152f 100%)!important;
+  border-color:#5a76d8!important;box-shadow:inset 0 1px rgba(255,255,255,.11),0 0 25px rgba(84,105,220,.13),0 11px 27px rgba(0,0,0,.28)!important;
+}
+body[data-screen="journeys"] #screen .journey-side-spend-locked>h3{color:#c5d0ff!important}
+body[data-screen="journeys"] #screen .journey-side-spend-locked .journey-spend-bar-row{
+  background:linear-gradient(145deg,rgba(99,119,225,.105),rgba(45,54,132,.08))!important;border-radius:9px!important;
+}
+body[data-screen="journeys"] #screen .journey-side-spend-locked .journey-spend-bar-track{background:rgba(21,26,70,.50)!important;border-color:rgba(140,151,238,.23)!important}
+
+body[data-screen="journeys"] #screen .journey-side-stats-locked{
+  background:radial-gradient(circle at 88% -8%,rgba(255,157,67,.25),transparent 44%),linear-gradient(145deg,#743912 0%,#46270e 60%,#25180c 100%)!important;
+  border-color:#cd7b37!important;box-shadow:inset 0 1px rgba(255,255,255,.11),0 0 25px rgba(213,119,43,.12),0 11px 27px rgba(0,0,0,.28)!important;
+}
+body[data-screen="journeys"] #screen .journey-side-stats-locked>h3{color:#ffc080!important}
+body[data-screen="journeys"] #screen .journey-side-stats-locked .journey-snapshot-tile{
+  background:linear-gradient(145deg,rgba(202,113,43,.22),rgba(104,57,20,.13))!important;border-color:rgba(255,199,137,.28)!important;
+}
+body[data-screen="journeys"] #screen .journey-side-stats-locked .journey-booking-summary,
+body[data-screen="journeys"] #screen .journey-side-stats-locked .journey-km-summary{
+  background:linear-gradient(145deg,rgba(192,99,34,.18),rgba(92,50,18,.12))!important;border-color:rgba(255,193,122,.25)!important;
+}
+
+body[data-screen="journeys"] #screen .journey-milestones-locked{
+  background:radial-gradient(circle at 12% -10%,rgba(65,213,255,.24),transparent 44%),linear-gradient(145deg,#084960 0%,#073347 60%,#071e30 100%)!important;
+  border-color:#40afd2!important;box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 23px rgba(54,174,212,.11),0 10px 25px rgba(0,0,0,.27)!important;
+}
+body[data-screen="journeys"] #screen .journey-milestones-locked>h3{color:#79ddff!important}
+body[data-screen="journeys"] #screen .journey-milestones-locked .journey-milestones>div{background:rgba(57,177,214,.10)!important;border-color:rgba(123,222,247,.20)!important}
+
+body[data-screen="journeys"] #screen .journey-destination-totals-card{
+  background:radial-gradient(circle at 88% -10%,rgba(255,213,79,.23),transparent 44%),linear-gradient(145deg,#71580f 0%,#45370e 60%,#241e0e 100%)!important;
+  border-color:#cda73d!important;box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 23px rgba(211,173,59,.11),0 10px 25px rgba(0,0,0,.27)!important;
+}
+body[data-screen="journeys"] #screen .journey-destination-totals-card>h3{color:#f4d16b!important}
+body[data-screen="journeys"] #screen .journey-destination-totals-card .journey-destination-totals>button{background:linear-gradient(145deg,rgba(255,211,91,.13),rgba(170,124,29,.07))!important;border-color:rgba(255,222,118,.22)!important}
+
+body[data-screen="journeys"] #screen .journey-travel-mix-card{
+  background:radial-gradient(circle at 12% -10%,rgba(215,130,255,.23),transparent 44%),linear-gradient(145deg,#543066 0%,#342047 60%,#1c152c 100%)!important;
+  border-color:#9d6bc1!important;box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 23px rgba(157,96,193,.11),0 10px 25px rgba(0,0,0,.27)!important;
+}
+body[data-screen="journeys"] #screen .journey-travel-mix-card>h3{color:#dfa8f5!important}
+body[data-screen="journeys"] #screen .journey-travel-mix-card .journey-travel-mix-row{background:linear-gradient(145deg,rgba(194,123,226,.13),rgba(104,67,142,.07))!important;border-color:rgba(218,166,241,.22)!important}
+
+/* Search/filter and records containers use a controlled blue wash so the lower
+   half belongs to the same polished screen rather than reverting to base navy. */
+body[data-screen="journeys"] #screen .journey-filter-locked{
+  background:radial-gradient(circle at 8% -10%,rgba(78,169,221,.14),transparent 42%),linear-gradient(145deg,rgba(10,53,77,.97),rgba(6,32,51,.99))!important;
+  border-color:rgba(69,145,184,.50)!important;box-shadow:inset 0 1px rgba(255,255,255,.06)!important;
+}
+body[data-screen="journeys"] #screen .journey-records-locked{
+  background:radial-gradient(circle at 12% -10%,rgba(64,168,217,.10),transparent 40%),linear-gradient(145deg,rgba(7,42,64,.98),rgba(5,28,46,.995))!important;
+  border-color:rgba(61,132,169,.48)!important;box-shadow:inset 0 1px rgba(255,255,255,.06),0 9px 22px rgba(0,0,0,.22)!important;
+}
+
+/* Expanded widget parity — exact same source colour families after this pass. */
+body[data-screen="journeys"] .journey-focus-panel.kpi-countries{--focus-accent:#d9b8ff!important;--focus-rgb:74,40,116!important;--focus-deep-rgb:16,23,43!important;border-color:#a06dde!important;background:radial-gradient(circle at 12% -8%,rgba(207,145,255,.29),transparent 44%),linear-gradient(145deg,#4a2874 0%,#2d1b50 58%,#10172b 100%)!important}
+body[data-screen="journeys"] .journey-focus-panel.kpi-destinations{--focus-accent:#8fb7ff!important;--focus-rgb:21,70,157!important;--focus-deep-rgb:9,24,47!important;border-color:#558df3!important;background:radial-gradient(circle at 88% -10%,rgba(92,157,255,.27),transparent 44%),linear-gradient(145deg,#15469d 0%,#0d2d68 58%,#09182f 100%)!important}
+body[data-screen="journeys"] .journey-focus-panel.kpi-days{--focus-accent:#ffb15f!important;--focus-rgb:145,76,22!important;--focus-deep-rgb:45,25,12!important;border-color:#e18a3e!important;background:radial-gradient(circle at 12% -10%,rgba(255,172,78,.28),transparent 44%),linear-gradient(145deg,#914c16 0%,#60300e 58%,#2d190c 100%)!important}
+body[data-screen="journeys"] .journey-focus-panel.kpi-road{--focus-accent:#ff85a2!important;--focus-rgb:125,32,57!important;--focus-deep-rgb:38,18,31!important;border-color:#dd5b7e!important;background:radial-gradient(circle at 87% -10%,rgba(255,105,143,.26),transparent 44%),linear-gradient(145deg,#7d2039 0%,#4f182c 58%,#26121f 100%)!important}
+body[data-screen="journeys"] .journey-focus-panel.kpi-spend{--focus-accent:#64e3ef!important;--focus-rgb:8,116,134!important;--focus-deep-rgb:8,38,49!important;border-color:#36c9dc!important;background:radial-gradient(circle at 12% -10%,rgba(68,229,242,.25),transparent 44%),linear-gradient(145deg,#087486 0%,#07505e 58%,#082631 100%)!important}
+body[data-screen="journeys"] .journey-focus-panel.spend{--focus-accent:#9db1ff!important;--focus-rgb:26,52,113!important;--focus-deep-rgb:10,21,47!important;border-color:#5a76d8!important;background:radial-gradient(circle at 12% -8%,rgba(101,129,255,.25),transparent 44%),linear-gradient(145deg,#1a3471 0%,#111f4d 58%,#0a152f 100%)!important}
+body[data-screen="journeys"] .journey-focus-panel.stats{--focus-accent:#ffc080!important;--focus-rgb:116,57,18!important;--focus-deep-rgb:37,24,12!important;border-color:#cd7b37!important;background:radial-gradient(circle at 88% -8%,rgba(255,157,67,.25),transparent 44%),linear-gradient(145deg,#743912 0%,#46270e 60%,#25180c 100%)!important}
+body[data-screen="journeys"] .journey-focus-panel.milestones{--focus-accent:#79ddff!important;--focus-rgb:8,73,96!important;--focus-deep-rgb:7,30,48!important;border-color:#40afd2!important;background:radial-gradient(circle at 12% -10%,rgba(65,213,255,.24),transparent 44%),linear-gradient(145deg,#084960 0%,#073347 60%,#071e30 100%)!important}
+body[data-screen="journeys"] .journey-focus-panel.totals{--focus-accent:#f4d16b!important;--focus-rgb:113,88,15!important;--focus-deep-rgb:36,30,14!important;border-color:#cda73d!important;background:radial-gradient(circle at 88% -10%,rgba(255,213,79,.23),transparent 44%),linear-gradient(145deg,#71580f 0%,#45370e 60%,#241e0e 100%)!important}
+body[data-screen="journeys"] .journey-focus-panel.mix{--focus-accent:#dfa8f5!important;--focus-rgb:84,48,102!important;--focus-deep-rgb:28,21,44!important;border-color:#9d6bc1!important;background:radial-gradient(circle at 12% -10%,rgba(215,130,255,.23),transparent 44%),linear-gradient(145deg,#543066 0%,#342047 60%,#1c152c 100%)!important}
+
+@media(max-width:1180px) and (orientation:landscape){
+  body[data-screen="journeys"] #screen .journey-table-locked .journey-main-row>td{height:84px!important;min-height:84px!important;padding-top:10px!important;padding-bottom:10px!important}
+  body[data-screen="journeys"] #screen .journey-overview-side-locked{gap:10px!important}
+}
+
+
+/* ========================================================================== */
+/* BATCH 1235 — CHECKLIST HOME-VISUAL POLISH LOCK                            */
+/* 29 AUG 2026 — Kym-approved Checklist structure and function are preserved. */
+/* This pass changes presentation only: the existing authorised colour        */
+/* identities now flow through each full widget surface using the same soft    */
+/* highlights, fades, integrated tonal internals and depth language as Home.   */
+/* Calendar remains deliberately untouched.                                   */
+/* ========================================================================== */
+
+/* Ready to Move keeps its amber/green status identity, but uses a richer full
+   surface fade and an integrated action area rather than a flat slab. */
+body[data-screen="checklist"] #screen .checklist-ready-panel.waiting{
+  background:
+    radial-gradient(circle at 9% -18%,rgba(255,218,91,.28),transparent 43%),
+    linear-gradient(135deg,rgba(133,88,13,.985),rgba(86,57,13,.985) 55%,rgba(45,34,17,.995))!important;
+  border-color:rgba(224,176,62,.82)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.12),0 0 25px rgba(217,162,45,.12),0 11px 28px rgba(0,0,0,.30)!important;
+}
+body[data-screen="checklist"] #screen .checklist-ready-panel.ready{
+  background:
+    radial-gradient(circle at 9% -18%,rgba(91,230,138,.22),transparent 43%),
+    linear-gradient(135deg,rgba(20,104,58,.98),rgba(13,70,46,.99) 55%,rgba(9,38,33,.995))!important;
+  border-color:rgba(86,207,126,.78)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.12),0 0 25px rgba(72,198,119,.11),0 11px 28px rgba(0,0,0,.30)!important;
+}
+body[data-screen="checklist"] #screen .checklist-ready-panel>button{
+  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(5,18,28,.18))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.12),0 6px 15px rgba(0,0,0,.15)!important;
+}
+
+/* Stage selector remains the same four-stage control; only neutral depth and
+   edge definition are strengthened. The active blue state is unchanged. */
+body[data-screen="checklist"] #screen .checklist-phases.checklist-phases-below-readiness button:not(.active){
+  background:radial-gradient(circle at 18% 0%,rgba(86,184,224,.09),transparent 40%),linear-gradient(180deg,rgba(10,39,58,.94),rgba(6,24,40,.985))!important;
+  border-color:rgba(62,116,149,.42)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.055),0 5px 13px rgba(0,0,0,.18)!important;
+}
+body[data-screen="checklist"] #screen .checklist-phases.checklist-phases-below-readiness button.active{
+  background:radial-gradient(circle at 18% 0%,rgba(116,201,255,.20),transparent 40%),linear-gradient(180deg,#1959a8,#0c3977)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.12),0 0 20px rgba(41,116,215,.22),0 6px 15px rgba(0,0,0,.19)!important;
+}
+body[data-screen="checklist"] #screen .checklist-guidance{
+  margin:0 0 11px!important;
+  border-top:1px solid rgba(82,145,177,.16)!important;
+  border-bottom:1px solid rgba(82,145,177,.13)!important;
+  background:linear-gradient(90deg,rgba(14,48,67,.20),rgba(4,20,32,.06),rgba(14,48,67,.18))!important;
+}
+
+/* HIS / HERS retain the exact approved blue and pink identities, with Home-like
+   directional light and a darker trailing fade for easier reading. */
+body[data-screen="checklist"] #screen .personal-needs-card.his{
+  background:
+    radial-gradient(circle at 12% -10%,rgba(133,206,255,.30),transparent 43%),
+    linear-gradient(135deg,#176dca 0%,#1254a5 48%,#092f63 100%)!important;
+  border-color:#6fc2ff!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.14),0 0 25px rgba(49,151,239,.15),0 11px 27px rgba(0,0,0,.28)!important;
+}
+body[data-screen="checklist"] #screen .personal-needs-card.hers{
+  background:
+    radial-gradient(circle at 12% -10%,rgba(255,174,210,.29),transparent 43%),
+    linear-gradient(135deg,#aa326d 0%,#8e295c 48%,#4b1834 100%)!important;
+  border-color:#ff9fc8!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.14),0 0 25px rgba(231,77,145,.14),0 11px 27px rgba(0,0,0,.28)!important;
+}
+body[data-screen="checklist"] #screen .personal-needs-card .personal-needs-readonly-item{
+  border:1px solid rgba(255,255,255,.09)!important;
+  border-radius:8px!important;
+  padding:6px 7px!important;
+  background:linear-gradient(90deg,rgba(3,20,34,.16),rgba(3,20,34,.07))!important;
+}
+body[data-screen="checklist"] #screen .personal-needs-card .personal-needs-readonly-item.done{
+  background:linear-gradient(90deg,rgba(3,20,34,.11),rgba(3,20,34,.045))!important;
+}
+
+/* Permanent and Destination cards keep their established teal/cyan identities.
+   Colour now belongs to the complete card rather than fading prematurely into
+   generic navy. Internal rows stay tonal/translucent to the parent surface. */
+body[data-screen="checklist"] #screen .checklist-list-card.permanent{
+  background:
+    radial-gradient(circle at 12% -10%,rgba(87,224,184,.20),transparent 43%),
+    linear-gradient(145deg,rgba(10,78,67,.97),rgba(7,53,51,.985) 58%,rgba(5,29,39,.995))!important;
+  border-color:#4caa91!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 23px rgba(63,190,151,.10),0 10px 25px rgba(0,0,0,.28)!important;
+}
+body[data-screen="checklist"] #screen .checklist-list-card.destination{
+  background:
+    radial-gradient(circle at 12% -10%,rgba(89,207,246,.20),transparent 43%),
+    linear-gradient(145deg,rgba(10,75,99,.97),rgba(7,50,72,.985) 58%,rgba(5,28,43,.995))!important;
+  border-color:#4d9ebd!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 23px rgba(64,166,205,.10),0 10px 25px rgba(0,0,0,.28)!important;
+}
+body[data-screen="checklist"] #screen .checklist-list-card.permanent>header,
+body[data-screen="checklist"] #screen .checklist-list-card.destination>header{
+  border-bottom:1px solid rgba(160,226,230,.13)!important;
+  background:linear-gradient(90deg,rgba(255,255,255,.035),transparent 72%)!important;
+}
+body[data-screen="checklist"] #screen .checklist-list-card .checklist-list-progress{
+  padding-top:10px!important;
+  background:linear-gradient(90deg,rgba(3,22,32,.13),rgba(3,22,32,.03))!important;
+}
+body[data-screen="checklist"] #screen .checklist-list-card .checklist-task-row-readonly{
+  margin:0 9px 7px!important;
+  border:1px solid rgba(127,204,215,.10)!important;
+  border-radius:9px!important;
+  background:linear-gradient(90deg,rgba(3,23,32,.24),rgba(3,23,32,.10))!important;
+}
+body[data-screen="checklist"] #screen .checklist-list-card .checklist-task-row-readonly:last-child{margin-bottom:10px!important}
+
+/* Right rail: Overview becomes a true teal feature widget and its three status
+   tiles inherit the parent colour instead of reading as pasted-in black boxes. */
+body[data-screen="checklist"] #screen .checklist-overview-card{
+  background:
+    radial-gradient(circle at 14% -10%,rgba(81,232,219,.22),transparent 43%),
+    linear-gradient(145deg,rgba(7,79,83,.97),rgba(6,51,62,.985) 58%,rgba(4,27,39,.995))!important;
+  border-color:#48aaa7!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.105),0 0 24px rgba(61,193,183,.11),0 11px 27px rgba(0,0,0,.29)!important;
+}
+body[data-screen="checklist"] #screen .checklist-overview-card>h3{color:#9ff0e9!important}
+body[data-screen="checklist"] #screen .checklist-overview-premium{
+  background:linear-gradient(145deg,rgba(24,126,123,.16),rgba(4,30,42,.20))!important;
+  border-color:rgba(108,220,210,.20)!important;
+}
+body[data-screen="checklist"] #screen .checklist-overview-stats>span{
+  background:linear-gradient(145deg,rgba(33,126,122,.20),rgba(4,34,43,.34))!important;
+  border-color:rgba(114,218,209,.20)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.055),0 4px 11px rgba(0,0,0,.12)!important;
+}
+
+/* Next Destination remains the approved indigo/photo widget; strengthen the
+   parent wash and make the photo card feel embedded in that same surface. */
+body[data-screen="checklist"] #screen .checklist-next-destination{
+  background:
+    radial-gradient(circle at 12% -10%,rgba(148,128,255,.20),transparent 43%),
+    linear-gradient(145deg,rgba(36,43,92,.97),rgba(25,31,72,.985) 58%,rgba(14,22,48,.995))!important;
+  border-color:#6f6ab4!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 23px rgba(111,100,189,.10),0 10px 25px rgba(0,0,0,.28)!important;
+}
+body[data-screen="checklist"] #screen .checklist-next-card.destination-visual{
+  border-color:rgba(145,135,216,.62)!important;
+  box-shadow:inset 0 0 42px rgba(75,64,137,.22),0 8px 20px rgba(0,0,0,.22)!important;
+}
+body[data-screen="checklist"] #screen .checklist-reset-note{
+  border-color:rgba(103,113,174,.38)!important;
+  background:linear-gradient(145deg,rgba(31,37,79,.40),rgba(8,22,39,.64))!important;
+}
+
+/* Exact expanded-source parity after this polish. */
+body[data-screen="checklist"] .checklist-focus-panel.overview{
+  --focus-accent:#9ff0e9!important;--focus-rgb:7,79,83!important;--focus-deep-rgb:4,27,39!important;
+  background:radial-gradient(circle at 14% -10%,rgba(81,232,219,.22),transparent 43%),linear-gradient(145deg,rgba(7,79,83,.97),rgba(6,51,62,.985) 58%,rgba(4,27,39,.995))!important;
+  border-color:#48aaa7!important;
+}
+body[data-screen="checklist"] .checklist-focus-panel.his{
+  --focus-accent:#d9f2ff!important;--focus-rgb:23,109,202!important;--focus-deep-rgb:9,47,99!important;
+  background:radial-gradient(circle at 12% -10%,rgba(133,206,255,.30),transparent 43%),linear-gradient(135deg,#176dca 0%,#1254a5 48%,#092f63 100%)!important;
+  border-color:#6fc2ff!important;
+}
+body[data-screen="checklist"] .checklist-focus-panel.hers{
+  --focus-accent:#ffe0ee!important;--focus-rgb:170,50,109!important;--focus-deep-rgb:75,24,52!important;
+  background:radial-gradient(circle at 12% -10%,rgba(255,174,210,.29),transparent 43%),linear-gradient(135deg,#aa326d 0%,#8e295c 48%,#4b1834 100%)!important;
+  border-color:#ff9fc8!important;
+}
+body[data-screen="checklist"] .checklist-focus-panel.permanent{
+  --focus-accent:#92e9d1!important;--focus-rgb:10,78,67!important;--focus-deep-rgb:5,29,39!important;
+  background:radial-gradient(circle at 12% -10%,rgba(87,224,184,.20),transparent 43%),linear-gradient(145deg,rgba(10,78,67,.97),rgba(7,53,51,.985) 58%,rgba(5,29,39,.995))!important;
+  border-color:#4caa91!important;
+}
+body[data-screen="checklist"] .checklist-focus-panel.destination{
+  --focus-accent:#9bdfff!important;--focus-rgb:10,75,99!important;--focus-deep-rgb:5,28,43!important;
+  background:radial-gradient(circle at 12% -10%,rgba(89,207,246,.20),transparent 43%),linear-gradient(145deg,rgba(10,75,99,.97),rgba(7,50,72,.985) 58%,rgba(5,28,43,.995))!important;
+  border-color:#4d9ebd!important;
+}
+
+/* iPad landscape keeps the current information density and hierarchy. */
+@media(max-width:1180px) and (orientation:landscape){
+  body[data-screen="checklist"] #screen .personal-needs-card{min-height:250px!important}
+  body[data-screen="checklist"] #screen .checklist-side{gap:11px!important}
+  body[data-screen="checklist"] #screen .checklist-list-card .checklist-task-row-readonly{margin-left:7px!important;margin-right:7px!important}
+}
+
+
+/* ==========================================================================\n   BATCH 1236 · VAULT POLISH + MANY-EMAIL STREAMING ACCOUNT LOCK\n   The five category cards remain the approved colour benchmark. Lower Vault\n   widgets now carry their feature colour through the full surface, while the\n   concealed email manager supports a labelled list of local login accounts.\n   ========================================================================== */
+body[data-screen="vault"] #screen .vault-lower-grid{gap:14px!important;align-items:stretch!important}
+body[data-screen="vault"] #screen .vault-side-summary,
+body[data-screen="vault"] #screen .vault-side-expiry,
+body[data-screen="vault"] #screen .vault-side-emergency-travel,
+body[data-screen="vault"] #screen .vault-side-emergency,
+body[data-screen="vault"] #screen .vault-side-activity{position:relative!important;overflow:hidden!important;box-shadow:inset 0 1px rgba(255,255,255,.055),0 15px 32px rgba(0,0,0,.25)!important}
+body[data-screen="vault"] #screen .vault-side-summary{background:radial-gradient(circle at 12% 0%,rgba(54,216,234,.18),transparent 45%),linear-gradient(138deg,rgba(9,78,91,.91),rgba(5,27,43,.96))!important;border-color:rgba(85,215,231,.72)!important}
+body[data-screen="vault"] #screen .vault-side-expiry{background:radial-gradient(circle at 85% 0%,rgba(255,191,66,.18),transparent 46%),linear-gradient(138deg,rgba(87,66,18,.91),rgba(35,31,18,.96))!important;border-color:rgba(232,177,68,.68)!important}
+body[data-screen="vault"] #screen .vault-side-emergency-travel{background:radial-gradient(circle at 10% 0%,rgba(238,177,65,.14),transparent 48%),linear-gradient(138deg,rgba(66,55,27,.93),rgba(18,32,38,.96))!important;border-color:rgba(218,171,78,.62)!important}
+body[data-screen="vault"] #screen .vault-side-emergency{background:radial-gradient(circle at 84% 0%,rgba(255,75,117,.18),transparent 44%),linear-gradient(138deg,rgba(104,22,49,.94),rgba(52,13,34,.97))!important;border-color:rgba(236,84,126,.68)!important}
+body[data-screen="vault"] #screen .vault-side-activity{background:radial-gradient(circle at 12% 0%,rgba(136,102,255,.17),transparent 46%),linear-gradient(138deg,rgba(38,38,84,.94),rgba(17,26,50,.97))!important;border-color:rgba(130,111,230,.58)!important}
+body[data-screen="vault"] #screen .vault-summary-grid>div{background:linear-gradient(145deg,rgba(63,205,218,.105),rgba(0,12,23,.20))!important;border-color:rgba(113,216,229,.30)!important}
+body[data-screen="vault"] #screen .vault-reminder{background:linear-gradient(145deg,rgba(236,174,57,.11),rgba(15,18,22,.18))!important}
+body[data-screen="vault"] #screen .vault-emergency-line button{background:linear-gradient(145deg,rgba(218,174,86,.10),rgba(2,16,27,.22))!important;border-color:rgba(216,177,101,.28)!important}
+body[data-screen="vault"] #screen .emergency-contact-readable{background:linear-gradient(145deg,rgba(238,70,114,.12),rgba(43,7,24,.18))!important;border-color:rgba(238,111,143,.28)!important}
+body[data-screen="vault"] #screen .vault-activity{background:linear-gradient(145deg,rgba(123,103,229,.08),rgba(4,15,30,.12))!important}
+body[data-screen="vault"] #screen .vault-records-toggle{background:radial-gradient(circle at 12% 0%,rgba(59,196,224,.13),transparent 45%),linear-gradient(105deg,rgba(7,50,71,.96),rgba(6,24,39,.96))!important;box-shadow:inset 0 1px rgba(255,255,255,.045),0 12px 26px rgba(0,0,0,.22)!important}
+
+body[data-screen="vault"] .vault-streaming-email-panel{width:min(860px,90vw)!important;max-height:min(720px,calc(100vh - 40px))!important;display:flex!important;flex-direction:column!important;background:radial-gradient(circle at 12% 0%,rgba(43,183,222,.15),transparent 42%),linear-gradient(180deg,rgba(7,34,53,.995),rgba(2,15,27,.995))!important}
+body[data-screen="vault"] .vault-streaming-email-panel>header{flex:0 0 auto!important}
+body[data-screen="vault"] .vault-streaming-email-panel>header p{margin:7px 0 0!important;max-width:610px!important;color:#b6cedd!important;font-size:13px!important;line-height:1.35!important}
+body[data-screen="vault"] .vault-streaming-email-list{display:grid!important;gap:12px!important;padding:20px 24px 8px!important;overflow:auto!important;min-height:90px!important;overscroll-behavior:contain!important}
+body[data-screen="vault"] .vault-streaming-email-row{display:grid!important;grid-template-columns:minmax(170px,.72fr) minmax(280px,1.35fr) auto!important;gap:12px!important;align-items:end!important;padding:14px!important;border:1px solid rgba(89,185,223,.28)!important;border-radius:16px!important;background:linear-gradient(145deg,rgba(22,105,137,.18),rgba(3,18,30,.32))!important;box-shadow:inset 0 1px rgba(255,255,255,.035)!important}
+body[data-screen="vault"] .vault-streaming-email-row label{display:grid!important;gap:7px!important;min-width:0!important}
+body[data-screen="vault"] .vault-streaming-email-row label>span{font-size:10px!important;font-weight:900!important;letter-spacing:.13em!important;color:#82dcff!important}
+body[data-screen="vault"] .vault-streaming-email-row input{height:52px!important;min-width:0!important;font-size:16px!important;font-weight:750!important;padding:0 13px!important}
+body[data-screen="vault"] .vault-streaming-email-remove{height:52px!important;min-width:96px!important;padding:0 15px!important;font-size:11px!important;font-weight:900!important;letter-spacing:.06em!important}
+body[data-screen="vault"] .vault-streaming-email-empty{padding:26px!important;text-align:center!important;border:1px dashed rgba(105,190,222,.34)!important;border-radius:14px!important;color:#a9c3d5!important;background:rgba(4,20,34,.28)!important}
+body[data-screen="vault"] .vault-streaming-email-add-wrap{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;padding:14px 24px!important}
+body[data-screen="vault"] .vault-streaming-email-add-wrap>button{min-height:50px!important;padding:0 18px!important;font-weight:900!important;color:#9ee8ff!important;border-color:rgba(79,190,230,.46)!important;background:linear-gradient(180deg,rgba(25,112,151,.48),rgba(8,49,72,.62))!important}
+body[data-screen="vault"] .vault-streaming-email-add-wrap>small{color:#8eaabd!important;line-height:1.3!important;text-align:right!important}
+body[data-screen="vault"] .vault-streaming-email-actions{flex:0 0 auto!important;padding-top:10px!important;border-top:1px solid rgba(73,142,176,.18)!important}
+body[data-screen="vault"] .vault-streaming-email-assignment-note{margin:0 0 14px!important;padding:10px 12px!important;border:1px solid rgba(237,173,65,.34)!important;border-radius:10px!important;background:rgba(117,76,15,.18)!important;color:#edca7e!important;font-size:12px!important}
+@media(max-width:1000px){
+  body[data-screen="vault"] .vault-streaming-email-row{grid-template-columns:1fr 1.25fr!important}
+  body[data-screen="vault"] .vault-streaming-email-remove{grid-column:1/-1!important;justify-self:end!important;height:46px!important}
+  body[data-screen="vault"] .vault-streaming-email-add-wrap{align-items:flex-start!important;flex-direction:column!important}
+  body[data-screen="vault"] .vault-streaming-email-add-wrap>small{text-align:left!important}
+}
+
+
+/* Batch 1237 — simplified reservation money routing.
+   Annual = AUD only. Destination = only configured Destination Budgets and their saved fixed rate. */
+#modal:has(.reservation-quick-form) .reservation-money-simple-panel{grid-template-columns:170px minmax(0,1fr) 310px!important;align-items:stretch!important}
+#modal:has(.reservation-quick-form) .reservation-money-simple{grid-column:2;display:flex;flex-direction:column;gap:10px;justify-content:center;min-width:0}
+#modal:has(.reservation-quick-form) .reservation-payment-mode{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px;padding:7px 9px;border:1px solid rgba(86,202,239,.28);border-radius:10px;background:rgba(4,20,32,.42)}
+#modal:has(.reservation-quick-form) .reservation-payment-mode[hidden],#modal:has(.reservation-quick-form) .reservation-destination-picker[hidden]{display:none!important}
+#modal:has(.reservation-quick-form) .reservation-payment-mode>span{font-size:10px;font-weight:900;letter-spacing:.14em;color:#9fdef5}
+#modal:has(.reservation-quick-form) .reservation-payment-mode>div{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#modal:has(.reservation-quick-form) .reservation-payment-mode button{min-height:38px;border:1px solid #315f79;border-radius:9px;background:#0a2234;color:#cfe7f5;font-size:12px;font-weight:900;letter-spacing:.08em}
+#modal:has(.reservation-quick-form) .reservation-payment-mode button.active{background:linear-gradient(180deg,#168fbd,#096e99);border-color:#82e2ff;color:white;box-shadow:0 0 14px rgba(54,192,235,.22)}
+#modal:has(.reservation-quick-form) .reservation-single-amount{display:block}
+#modal:has(.reservation-quick-form) .reservation-single-amount>span{display:block;margin-bottom:6px;font-size:12px;font-weight:900;color:#d9effa}
+#modal:has(.reservation-quick-form) .reservation-single-amount>div{grid-template-columns:64px minmax(0,1fr)}
+#modal:has(.reservation-quick-form) .reservation-money-preview{min-height:34px;padding:8px 10px;border-radius:9px;border:1px solid rgba(70,171,205,.24);background:rgba(3,17,28,.58);font-size:11px;line-height:1.35;color:#a9c9da}
+#modal:has(.reservation-quick-form) .reservation-destination-picker{display:grid;gap:6px;padding:8px;border:1px solid rgba(85,220,169,.32);border-radius:10px;background:linear-gradient(145deg,rgba(18,80,62,.34),rgba(5,24,34,.72))}
+#modal:has(.reservation-quick-form) .reservation-destination-picker label>span{display:block;margin-bottom:5px;font-size:10px;font-weight:900;letter-spacing:.08em;color:#b7f4db}
+#modal:has(.reservation-quick-form) .reservation-destination-picker select{width:100%;min-height:44px!important;padding:6px 30px 6px 9px!important;font-size:12px!important;font-weight:850!important;background:#071e2b!important;border-color:#397965!important;color:#f5fffb!important}
+#modal:has(.reservation-quick-form) .reservation-destination-picker small{font-size:9px;line-height:1.3;color:#9bd7c0}
+#modal:has(.reservation-quick-form) .reservation-budget-option span{font-size:10px!important}
+@media(max-width:1080px){#modal:has(.reservation-quick-form) .reservation-money-simple-panel{grid-template-columns:145px minmax(0,1fr) 270px!important}}
+
+#modal:has(.reservation-quick-form) .reservation-end-field[hidden]{display:none!important}
+
+
+/* Batch 1238 — reservation exact-stay clarity lock.
+   A repeated city (for example Cairo twice) must be distinguishable by visit number + dates,
+   and Destination Budget bookings must visibly confirm that the booking date matches the selected stay. */
+#modal:has(.reservation-quick-form) .reservation-destination-picker{gap:9px!important}
+#modal:has(.reservation-quick-form) .reservation-destination-picker select{font-size:13px!important;font-weight:900!important;line-height:1.25!important}
+#modal:has(.reservation-quick-form) .reservation-stay-confirmation{display:grid;gap:3px;padding:10px 11px;border:1px solid rgba(112,225,180,.38);border-radius:10px;background:linear-gradient(145deg,rgba(20,103,77,.42),rgba(4,28,34,.78));box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+#modal:has(.reservation-quick-form) .reservation-stay-confirmation>span{font-size:9px;font-weight:950;letter-spacing:.13em;color:#91e9c3}
+#modal:has(.reservation-quick-form) .reservation-stay-confirmation>strong{font-size:15px;line-height:1.2;color:#fff}
+#modal:has(.reservation-quick-form) .reservation-stay-confirmation>b{font-size:12px;line-height:1.25;color:#c9f7e4}
+#modal:has(.reservation-quick-form) .reservation-stay-confirmation>small{font-size:10px;line-height:1.35;font-weight:850;color:#8fe7bd}
+#modal:has(.reservation-quick-form) .reservation-stay-confirmation.needs-selection{border-color:rgba(255,193,78,.58);background:linear-gradient(145deg,rgba(111,73,12,.38),rgba(4,28,34,.78))}
+#modal:has(.reservation-quick-form) .reservation-stay-confirmation.needs-selection>span,#modal:has(.reservation-quick-form) .reservation-stay-confirmation.needs-selection>small{color:#ffd77b}
+#modal:has(.reservation-quick-form) .reservation-stay-confirmation.mismatch{border-color:rgba(255,104,123,.62);background:linear-gradient(145deg,rgba(104,29,45,.42),rgba(4,28,34,.78))}
+#modal:has(.reservation-quick-form) .reservation-stay-confirmation.mismatch>span,#modal:has(.reservation-quick-form) .reservation-stay-confirmation.mismatch>small{color:#ff9eb0}
