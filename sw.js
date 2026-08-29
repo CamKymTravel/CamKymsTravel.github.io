@@ -1,6 +1,6 @@
-const CACHE='tcc-simulation-portugal-batch1248-4.5.697-shell-batch1248-20260829-1';
+const CACHE='tcc-simulation-continuity-4.5.702-shell-batch1257-20260830-1';
 const CACHE_PREFIX='tcc-simulation-continuity-';
-const LEGACY_CACHE_PREFIX='tcc-simulation-v4.5.677-working-';
+const LEGACY_CACHE_PREFIXES=['tcc-simulation-portugal-','tcc-simulation-v4.5.677-working-'];
 const APP_SHELL=[
   "./",
   "./app.js",
@@ -87,21 +87,21 @@ const APP_SHELL=[
   "./ui-icon-bank-wise.png",
   "./world-map-premium.png",
   "./world-map-vector.svg",
-  "./styles.css?v=4.5.697-shell-batch1248-20260829",
-  "./app.js?v=4.5.697-shell-batch1248-20260829",
-  "./manifest.webmanifest?v=4.5.697-shell-batch1248-20260829",
-  "./icon.svg?v=4.5.697-shell-batch1248-20260829",
-  "./apple-touch-icon.png?v=4.5.697-shell-batch1248-20260829",
-  "./compass-mark.svg?v=4.5.697-shell-batch1248-20260829",
-  "./launch-ipad-102-2160x1620.png?v=4.5.697-shell-batch1248-20260829",
-  "./launch-ipad-air-2360x1640.png?v=4.5.697-shell-batch1248-20260829",
-  "./launch-ipad-classic-2048x1536.png?v=4.5.697-shell-batch1248-20260829",
-  "./launch-ipad-mini6-2266x1488.png?v=4.5.697-shell-batch1248-20260829",
-  "./launch-ipad-pro105-2224x1668.png?v=4.5.697-shell-batch1248-20260829",
-  "./launch-ipad-pro11-2388x1668.png?v=4.5.697-shell-batch1248-20260829",
-  "./launch-ipad-pro11-m4-2420x1668.png?v=4.5.697-shell-batch1248-20260829",
-  "./launch-ipad-pro129-2732x2048.png?v=4.5.697-shell-batch1248-20260829",
-  "./launch-ipad-pro13-m4-2752x2064.png?v=4.5.697-shell-batch1248-20260829"
+  "./styles.css?v=4.5.702-shell-batch1257-20260830-1",
+  "./app.js?v=4.5.702-shell-batch1257-20260830-1",
+  "./manifest.webmanifest?v=4.5.702-shell-batch1257-20260830-1",
+  "./icon.svg?v=4.5.702-shell-batch1257-20260830-1",
+  "./apple-touch-icon.png?v=4.5.702-shell-batch1257-20260830-1",
+  "./compass-mark.svg?v=4.5.702-shell-batch1257-20260830-1",
+  "./launch-ipad-102-2160x1620.png?v=4.5.702-shell-batch1257-20260830-1",
+  "./launch-ipad-air-2360x1640.png?v=4.5.702-shell-batch1257-20260830-1",
+  "./launch-ipad-classic-2048x1536.png?v=4.5.702-shell-batch1257-20260830-1",
+  "./launch-ipad-mini6-2266x1488.png?v=4.5.702-shell-batch1257-20260830-1",
+  "./launch-ipad-pro105-2224x1668.png?v=4.5.702-shell-batch1257-20260830-1",
+  "./launch-ipad-pro11-2388x1668.png?v=4.5.702-shell-batch1257-20260830-1",
+  "./launch-ipad-pro11-m4-2420x1668.png?v=4.5.702-shell-batch1257-20260830-1",
+  "./launch-ipad-pro129-2732x2048.png?v=4.5.702-shell-batch1257-20260830-1",
+  "./launch-ipad-pro13-m4-2752x2064.png?v=4.5.702-shell-batch1257-20260830-1"
 ];
 function scopeInfo(){
   const scope=new URL(self.registration.scope);
@@ -125,7 +125,7 @@ function isRuntimeCoreRequest(url){
   return name==='app.js'||name==='styles.css'||name==='manifest.webmanifest';
 }
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>(key.startsWith(CACHE_PREFIX)&&key!==CACHE)||(key.startsWith(LEGACY_CACHE_PREFIX)&&key!==CACHE)).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
+self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE&&(key.startsWith(CACHE_PREFIX)||LEGACY_CACHE_PREFIXES.some(prefix=>key.startsWith(prefix)))).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET') return;
   if(event.request.mode==='navigate'){

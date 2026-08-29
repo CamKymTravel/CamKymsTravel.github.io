@@ -1,7 +1,7 @@
 {
   "name": "Travel Command Centre",
   "short_name": "Travel Command",
-  "start_url": "./index.html?v=4.5.697-shell-batch1248-20260829",
+  "start_url": "./index.html?v=4.5.702-shell-batch1257-20260830-1",
   "display": "standalone",
   "orientation": "landscape",
   "background_color": "#000000",
@@ -20,7 +20,7 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "Travel Command Centre — offline iPad travel planning, budgeting, reservations, calendar, journey history, checklist and secure local Vault.",
+  "description": "Travel Command Centre \u2014 offline iPad travel planning, budgeting, reservations, calendar, journey history, checklist and secure local Vault.",
   "scope": "./",
   "id": "./",
   "display_override": [

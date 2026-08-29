@@ -1,0 +1,18 @@
+TRAVEL COMMAND CENTRE — SCREENSHOT SIMULATION PACKAGE VALIDATION
+Version: V1 4.5.702
+Batch: 1257
+Date: 30/08/2026
+
+Validation completed before packaging:
+- app.js JavaScript syntax: PASS
+- sw.js JavaScript syntax: PASS
+- seeded semantic integrity: PASS
+- seeded backup validation: PASS
+- seeded budget verification: PASS
+- screenshot runtime renders through the current Batch 1257 audit harness
+
+The simulation intentionally contains review-state warnings for outstanding bookings,
+incomplete pre-move checklist items and an itinerary/calendar planning gap. These are
+seeded conditions used to exercise the UI and alerts during screenshot review.
+
+Simulation storage and service-worker cache are isolated from the Master runtime.
