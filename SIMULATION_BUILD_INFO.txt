@@ -1,0 +1,14 @@
+Travel Command Centre — Simulation Build
+
+Build: 4.5.728 / Simulation Batch 1316
+Date: 31/08/2026
+Purpose: isolated simulation/review build only.
+Simulation date: 20/09/2029 12:00.
+Storage: isolated simulation storage key; does not share the Master Runtime storage key.
+Visuals: inherited unchanged from the current master runtime.
+Logic: includes audited workability fixes through Batch 1315 plus the current Batch 1316 Journey History recovery fixes.
+Packaging rule: compact simulation package, under 100 files.
+Package file count: 92 files.
+Country banners: 50 banner images are embedded in sim-banners.js to keep the package below 100 files without changing screen visuals.
+
+Do not use this simulation package as the production/master data build.

@@ -33000,3 +33000,448 @@ html body:not([data-screen="dashboard"]) #app .readability-focus-panel .readabil
 html body:not([data-screen="dashboard"]) #app .journey-focus-panel .readability-focus-head h2{color:#f7fbff!important}
 html body:not([data-screen="dashboard"]) #app .readability-focus-panel :is(h3,h4),
 html body:not([data-screen="dashboard"]) #app .journey-focus-panel :is(h3,h4){text-shadow:0 2px 12px rgba(0,0,0,.30)!important}
+
+
+/* ========================================================================== */
+/* BATCH 1295 — HOME QUICK LOOK REGRESSION LOCK · 31 AUG 2026                */
+/* The dashboard screen animation used a transform, which makes fixed         */
+/* descendants position relative to #screen in WebKit. Combined with the      */
+/* sidebar offset this double-shifted the Quick Look panel on iPad.            */
+/* Keep Home itself locked; only stabilise the overlay coordinate space.       */
+/* ========================================================================== */
+body[data-screen="dashboard"] #screen{animation:none!important;transform:none!important}
+body[data-screen="dashboard"] .country-quick-look-backdrop{
+  position:fixed!important;
+  top:0!important;right:0!important;bottom:0!important;left:var(--sidebar,232px)!important;
+  width:auto!important;height:auto!important;
+  place-items:center!important;
+  padding:14px 18px!important;
+}
+body[data-screen="dashboard"] .country-quick-look-panel-rich{
+  width:min(940px,calc(100vw - var(--sidebar,232px) - 36px))!important;
+  max-width:calc(100vw - var(--sidebar,232px) - 36px)!important;
+  margin:0 auto!important;
+}
+/* Quick Look hero is country-only. No duplicate current-stay/date/progress block. */
+body[data-screen="dashboard"] .country-quick-look-current,
+body[data-screen="dashboard"] .country-quick-look-stay-progress,
+body[data-screen="dashboard"] .country-quick-look-stay-context{display:none!important}
+body[data-screen="dashboard"] .country-quick-look-outline{right:28px!important;top:18px!important;width:124px!important;height:118px!important;opacity:.38!important}
+body[data-screen="dashboard"] .country-quick-look-hero-copy{max-width:650px!important}
+@media(max-width:1100px) and (orientation:landscape){
+  body[data-screen="dashboard"] .country-quick-look-backdrop{left:var(--sidebar,196px)!important;padding:10px 12px!important}
+  body[data-screen="dashboard"] .country-quick-look-panel-rich{
+    width:calc(100vw - var(--sidebar,196px) - 24px)!important;
+    max-width:calc(100vw - var(--sidebar,196px) - 24px)!important;
+    max-height:calc(100vh - 20px)!important;
+  }
+  body[data-screen="dashboard"] .country-quick-look-hero-copy{max-width:520px!important}
+  body[data-screen="dashboard"] .country-quick-look-outline{right:18px!important;top:17px!important;width:92px!important;height:92px!important;display:grid!important}
+}
+
+
+/* ========================================================================== */
+/* BATCH 1296 — BUDGET LOCKED SET-OUT · SOURCE ORDER + IPAD TWO-UP            */
+/* Approved order: Add Expense → Annual/Destination → Category/Forecast →      */
+/* Expenses → Reservations/Accounts → Monthly Spend. No duplicate pace row.   */
+/* ========================================================================== */
+body[data-screen="budget"] #screen .budget-approved-analytics{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:12px!important;
+  align-items:stretch!important;
+}
+body[data-screen="budget"] #screen .budget-summary-pair{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:12px!important;
+  align-items:stretch!important;
+}
+body[data-screen="budget"] #screen .budget-approved-analytics>.card,
+body[data-screen="budget"] #screen .budget-summary-pair>.card{
+  min-width:0!important;
+  width:auto!important;
+  max-width:none!important;
+  height:100%!important;
+}
+@media(max-width:899px){
+  body[data-screen="budget"] #screen .budget-approved-analytics,
+  body[data-screen="budget"] #screen .budget-summary-pair{grid-template-columns:1fr!important}
+}
+
+
+
+/* ========================================================================== */
+/* BATCH 1297 — ADD EXPENSE COMMAND-BAR BLUE LOCK                            */
+/* The Add Expense editor belongs to the blue/cyan Add Expense command bar.  */
+/* Category tiles retain their own identities; selecting a category must not */
+/* recolour the whole modal green/pink/purple/amber.                          */
+/* ========================================================================== */
+#modal[data-form-type="expenses"]{
+  --modal-rgb:39,145,214!important;
+  --modal-accent:#67d5ff!important;
+  --modal-accent-2:#238fd6!important;
+  --modal-deep:#08263d!important;
+  --modal-deeper:#061927!important;
+  --modal-line:#62c9f1!important;
+}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-1{background:linear-gradient(145deg,#136f5b,#0a3440 72%)!important;border-color:#58d5ab!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-2{background:linear-gradient(145deg,#87385f,#351b39 72%)!important;border-color:#ef86b6!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-3{background:linear-gradient(145deg,#245f9e,#102f50 72%)!important;border-color:#79b7ff!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-4{background:linear-gradient(145deg,#68459d,#2a2248 72%)!important;border-color:#b999f1!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-5{background:linear-gradient(145deg,#9b681e,#3c2b18 72%)!important;border-color:#f0bf60!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-6{background:linear-gradient(145deg,#226f76,#103640 72%)!important;border-color:#75d1d4!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-1.active{background:linear-gradient(180deg,#21a77f,#14745f)!important;border-color:#8af1c8!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-2.active{background:linear-gradient(180deg,#c75c8e,#8f3d67)!important;border-color:#ffacd0!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-3.active{background:linear-gradient(180deg,#3b91e1,#2466ac)!important;border-color:#a2d3ff!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-4.active{background:linear-gradient(180deg,#9167cf,#6847a0)!important;border-color:#d0b6ff!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-5.active{background:linear-gradient(180deg,#d89a35,#9c681f)!important;border-color:#ffd47d!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.tone-6.active{background:linear-gradient(180deg,#3da8ad,#27727a)!important;border-color:#a0eff0!important}
+#modal[data-form-type="expenses"] .simple-expense-form .simple-category.active{
+  outline:3px solid rgba(221,248,255,.88)!important;outline-offset:2px!important;
+  box-shadow:0 0 0 3px rgba(132,224,255,.18),0 0 18px rgba(78,196,240,.22),inset 0 1px 0 rgba(255,255,255,.20)!important;
+}
+
+/* ========================================================================== */
+/* BATCH 1298 — RESERVATIONS COLOUR / CACHE REGRESSION LOCK · 31 AUG 2026    */
+/* Reservations keeps Home's premium dark material, but must retain visible   */
+/* colour, brightness and contrast. Add Reservation is a strong blue command. */
+/* ========================================================================== */
+html body[data-screen="reservations"] #app main #screen .reservation-add-primary{
+  background:radial-gradient(ellipse at 15% -55%,rgba(124,224,255,.28),transparent 46%),linear-gradient(180deg,#27aef2 0%,#168cd8 48%,#0872c4 100%)!important;
+  border-color:#79dcff!important;border-top-color:#a7edff!important;
+  box-shadow:0 8px 22px rgba(0,115,196,.30),0 0 24px rgba(64,189,244,.12),inset 0 1px 0 rgba(255,255,255,.25)!important;
+  filter:none!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-add-primary>span,
+html body[data-screen="reservations"] #app main #screen .reservation-add-primary>b{color:#fff!important;text-shadow:0 2px 8px rgba(0,50,90,.34)!important}
+
+/* Category cards remain dark, but their approved identities must read at a glance. */
+html body[data-screen="reservations"] #app main #screen .reservation-category-card{
+  filter:saturate(1.08) brightness(1.04)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.10),inset 0 -18px 28px rgba(0,0,0,.12),0 8px 20px rgba(0,0,0,.24)!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-0{--res:#55b6f0!important;background:radial-gradient(at 16% -10%,rgba(76,186,242,.18),transparent 45%),linear-gradient(145deg,#164a70,#103755 58%,#0a2439)!important;border-color:#4e91ba!important;border-top-color:#72c9ef!important}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-1{--res:#67ce91!important;background:radial-gradient(at 16% -10%,rgba(91,211,140,.17),transparent 45%),linear-gradient(145deg,#18543c,#103b2e 58%,#09261f)!important;border-color:#4d956b!important;border-top-color:#77d59a!important}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-2{--res:#55c4ce!important;background:radial-gradient(at 16% -10%,rgba(82,199,210,.17),transparent 45%),linear-gradient(145deg,#15515a,#103a45 58%,#092630)!important;border-color:#4c929a!important;border-top-color:#73d4dc!important}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-3{--res:#e09a5f!important;background:radial-gradient(at 16% -10%,rgba(225,151,91,.17),transparent 45%),linear-gradient(145deg,#5a3b22,#402b1c 58%,#291c15)!important;border-color:#9e6b42!important;border-top-color:#e5a56f!important}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-4{--res:#d9b957!important;background:radial-gradient(at 16% -10%,rgba(225,190,78,.17),transparent 45%),linear-gradient(145deg,#51441e,#3a321b 58%,#272315)!important;border-color:#917a38!important;border-top-color:#dbc064!important}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-5{--res:#d88caf!important;background:radial-gradient(at 16% -10%,rgba(217,131,172,.16),transparent 45%),linear-gradient(145deg,#553047,#3d2536 58%,#291b28)!important;border-color:#95627b!important;border-top-color:#d895b3!important}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-6{--res:#aa8ee8!important;background:radial-gradient(at 16% -10%,rgba(170,140,232,.17),transparent 45%),linear-gradient(145deg,#41335e,#302848 58%,#201d31)!important;border-color:#7d68a9!important;border-top-color:#ad94e4!important}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-7{--res:#aebdca!important;background:radial-gradient(at 16% -10%,rgba(178,196,211,.12),transparent 45%),linear-gradient(145deg,#394653,#2b3743 58%,#1d2630)!important;border-color:#687a89!important;border-top-color:#9babb7!important}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.active{
+  filter:saturate(1.15) brightness(1.08)!important;
+  outline:3px solid color-mix(in srgb,var(--res) 72%,#f2fbff)!important;outline-offset:2px!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--res) 20%,transparent),0 0 22px color-mix(in srgb,var(--res) 24%,transparent),inset 0 1px rgba(255,255,255,.16)!important;
+}
+
+/* Right rail uses distinct feature colours; no pink wash. */
+html body[data-screen="reservations"] #app main #screen .reservation-next3-card{
+  background:radial-gradient(at 12% -10%,rgba(69,187,235,.18),transparent 42%),linear-gradient(145deg,#123f59,#0d3046 57%,#081f31)!important;
+  border-color:#4385a4!important;border-top-color:#70c4e2!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-next3-card>h3,
+html body[data-screen="reservations"] #app main #screen .reservation-next3-card>h3 span{color:#9fe5ff!important}
+html body[data-screen="reservations"] #app main #screen .reservation-next3-card .reservation-next3-row{background:linear-gradient(145deg,rgba(44,121,157,.26),rgba(7,29,43,.78))!important;border-color:rgba(100,186,220,.34)!important}
+html body[data-screen="reservations"] #app main #screen .reservation-total-booked-card{
+  background:radial-gradient(at 12% -10%,rgba(163,129,235,.18),transparent 42%),linear-gradient(145deg,#382b55,#292140 57%,#1b182c)!important;
+  border-color:#755f9b!important;border-top-color:#a28ac5!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-summary-card{
+  background:radial-gradient(at 12% -10%,rgba(69,201,180,.17),transparent 42%),linear-gradient(145deg,#164844,#103634 57%,#092426)!important;
+  border-color:#4a8e83!important;border-top-color:#72bdb1!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-summary-card>h3{color:#9ce8dc!important}
+
+/* Add Reservation editor: same strong blue identity as the command bar, with */
+/* dark premium content panels rather than a washed-out full-blue slab.        */
+html body[data-screen="reservations"] #modal[data-form-type="reservations"]{
+  background:radial-gradient(ellipse at 10% -12%,rgba(68,188,242,.23),transparent 43%),linear-gradient(155deg,#0c3850 0%,#08283d 53%,#051927 100%)!important;
+  border-color:#63c5ed!important;border-top-color:#98e4ff!important;
+  box-shadow:0 28px 76px rgba(0,0,0,.68),0 0 34px rgba(56,177,230,.16),inset 0 1px rgba(255,255,255,.08)!important;
+}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .dialog-head{
+  background:radial-gradient(ellipse at 16% -45%,rgba(144,230,255,.22),transparent 46%),linear-gradient(105deg,#249bd4 0%,#177fbd 47%,#0f598a 100%)!important;
+  border-bottom-color:#83d9fa!important;box-shadow:inset 0 -1px rgba(255,255,255,.16)!important;
+}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .dialog-head h2{color:#fff!important;text-shadow:0 2px 10px rgba(0,55,95,.35)!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] #modal-body{background:linear-gradient(180deg,#0a2b40 0%,#071d2e 58%,#051522 100%)!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] :is(.quick-entry-intro,.quick-type-section,.reservation-quick-details,.reservation-money-panel,.reservation-destination-picker,.reservation-payment-panel,.reservation-quick-finish,.reservation-optional-panel){
+  background:linear-gradient(145deg,rgba(25,91,126,.28),rgba(5,25,38,.86) 65%,rgba(7,34,49,.82))!important;
+  border-color:rgba(92,188,224,.42)!important;box-shadow:inset 4px 0 0 #56c9ef,inset 0 1px rgba(255,255,255,.055)!important;
+}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .quick-type-tab:not(.active){opacity:1!important;filter:saturate(.96) brightness(1.02)!important;background:linear-gradient(145deg,rgba(38,86,109,.46),rgba(5,25,38,.86))!important;border-color:rgba(107,178,204,.36)!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .quick-type-tab.active{
+  background:radial-gradient(circle at 14% 0%,rgba(138,229,255,.32),transparent 55%),linear-gradient(180deg,#2aa8e6,#177fc4 58%,#0b4f86)!important;
+  border-color:#b6efff!important;outline:3px solid rgba(230,250,255,.90)!important;outline-offset:2px!important;
+  box-shadow:0 0 0 3px rgba(105,212,252,.20),0 0 22px rgba(60,185,237,.24),inset 0 1px rgba(255,255,255,.22)!important;
+}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .reservation-budget-choice{background:linear-gradient(145deg,rgba(22,69,94,.32),rgba(5,25,38,.88))!important;border-color:rgba(89,171,203,.36)!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .reservation-budget-option:not(.active){opacity:.82!important;filter:saturate(.92) brightness(.98)!important;background:#0a2132!important;border-color:#385b70!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .reservation-budget-option.active{outline:3px solid rgba(231,248,255,.86)!important;outline-offset:2px!important;box-shadow:0 0 0 3px rgba(87,195,237,.14),inset 0 1px rgba(255,255,255,.14)!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .dialog-actions{background:linear-gradient(180deg,rgba(18,81,111,.20),#061824)!important;border-top-color:rgba(91,188,225,.42)!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .dialog-actions button.primary:not(:disabled){background:linear-gradient(180deg,#2bacec,#147cca)!important;border-color:#91dcfb!important;box-shadow:0 8px 22px rgba(16,120,184,.28),inset 0 1px rgba(255,255,255,.22)!important}
+
+
+/* ========================================================================== */
+/* BATCH 1299 — SETTINGS APP HEALTH RED HEARTBEAT LOCK · 31 AUG 2026          */
+/* Locked visual only. Do not mute, recolour or disable pulse on unchecked.    */
+/* ========================================================================== */
+@keyframes tcc-app-health-locked-heartbeat{
+  0%,100%{transform:scale(1);filter:brightness(1) saturate(1.06);box-shadow:inset 0 2px 0 rgba(255,255,255,.24),inset 0 -14px 22px rgba(77,0,8,.16),0 0 18px rgba(239,35,50,.18),0 9px 22px rgba(0,0,0,.28)}
+  8%{transform:scale(1.012);filter:brightness(1.08) saturate(1.12);box-shadow:inset 0 2px 0 rgba(255,255,255,.28),inset 0 -14px 22px rgba(77,0,8,.13),0 0 31px rgba(245,39,54,.38),0 9px 22px rgba(0,0,0,.28)}
+  14%{transform:scale(.998)}
+  21%{transform:scale(1.018);filter:brightness(1.12) saturate(1.14);box-shadow:inset 0 2px 0 rgba(255,255,255,.30),inset 0 -14px 22px rgba(77,0,8,.12),0 0 38px rgba(247,42,57,.46),0 9px 22px rgba(0,0,0,.28)}
+  31%,78%{transform:scale(1);filter:brightness(1) saturate(1.06)}
+}
+html body[data-screen="settings"] #app main #screen .app-health-widget.is-unchecked .app-health-run{
+  background:linear-gradient(180deg,#ee3543 0%,#cf1f30 56%,#aa1423 100%)!important;
+  border-color:#ff6b76!important;border-top-color:#ff9da5!important;
+  color:#fff!important;filter:none!important;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.24),inset 0 -14px 22px rgba(77,0,8,.16),0 0 18px rgba(239,35,50,.18),0 9px 22px rgba(0,0,0,.28)!important;
+  animation:tcc-app-health-locked-heartbeat 1.65s ease-in-out infinite!important;
+  transform-origin:center!important;
+}
+html body[data-screen="settings"] #app main #screen .app-health-widget.is-unchecked .app-health-run::before,
+html body[data-screen="settings"] #app main #screen .app-health-widget.is-unchecked .app-health-run::after{color:#ff5b66!important;opacity:.72!important}
+html body[data-screen="settings"] #app main #screen .app-health-widget.is-ok .app-health-run,
+html body[data-screen="settings"] #app main #screen .app-health-widget.has-attention .app-health-run{animation:none!important;transform:none!important}
+
+
+/* BATCH 1300 — VAULT HIDDEN EMAIL OVERLAY EXCLUSIVITY LOCK
+   When Email Accounts is active it is the only visible Vault dialog. The TV & Movies
+   panel is restored only after the email manager closes. Keep the email card centred
+   across the usable iPad viewport and never expose a second purple panel behind it. */
+body[data-screen="vault"].vault-streaming-email-open .vault-streaming-backdrop{display:none!important;visibility:hidden!important;pointer-events:none!important}
+body[data-screen="vault"].vault-streaming-email-open .vault-streaming-email-backdrop{
+  position:fixed!important;inset:0!important;left:0!important;right:0!important;top:0!important;bottom:0!important;
+  width:100vw!important;height:100vh!important;padding:20px!important;display:grid!important;place-items:center!important;
+  z-index:3000!important;
+}
+body[data-screen="vault"].vault-streaming-email-open .vault-streaming-email-panel{
+  margin:0!important;transform:none!important;position:relative!important;z-index:1!important;
+}
+@media(max-width:1100px) and (orientation:landscape){
+  body[data-screen="vault"].vault-streaming-email-open .vault-streaming-email-backdrop{left:0!important;padding:14px!important}
+}
+
+/* ========================================================================== */
+/* BATCH 1301 — RESERVATION SUMMARY TILE VISUAL LOCK · 31 AUG 2026           */
+/* Approved direction: use the Journey History five-KPI cards as the medium   */
+/* widget benchmark — lively jewel tones on premium dark material, not muddy. */
+/* Layout, labels, counts and interactions remain untouched.                  */
+/* ========================================================================== */
+html body[data-screen="reservations"] #app main #screen .reservation-category-card{
+  filter:none!important;
+  border-width:1.5px!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.11),
+    inset 0 -24px 34px rgba(0,0,0,.16),
+    0 0 18px color-mix(in srgb,var(--res) 11%,transparent),
+    0 9px 23px rgba(0,0,0,.29)!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card:after{
+  background:radial-gradient(ellipse at 14% -12%,rgba(255,255,255,.11),transparent 37%)!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-0{
+  --res:#65bdff!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(105,196,255,.23),transparent 46%),linear-gradient(145deg,#174f88 0%,#103965 58%,#091d35 100%)!important;
+  border-color:#4f8fc6!important;border-top-color:#82ceff!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-1{
+  --res:#70dea0!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(101,224,156,.22),transparent 46%),linear-gradient(145deg,#126345 0%,#0b4634 58%,#071f1c 100%)!important;
+  border-color:#4a9d70!important;border-top-color:#85e4a8!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-2{
+  --res:#65d8df!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(92,220,228,.21),transparent 46%),linear-gradient(145deg,#0d626f 0%,#084651 58%,#07242d 100%)!important;
+  border-color:#4d98a1!important;border-top-color:#80dce2!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-3{
+  --res:#f0a066!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(246,164,100,.22),transparent 46%),linear-gradient(145deg,#6b3b1a 0%,#492a15 58%,#26190f 100%)!important;
+  border-color:#a96d42!important;border-top-color:#f0ad74!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-4{
+  --res:#e2c45c!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(235,207,91,.21),transparent 46%),linear-gradient(145deg,#665318 0%,#473b13 58%,#25210e 100%)!important;
+  border-color:#a08739!important;border-top-color:#e7cc68!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-5{
+  --res:#ec8cbc!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(239,137,187,.21),transparent 46%),linear-gradient(145deg,#642548 0%,#451b34 58%,#24131f 100%)!important;
+  border-color:#a45f80!important;border-top-color:#ed99c0!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-6{
+  --res:#b594f2!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(182,145,242,.22),transparent 46%),linear-gradient(145deg,#4a3071 0%,#33234f 58%,#1b172d 100%)!important;
+  border-color:#8269ae!important;border-top-color:#bca2ee!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.tone-7{
+  --res:#b5cadc!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(171,205,229,.17),transparent 46%),linear-gradient(145deg,#294965 0%,#1b344b 58%,#0e2031 100%)!important;
+  border-color:#66839b!important;border-top-color:#a8c0d2!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card .reservation-category-copy>b{
+  color:#fff!important;text-shadow:0 2px 10px rgba(0,0,0,.34)!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card .reservation-category-count strong{
+  color:color-mix(in srgb,var(--res) 78%,white 22%)!important;
+  text-shadow:0 0 14px color-mix(in srgb,var(--res) 24%,transparent)!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card .reservation-category-count small{
+  color:#d6e0e7!important;opacity:.92!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card .type-tab-icon{
+  filter:saturate(1.08) brightness(1.06) drop-shadow(0 5px 9px rgba(0,0,0,.30))!important;
+}
+html body[data-screen="reservations"] #app main #screen .reservation-category-card.active{
+  filter:brightness(1.07) saturate(1.06)!important;
+  outline:3px solid color-mix(in srgb,var(--res) 70%,#f1fbff)!important;outline-offset:2px!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--res) 19%,transparent),0 0 24px color-mix(in srgb,var(--res) 24%,transparent),inset 0 1px rgba(255,255,255,.16),0 10px 24px rgba(0,0,0,.30)!important;
+}
+
+/* ========================================================================== */
+/* BATCH 1302 — VAULT TOP FIVE JOURNEY-KPI REFINEMENT · 31 AUG 2026          */
+/* User-approved: only a slight shift toward the Journey History five-card    */
+/* benchmark. Preserve each Vault colour identity, layout, content and action.*/
+/* ========================================================================== */
+html body[data-screen="vault"] #app main #screen .vault-category{
+  filter:none!important;
+  border-width:1.5px!important;
+  border-top-width:2px!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.11),inset 0 -30px 42px rgba(0,0,0,.17),0 0 17px color-mix(in srgb,var(--vault-accent,#67b6e7) 10%,transparent),0 10px 25px rgba(0,0,0,.29)!important;
+}
+html body[data-screen="vault"] #app main #screen .vault-category:before{opacity:.62!important}
+html body[data-screen="vault"] #app main #screen .vault-category.vault-passport{
+  --vault-accent:#68c3ff!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(104,195,255,.20),transparent 45%),linear-gradient(145deg,#174d78 0%,#103a5c 57%,#082239 100%)!important;
+  border-color:#4b8ab6!important;border-top-color:#82d0ff!important;
+}
+html body[data-screen="vault"] #app main #screen .vault-category.vault-visa{
+  --vault-accent:#61d6d8!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(97,214,216,.19),transparent 45%),linear-gradient(145deg,#105a61 0%,#0b4149 57%,#072830 100%)!important;
+  border-color:#48979d!important;border-top-color:#7cdddd!important;
+}
+html body[data-screen="vault"] #app main #screen .vault-category.vault-insurance{
+  --vault-accent:#73dfa5!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(105,224,164,.19),transparent 45%),linear-gradient(145deg,#175a43 0%,#103f35 57%,#082a29 100%)!important;
+  border-color:#4e956f!important;border-top-color:#86e2ab!important;
+}
+html body[data-screen="vault"] #app main #screen .vault-category.vault-accommodation{
+  --vault-accent:#f0c46c!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(240,196,108,.19),transparent 45%),linear-gradient(145deg,#65501f 0%,#463819 57%,#292515 100%)!important;
+  border-color:#a18442!important;border-top-color:#f0c874!important;
+}
+html body[data-screen="vault"] #app main #screen .vault-category.vault-emergency{
+  --vault-accent:#ff7082!important;
+  background:radial-gradient(ellipse at 14% -16%,rgba(255,112,130,.20),transparent 45%),linear-gradient(145deg,#782c3d 0%,#54202f 57%,#301722 100%)!important;
+  border-color:#bd5668!important;border-top-color:#ff8291!important;
+}
+html body[data-screen="vault"] #app main #screen .vault-category>span{
+  background:linear-gradient(145deg,rgba(8,28,43,.82),rgba(6,18,30,.72))!important;
+  border-color:color-mix(in srgb,var(--vault-accent,#67b6e7) 58%,#31566e)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.07),0 0 12px color-mix(in srgb,var(--vault-accent,#67b6e7) 12%,transparent)!important;
+}
+html body[data-screen="vault"] #app main #screen .vault-category strong{
+  color:#72e7a8!important;text-shadow:0 0 12px rgba(75,222,148,.13)!important;
+}
+html body[data-screen="vault"] #app main #screen .vault-category.active{
+  transform:translateY(-1px)!important;
+  filter:brightness(1.045) saturate(1.04)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--vault-accent,#67b6e7) 56%,transparent),0 0 22px color-mix(in srgb,var(--vault-accent,#67b6e7) 20%,transparent),inset 0 1px rgba(255,255,255,.15),0 11px 26px rgba(0,0,0,.31)!important;
+}
+
+/* ========================================================================== */
+/* BATCH 1303 — JOURNEY/CHECKLIST HERO EDGE + JOURNEY FLAG LANE LOCK         */
+/* 31 AUG 2026 — physical iPad screenshot correction only. Home untouched.   */
+/* ========================================================================== */
+/* The authored hero artwork has an inconsistent lower edge on physical iPad.
+   Draw one clean internal frame without changing hero geometry or artwork. */
+body[data-screen="journeys"] #screen .dedicated-lock-hero.dedicated-journeys,
+body[data-screen="checklist"] #screen .dedicated-lock-hero.dedicated-checklist{
+  border:0!important;
+  outline:0!important;
+  border-radius:16px!important;
+  box-shadow:inset 0 0 0 1px rgba(121,197,238,.78)!important;
+  background-clip:border-box!important;
+}
+
+/* Route rows need a wider dedicated flag lane than single-country stays.
+   The previous fixed 34px grid column let two flags intrude into the title. */
+body[data-screen="journeys"] #screen .journey-destination-with-flag{
+  grid-template-columns:34px minmax(0,1fr)!important;
+  column-gap:10px!important;
+}
+body[data-screen="journeys"] #screen .journey-destination-with-flag:has(.journey-country-flags.route){
+  grid-template-columns:72px minmax(0,1fr)!important;
+}
+body[data-screen="journeys"] #screen .journey-country-flags.route{
+  width:72px!important;
+  min-width:72px!important;
+  max-width:72px!important;
+  justify-content:flex-start!important;
+  gap:4px!important;
+  overflow:visible!important;
+}
+body[data-screen="journeys"] #screen .journey-destination-with-flag>b{
+  min-width:0!important;
+  position:relative!important;
+  z-index:1!important;
+}
+@media (min-width:1051px) and (max-width:1250px) and (orientation:landscape){
+  body[data-screen="journeys"] #screen .journey-destination-with-flag:has(.journey-country-flags.route){
+    grid-template-columns:64px minmax(0,1fr)!important;
+  }
+  body[data-screen="journeys"] #screen .journey-country-flags.route{
+    width:64px!important;
+    min-width:64px!important;
+    max-width:64px!important;
+  }
+}
+
+/* ========================================================================== */
+/* BATCH 1304 — CHAT CONSOLIDATION LOCKS · ITINERARY MAP + JOURNEY TABLE      */
+/* 31 AUG 2026 — preserve all previously approved screen/layout colour locks. */
+/* ========================================================================== */
+/* Journey History record table: keep the exact columns/layout, but restore the
+   darker premium material and restrained travel-type identity discussed in the
+   screenshot audit. Do not flood whole rows with mode colour. */
+body[data-screen="journeys"] #screen .journey-table tbody .journey-main-row>td{
+  background:linear-gradient(180deg,rgba(7,31,48,.96),rgba(6,25,40,.98))!important;
+  border-bottom-color:rgba(78,134,164,.20)!important;
+}
+body[data-screen="journeys"] #screen .journey-table tbody .journey-main-row:nth-child(4n+3)>td{
+  background:linear-gradient(180deg,rgba(9,38,58,.97),rgba(7,29,45,.99))!important;
+}
+body[data-screen="journeys"] #screen .journey-table tbody .journey-main-row.journey-mode-standard>td:first-child{box-shadow:inset 3px 0 #49bff0!important}
+body[data-screen="journeys"] #screen .journey-table tbody .journey-main-row.journey-mode-motorhome>td:first-child{box-shadow:inset 3px 0 #70d85f!important}
+body[data-screen="journeys"] #screen .journey-table tbody .journey-main-row.journey-mode-cruise>td:first-child{box-shadow:inset 3px 0 #efa43a!important}
+body[data-screen="journeys"] #screen .journey-table tbody .journey-main-row:hover>td,
+body[data-screen="journeys"] #screen .journey-table tbody .journey-main-row:focus-visible>td{
+  background:linear-gradient(180deg,rgba(15,64,91,.98),rgba(9,40,61,.99))!important;
+}
+
+/* Forward Planning map: full route geometry now comes from every saved detailed
+   route point. Keep the embedded line elegant instead of the old heavy straight
+   chord; expanded mode remains slightly stronger for interaction. */
+body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page) .itinerary-route-group .route-shadow{
+  stroke-width:4.2px!important;opacity:.46!important;filter:none!important;
+}
+body[data-screen="itinerary"] #screen .itinerary-map-panel:not(.full-page) .itinerary-route-group .route-segment{
+  stroke-width:1.85px!important;opacity:.96!important;filter:drop-shadow(0 0 3px var(--route-colour))!important;
+}
+body[data-screen="itinerary"] #screen .itinerary-map-panel.full-page .itinerary-route-group .route-shadow{
+  stroke-width:3.6px!important;opacity:.42!important;filter:none!important;
+}
+body[data-screen="itinerary"] #screen .itinerary-map-panel.full-page .itinerary-route-group .route-segment{
+  stroke-width:1.65px!important;opacity:.94!important;filter:drop-shadow(0 0 2.5px var(--route-colour))!important;
+}
+body[data-screen="itinerary"] #screen .itinerary-map-panel.full-page .itinerary-planning-pin.route-detail-pin>span{
+  width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;
+  border-width:2px!important;font-size:15px!important;
+}
+body[data-screen="itinerary"] #screen .itinerary-map-panel.full-page .itinerary-planning-pin.route-detail-pin>span>i{
+  font-size:18px!important;line-height:1!important;
+}
