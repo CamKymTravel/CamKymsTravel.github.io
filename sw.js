@@ -1,4 +1,4 @@
-const CACHE='tcc-simulation-continuity-4.5.702-shell-batch1257-20260830-1';
+const CACHE='tcc-simulation-continuity-4.5.728-shell-simrefresh-20260830b';
 const CACHE_PREFIX='tcc-simulation-continuity-';
 const LEGACY_CACHE_PREFIXES=['tcc-simulation-portugal-','tcc-simulation-v4.5.677-working-'];
 const APP_SHELL=[
@@ -87,21 +87,21 @@ const APP_SHELL=[
   "./ui-icon-bank-wise.png",
   "./world-map-premium.png",
   "./world-map-vector.svg",
-  "./styles.css?v=4.5.702-shell-batch1257-20260830-1",
-  "./app.js?v=4.5.702-shell-batch1257-20260830-1",
-  "./manifest.webmanifest?v=4.5.702-shell-batch1257-20260830-1",
-  "./icon.svg?v=4.5.702-shell-batch1257-20260830-1",
-  "./apple-touch-icon.png?v=4.5.702-shell-batch1257-20260830-1",
-  "./compass-mark.svg?v=4.5.702-shell-batch1257-20260830-1",
-  "./launch-ipad-102-2160x1620.png?v=4.5.702-shell-batch1257-20260830-1",
-  "./launch-ipad-air-2360x1640.png?v=4.5.702-shell-batch1257-20260830-1",
-  "./launch-ipad-classic-2048x1536.png?v=4.5.702-shell-batch1257-20260830-1",
-  "./launch-ipad-mini6-2266x1488.png?v=4.5.702-shell-batch1257-20260830-1",
-  "./launch-ipad-pro105-2224x1668.png?v=4.5.702-shell-batch1257-20260830-1",
-  "./launch-ipad-pro11-2388x1668.png?v=4.5.702-shell-batch1257-20260830-1",
-  "./launch-ipad-pro11-m4-2420x1668.png?v=4.5.702-shell-batch1257-20260830-1",
-  "./launch-ipad-pro129-2732x2048.png?v=4.5.702-shell-batch1257-20260830-1",
-  "./launch-ipad-pro13-m4-2752x2064.png?v=4.5.702-shell-batch1257-20260830-1"
+  "./styles.css?v=4.5.728-shell-simrefresh-20260830b",
+  "./app.js?v=4.5.728-shell-simrefresh-20260830b",
+  "./manifest.webmanifest?v=4.5.728-shell-simrefresh-20260830b",
+  "./icon.svg?v=4.5.728-shell-simrefresh-20260830b",
+  "./apple-touch-icon.png?v=4.5.728-shell-simrefresh-20260830b",
+  "./compass-mark.svg?v=4.5.728-shell-simrefresh-20260830b",
+  "./launch-ipad-102-2160x1620.png?v=4.5.728-shell-simrefresh-20260830b",
+  "./launch-ipad-air-2360x1640.png?v=4.5.728-shell-simrefresh-20260830b",
+  "./launch-ipad-classic-2048x1536.png?v=4.5.728-shell-simrefresh-20260830b",
+  "./launch-ipad-mini6-2266x1488.png?v=4.5.728-shell-simrefresh-20260830b",
+  "./launch-ipad-pro105-2224x1668.png?v=4.5.728-shell-simrefresh-20260830b",
+  "./launch-ipad-pro11-2388x1668.png?v=4.5.728-shell-simrefresh-20260830b",
+  "./launch-ipad-pro11-m4-2420x1668.png?v=4.5.728-shell-simrefresh-20260830b",
+  "./launch-ipad-pro129-2732x2048.png?v=4.5.728-shell-simrefresh-20260830b",
+  "./launch-ipad-pro13-m4-2752x2064.png?v=4.5.728-shell-simrefresh-20260830b"
 ];
 function scopeInfo(){
   const scope=new URL(self.registration.scope);
