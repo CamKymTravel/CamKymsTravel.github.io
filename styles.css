@@ -31080,17 +31080,17 @@ body[data-screen="checklist"] .checklist-focus-panel .check-status{filter:satura
 body[data-screen="checklist"] .checklist-focus-panel .check-actions .icon-only{background:rgba(7,28,41,.46)!important;border-color:rgba(211,236,245,.14)!important;box-shadow:none!important}
 body[data-screen="checklist"] .checklist-focus-panel .check-actions .icon-only.danger{background:rgba(75,27,37,.34)!important;border-color:rgba(194,91,108,.22)!important}
 
-#modal[data-form-type="checklist"] .checklist-quick-form{gap:9px!important}
-#modal[data-form-type="checklist"] .checklist-add-context{
+body[data-screen="checklist"] #modal[data-form-type="checklist"] .checklist-quick-form{gap:9px!important}
+body[data-screen="checklist"] #modal[data-form-type="checklist"] .checklist-add-context{
   min-height:58px!important;padding:8px 10px!important;background:linear-gradient(145deg,rgba(23,56,72,.66),rgba(8,29,42,.78))!important;
   border-color:rgba(94,144,164,.30)!important;box-shadow:inset 0 1px rgba(255,255,255,.035)!important;filter:saturate(.76)!important;
 }
-#modal[data-form-type="checklist"] .checklist-add-context .quick-type-icon{width:38px!important;height:38px!important}
-#modal[data-form-type="checklist"] .checklist-add-context b{font-size:16px!important;letter-spacing:.02em!important}
-#modal[data-form-type="checklist"] .checklist-task-prominent input{min-height:48px!important;font-size:18px!important}
-#modal[data-form-type="checklist"] .checklist-quick-grid.simplified{gap:8px!important}
-#modal[data-form-type="checklist"] .quick-optional summary{min-height:38px!important;padding:8px 10px!important}
-#modal[data-form-type="checklist"] .quick-optional textarea{min-height:58px!important}
+body[data-screen="checklist"] #modal[data-form-type="checklist"] .checklist-add-context .quick-type-icon{width:38px!important;height:38px!important}
+body[data-screen="checklist"] #modal[data-form-type="checklist"] .checklist-add-context b{font-size:16px!important;letter-spacing:.02em!important}
+body[data-screen="checklist"] #modal[data-form-type="checklist"] .checklist-task-prominent input{min-height:48px!important;font-size:18px!important}
+body[data-screen="checklist"] #modal[data-form-type="checklist"] .checklist-quick-grid.simplified{gap:8px!important}
+body[data-screen="checklist"] #modal[data-form-type="checklist"] .quick-optional summary{min-height:38px!important;padding:8px 10px!important}
+body[data-screen="checklist"] #modal[data-form-type="checklist"] .quick-optional textarea{min-height:58px!important}
 
 @media(max-width:1080px) and (orientation:landscape){
   body[data-screen="checklist"] #screen .checklist-ready-panel{min-height:82px!important;padding:10px 12px!important}
@@ -32740,91 +32740,91 @@ html body:not([data-screen="dashboard"]) #modal[data-form-type][data-tone] .dial
 }
 
 /* Expense — keep selected category unmistakable without the green form slab. */
-html body #modal[data-form-type="expenses"]{
+html body[data-screen="budget"] #modal[data-form-type="expenses"]{
   background:radial-gradient(ellipse at 14% -8%,rgba(var(--modal-rgb),.085),transparent 43%),linear-gradient(155deg,#08222f 0%,#061a27 56%,#04131d 100%)!important;
   border-color:rgba(var(--modal-rgb),.38)!important;
 }
-html body #modal[data-form-type="expenses"] .simple-form-intro.expense-form-status,
-html body #modal[data-form-type="expenses"] .simple-form-step{
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .simple-form-intro.expense-form-status,
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .simple-form-step{
   background:linear-gradient(145deg,rgba(var(--modal-rgb),.045),rgba(var(--modal-rgb),.014) 52%,rgba(0,0,0,.055))!important;
   border-color:rgba(var(--modal-rgb),.14)!important;
   border-left-color:rgba(var(--modal-rgb),.40)!important;
 }
-html body #modal[data-form-type="expenses"] .simple-step-number{
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .simple-step-number{
   background:linear-gradient(180deg,rgba(var(--modal-rgb),.50),rgba(var(--modal-rgb),.28))!important;
   border-color:rgba(var(--modal-rgb),.46)!important;
   box-shadow:inset 0 1px rgba(255,255,255,.08)!important;
 }
-html body #modal[data-form-type="expenses"] .simple-category{
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .simple-category{
   filter:none!important;opacity:.80!important;
   background:linear-gradient(145deg,rgba(var(--modal-rgb),.038),rgba(4,19,29,.70))!important;
   border-color:rgba(180,216,231,.13)!important;
 }
-html body #modal[data-form-type="expenses"] .simple-category.active{
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .simple-category.active{
   opacity:1!important;filter:none!important;
   background:radial-gradient(circle at 12% 0%,rgba(var(--modal-rgb),.10),transparent 52%),linear-gradient(145deg,rgba(var(--modal-rgb),.17),rgba(var(--modal-rgb),.055) 55%,rgba(4,20,30,.72))!important;
   border-color:rgba(var(--modal-rgb),.59)!important;
   box-shadow:0 0 0 2px rgba(var(--modal-rgb),.13),inset 4px 0 0 var(--modal-accent),inset 0 1px rgba(255,255,255,.065)!important;
 }
-html body #modal[data-form-type="expenses"] .expense-destination-lock,
-html body #modal[data-form-type="expenses"] .simple-aud-preview,
-html body #modal[data-form-type="expenses"] .simple-optional{
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .expense-destination-lock,
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .simple-aud-preview,
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .simple-optional{
   background:linear-gradient(145deg,rgba(var(--modal-rgb),.035),rgba(4,18,28,.62))!important;
   border-color:rgba(var(--modal-rgb),.14)!important;
 }
 
 /* Reservations — blue remains the editor identity, but no bright cyan sheet. */
-html body #modal[data-form-type="reservations"]{
+html body[data-screen="reservations"] #modal[data-form-type="reservations"]{
   background:radial-gradient(ellipse at 12% -12%,rgba(62,147,184,.075),transparent 44%),linear-gradient(155deg,#082638,#071e2f 58%,#051722 100%)!important;
   border-color:rgba(80,145,171,.44)!important;
 }
-html body #modal[data-form-type="reservations"] .quick-entry-intro,
-html body #modal[data-form-type="reservations"] :is(.quick-type-section,.reservation-quick-details,.reservation-money-panel,.reservation-destination-picker){
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .quick-entry-intro,
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] :is(.quick-type-section,.reservation-quick-details,.reservation-money-panel,.reservation-destination-picker){
   background:linear-gradient(145deg,rgba(48,124,158,.045),rgba(5,24,36,.64))!important;
   border-color:rgba(80,145,171,.18)!important;
 }
-html body #modal[data-form-type="reservations"] .quick-type-tab:not(.active){filter:none!important;opacity:.70!important;background:linear-gradient(145deg,rgba(39,89,112,.06),rgba(5,23,35,.74))!important}
-html body #modal[data-form-type="reservations"] .quick-type-tab.active{
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .quick-type-tab:not(.active){filter:none!important;opacity:.70!important;background:linear-gradient(145deg,rgba(39,89,112,.06),rgba(5,23,35,.74))!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .quick-type-tab.active{
   filter:none!important;background:radial-gradient(circle at 12% 0%,rgba(var(--modal-rgb),.10),transparent 52%),linear-gradient(145deg,rgba(var(--modal-rgb),.18),rgba(6,29,42,.78))!important;
   border-color:rgba(var(--modal-rgb),.62)!important;box-shadow:0 0 0 2px rgba(var(--modal-rgb),.12),inset 0 1px rgba(255,255,255,.07)!important;
 }
-html body #modal[data-form-type="reservations"] .dialog-actions button.primary:not(:disabled){
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .dialog-actions button.primary:not(:disabled){
   background:linear-gradient(180deg,#1b658b,#124866)!important;border-color:#4d8299!important;
 }
 
 /* Itinerary editor — slightly quieter shell; active mode remains strongly marked. */
-html body #modal[data-form-type="itinerary"]{
+html body[data-screen="itinerary"] #modal[data-form-type="itinerary"]{
   background:radial-gradient(circle at 10% -12%,rgba(var(--modal-rgb),.06),transparent 44%),linear-gradient(155deg,#092b3c 0%,#071f31 54%,#051824 100%)!important;
   border-color:rgba(104,165,190,.47)!important;
 }
-html body #modal[data-form-type="itinerary"][data-tone] #modal-body :is(.itinerary-quick-intro,.itinerary-mode-fields,.itinerary-gap-grid,.quick-optional,.home-visit-budget-note){
+html body[data-screen="itinerary"] #modal[data-form-type="itinerary"][data-tone] #modal-body :is(.itinerary-quick-intro,.itinerary-mode-fields,.itinerary-gap-grid,.quick-optional,.home-visit-budget-note){
   background:radial-gradient(ellipse at 8% -20%,rgba(var(--modal-rgb),.055),transparent 42%),linear-gradient(145deg,rgba(10,43,59,.58),rgba(5,25,38,.78))!important;
   border-color:rgba(var(--modal-rgb),.27)!important;
 }
-html body #modal[data-form-type="itinerary"][data-tone] .itinerary-mode-tile.active{
+html body[data-screen="itinerary"] #modal[data-form-type="itinerary"][data-tone] .itinerary-mode-tile.active{
   background:radial-gradient(circle at 12% 0%,rgba(var(--modal-rgb),.11),transparent 52%),linear-gradient(145deg,rgba(var(--modal-rgb),.22),rgba(6,29,42,.84) 74%)!important;
   border-color:rgba(var(--modal-rgb),.68)!important;
 }
 
 /* Checklist — destination teal is an accent, not the entire form surface. */
-html body #modal[data-form-type="checklist"]{
+html body[data-screen="checklist"] #modal[data-form-type="checklist"]{
   background:radial-gradient(ellipse at 12% -12%,rgba(var(--modal-rgb),.075),transparent 44%),linear-gradient(155deg,#082b32 0%,#071f29 58%,#05181f 100%)!important;
   border-color:rgba(var(--modal-rgb),.42)!important;
 }
-html body #modal[data-form-type="checklist"][data-tone] :is(.checklist-add-context,.checklist-quick-grid,.quick-optional){
+html body[data-screen="checklist"] #modal[data-form-type="checklist"][data-tone] :is(.checklist-add-context,.checklist-quick-grid,.quick-optional){
   background:linear-gradient(145deg,rgba(var(--modal-rgb),.055),rgba(5,24,31,.72))!important;
   border-color:rgba(var(--modal-rgb),.18)!important;filter:none!important;
 }
-html body #modal[data-form-type="checklist"] .checklist-task-prominent input{
+html body[data-screen="checklist"] #modal[data-form-type="checklist"] .checklist-task-prominent input{
   background:linear-gradient(180deg,rgba(var(--modal-rgb),.045),rgba(4,19,26,.86))!important;border-color:rgba(var(--modal-rgb),.28)!important;
 }
 
 /* Vault editor — keep record-type colour, remove the generic luminous blue wash. */
-html body #modal[data-form-type="vault"]{
+html body[data-screen="vault"] #modal[data-form-type="vault"]{
   background:radial-gradient(ellipse at 12% -12%,rgba(var(--modal-rgb),.065),transparent 44%),linear-gradient(155deg,#082638 0%,#071e2f 58%,#051722 100%)!important;
   border-color:rgba(var(--modal-rgb),.39)!important;
 }
-html body #modal[data-form-type="vault"][data-tone] :is(.quick-entry-intro,.quick-type-section,.vault-quick-grid,.vault-detail-panel,.vault-upload-panel){
+html body[data-screen="vault"] #modal[data-form-type="vault"][data-tone] :is(.quick-entry-intro,.quick-type-section,.vault-quick-grid,.vault-detail-panel,.vault-upload-panel){
   background:linear-gradient(145deg,rgba(var(--modal-rgb),.045),rgba(5,23,35,.70))!important;
   border-color:rgba(var(--modal-rgb),.17)!important;
 }
@@ -32844,3 +32844,159 @@ html body[data-screen="vault"] .vault-streaming-email-panel{background:radial-gr
 /* Large non-Home anchor surfaces that were still visually louder than Home. */
 html body[data-screen="itinerary"] #app main #screen .itinerary-map-panel{background:radial-gradient(circle at 12% 0%,rgba(54,164,201,.065),transparent 34%),linear-gradient(145deg,#082b3e 0%,#072436 55%,#051a28 100%)!important;border-color:rgba(88,169,199,.45)!important}
 html body[data-screen="settings"] #app main #screen .app-health-widget{background:radial-gradient(at 10% -12%,rgba(78,149,176,.035),transparent 45%),linear-gradient(145deg,#0e2936,#0a222f 57%,#071a25)!important;border-color:#476574!important}
+/* Batch 1289 — Checklist iPad colour/contrast correction.
+   Visual-only: preserve approved layout; restore owner identity and readable feature colour. */
+html body[data-screen="checklist"] #app main #screen .personal-needs-card.his{
+  background:radial-gradient(ellipse at 12% -12%,rgba(181,226,255,.20),transparent 45%),linear-gradient(145deg,#225d88 0%,#19496f 57%,#10324f 100%)!important;
+  border-color:#6ebbe8!important;border-top-color:#b3e1ff!important;
+  box-shadow:inset 0 2px rgba(255,255,255,.12),inset 0 -30px 44px rgba(4,22,38,.18),0 0 20px rgba(101,190,241,.10),0 10px 27px rgba(0,0,0,.30)!important
+}
+html body[data-screen="checklist"] #app main #screen .personal-needs-card.hers{
+  background:radial-gradient(ellipse at 12% -12%,rgba(255,207,226,.19),transparent 45%),linear-gradient(145deg,#7c405d 0%,#63354f 57%,#43283a 100%)!important;
+  border-color:#d77f9f!important;border-top-color:#ffc0d7!important;
+  box-shadow:inset 0 2px rgba(255,255,255,.12),inset 0 -30px 44px rgba(40,13,25,.18),0 0 20px rgba(238,139,175,.09),0 10px 27px rgba(0,0,0,.30)!important
+}
+html body[data-screen="checklist"] #app main #screen .personal-needs-card.his .personal-owner-title h3{color:#d8f0ff!important;text-shadow:0 2px 12px rgba(80,176,235,.20)!important}
+html body[data-screen="checklist"] #app main #screen .personal-needs-card.hers .personal-owner-title h3{color:#ffd7e5!important;text-shadow:0 2px 12px rgba(230,116,158,.18)!important}
+html body[data-screen="checklist"] #app main #screen .personal-needs-card.his .personal-owner-title span{color:#b9ddf3!important}
+html body[data-screen="checklist"] #app main #screen .personal-needs-card.hers .personal-owner-title span{color:#efb8cb!important}
+html body[data-screen="checklist"] #app main #screen .personal-needs-card .personal-needs-summary>span,
+html body[data-screen="checklist"] #app main #screen .personal-needs-card .personal-needs-summary small{color:#e0ebf0!important}
+html body[data-screen="checklist"] #app main #screen .personal-needs-card .personal-needs-readonly-item{
+  background:rgba(4,24,37,.31)!important;border-color:rgba(218,238,247,.18)!important
+}
+html body[data-screen="checklist"] #app main #screen .personal-needs-card.his .personal-needs-readonly-item{box-shadow:inset 3px 0 0 rgba(142,210,250,.30)!important}
+html body[data-screen="checklist"] #app main #screen .personal-needs-card.hers .personal-needs-readonly-item{box-shadow:inset 3px 0 0 rgba(247,171,199,.28)!important}
+html body[data-screen="checklist"] #app main #screen .personal-needs-card .personal-needs-readonly-item.done{background:rgba(44,109,82,.22)!important}
+
+html body[data-screen="checklist"] #app main #screen .checklist-list-card.permanent{
+  background:radial-gradient(ellipse at 12% -12%,rgba(116,225,194,.13),transparent 45%),linear-gradient(145deg,#155346 0%,#103e38 58%,#0b2c30 100%)!important;
+  border-color:#438e7b!important;border-top-color:#84d7bf!important
+}
+html body[data-screen="checklist"] #app main #screen .checklist-list-card.destination{
+  background:radial-gradient(ellipse at 12% -12%,rgba(117,207,243,.14),transparent 45%),linear-gradient(145deg,#16475d 0%,#10394e 58%,#0a2938 100%)!important;
+  border-color:#4384a0!important;border-top-color:#83cbe6!important
+}
+html body[data-screen="checklist"] #app main #screen .checklist-list-card.permanent h3{color:#9ee8d3!important}
+html body[data-screen="checklist"] #app main #screen .checklist-list-card.destination h3{color:#a9e4fb!important}
+html body[data-screen="checklist"] #app main #screen .checklist-list-card .checklist-task-row-readonly{
+  background:rgba(5,27,39,.36)!important;border-color:rgba(192,226,239,.17)!important
+}
+html body[data-screen="checklist"] #app main #screen .checklist-list-card .check-task-copy b{color:#f7fbfd!important}
+html body[data-screen="checklist"] #app main #screen .checklist-list-card .check-task-copy small{color:#c4d4dc!important}
+
+html body[data-screen="checklist"] #app main #screen .checklist-overview-card{
+  background:radial-gradient(ellipse at 12% -12%,rgba(97,220,210,.13),transparent 46%),linear-gradient(145deg,#16504d 0%,#103d3d 58%,#0a2b31 100%)!important;
+  border-color:#438981!important;border-top-color:#80d1c8!important
+}
+html body[data-screen="checklist"] #app main #screen .checklist-overview-card>h3{color:#b2eee8!important}
+html body[data-screen="checklist"] #app main #screen .checklist-next-destination{
+  background:radial-gradient(ellipse at 12% -12%,rgba(162,151,241,.13),transparent 46%),linear-gradient(145deg,#343b66 0%,#292f53 58%,#1b213b 100%)!important;
+  border-color:#696fa8!important;border-top-color:#a49fe1!important
+}
+
+/* ========================================================================== */
+/* BATCH 1290 — IPAD COLOUR / CONTRAST RECOVERY                               */
+/* Home remains the material benchmark: dark premium bases + visible accents. */
+/* Do not flatten deep screens into full-colour slabs or dull monochrome.       */
+/* Visual-only. No layout, data, routing, calculations or workflow changes.    */
+/* ========================================================================== */
+
+/* Shared deep editors: keep a crisp Home-like shell and brighter readable type. */
+html body:not([data-screen="dashboard"]) #modal[data-form-type] {
+  background:radial-gradient(ellipse at 12% -10%,rgba(var(--modal-rgb,44,151,205),.10),transparent 42%),linear-gradient(155deg,#0a2a3c 0%,#071f31 55%,#051723 100%)!important;
+  border-color:rgba(var(--modal-rgb,70,158,199),.52)!important;
+  border-top-color:color-mix(in srgb,var(--modal-accent,#66cfff) 66%,white 34%)!important;
+  box-shadow:0 28px 72px rgba(0,0,0,.68),0 0 24px rgba(var(--modal-rgb,60,150,200),.10),inset 0 1px rgba(255,255,255,.08)!important;
+}
+html body:not([data-screen="dashboard"]) #modal[data-form-type] .dialog-head h2{color:#f7fbff!important;text-shadow:0 2px 14px rgba(var(--modal-rgb,70,160,205),.18)!important}
+html body:not([data-screen="dashboard"]) #modal[data-form-type] .dialog-head{border-bottom-width:1px!important}
+html body:not([data-screen="dashboard"]) #modal[data-form-type] :is(input,select,textarea){color:#f7fbff!important}
+html body:not([data-screen="dashboard"]) #modal[data-form-type] :is(input,textarea)::placeholder{color:#8ea9b8!important;opacity:.78!important}
+
+/* Add Expense: green is the workflow accent, not the whole modal surface. */
+html body[data-screen="budget"] #modal[data-form-type="expenses"]{
+  --expense-accent:#54e59a;
+  background:radial-gradient(ellipse at 10% -10%,rgba(54,207,135,.14),transparent 42%),linear-gradient(155deg,#0a3040 0%,#082534 56%,#051923 100%)!important;
+  border-color:#3b9b73!important;border-top-color:#72ebb0!important;
+}
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .dialog-head{
+  background:linear-gradient(105deg,rgba(34,154,105,.28),rgba(10,45,59,.94) 58%,rgba(6,26,38,.98))!important;
+  border-bottom-color:rgba(86,220,154,.38)!important;
+}
+html body[data-screen="budget"] #modal[data-form-type="expenses"] #modal-body{background:linear-gradient(180deg,rgba(35,137,98,.045),rgba(4,20,31,.50) 50%,rgba(3,15,24,.72))!important}
+html body[data-screen="budget"] #modal[data-form-type="expenses"] :is(.simple-form-intro.expense-form-status,.simple-form-step){
+  background:linear-gradient(145deg,rgba(36,145,103,.095),rgba(8,35,47,.60) 58%,rgba(5,24,35,.74))!important;
+  border-color:rgba(82,202,148,.28)!important;border-left-color:#58dda0!important;
+}
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .simple-step-number{background:linear-gradient(180deg,#56d89d,#249c6c)!important;border-color:#76efb5!important;color:#fff!important;box-shadow:0 0 14px rgba(68,220,151,.16),inset 0 1px rgba(255,255,255,.22)!important}
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .simple-category{background:linear-gradient(145deg,rgba(41,80,97,.34),rgba(5,24,36,.78))!important;border-color:rgba(123,180,201,.25)!important;opacity:.92!important}
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .simple-category.active{background:radial-gradient(circle at 14% 0%,rgba(73,231,154,.24),transparent 54%),linear-gradient(145deg,rgba(30,150,101,.58),rgba(9,57,50,.72) 60%,rgba(5,27,36,.82))!important;border-color:#7aefb7!important;box-shadow:0 0 0 2px rgba(91,231,165,.20),0 0 20px rgba(54,216,143,.10),inset 4px 0 0 #5de7a3,inset 0 1px rgba(255,255,255,.10)!important}
+html body[data-screen="budget"] #modal[data-form-type="expenses"] :is(.expense-destination-lock,.simple-aud-preview,.simple-optional){background:linear-gradient(145deg,rgba(25,83,74,.15),rgba(5,25,36,.72))!important;border-color:rgba(76,185,135,.24)!important}
+html body[data-screen="budget"] #modal[data-form-type="expenses"] .dialog-actions{background:linear-gradient(180deg,rgba(25,101,78,.10),#061823)!important;border-top-color:rgba(80,205,148,.30)!important}
+
+/* Add Reservation: bright blue identity, darker content body, stronger selections. */
+html body[data-screen="reservations"] #modal[data-form-type="reservations"]{
+  background:radial-gradient(ellipse at 10% -10%,rgba(52,178,236,.15),transparent 42%),linear-gradient(155deg,#0b344a 0%,#08283c 55%,#051b29 100%)!important;
+  border-color:#4aa8d0!important;border-top-color:#7bd4f5!important;
+}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .dialog-head{background:linear-gradient(105deg,rgba(28,129,181,.34),rgba(8,47,68,.94) 58%,rgba(5,25,37,.98))!important;border-bottom-color:rgba(75,190,235,.40)!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] :is(.quick-entry-intro,.quick-type-section,.reservation-quick-details,.reservation-money-panel,.reservation-destination-picker){background:linear-gradient(145deg,rgba(31,104,139,.12),rgba(5,27,40,.72))!important;border-color:rgba(76,157,190,.30)!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .quick-type-tab:not(.active){opacity:.88!important;background:linear-gradient(145deg,rgba(35,76,97,.28),rgba(5,25,37,.80))!important;border-color:rgba(105,159,181,.27)!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .quick-type-tab.active{background:radial-gradient(circle at 14% 0%,rgba(89,196,246,.24),transparent 54%),linear-gradient(145deg,#237ab1 0%,#155b8b 58%,#0b3658 100%)!important;border-color:#9ee2ff!important;box-shadow:0 0 0 2px rgba(95,202,248,.18),0 0 18px rgba(59,176,228,.10),inset 0 1px rgba(255,255,255,.14)!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .dialog-actions{background:linear-gradient(180deg,rgba(23,86,116,.10),#061925)!important;border-top-color:rgba(74,167,205,.31)!important}
+html body[data-screen="reservations"] #modal[data-form-type="reservations"] .dialog-actions button.primary:not(:disabled){background:linear-gradient(180deg,#279bd2,#146692)!important;border-color:#75c5e7!important;box-shadow:0 8px 20px rgba(22,121,168,.22),inset 0 1px rgba(255,255,255,.18)!important}
+
+/* Reservations page: stop pink/magenta from dominating the right rail. */
+html body[data-screen="reservations"] #screen .reservation-next3-card{background-image:radial-gradient(ellipse at 12% -10%,rgba(62,177,225,.15),transparent 42%),linear-gradient(145deg,#103b54 0%,#0b2c42 56%,#071d2d 100%)!important;border-color:#397fa0!important;border-top-color:#64b7d5!important}
+html body[data-screen="reservations"] #screen .reservation-next3-card>h3,
+html body[data-screen="reservations"] #screen .reservation-next3-card>h3 span{color:#9ddfff!important}
+html body[data-screen="reservations"] #screen .reservation-next3-card .reservation-next3-row{background:linear-gradient(145deg,rgba(44,116,149,.20),rgba(7,29,43,.72))!important;border-color:rgba(82,160,192,.28)!important}
+html body[data-screen="reservations"] #screen .reservation-next3-card .reservation-next3-row>span{background:rgba(35,126,164,.20)!important;border-color:rgba(91,184,219,.30)!important}
+html body[data-screen="reservations"] #screen .reservation-total-booked-card{background-image:radial-gradient(ellipse at 12% -10%,rgba(159,123,232,.15),transparent 42%),linear-gradient(145deg,#31234d 0%,#241c3c 56%,#17152a 100%)!important;border-color:#67548d!important;border-top-color:#8d78b5!important}
+html body[data-screen="reservations"] #screen .reservation-summary-card{background-image:radial-gradient(ellipse at 12% -10%,rgba(73,197,180,.14),transparent 42%),linear-gradient(145deg,#123e3d 0%,#0d302f 56%,#081f25 100%)!important;border-color:#3d8078!important;border-top-color:#63aaa1!important}
+html body[data-screen="reservations"] #screen .reservation-summary-card>h3{color:#8fe1d5!important;border-bottom-color:rgba(101,199,185,.28)!important}
+html body[data-screen="reservations"] #screen .reservation-summary-card .reservation-summary-list>div{background:linear-gradient(145deg,rgba(48,132,121,.14),rgba(7,31,37,.72))!important;border-color:rgba(78,169,157,.22)!important}
+
+/* Annual Budget deep view: dark premium surface, pink as accent only. */
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup{
+  --focus-accent:#f07aa7!important;--focus-rgb:151,62,101!important;--focus-deep-rgb:20,31,47!important;
+  background:radial-gradient(ellipse at 10% -8%,rgba(238,103,155,.13),transparent 42%),linear-gradient(155deg,#102c43 0%,#0c2338 56%,#081927 100%)!important;
+  border-color:#8f5570!important;border-top-color:#d0789e!important;
+  box-shadow:0 28px 72px rgba(0,0,0,.66),0 0 24px rgba(224,98,148,.08),inset 0 1px rgba(255,255,255,.07)!important;
+}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .readability-focus-head{background:linear-gradient(90deg,rgba(125,53,83,.30),rgba(17,47,67,.72) 58%,rgba(8,27,41,.92))!important;border-bottom-color:rgba(215,114,154,.28)!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .budget-expanded-editor{background:linear-gradient(145deg,rgba(111,48,77,.12),rgba(7,28,42,.74))!important;border-color:rgba(210,108,148,.28)!important;box-shadow:inset 4px 0 0 rgba(235,113,160,.72),inset 0 1px rgba(255,255,255,.045)!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .budget-expanded-editor-head small{color:#f0a6c3!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .budget-expanded-editor-status{background:rgba(123,45,78,.16)!important;border-color:rgba(231,125,165,.46)!important;color:#ffd4e4!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .budget-expanded-money-input{background:linear-gradient(180deg,#08283a,#061e2f)!important;border-color:#60b3d1!important;box-shadow:0 0 0 1px rgba(99,192,226,.08),inset 0 1px rgba(255,255,255,.04)!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .budget-expanded-money-input>input{background:#061c2b!important;color:#fff!important;border-color:rgba(92,178,211,.34)!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .budget-expanded-money-input>b,
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .budget-expanded-money-input>strong{color:#f6acc7!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .budget-expanded-save{background:linear-gradient(180deg,#22a5e4,#1175b3)!important;border-color:#7cd6ff!important;color:#fff!important;box-shadow:0 10px 25px rgba(18,130,190,.24),inset 0 1px rgba(255,255,255,.20)!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .readability-metric{background:linear-gradient(145deg,rgba(28,72,96,.34),rgba(6,26,39,.78))!important;border-color:rgba(94,153,179,.25)!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .readability-metric:nth-child(2){box-shadow:inset 4px 0 0 #55df91!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .readability-metric:nth-child(3){box-shadow:inset 4px 0 0 #f1bd57!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .readability-metric:nth-child(4){box-shadow:inset 4px 0 0 #61cbea!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .readability-section{background:linear-gradient(145deg,rgba(43,74,96,.20),rgba(6,25,38,.74))!important;border-color:rgba(93,147,171,.22)!important}
+html body[data-screen="budget"] #app .readability-focus-panel.budget-annual-setup .readability-list-row{background:linear-gradient(145deg,rgba(35,77,101,.24),rgba(6,25,38,.76))!important;border-color:rgba(91,151,179,.22)!important;box-shadow:inset 3px 0 0 rgba(230,112,157,.55)!important}
+
+/* Vault TV & Movies: purple identity stays visible, but body returns to dark premium navy. */
+html body[data-screen="vault"] .vault-streaming-panel,
+html body[data-screen="vault"] .vault-streaming-email-panel{
+  background:radial-gradient(ellipse at 12% -10%,rgba(155,109,211,.14),transparent 42%),linear-gradient(155deg,#17263c 0%,#121f34 58%,#0b1727 100%)!important;
+  border-color:#715a96!important;border-top-color:#a486ce!important;
+  box-shadow:0 28px 76px rgba(0,0,0,.68),0 0 26px rgba(140,98,193,.10),inset 0 1px rgba(255,255,255,.08)!important;
+}
+html body[data-screen="vault"] .vault-streaming-panel>header,
+html body[data-screen="vault"] .vault-streaming-email-panel>header{background:linear-gradient(105deg,rgba(103,72,143,.40),rgba(20,35,55,.93) 58%,rgba(11,24,39,.98))!important;border-bottom-color:rgba(164,132,204,.36)!important}
+html body[data-screen="vault"] .vault-streaming-content{background:radial-gradient(ellipse at 50% 0%,rgba(130,91,180,.08),transparent 43%),linear-gradient(180deg,rgba(18,31,49,.72),rgba(10,20,34,.86))!important}
+html body[data-screen="vault"] :is(.vault-streaming-detail,.vault-streaming-editor,.vault-streaming-form,.vault-streaming-credential-readout,.vault-streaming-credential-grid){background:linear-gradient(145deg,rgba(83,61,116,.20),rgba(10,25,40,.76))!important;border-color:rgba(149,120,189,.30)!important}
+html body[data-screen="vault"] :is(.vault-streaming-credential-readout>div,.vault-streaming-credential-grid>label){background:linear-gradient(145deg,rgba(90,67,125,.22),rgba(8,24,38,.76))!important;border-color:rgba(160,133,198,.28)!important}
+html body[data-screen="vault"] .vault-streaming-panel>footer{background:linear-gradient(180deg,rgba(72,51,99,.12),#0a1828)!important;border-top-color:rgba(151,122,190,.30)!important}
+
+/* Expanded panels across non-Home screens need visible accent light, not muddy text. */
+html body:not([data-screen="dashboard"]) #app .readability-focus-panel .readability-focus-head h2,
+html body:not([data-screen="dashboard"]) #app .journey-focus-panel .readability-focus-head h2{color:#f7fbff!important}
+html body:not([data-screen="dashboard"]) #app .readability-focus-panel :is(h3,h4),
+html body:not([data-screen="dashboard"]) #app .journey-focus-panel :is(h3,h4){text-shadow:0 2px 12px rgba(0,0,0,.30)!important}

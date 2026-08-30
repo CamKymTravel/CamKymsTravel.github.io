@@ -1,0 +1,7 @@
+Travel Command Centre V1 4.5.728
+Compact Screenshot Simulation — Batch 1294 — 30/08/2026
+
+- Isolated simulation storage; does not use Master storage.
+- Full visual banner coverage retained through one offline banner pack.
+- Physical country banners retained for the seeded itinerary and travel-mode headers.
+- Compact package target: under 100 files.
